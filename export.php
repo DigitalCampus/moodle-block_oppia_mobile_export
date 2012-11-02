@@ -10,6 +10,10 @@ require_once($CFG->dirroot . '/question/format/gift/format.php');
 require_once($CFG->dirroot . '/blocks/export_mobile_package/lib.php');
 require_once($CFG->dirroot . '/blocks/export_mobile_package/langfilter.php');
 
+require_once($CFG->dirroot . '/blocks/export_mobile_package/activity/activity.class.php');
+require_once($CFG->dirroot . '/blocks/export_mobile_package/activity/page.php');
+require_once($CFG->dirroot . '/blocks/export_mobile_package/activity/quiz.php');
+
 require_once($CFG->libdir.'/componentlib.class.php');
 
 $id = required_param('id',PARAM_INT);
@@ -112,28 +116,17 @@ while ($section <= $course->numsections) {
 			
 			if($mod->modname == 'page'){
 				echo "\tExporting page: ".$mod->name."\n";
-				//TODO add alternate langs
-				$act = toMobilePage($course_root,$mod->id,$section);
-				$content = getContent($course_root,$mod->id,$section);
-				$digest = md5($content);
 				
-				//$digest = md5_file(__DIR__."/".$course_root."/".$location);
-				$structure_xml .= "<activity type='".$mod->modname."' id='".$i."' digest='".$digest."'>";
-				$title = extractLangs($mod->name);
-				if(is_array($title) && count($title)>0){
-					foreach($title as $l=>$t){
-						$structure_xml .= "<title lang='".$l."'>".strip_tags($t)."</title>";
-					}
-				} else {
-					$structure_xml .= "<title lang='".$DEFAULT_LANG."'>".strip_tags($mod->name)."</title>";
-				}
-				
-				
-				$structure_xml .= $act;
-				
+				$page = new mobile_activity_page();
+				$page->courseroot = $course_root;
+				$page->id = $mod->id;
+				$page->section = $section;
+				$page->process();
+				$structure_xml .= $page->getXML($mod,$i);
+
 			}
 			
-			if($mod->modname == 'quiz'){
+			/*if($mod->modname == 'quiz'){
 				echo "\tExporting quiz: ".$mod->name."\n";
 				//TODO add alternate langs
 				$content = toMobileQuiz($course_root, 
@@ -148,7 +141,7 @@ while ($section <= $course->numsections) {
 				$structure_xml .= "<title lang='en'>".$mod->name."</title>";
 				$structure_xml .= "<content lang='en'>".$content."</content>";
 			}
-			$structure_xml .= "</activity>";
+			$structure_xml .= "</activity>";*/
 			$i++;
 		}
 		$structure_xml .= "</activities>";
