@@ -1,55 +1,5 @@
 <?php 
 
-function toMobileQuiz($course_root, $id, $shortname, $sectiontitle, $sectionno, $mquizuser, $mquizpass){
-	global $DB,$USER,$QUIZ_CACHE,$CFG;
-
-	$cm = get_coursemodule_from_id('quiz', $id);
-	$context = get_context_instance(CONTEXT_MODULE, $cm->id);
-	$quizobj = quiz::create($cm->instance, $USER->id);
-	$qgift = "";
-	try {
-		$quizobj->preload_questions();
-		$quizobj->load_questions();
-		$qs = $quizobj->get_questions();
-		foreach($qs as $q){
-			$qg = new qformat_gift;
-			$qgift .= $qg->writequestion($q);
-		}
-	} catch (moodle_exception $me){
-		//echo "no questions in this quiz";
-	}
-
-	$post = array('method' => 'create',
-			'username' => $mquizuser,
-			'password' => $mquizpass,
-			'title' => $shortname." ".$sectionno." ".$cm->name,
-			'content' => strip_tags($qgift),
-			'description' => $shortname.": ".$sectionno.": ".$sectiontitle.": ".$cm->name);
-	$pparams = http_build_query($post);
-	$pparams = str_replace('&amp;','&',$pparams);
-	//post this to mquiz server to create as a new quiz and save the results (also add to quiz cache file)
-	$ch = curl_init();
-
-	curl_setopt($ch, CURLOPT_URL,            $CFG->block_export_mobile_package_mquiz_url );
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1 );
-	curl_setopt($ch, CURLOPT_POST,           1 );
-	curl_setopt($ch, CURLOPT_POSTFIELDS,     $pparams);
-
-	$data = curl_exec($ch);
-	$json = json_decode($data);
-	if(isset($json->qref)){
-		echo "\tQuiz exported sucessfully\n";
-		return $data;
-	} else if(isset($json->login) && !$json->login){
-		echo "\tInvalid mquiz login details\n";
-		return false;
-	} else {
-		echo "\tConnection problem with mquiz server\n";
-		return false;
-	}
-}
-
-
 
 function deleteDir($dirPath) {
 	if (! is_dir($dirPath)) {

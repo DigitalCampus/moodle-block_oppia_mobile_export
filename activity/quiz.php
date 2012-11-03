@@ -41,27 +41,48 @@ class mobile_activity_quiz extends mobile_activity {
 			
 			$i = 1;
 			foreach($qs as $q){
-				//print_r($q);
+				print_r($q);
 				
 				// create question
-				$post = array('title' => $q->questiontext,
+				$post = array('title' => strip_tags($q->questiontext),
 						'type' => $q->qtype,
 						'responses' => array(),
 						'props' => array());
 				
 				$resp = $mQH->exec('question', $post);
+				print_r($resp);
 				$question_uri = $resp->resource_uri;
 				
 				// add max score property
+				$post = array('question' => $question_uri,
+						'name' => "maxscore",
+						'value' => $q->maxmark);
+				$resp = $mQH->exec('questionprops', $post);
 				
+				$j = 1;
 				// add responses
-
-				// add response feedback
+				foreach($q->options->answers as $r){
+					// add response
+					$post = array('question' => $question_uri,
+							'order' => $j,
+							'title' => strip_tags($r->answer),
+							'score' => ($r->fraction * $q->maxmark),
+							'props' => array());
+					$resp = $mQH->exec('response', $post);
+					$response_uri = $resp->resource_uri;
+					
+					// add response feedback
+					$post = array('response' => $response_uri,
+							'name' => 'feedback',
+							'value' => strip_tags($r->feedback));
+					$resp = $mQH->exec('responseprops', $post);
+					$j++;
+				}
 				
 				// add question to quiz
 				$post = array('quiz' => $quiz_uri,
 						'question' => $question_uri,
-						'orderno' => $i);
+						'order' => $i);
 				$resp = $mQH->exec('quizquestion', $post);
 				
 				$i++;
