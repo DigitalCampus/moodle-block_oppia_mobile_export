@@ -70,14 +70,6 @@ function deleteDir($dirPath) {
 	rmdir($dirPath);
 }
 
-function getTemplate($file){
-	$tfile = "template/".$file;
-	$fh = fopen($tfile, 'r');
-	$template = fread($fh, filesize($tfile));
-	fclose($fh);
-	return $template;
-}
-
 function extractLangs($content){
 	global $MOBILE_LANGS, $CURRENT_LANG;
 	$pos = strpos_r($content,'lang="');

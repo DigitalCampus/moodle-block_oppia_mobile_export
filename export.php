@@ -126,22 +126,18 @@ while ($section <= $course->numsections) {
 
 			}
 			
-			/*if($mod->modname == 'quiz'){
+			if($mod->modname == 'quiz'){
 				echo "\tExporting quiz: ".$mod->name."\n";
-				//TODO add alternate langs
-				$content = toMobileQuiz($course_root, 
-										$mod->id, 
-										$course->shortname, 
-										$thissection->summary,
-										$section,
-										$mquizuser,
-										$mquizpass);
-				$digest = md5($content);
-				$structure_xml .= "<activity type='".$mod->modname."' id='".$i."' digest='".$digest."'>";
-				$structure_xml .= "<title lang='en'>".$mod->name."</title>";
-				$structure_xml .= "<content lang='en'>".$content."</content>";
+				
+				$quiz = new mobile_activity_quiz();
+				$quiz->init($mquizuser, $mquizpass, $course->shortname,$thissection->summary);
+				$quiz->courseroot = $course_root;
+				$quiz->id = $mod->id;
+				$quiz->section = $section;
+				$quiz->process();
+				$structure_xml .= $quiz->getXML($mod,$i);
 			}
-			$structure_xml .= "</activity>";*/
+			
 			$i++;
 		}
 		$structure_xml .= "</activities>";
