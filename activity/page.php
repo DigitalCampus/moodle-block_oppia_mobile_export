@@ -30,8 +30,8 @@ class mobile_activity_page extends mobile_activity {
 			</body>
 			</html>';
 					
-				$filename = $this->makePageFilename($sectionno,$cm->id,$l);
-				$index = $this->course_root."/".$filename;
+				$filename = $this->makePageFilename($this->section,$cm->id,$l);
+				$index = $this->courseroot."/".$filename;
 				$fh = fopen($index, 'w');
 				fwrite($fh, $webpage);
 				fclose($fh);

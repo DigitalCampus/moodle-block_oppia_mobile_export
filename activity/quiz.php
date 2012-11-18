@@ -7,6 +7,7 @@ class mobile_activity_quiz extends mobile_activity {
 	private $summary;
 	private $shortname;
 	private $content = "";
+	private $MATCHING_SEPERATOR = "|";
 	
 	function init($user,$pass,$shortname,$summary){
 		$this->mquizusername = $user;
@@ -21,8 +22,18 @@ class mobile_activity_quiz extends mobile_activity {
 		$context = get_context_instance(CONTEXT_MODULE, $cm->id);
 		$quizobj = quiz::create($cm->instance, $USER->id);
 		$mQH = new MquizHelper();
-		$mQH->init($CFG->block_export_mobile_package_mquiz_url,$this->mquizusername,$this->mquizpassword);
-		
+		$mQH->init($CFG->block_export_mobile_package_mquiz_url);
+		// login user to get api_key
+		$post = array('username'=>$this->mquizusername, 'password'=>$this->mquizpassword);
+		$resp = $mQH->exec('user',$post);
+		if(isset($resp->api_key)){
+			$api_key = $resp->api_key;
+		} else {
+			echo "Invalid mQuiz username/password";
+			die;
+		}
+		$mQH->setCredentials($this->mquizusername, $api_key);
+
 		try {
 			$quizobj->preload_questions();
 			$quizobj->load_questions();
@@ -41,7 +52,26 @@ class mobile_activity_quiz extends mobile_activity {
 			
 			$i = 1;
 			foreach($qs as $q){
-				print_r($q);
+				if($q->qtype == 'match'){
+					print_r($q);
+					$q->qtype = 'matching';
+				}
+				//check to see if a multichoice is actually a multiselect
+				if($q->qtype == 'multichoice'){
+					$counter = 0;
+					foreach($q->options->answers as $r){
+						if($r->fraction > 0){
+							$counter++;
+						}
+					}
+					if($counter > 1){
+						$q->qtype = 'multiselect';
+					}
+				}
+				if($q->qtype == 'truefalse'){
+					//print_r($q);
+					$q->qtype = 'multichoice';
+				}
 				
 				// create question
 				$post = array('title' => strip_tags($q->questiontext),
@@ -50,7 +80,6 @@ class mobile_activity_quiz extends mobile_activity {
 						'props' => array());
 				
 				$resp = $mQH->exec('question', $post);
-				print_r($resp);
 				$question_uri = $resp->resource_uri;
 				
 				// add max score property
@@ -60,23 +89,37 @@ class mobile_activity_quiz extends mobile_activity {
 				$resp = $mQH->exec('questionprops', $post);
 				
 				$j = 1;
-				// add responses
-				foreach($q->options->answers as $r){
-					// add response
-					$post = array('question' => $question_uri,
-							'order' => $j,
-							'title' => strip_tags($r->answer),
-							'score' => ($r->fraction * $q->maxmark),
-							'props' => array());
-					$resp = $mQH->exec('response', $post);
-					$response_uri = $resp->resource_uri;
-					
-					// add response feedback
-					$post = array('response' => $response_uri,
-							'name' => 'feedback',
-							'value' => strip_tags($r->feedback));
-					$resp = $mQH->exec('responseprops', $post);
-					$j++;
+				
+				// TODO check that matching questions exporting correctly
+				// TODO check that numerical questions exporting correctly
+				
+				// if matching question then concat the options with |
+				if(isset($q->options->subquestions)){
+					foreach($q->options->subquestions as $sq){
+						$title = strip_tags($sq->questiontext).$this->MATCHING_SEPERATOR.strip_tags($sq->answertext);
+					}
+				}
+				
+				// for multichoice/multiselect/shortanswer questions
+				if(isset($q->options->answers)){
+					foreach($q->options->answers as $r){
+						
+						// add response
+						$post = array('question' => $question_uri,
+								'order' => $j,
+								'title' => strip_tags($r->answer),
+								'score' => ($r->fraction * $q->maxmark),
+								'props' => array());
+						$resp = $mQH->exec('response', $post);
+						$response_uri = $resp->resource_uri;
+						
+						// add response feedback
+						$post = array('response' => $response_uri,
+								'name' => 'feedback',
+								'value' => strip_tags($r->feedback));
+						$resp = $mQH->exec('responseprops', $post);
+						$j++;
+					}
 				}
 				
 				// add question to quiz
@@ -108,21 +151,30 @@ class mobile_activity_quiz extends mobile_activity {
 class MquizHelper{
 	private $url;
 	private $curl;
+	private $user;
+	private $api_key = "";
 	
-	function init($url, $user, $pass){
+	function init($url){
 		$this->url = $url;
 		$this->curl = curl_init();
 		curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, 1 );
 		curl_setopt($this->curl, CURLOPT_POST,           1 );
-		curl_setopt($this->curl, CURLOPT_USERPWD,	     "$user:$pass");
 	}
 	
+	function setCredentials($user,$api_key){
+		$this->user = $user;
+		$this->api_key = $api_key;
+	}
 	function exec($object, $data_array){
 		$json = json_encode($data_array);
 		$temp_url = $this->url.$object."/";
+		if($this->api_key != ""){
+			$temp_url .= "?username=".$this->user;
+			$temp_url .= "&api_key=".$this->api_key;
+		}
 		curl_setopt($this->curl, CURLOPT_URL,            $temp_url );
 		curl_setopt($this->curl, CURLOPT_POSTFIELDS,     $json);
-		curl_setopt($this->curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Content-Length: ' . strlen($json),'Expects: application/json' ));
+		curl_setopt($this->curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Content-Length: ' . strlen($json) ));
 		$data = curl_exec($this->curl);
 		$json = json_decode($data);
 		return $json;
