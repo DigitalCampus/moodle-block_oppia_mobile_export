@@ -40,8 +40,6 @@ class mobile_activity_quiz extends mobile_activity {
 			$qs = $quizobj->get_questions();
 			
 			//create the Mquiz
-			
-			
 			$post = array('title' => $this->shortname." ".$this->section." ".$cm->name,
 					'description' => $this->shortname.": ".$this->section.": ".$this->summary.": ".$cm->name,
 					'questions' => array(),
@@ -53,7 +51,6 @@ class mobile_activity_quiz extends mobile_activity {
 			$i = 1;
 			foreach($qs as $q){
 				if($q->qtype == 'match'){
-					print_r($q);
 					$q->qtype = 'matching';
 				}
 				//check to see if a multichoice is actually a multiselect
@@ -69,7 +66,6 @@ class mobile_activity_quiz extends mobile_activity {
 					}
 				}
 				if($q->qtype == 'truefalse'){
-					//print_r($q);
 					$q->qtype = 'multichoice';
 				}
 				
@@ -90,17 +86,38 @@ class mobile_activity_quiz extends mobile_activity {
 				
 				$j = 1;
 				
-				// TODO check that matching questions exporting correctly
-				// TODO check that numerical questions exporting correctly
-				
 				// if matching question then concat the options with |
 				if(isset($q->options->subquestions)){
+					// Find out how many subquestions
+					$subqs = 0;
+					foreach($q->options->subquestions as $sq){
+						if(trim($sq->questiontext) != ""){
+							$subqs++;
+						}	
+					}
 					foreach($q->options->subquestions as $sq){
 						$title = strip_tags($sq->questiontext).$this->MATCHING_SEPERATOR.strip_tags($sq->answertext);
+						// add response
+						$post = array('question' => $question_uri,
+								'order' => $j,
+								'title' => $title,
+								'score' => ($q->maxmark / $subqs),
+								'props' => array());
+						$resp = $mQH->exec('response', $post);
+						$response_uri = $resp->resource_uri;
+						
+						// add response feedback
+						// TODO - figure out how to do feedback for matching questions
+						$post = array('response' => $response_uri,
+								'name' => 'feedback',
+								'value' => '');
+						$resp = $mQH->exec('responseprops', $post);
+						
+						$j++;
 					}
 				}
 				
-				// for multichoice/multiselect/shortanswer questions
+				// for multichoice/multiselect/shortanswer/numerical questions
 				if(isset($q->options->answers)){
 					foreach($q->options->answers as $r){
 						
@@ -118,6 +135,14 @@ class mobile_activity_quiz extends mobile_activity {
 								'name' => 'feedback',
 								'value' => strip_tags($r->feedback));
 						$resp = $mQH->exec('responseprops', $post);
+						
+						// if numerical also add a tolerance
+						if($q->qtype == 'numerical'){
+							$post = array('response' => $response_uri,
+									'name' => 'tolerance',
+									'value' => $r->tolerance);
+							$resp = $mQH->exec('responseprops', $post);
+						}
 						$j++;
 					}
 				}
