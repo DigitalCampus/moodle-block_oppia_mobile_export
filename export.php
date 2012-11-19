@@ -48,9 +48,10 @@ $mquizpass = required_param('mquizpass',PARAM_TEXT);
 
 //make course dir etc for output
 
-deleteDir("output/temp");
-mkdir("output/temp/",0777);
-$course_root = "output/temp/".strtolower($course->shortname);
+deleteDir("output/".$USER->id."/temp");
+mkdir("output/".$USER->id,0777);
+mkdir("output/".$USER->id."/temp/",0777);
+$course_root = "output/".$USER->id."/temp/".strtolower($course->shortname);
 mkdir($course_root,0777);
 mkdir($course_root."/images",0777);
 
@@ -180,8 +181,8 @@ echo "\nCreated module xml file\n";
 
 echo "\nCourse Export Complete\n";
 
-$dir2zip = "output/temp";
-$outputzip = "output/".strtolower($course->shortname)."-".$versionid.".zip";
+$dir2zip = "output/".$USER->id."/temp";
+$outputzip = "output/".$USER->id."/".strtolower($course->shortname)."-".$versionid.".zip";
 //echo $dir2zip."\n";
 //echo $outputzip."\n";
 Zip($dir2zip,$outputzip);
