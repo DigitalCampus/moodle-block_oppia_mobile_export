@@ -69,20 +69,18 @@ class mobile_activity_quiz extends mobile_activity {
 					$q->qtype = 'multichoice';
 				}
 				
+				// add max score property
+				$props = array();
+				$props[0] = array('name' => "maxscore", 'value' => $q->maxmark);
+				
 				// create question
 				$post = array('title' => strip_tags($q->questiontext),
 						'type' => $q->qtype,
 						'responses' => array(),
-						'props' => array());
-				
+						'props' => $props);
+				echo json_encode($post);
 				$resp = $mQH->exec('question', $post);
 				$question_uri = $resp->resource_uri;
-				
-				// add max score property
-				$post = array('question' => $question_uri,
-						'name' => "maxscore",
-						'value' => $q->maxmark);
-				$resp = $mQH->exec('questionprops', $post);
 				
 				$j = 1;
 				
@@ -98,20 +96,19 @@ class mobile_activity_quiz extends mobile_activity {
 					foreach($q->options->subquestions as $sq){
 						$title = strip_tags($sq->questiontext).$this->MATCHING_SEPERATOR.strip_tags($sq->answertext);
 						// add response
+						
+						$props = array();
+						// TODO - figure out how to do feedback for matching questions
+						$props[0] = array('name' => 'feedback', 'value' => '');
+						
 						$post = array('question' => $question_uri,
 								'order' => $j,
 								'title' => $title,
 								'score' => ($q->maxmark / $subqs),
-								'props' => array());
+								'props' => $props);
 						$resp = $mQH->exec('response', $post);
 						$response_uri = $resp->resource_uri;
 						
-						// add response feedback
-						// TODO - figure out how to do feedback for matching questions
-						$post = array('response' => $response_uri,
-								'name' => 'feedback',
-								'value' => '');
-						$resp = $mQH->exec('responseprops', $post);
 						
 						$j++;
 					}
@@ -121,28 +118,23 @@ class mobile_activity_quiz extends mobile_activity {
 				if(isset($q->options->answers)){
 					foreach($q->options->answers as $r){
 						
+						$props = array();
+						$props[0] = array('name' => 'feedback', 'value' => strip_tags($r->feedback));
+						
+						// if numerical also add a tolerance
+						if($q->qtype == 'numerical'){
+							$props[1] = array('name' => 'tolerance', 'value' => $r->tolerance);
+						}
+						
 						// add response
 						$post = array('question' => $question_uri,
 								'order' => $j,
 								'title' => strip_tags($r->answer),
 								'score' => ($r->fraction * $q->maxmark),
-								'props' => array());
+								'props' => $props);
 						$resp = $mQH->exec('response', $post);
 						$response_uri = $resp->resource_uri;
-						
-						// add response feedback
-						$post = array('response' => $response_uri,
-								'name' => 'feedback',
-								'value' => strip_tags($r->feedback));
-						$resp = $mQH->exec('responseprops', $post);
-						
-						// if numerical also add a tolerance
-						if($q->qtype == 'numerical'){
-							$post = array('response' => $response_uri,
-									'name' => 'tolerance',
-									'value' => $r->tolerance);
-							$resp = $mQH->exec('responseprops', $post);
-						}
+
 						$j++;
 					}
 				}
