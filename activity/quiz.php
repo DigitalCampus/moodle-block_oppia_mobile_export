@@ -78,7 +78,6 @@ class mobile_activity_quiz extends mobile_activity {
 						'type' => $q->qtype,
 						'responses' => array(),
 						'props' => $props);
-				echo json_encode($post);
 				$resp = $mQH->exec('question', $post);
 				$question_uri = $resp->resource_uri;
 				
