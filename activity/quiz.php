@@ -2,16 +2,12 @@
 
 class mobile_activity_quiz extends mobile_activity {
 
-	private $mquizusername;
-	private $mquizpassword;
 	private $summary;
 	private $shortname;
 	private $content = "";
 	private $MATCHING_SEPERATOR = "|";
 	
-	function init($user,$pass,$shortname,$summary){
-		$this->mquizusername = $user;
-		$this->mquizpassword = $pass;
+	function init($shortname,$summary){
 		$this->shortname = strip_tags($shortname);
 		$this->summary = strip_tags($summary);
 	}
@@ -23,16 +19,10 @@ class mobile_activity_quiz extends mobile_activity {
 		$quizobj = quiz::create($cm->instance, $USER->id);
 		$mQH = new MquizHelper();
 		$mQH->init($CFG->block_export_mobile_package_mquiz_url);
-		// login user to get api_key
-		$post = array('username'=>$this->mquizusername, 'password'=>$this->mquizpassword);
-		$resp = $mQH->exec('user',$post);
-		if(isset($resp->api_key)){
-			$api_key = $resp->api_key;
-		} else {
-			echo "Invalid mQuiz username/password";
+		if($CFG->block_export_mobile_package_mquiz_api_key == ""){
+			echo "Invalid mQuiz username/api_key";
 			die;
 		}
-		$mQH->setCredentials($this->mquizusername, $api_key);
 
 		try {
 			$quizobj->preload_questions();
@@ -185,8 +175,6 @@ class mobile_activity_quiz extends mobile_activity {
 class MquizHelper{
 	private $url;
 	private $curl;
-	private $user;
-	private $api_key = "";
 	
 	function init($url){
 		$this->url = $url;
@@ -194,17 +182,14 @@ class MquizHelper{
 		curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, 1 );
 	}
 	
-	function setCredentials($user,$api_key){
-		$this->user = $user;
-		$this->api_key = $api_key;
-	}
 	function exec($object, $data_array, $type='post'){
+		global $CFG;
 		$json = json_encode($data_array);
 		$temp_url = $this->url.$object."/";
-		if($this->api_key != ""){
+		if($CFG->block_export_mobile_package_mquiz_api_key != ""){
 			$temp_url .= "?format=json";
-			$temp_url .= "&username=".$this->user;
-			$temp_url .= "&api_key=".$this->api_key;
+			$temp_url .= "&username=".$CFG->block_export_mobile_package_mquiz_username;
+			$temp_url .= "&api_key=".$CFG->block_export_mobile_package_mquiz_api_key;
 		}
 		curl_setopt($this->curl, CURLOPT_URL, $temp_url );
 		if($type == 'post'){

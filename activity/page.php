@@ -13,7 +13,7 @@ class mobile_activity_page extends mobile_activity {
 		
 		$context = get_context_instance(CONTEXT_MODULE, $cm->id);
 
-		$content = $this->extractFiles($page->content, 'pluginfile.php', $context->id, 'mod_page', 'content', $page->revision, $this->courseroot);
+		$content = $this->extractFiles($page->content, $context->id, 'mod_page', 'content', $page->revision, $this->courseroot);
 		$this->md5 =  md5($page->content);
 		
 		// find all the langs on this page
@@ -87,7 +87,7 @@ class mobile_activity_page extends mobile_activity {
 		return $structure_xml;
 	}
 	
-	private function extractFiles($content, $file, $contextid, $component, $filearea, $itemid, $course_root){
+	private function extractFiles($content, $contextid, $component, $filearea, $itemid, $course_root){
 		global $CFG;
 		//find if any images/links exist
 		$pos = strpos_r($content,'src="@@PLUGINFILE@@/');

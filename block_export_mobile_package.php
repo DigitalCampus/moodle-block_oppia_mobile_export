@@ -35,9 +35,6 @@ class block_export_mobile_package extends block_base {
         }
         $this->content->text = "Current MQuiz API: ".$CFG->block_export_mobile_package_mquiz_url;
         $this->content->text .= "<form action='".$CFG->wwwroot."/blocks/export_mobile_package/export.php' method='post'>";
-        $this->content->text .= "MQuiz username/email:<input type='text' name='mquizuser'>";
-        $this->content->text .= "<br/>";
-        $this->content->text .= "MQuiz password:<input type='password' name='mquizpass'>";
         $this->content->text .= "<input type='hidden' name='id' value='".$COURSE->id."'>";
         $this->content->text .= "<input type='hidden' name='sesskey' value='".sesskey()."'>";
         $this->content->text .= "<input type='submit' name='submit' value='Export to mobile'>";

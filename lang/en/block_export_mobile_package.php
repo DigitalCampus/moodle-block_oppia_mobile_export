@@ -26,6 +26,10 @@
 
 $string['pluginname'] = 'Export to Mobile Package';
 
-$string['mquizurl'] = 'MQuiz API URL';
+$string['mquizurl'] = 'mQuiz API URL';
+$string['mquizusername'] = 'mQuiz Username';
+$string['mquizapikey'] = 'mQuiz API Key';
 
 $string['mquizurlfull'] = 'Full URL to MQuiz server API (include the trailing slash)';
+$string['mquizusernamefull'] = 'Your mQuiz username';
+$string['mquizapikeyfull'] = 'Your mQuiz API Key';

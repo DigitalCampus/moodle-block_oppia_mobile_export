@@ -44,9 +44,6 @@ $MOBILE_LANGS = array();
 
 global $MEDIA;
 $MEDIA = array();
-// check mquizusername and password entered
-$mquizuser = required_param('mquizuser',PARAM_TEXT);
-$mquizpass = required_param('mquizpass',PARAM_TEXT);
 
 //make course dir etc for output
 
@@ -109,6 +106,12 @@ while ($section <= $course->numsections) {
 		} else {
 			$structure_xml .= "<title lang='".$DEFAULT_LANG."'>".strip_tags($thissection->summary)."</title>";
 		}
+		// get image for this section
+		$filename = extractFiles($thissection->summary, $context->id, $thissection->id, $course_root);
+		
+		if($filename){
+			$structure_xml .= "<image filename='".$filename."'/>";
+		}
 		
 		$sectionmods = explode(",", $thissection->sequence);
 		$i=1;
@@ -135,7 +138,7 @@ while ($section <= $course->numsections) {
 				echo "\tExporting quiz: ".$mod->name."\n";
 				
 				$quiz = new mobile_activity_quiz();
-				$quiz->init($mquizuser, $mquizpass, $course->shortname,$thissection->summary);
+				$quiz->init($course->shortname,$thissection->summary);
 				$quiz->courseroot = $course_root;
 				$quiz->id = $mod->id;
 				$quiz->section = $section;

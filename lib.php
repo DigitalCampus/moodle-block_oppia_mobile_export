@@ -48,7 +48,44 @@ function extractLangs($content){
 	return $tempLangsRev;
 }
 
+function extractFiles($content, $contextid, $itemid, $course_root){
+	global $CFG;
+	//find if any images/links exist
+	$pos = strpos_r($content,'src="@@PLUGINFILE@@/');
+	if(count($pos) == 0){
+		return false;
+	}
+	foreach($pos as $p){
+		$len = strpos($content,'"',($p+20))-($p+20);
+		$filename = substr($content,$p+20,$len);
+		echo "\t\t trying file: ".$filename."\n";
+		$fullpath = "/$contextid/course/section/$itemid/$filename";
+		$fs = get_file_storage();
+		$file = $fs->get_file_by_hash(sha1($fullpath));
+		$fh = $file->get_content_file_handle();
 
+		$originalfilename = $filename;
+		//hack to get around the possibilty of the filename being in a directory structure
+		$tmp = explode("/",$filename);
+		$filename = $tmp[count($tmp)-1];
+
+		//copy file
+		$imgfile = $course_root."/images/".$filename;
+		$ifh = fopen($imgfile, 'w');
+
+		while(!feof($fh)) {
+			$data = fgets($fh, 1024);
+			fwrite($ifh, $data);
+		}
+		fclose($ifh);
+		fclose($fh);
+		$tr = new StdClass;
+		$tr->originalfilename = $originalfilename;
+		$tr->filename = $filename;
+		echo "\t\tFile: ".$filename." successfully exported\n";
+	}
+	return "images/".$filename;
+}
 
 function strpos_r($haystack, $needle)
 {
