@@ -4,9 +4,10 @@
 class mobile_activity_page extends mobile_activity {
 	
 	private $act = "";
+	private $page_media = array();
 	
 	function process(){
-		global $DB, $MOBILE_LANGS, $DEFAULT_LANG;
+		global $DB, $MOBILE_LANGS, $DEFAULT_LANG, $MEDIA;
 		$cm= get_coursemodule_from_id('page', $this->id);
 		$page = $DB->get_record('page', array('id'=>$cm->instance), '*', MUST_EXIST);
 		
@@ -20,15 +21,18 @@ class mobile_activity_page extends mobile_activity {
 		
 		if(is_array($langs) && count($langs)>0){
 			foreach($langs as $l=>$t){
+				
+				$t = $this->extractMedia($t);
+				
 				// add html header tags etc
 				// need to do this to ensure it all has the right encoding when loaded in android webview
 				$webpage = '<html>
-			<head>
-			<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-			</head>
-			<body>'.$t.'
-			</body>
-			</html>';
+							<head>
+							<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+							</head>
+							<body>'.$t.'
+							</body>
+							</html>';
 					
 				$filename = $this->makePageFilename($this->section,$cm->id,$l);
 				$index = $this->courseroot."/".$filename;
@@ -38,15 +42,16 @@ class mobile_activity_page extends mobile_activity {
 				$this->act .= "<location lang='".$l."'>".$filename."</location>";
 			}
 		} else {
+			$content = $this->extractMedia($content);
 			// add html header tags etc
 			// need to do this to ensure it all has the right encoding when loaded in android webview
 			$webpage = '<html>
-		<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		</head>
-		<body>'.$content.'
-		</body>
-		</html>';
+						<head>
+						<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+						</head>
+						<body>'.$content.'
+						</body>
+						</html>';
 		
 			$filename = $this->makePageFilename($this->section,$cm->id,$DEFAULT_LANG);
 			$index = $this->courseroot."/".$filename;
@@ -68,7 +73,14 @@ class mobile_activity_page extends mobile_activity {
 		} else {
 			$structure_xml .= "<title lang='".$DEFAULT_LANG."'>".strip_tags($mod->name)."</title>";
 		}
-		
+		// add in page media
+		if(count($this->page_media) > 0){
+			$structure_xml .= "<media>";
+			foreach ($this->page_media as $m){
+				$structure_xml .= "<file filename='".$m->filename."' download_url='".$m->download_url."'/>";
+			}
+			$structure_xml .= "</media>";
+		}
 		$structure_xml .= $this->act;
 		$structure_xml .= "</activity>";
 		
@@ -116,6 +128,33 @@ class mobile_activity_page extends mobile_activity {
 		foreach($toreplace as $tr){
 			$content = str_replace('src="@@PLUGINFILE@@/'.$tr->originalfilename, 'src="images/'.$tr->filename, $content);
 		}
+		return $content;
+	}
+	
+	private function extractMedia($content){
+		global $MEDIA;
+		$pos = strpos_r($content,'[[media object=\'');
+		if(count($pos) == 0){
+			return $content;
+		}
+		foreach($pos as $p){
+			$len = strpos($content,'\']]',($p+16))-($p+16);
+			$media_object = substr($content,$p+16,$len);
+			$media_json = json_decode($media_object);
+			
+			// replace [[media]] with <a href
+			$r = "<a href='/video/".$media_json->filename."'>";
+			$content = substr_replace($content, $r, $p, $len+19);
+
+			$m = new StdClass;
+			$m->filename = $media_json->filename;
+			$m->download_url = $media_json->download_url;
+			// put the media in both the structure for page ($this->page_media) and for module ($MEDIA)
+			$MEDIA[$m->filename] = $m;
+			$this->page_media[$m->filename] = $m;
+		}
+		//replace all [[/media]] with </a>
+		$content = str_replace("[[/media]]", "</a>", $content);
 		return $content;
 	}
 	

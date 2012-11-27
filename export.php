@@ -42,6 +42,8 @@ $DEFAULT_LANG = "en";
 global $MOBILE_LANGS;
 $MOBILE_LANGS = array();
 
+global $MEDIA;
+$MEDIA = array();
 // check mquizusername and password entered
 $mquizuser = required_param('mquizuser',PARAM_TEXT);
 $mquizpass = required_param('mquizpass',PARAM_TEXT);
@@ -164,8 +166,14 @@ $module_xml .="</langs>";
 $module_xml .= "</meta>";
 $module_xml .= $structure_xml;
 
-// TODO add media includes
-
+// add media includes
+if(count($MEDIA) > 0){
+	$module_xml .= "<media>";
+	foreach ($MEDIA as $m){
+		$module_xml .= "<file filename='".$m->filename."' download_url='".$m->download_url."'/>";
+	}
+	$module_xml .= "</media>";
+}
 
 $module_xml .= "</module>";
 $index = $course_root."/module.xml";
