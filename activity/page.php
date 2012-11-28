@@ -83,7 +83,7 @@ class mobile_activity_page extends mobile_activity {
 		if(count($this->page_media) > 0){
 			$structure_xml .= "<media>";
 			foreach ($this->page_media as $m){
-				$structure_xml .= "<file filename='".$m->filename."' download_url='".$m->download_url."'/>";
+				$structure_xml .= "<file filename='".$m->filename."' download_url='".$m->download_url."' digest='".$m->digest."'/>";
 			}
 			$structure_xml .= "</media>";
 		}
@@ -158,9 +158,10 @@ class mobile_activity_page extends mobile_activity {
 			$m = new StdClass;
 			$m->filename = $media_json->filename;
 			$m->download_url = $media_json->download_url;
+			$m->digest = $media_json->digest;
 			// put the media in both the structure for page ($this->page_media) and for module ($MEDIA)
-			$MEDIA[$m->filename] = $m;
-			$this->page_media[$m->filename] = $m;
+			$MEDIA[$m->digest] = $m;
+			$this->page_media[$m->digest] = $m;
 		}
 		//replace all [[/media]] with </a>
 		$content = str_replace("[[/media]]", "</a>", $content);

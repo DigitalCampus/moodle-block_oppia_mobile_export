@@ -173,7 +173,7 @@ $module_xml .= $structure_xml;
 if(count($MEDIA) > 0){
 	$module_xml .= "<media>";
 	foreach ($MEDIA as $m){
-		$module_xml .= "<file filename='".$m->filename."' download_url='".$m->download_url."'/>";
+		$module_xml .= "<file filename='".$m->filename."' download_url='".$m->download_url."' digest='".$m->digest."'/>";
 	}
 	$module_xml .= "</media>";
 }
