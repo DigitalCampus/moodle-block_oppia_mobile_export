@@ -107,7 +107,7 @@ while ($section <= $course->numsections) {
 			$structure_xml .= "<title lang='".$DEFAULT_LANG."'>".strip_tags($thissection->summary)."</title>";
 		}
 		// get image for this section
-		$filename = extractFiles($thissection->summary, $context->id, $thissection->id, $course_root);
+		$filename = extractImageFile($thissection->summary, $context->id, 'course/section', $thissection->id, $course_root);
 		
 		if($filename){
 			$structure_xml .= "<image filename='".$filename."'/>";

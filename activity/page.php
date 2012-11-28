@@ -5,6 +5,7 @@ class mobile_activity_page extends mobile_activity {
 	
 	private $act = "";
 	private $page_media = array();
+	private $page_image = null;
 	
 	function process(){
 		global $DB, $MOBILE_LANGS, $DEFAULT_LANG, $MEDIA;
@@ -18,6 +19,11 @@ class mobile_activity_page extends mobile_activity {
 		
 		// find all the langs on this page
 		$langs = extractLangs($content);
+		
+		$filename = extractImageFile($page->intro,$context->id,'mod_page/intro','0',$this->courseroot);
+		if($filename){
+			$this->page_image = $filename;
+		}
 		
 		if(is_array($langs) && count($langs)>0){
 			foreach($langs as $l=>$t){
@@ -80,6 +86,9 @@ class mobile_activity_page extends mobile_activity {
 				$structure_xml .= "<file filename='".$m->filename."' download_url='".$m->download_url."'/>";
 			}
 			$structure_xml .= "</media>";
+		}
+		if($this->page_image){
+			$structure_xml .= "<image filename='".$this->page_image."'/>";
 		}
 		$structure_xml .= $this->act;
 		$structure_xml .= "</activity>";

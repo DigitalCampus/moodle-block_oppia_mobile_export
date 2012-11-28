@@ -48,7 +48,7 @@ function extractLangs($content){
 	return $tempLangsRev;
 }
 
-function extractFiles($content, $contextid, $itemid, $course_root){
+function extractImageFile($content, $contextid, $contextname, $itemid, $course_root){
 	global $CFG;
 	//find if any images/links exist
 	$pos = strpos_r($content,'src="@@PLUGINFILE@@/');
@@ -58,8 +58,9 @@ function extractFiles($content, $contextid, $itemid, $course_root){
 	foreach($pos as $p){
 		$len = strpos($content,'"',($p+20))-($p+20);
 		$filename = substr($content,$p+20,$len);
-		echo "\t\t trying file: ".$filename."\n";
-		$fullpath = "/$contextid/course/section/$itemid/$filename";
+		echo "\t\ttrying file: ".$filename."\n";
+		$fullpath = "/$contextid/$contextname/$itemid/$filename";
+		
 		$fs = get_file_storage();
 		$file = $fs->get_file_by_hash(sha1($fullpath));
 		$fh = $file->get_content_file_handle();
