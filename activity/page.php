@@ -70,7 +70,7 @@ class mobile_activity_page extends mobile_activity {
 	
 	function getXML($mod,$counter){
 		global $DEFAULT_LANG;
-		$structure_xml = "<activity type='".$mod->modname."' id='".$counter."' digest='".$this->md5."'>";
+		$structure_xml = "<activity type='".$mod->modname."' order='".$counter."' digest='".$this->md5."'>";
 		$title = extractLangs($mod->name);
 		if(is_array($title) && count($title)>0){
 			foreach($title as $l=>$t){

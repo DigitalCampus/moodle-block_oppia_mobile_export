@@ -164,7 +164,7 @@ class mobile_activity_quiz extends mobile_activity {
 	}
 	
 	function getXML($mod,$counter){
-		$structure_xml = "<activity type='".$mod->modname."' id='".$counter."' digest='".$this->md5."'>";
+		$structure_xml = "<activity type='".$mod->modname."' order='".$counter."' digest='".$this->md5."'>";
 		$structure_xml .= "<title lang='en'>".$mod->name."</title>";
 		$structure_xml .= "<content lang='en'>".$this->content."</content>";
 		$structure_xml .= "</activity>";

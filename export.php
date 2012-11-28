@@ -97,7 +97,7 @@ while ($section <= $course->numsections) {
 		
 		echo "\nExporting Section: ".strip_tags($thissection->summary,'<span>')."\n";
 		
-		$structure_xml .= "<section id='".$section."'>";
+		$structure_xml .= "<section order='".$section."'>";
 		$title = extractLangs($thissection->summary);
 		if(is_array($title) && count($title)>0){
 			foreach($title as $l=>$t){
