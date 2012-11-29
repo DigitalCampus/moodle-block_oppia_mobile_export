@@ -70,6 +70,8 @@ $module_xml .= "<module>";
 $module_xml .= "<meta>";
 $module_xml .= "<versionid>".$versionid."</versionid>";
 
+echo "<pre>";
+echo "Exporting Course: ".strip_tags($course->fullname)."\n";
 $title = extractLangs($course->fullname);
 if(is_array($title) && count($title)>0){
 	foreach($title as $l=>$t){
@@ -85,9 +87,15 @@ $module_xml .= "<updateurl>"."</updateurl>";
 $module_xml .= "<license>"."</license>";
 
 
+
+// get module image (from course summary)
+$filename = extractImageFile($course->summary,$context->id,'course/summary','0',$course_root );
+if($filename){
+	$module_xml .= "<image filename='".$filename."'/>";
+}
 $index = Array();
 
-echo "<pre>";
+
 $section = 1;
 $structure_xml = "<structure>";
 while ($section <= $course->numsections) {
