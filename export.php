@@ -79,7 +79,7 @@ if(is_array($title) && count($title)>0){
 	$module_xml .= "<title lang='".$DEFAULT_LANG."'>".strip_tags($course->fullname)."</title>";
 }
 
-$module_xml .= "<shortname>".$course->shortname."</shortname>";
+$module_xml .= "<shortname>".strtolower($course->shortname)."</shortname>";
 $module_xml .= "<sourceurl>"."</sourceurl>";
 $module_xml .= "<updateurl>"."</updateurl>";
 $module_xml .= "<license>"."</license>";
