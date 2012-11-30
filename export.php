@@ -192,6 +192,7 @@ $fh = fopen($index, 'w');
 fwrite($fh, $module_xml);
 fclose($fh);
 
+// output module xml file separately - just for debugging
 $output = "output/module.xml";
 $fh = fopen($output, 'w');
 fwrite($fh, $module_xml);
@@ -208,7 +209,7 @@ $outputzip = "output/".$USER->id."/".strtolower($course->shortname)."-".$version
 //echo $outputzip."\n";
 Zip($dir2zip,$outputzip);
 echo "\nCompressed file\n";
-//deleteDir("output/temp");
+deleteDir("output/temp");
 echo "</pre>";
 echo "Download exported course at <a href='".$outputzip."'>".$course->fullname."</a>";
 

@@ -22,17 +22,16 @@ function deleteDir($dirPath) {
 
 function extractLangs($content){
 	global $MOBILE_LANGS, $CURRENT_LANG;
-	$pos = strpos_r($content,'lang="');
-	if(count($pos) == 0){
+	preg_match_all('((lang=[\'|\"](?P<langs>[\w\-]*)[\'|\"]))',$content,$langs_tmp, PREG_OFFSET_CAPTURE);
+	$tempLangs = array();
+	if(isset($langs_tmp['langs']) && count($langs_tmp['langs']) > 0){
+		for($i=0;$i<count($langs_tmp['langs']);$i++){
+			$tempLangs[$langs_tmp['langs'][$i][0]] = true;
+		}
+	} else {
 		return $content;
 	}
-	$tempLangs = array();
-	foreach($pos as $p){
-		$len = strpos($content,'"',($p+6))-($p+6);
-		$lang = substr($content,$p+6,$len);
-		$tempLangs[$lang] = true;
-	}
-	
+
 	$filter = new tomobile_langfilter();
 	foreach($tempLangs as $k=>$v){
 		$CURRENT_LANG = $k;
@@ -51,13 +50,15 @@ function extractLangs($content){
 function extractImageFile($content, $contextid, $contextname, $itemid, $course_root){
 	global $CFG;
 	//find if any images/links exist
-	$pos = strpos_r($content,'src="@@PLUGINFILE@@/');
-	if(count($pos) == 0){
+	preg_match_all('((@@PLUGINFILE@@/(?P<filenames>[\w\.[:space:]]*)[\"|\']))',$content,$files_tmp, PREG_OFFSET_CAPTURE);
+		
+	if(!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0){
 		return false;
-	}
-	foreach($pos as $p){
-		$len = strpos($content,'"',($p+20))-($p+20);
-		$filename = substr($content,$p+20,$len);
+	}	
+
+	$toreplace = array();
+	for($i=0;$i<count($files_tmp['filenames']);$i++){
+		$filename = $files_tmp['filenames'][$i][0];
 		echo "\t\ttrying file: ".$filename."\n";
 		$fullpath = "/$contextid/$contextname/$itemid/$filename";
 		
@@ -86,21 +87,6 @@ function extractImageFile($content, $contextid, $contextname, $itemid, $course_r
 		echo "\t\tFile: ".$filename." successfully exported\n";
 	}
 	return "images/".$filename;
-}
-
-function strpos_r($haystack, $needle)
-{
-	if(strlen($needle) > strlen($haystack)){
-		return array();
-	}
-
-	$seeks = array();
-	while($seek = strrpos($haystack, $needle))
-	{
-		array_push($seeks, $seek);
-		$haystack = substr($haystack, 0, $seek);
-	}
-	return $seeks;
 }
 
 function Zip($source, $destination){

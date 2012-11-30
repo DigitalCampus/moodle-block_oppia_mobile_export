@@ -98,15 +98,17 @@ class mobile_activity_page extends mobile_activity {
 	
 	private function extractFiles($content, $contextid, $component, $filearea, $itemid, $course_root){
 		global $CFG;
-		//find if any images/links exist
-		$pos = strpos_r($content,'src="@@PLUGINFILE@@/');
-		if(count($pos) == 0){
+		
+		preg_match_all('((@@PLUGINFILE@@/(?P<filenames>[\w\.[:space:]]*)[\"|\']))',$content,$files_tmp, PREG_OFFSET_CAPTURE);
+		
+		if(!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0){
 			return $content;
-		}
+		}	
+
 		$toreplace = array();
-		foreach($pos as $p){
-			$len = strpos($content,'"',($p+20))-($p+20);
-			$filename = substr($content,$p+20,$len);
+		for($i=0;$i<count($files_tmp['filenames']);$i++){
+			$filename = $files_tmp['filenames'][$i][0];
+			
 			echo "\t\t trying file: ".$filename."\n";
 			$fullpath = "/$contextid/mod_page/$filearea/0/$filename";
 			$fs = get_file_storage();
@@ -142,23 +144,27 @@ class mobile_activity_page extends mobile_activity {
 	
 	private function extractMedia($content){
 		global $MEDIA;
-		$pos = strpos_r($content,'[[media object=\'');
-		if(count($pos) == 0){
+		
+		$regex = '((\[\[[[:space:]]?media[[:space:]]?object=[\"|\'](?P<mediaobject>[\{\}\'\"\:a-zA-Z0-9\._\-/,[:space:]]*)[[:space:]]?[\"|\']\]\]))';
+		
+		preg_match_all($regex,$content,$media_tmp, PREG_OFFSET_CAPTURE);
+		
+		if(!isset($media_tmp['mediaobject']) || count($media_tmp['mediaobject']) == 0){
 			return $content;
 		}
-		foreach($pos as $p){
-			$len = strpos($content,'\']]',($p+16))-($p+16);
-			$media_object = substr($content,$p+16,$len);
-			$media_json = json_decode($media_object);
+
+		for($i=0;$i<count($media_tmp['mediaobject']);$i++){
+			$mediajson = json_decode($media_tmp['mediaobject'][$i][0]);
+			$toreplace = $media_tmp[0][$i][0];
 			
 			// replace [[media]] with <a href
-			$r = "<a href='/video/".$media_json->filename."'>";
-			$content = substr_replace($content, $r, $p, $len+19);
+			$r = "<a href='/video/".$mediajson->filename."'>";
+			$content = str_replace($toreplace, $r, $content);
 
 			$m = new StdClass;
-			$m->filename = $media_json->filename;
-			$m->download_url = $media_json->download_url;
-			$m->digest = $media_json->digest;
+			$m->filename = $mediajson->filename;
+			$m->download_url = $mediajson->download_url;
+			$m->digest = $mediajson->digest;
 			// put the media in both the structure for page ($this->page_media) and for module ($MEDIA)
 			$MEDIA[$m->digest] = $m;
 			$this->page_media[$m->digest] = $m;
