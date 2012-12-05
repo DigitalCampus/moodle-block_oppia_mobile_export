@@ -34,6 +34,10 @@ class mobile_activity_quiz extends mobile_activity {
 			
 			// find if this quiz already exists
 			$resp = $mQH->exec('quizprops/'.$this->md5, array(),'get');
+			if(!isset($resp->quizzes)){
+				echo "Error connecting to mquiz server, please check the API url in the block settings.\n";
+				die;
+			}
 			
 			if(count($resp->quizzes) > 0){
 				$quiz_id = $resp->quizzes[0]->quiz_id;	

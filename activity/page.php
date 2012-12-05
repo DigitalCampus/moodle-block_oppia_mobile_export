@@ -99,7 +99,7 @@ class mobile_activity_page extends mobile_activity {
 	private function extractFiles($content, $contextid, $component, $filearea, $itemid, $course_root){
 		global $CFG;
 		
-		preg_match_all('((@@PLUGINFILE@@/(?P<filenames>[\w\.[:space:]]*)[\"|\']))',$content,$files_tmp, PREG_OFFSET_CAPTURE);
+		preg_match_all('((@@PLUGINFILE@@/(?P<filenames>[\w\W]*?)[\"|\']))',$content,$files_tmp, PREG_OFFSET_CAPTURE);
 		
 		if(!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0){
 			return $content;
