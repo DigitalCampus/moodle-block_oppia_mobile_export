@@ -60,9 +60,8 @@ $context = get_context_instance(CONTEXT_COURSE, $course->id);
 $PAGE->set_context($context);
 preload_course_contexts($course->id);
 $modinfo = get_fast_modinfo($course);
-get_all_mods($course->id, $mods, $modnames, $modnamesplural, $modnamesused);
-
-$sections = get_all_sections($course->id);
+$sections = $modinfo->get_section_info_all();
+$mods = $modinfo->get_cms();
 
 $versionid = date("YmdHis");
 $module_xml = '<?xml version="1.0" encoding="utf-8"?>';
@@ -86,8 +85,6 @@ $module_xml .= "<sourceurl>"."</sourceurl>";
 $module_xml .= "<updateurl>"."</updateurl>";
 $module_xml .= "<license>"."</license>";
 
-
-
 // get module image (from course summary)
 $filename = extractImageFile($course->summary,$context->id,'course/summary','0',$course_root );
 if($filename){
@@ -95,17 +92,15 @@ if($filename){
 }
 $index = Array();
 
-
-$section = 1;
 $structure_xml = "<structure>";
-while ($section <= $course->numsections) {
-	
-	$thissection = $sections[$section];
+$orderno = 1;
+foreach($sections as $thissection) {
+	flush_buffers();
 	if($thissection->summary){
 		
 		echo "\nExporting Section: ".strip_tags($thissection->summary,'<span>')."\n";
 		
-		$structure_xml .= "<section order='".$section."'>";
+		$structure_xml .= "<section order='".$orderno."'>";
 		$title = extractLangs($thissection->summary);
 		if(is_array($title) && count($title)>0){
 			foreach($title as $l=>$t){
@@ -125,7 +120,8 @@ while ($section <= $course->numsections) {
 		$i=1;
 		$structure_xml .= "<activities>";
 		foreach ($sectionmods as $modnumber) {
-			if (empty($modinfo->sections[$section])) {
+			
+			if (empty($modinfo->sections[$orderno])) {
 				continue;
 			}
 			$mod = $mods[$modnumber];
@@ -136,7 +132,7 @@ while ($section <= $course->numsections) {
 				$page = new mobile_activity_page();
 				$page->courseroot = $course_root;
 				$page->id = $mod->id;
-				$page->section = $section;
+				$page->section = $orderno;
 				$page->process();
 				$structure_xml .= $page->getXML($mod,$i);
 
@@ -149,19 +145,18 @@ while ($section <= $course->numsections) {
 				$quiz->init($course->shortname,$thissection->summary);
 				$quiz->courseroot = $course_root;
 				$quiz->id = $mod->id;
-				$quiz->section = $section;
+				$quiz->section = $orderno;
 				$quiz->process();
 				$structure_xml .= $quiz->getXML($mod,$i);
 			}
-			
+			flush_buffers();
 			$i++;
 		}
 		$structure_xml .= "</activities>";
 		
 		$structure_xml .= "</section>";
+		$orderno++;
 	}
-	
-	$section++;
 }
 $structure_xml .= "</structure>";
 

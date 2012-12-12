@@ -124,5 +124,11 @@ function Zip($source, $destination){
 	return $zip->close();
 }
 
+function flush_buffers(){
+	ob_end_flush();
+	@ob_flush();
+	@flush();
+	ob_start();
+}
 
 ?>

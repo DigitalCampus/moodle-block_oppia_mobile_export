@@ -17,6 +17,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2012121101;
-$plugin->requires = 2011033006.00;
+$plugin->version = 2012121200;
+$plugin->requires = 2012120300;
 $plugin->component = 'block_export_mobile_package';
