@@ -143,7 +143,6 @@ class mobile_activity_quiz extends mobile_activity {
 								'score' => ($r->fraction * $q->maxmark),
 								'props' => $props);
 						$resp = $mQH->exec('response', $post);
-						$response_uri = $resp->resource_uri;
 
 						$j++;
 					}
