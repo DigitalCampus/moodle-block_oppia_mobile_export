@@ -51,7 +51,7 @@ class mobile_activity_quiz extends mobile_activity {
 			
 			//create the Mquiz
 			$post = array('title' => $this->shortname." ".$this->section." ".$cm->name,
-					'description' => $this->shortname.": ".$this->section.": ".$this->summary.": ".$cm->name,
+					'description' => $this->summary,
 					'questions' => array(),
 					'props' => $props);
 			$resp = $mQH->exec('quiz', $post);
@@ -60,6 +60,12 @@ class mobile_activity_quiz extends mobile_activity {
 			
 			$i = 1;
 			foreach($qs as $q){
+				// skip any essay questions
+				if($q->qtype == 'essay'){
+					echo "\t\tSkipping essay question";
+					continue;
+				}
+				
 				if($q->qtype == 'match'){
 					$q->qtype = 'matching';
 				}
