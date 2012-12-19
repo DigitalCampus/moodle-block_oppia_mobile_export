@@ -6,6 +6,7 @@ class mobile_activity_quiz extends mobile_activity {
 	private $shortname;
 	private $content = "";
 	private $MATCHING_SEPERATOR = "|";
+	private $quiz_image = null;
 	
 	function init($shortname,$summary){
 		$this->shortname = strip_tags($shortname);
@@ -16,6 +17,8 @@ class mobile_activity_quiz extends mobile_activity {
 		global $DB,$USER,$QUIZ_CACHE,$CFG;
 		$cm = get_coursemodule_from_id('quiz', $this->id);
 		$context = get_context_instance(CONTEXT_MODULE, $cm->id);
+		$quiz = $DB->get_record('quiz', array('id'=>$cm->instance), '*', MUST_EXIST);
+	
 		$quizobj = quiz::create($cm->instance, $USER->id);
 		$mQH = new MquizHelper();
 		$mQH->init($CFG->block_export_mobile_package_mquiz_url);
@@ -39,12 +42,19 @@ class mobile_activity_quiz extends mobile_activity {
 				die;
 			}
 			
+			$filename = extractImageFile($quiz->intro,$context->id,'mod_quiz/intro','0',$this->courseroot);
+			if($filename){
+				$this->quiz_image = $filename;
+			}
+			
 			if(count($resp->quizzes) > 0){
 				$quiz_id = $resp->quizzes[0]->quiz_id;	
 				$quiz = $mQH->exec('quiz/'.$quiz_id, array(),'get');
 				$this->content = json_encode($quiz);
 				return;
 			}
+			
+			
 			
 			$props = array();
 			$props[0] = array('name' => "digest", 'value' => $this->md5);
@@ -176,6 +186,9 @@ class mobile_activity_quiz extends mobile_activity {
 		$structure_xml = "<activity type='".$mod->modname."' order='".$counter."' digest='".$this->md5."'>";
 		$structure_xml .= "<title lang='en'>".$mod->name."</title>";
 		$structure_xml .= "<content lang='en'>".$this->content."</content>";
+		if($this->quiz_image){
+			$structure_xml .= "<image filename='".$this->quiz_image."'/>";
+		}
 		$structure_xml .= "</activity>";
 		return $structure_xml;
 	}
