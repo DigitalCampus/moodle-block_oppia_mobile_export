@@ -28,7 +28,12 @@ class mobile_activity_page extends mobile_activity {
 		if(is_array($langs) && count($langs)>0){
 			foreach($langs as $l=>$t){
 				
+				$pre_content = $t;
 				$t = $this->extractMedia($t);
+				// if page has media and no special icon for page, extract the image for first video
+				if (count($this->page_media) > 0 && $this->page_image == null){
+					$this->extractMediaImage($pre_content,$context->id,'mod_page/content');
+				}
 				
 				// add html header tags etc
 				// need to do this to ensure it all has the right encoding when loaded in android webview
@@ -48,7 +53,13 @@ class mobile_activity_page extends mobile_activity {
 				$this->act .= "<location lang='".$l."'>".$filename."</location>";
 			}
 		} else {
+			$pre_content = $content;
 			$content = $this->extractMedia($content);
+			// if page has media and no special icon for page, extract the image for first video
+			if (count($this->page_media) > 0 && $this->page_image == null){
+				$this->extractMediaImage($pre_content,$context->id,'mod_page/content');
+			}
+			
 			// add html header tags etc
 			// need to do this to ensure it all has the right encoding when loaded in android webview
 			$webpage = '<html>
@@ -66,6 +77,7 @@ class mobile_activity_page extends mobile_activity {
 			fclose($fh);
 			$this->act .= "<location lang='".$DEFAULT_LANG."'>".$filename."</location>";
 		}
+		
 	}
 	
 	function getXML($mod,$counter){
@@ -172,6 +184,41 @@ class mobile_activity_page extends mobile_activity {
 		//replace all [[/media]] with </a>
 		$content = str_replace("[[/media]]", "</a>", $content);
 		return $content;
+	}
+	
+	private function extractMediaImage($content,$contextid, $filearea){
+		$regex = '((\]\])([[:space:]]*)(\<img[[:space:]]src=[\"|\']images/(?P<filenames>[\w\W]*?)[\"|\']))';
+		
+		preg_match_all($regex,$content,$files_tmp, PREG_OFFSET_CAPTURE);
+		if(!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0){
+			echo "\t\tNo image file found\n";
+			return;
+		}
+		$filename = $files_tmp['filenames'][0][0];
+			
+		echo "\t\t trying file: ".$filename."\n";
+		$fullpath = "/$contextid/$filearea/0/$filename";
+		$fs = get_file_storage();
+		$file = $fs->get_file_by_hash(sha1($fullpath));
+		$fh = $file->get_content_file_handle();
+		
+		$originalfilename = $filename;
+		//hack to get around the possibilty of the filename being in a directory structure
+		$tmp = explode("/",$filename);
+		$filename = $tmp[count($tmp)-1];
+		
+		//copy file
+		$imgfile = $this->courseroot."/images/".$filename;
+		$ifh = fopen($imgfile, 'w');
+		
+		while(!feof($fh)) {
+			$data = fgets($fh, 1024);
+			fwrite($ifh, $data);
+		}
+		fclose($ifh);
+		fclose($fh);
+		echo "\t\tImage for Media file: ".$filename." successfully exported\n";
+		$this->page_image = "images/".$filename;
 	}
 	
 	private function makePageFilename($sectionno, $name, $lang){

@@ -50,7 +50,7 @@ function extractLangs($content){
 function extractImageFile($content, $contextid, $contextname, $itemid, $course_root){
 	global $CFG;
 	//find if any images/links exist
-	preg_match_all('((@@PLUGINFILE@@/(?P<filenames>[\w\.[:space:]]*)[\"|\']))',$content,$files_tmp, PREG_OFFSET_CAPTURE);
+	preg_match_all('((@@PLUGINFILE@@/(?P<filenames>[\w\.\-\_[:space:]]*)[\"|\']))',$content,$files_tmp, PREG_OFFSET_CAPTURE);
 		
 	if(!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0){
 		return false;
