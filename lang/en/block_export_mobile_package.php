@@ -33,3 +33,6 @@ $string['mquizapikey'] = 'mQuiz API Key';
 $string['mquizurlfull'] = 'Full URL to MQuiz server API (include the trailing slash)';
 $string['mquizusernamefull'] = 'Your mQuiz username';
 $string['mquizapikeyfull'] = 'Your mQuiz API Key';
+
+$string['thumbheight'] = 'Icon height';
+$string['thumbwidth'] = 'Icon width';
