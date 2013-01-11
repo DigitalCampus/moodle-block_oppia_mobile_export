@@ -72,7 +72,7 @@ function extractImageFile($content, $contextid, $contextname, $itemid, $course_r
 		$filename = $tmp[count($tmp)-1];
 
 		//copy file
-		$imgfile = $course_root."/images/".$filename;
+		$imgfile = $course_root."/images/".sha1($fullpath);
 		$ifh = fopen($imgfile, 'w');
 
 		while(!feof($fh)) {
@@ -83,10 +83,66 @@ function extractImageFile($content, $contextid, $contextname, $itemid, $course_r
 		fclose($fh);
 		$tr = new StdClass;
 		$tr->originalfilename = $originalfilename;
-		$tr->filename = $filename;
-		echo "\t\tFile: ".$filename." successfully exported\n";
+		$tr->filename = sha1($fullpath);
+		echo "\t\tFile: ".sha1($fullpath)." successfully exported\n";
 	}
-	return "images/".$filename;
+	return "images/".sha1($fullpath);
+}
+
+function resizeImage($image,$image_new_name){
+	global $CFG;
+	$image_width = $CFG->block_export_mobile_package_thumb_width;
+	$image_height = $CFG->block_export_mobile_package_thumb_height;
+	$size=GetimageSize($image);
+	
+	$ratio_src = $size[0]/$size[1];
+	
+	$ratio_target = $image_width/$image_height;
+	
+	$image_new = ImageCreateTrueColor($image_width, $image_height);
+	
+	switch($size['mime']){
+		case 'image/jpeg':
+			$image_src = imagecreatefromjpeg($image);
+			break;
+		case 'image/png':
+			$image_src = imagecreatefrompng($image);
+			break;
+		case 'image/gif':
+			$image_src = imagecreatefromgif($image);
+			break;
+	}
+	
+	// for landscape images
+	if($size[0] > $size[1] && ($ratio_src > 1.3 || $ratio_src < 0.7)){
+		if($ratio_src > $ratio_target){
+			// resize to fixed target height
+			$trim = (($image_width*$ratio_src) - $size[0])/2;
+			if ($trim < 0){
+				$trim = -$trim;
+			}
+			ImageCopyResampled($image_new, $image_src, 0, 0, $trim, 0, $image_width, $image_height, $size[0]-($trim*2), $size[1]);
+	
+		} else {
+			// resize to fixed target width
+			$trim = ($size[1]-($image_height*$ratio_src))/2;
+			if ($trim < 0){
+				$trim = -$trim;
+			}
+			ImageCopyResampled($image_new, $image_src, 0, 0, 0, $trim, $image_width, $image_height, $size[0], $size[1]-($trim*2));
+		}
+	} else {
+		// for portrait images
+		// crop to height with black background
+		$ratio = $image_height/$size[1];
+		$trim = ($image_width - ($size[0]*$ratio))/2;
+		ImageCopyResampled($image_new, $image_src, $trim+1, 0, 0, 0, $size[0]*$ratio, $image_height, $size[0], $size[1]);
+	}
+	
+	//header('Content-Type: '.$size['mime']);
+	imagejpeg($image_new,$image_new_name,100);
+	imagedestroy($image_new);
+	imagedestroy($image_src);
 }
 
 function Zip($source, $destination){

@@ -78,6 +78,12 @@ class mobile_activity_page extends mobile_activity {
 			$this->act .= "<location lang='".$DEFAULT_LANG."'>".$filename."</location>";
 		}
 		
+		// resize page image
+		if($this->page_image){
+			resizeImage($this->courseroot."/".$this->page_image,$this->courseroot."/images/".$cm->id);
+			$this->page_image = "/images/".$cm->id;
+		}
+		
 	}
 	
 	function getXML($mod,$counter){
