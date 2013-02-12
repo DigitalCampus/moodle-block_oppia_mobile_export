@@ -81,9 +81,33 @@ if(is_array($title) && count($title)>0){
 }
 
 $module_xml .= "<shortname>".strtolower($course->shortname)."</shortname>";
-$module_xml .= "<sourceurl>"."</sourceurl>";
-$module_xml .= "<updateurl>"."</updateurl>";
-$module_xml .= "<license>"."</license>";
+
+/*-------Get course info pages/about etc----------------------*/
+$thissection = $sections[0];
+$sectionmods = explode(",", $thissection->sequence);
+$i = 1;
+foreach ($sectionmods as $modnumber) {
+		
+	if (empty($modinfo->sections[0])) {
+		continue;
+	}
+	$mod = $mods[$modnumber];
+		
+	if($mod->modname == 'page'){
+		print_r($mod->name);
+		echo "\n";
+		$page = new mobile_activity_page();
+		$page->courseroot = $course_root;
+		$page->id = $mod->id;
+		$page->section = 0;
+		$page->process();
+		$structure_xml = $page->getXML($mod,$i,false);
+		$module_xml .= $structure_xml;
+	}
+	$i++;
+}
+
+/*-----------------------------*/
 
 // get module image (from course summary)
 $filename = extractImageFile($course->summary,$context->id,'course/summary','0',$course_root );

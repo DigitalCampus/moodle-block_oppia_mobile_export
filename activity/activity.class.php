@@ -8,6 +8,6 @@ abstract class mobile_activity {
 	public $md5;
 	
 	abstract function process();
-	abstract function getXML($mod,$counter);
+	abstract function getXML($mod,$counter,$activity=true);
 }
 

@@ -86,9 +86,13 @@ class mobile_activity_page extends mobile_activity {
 		
 	}
 	
-	function getXML($mod,$counter){
+	function getXML($mod,$counter,$activity=true){
 		global $DEFAULT_LANG;
-		$structure_xml = "<activity type='".$mod->modname."' order='".$counter."' digest='".$this->md5."'>";
+		if($activity){
+			$structure_xml = "<activity type='".$mod->modname."' order='".$counter."' digest='".$this->md5."'>";
+		} else {
+			$structure_xml = "<page>";
+		}
 		$title = extractLangs($mod->name);
 		if(is_array($title) && count($title)>0){
 			foreach($title as $l=>$t){
@@ -109,7 +113,11 @@ class mobile_activity_page extends mobile_activity {
 			$structure_xml .= "<image filename='".$this->page_image."'/>";
 		}
 		$structure_xml .= $this->act;
-		$structure_xml .= "</activity>";
+		if($activity){
+			$structure_xml .= "</activity>";
+		} else {
+			$structure_xml .= "</page>";
+		}
 		
 		return $structure_xml;
 	}
