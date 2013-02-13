@@ -91,7 +91,7 @@ class mobile_activity_page extends mobile_activity {
 		if($activity){
 			$structure_xml = "<activity type='".$mod->modname."' order='".$counter."' digest='".$this->md5."'>";
 		} else {
-			$structure_xml = "<page>";
+			$structure_xml = "<page id='".$this->id."'>";
 		}
 		$title = extractLangs($mod->name);
 		if(is_array($title) && count($title)>0){
