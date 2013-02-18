@@ -26,7 +26,9 @@ function extractLangs($content){
 	$tempLangs = array();
 	if(isset($langs_tmp['langs']) && count($langs_tmp['langs']) > 0){
 		for($i=0;$i<count($langs_tmp['langs']);$i++){
-			$tempLangs[$langs_tmp['langs'][$i][0]] = true;
+			$lang = $langs_tmp['langs'][$i][0];
+			$lang = str_replace("-","_",$lang);
+			$tempLangs[$lang] = true;
 		}
 	} else {
 		return $content;
