@@ -211,12 +211,6 @@ $fh = fopen($index, 'w');
 fwrite($fh, $module_xml);
 fclose($fh);
 
-// output module xml file separately - just for debugging
-$output = "output/module.xml";
-$fh = fopen($output, 'w');
-fwrite($fh, $module_xml);
-fclose($fh); 
-
 echo "\nCreated module xml file\n";
 
 
@@ -229,6 +223,8 @@ echo "\nCompressed file\n";
 deleteDir("output/".$USER->id."/temp");
 echo "</pre>";
 echo "Download exported course at <a href='".$outputzip."'>".$course->fullname."</a>";
+
+echo "<p><a href='cleanup.php?id=".$id."'>Cleanup files</a></p>";
 
 echo $OUTPUT->footer();
 
