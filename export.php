@@ -50,6 +50,7 @@ $MEDIA = array();
 deleteDir("output/".$USER->id."/temp");
 // TODO - check if dir exists first
 deleteDir("output/".$USER->id);
+mkdir("output",0777);
 mkdir("output/".$USER->id,0777);
 mkdir("output/".$USER->id."/temp/",0777);
 $course_root = "output/".$USER->id."/temp/".strtolower($course->shortname);
