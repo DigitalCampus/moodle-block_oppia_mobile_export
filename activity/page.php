@@ -37,13 +37,7 @@ class mobile_activity_page extends mobile_activity {
 				
 				// add html header tags etc
 				// need to do this to ensure it all has the right encoding when loaded in android webview
-				$webpage = '<html>
-							<head>
-							<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-							</head>
-							<body>'.$t.'
-							</body>
-							</html>';
+				$webpage = '<body>'.$t.'</body>';
 					
 				$filename = $this->makePageFilename($this->section,$cm->id,$l);
 				$index = $this->courseroot."/".$filename;
@@ -62,13 +56,7 @@ class mobile_activity_page extends mobile_activity {
 			
 			// add html header tags etc
 			// need to do this to ensure it all has the right encoding when loaded in android webview
-			$webpage = '<html>
-						<head>
-						<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-						</head>
-						<body>'.$content.'
-						</body>
-						</html>';
+			$webpage = '<body>'.$content.'</body>';
 		
 			$filename = $this->makePageFilename($this->section,$cm->id,$DEFAULT_LANG);
 			$index = $this->courseroot."/".$filename;
