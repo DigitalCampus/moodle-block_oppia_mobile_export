@@ -146,11 +146,11 @@ foreach($sections as $thissection) {
 		$structure_xml .= "<activities>";
 		foreach ($sectionmods as $modnumber) {
 			
-			if (empty($modinfo->sections[$orderno])) {
+			if (empty($modinfo->sections[$orderno])) {																																																									
 				continue;
 			}
 			$mod = $mods[$modnumber];
-			
+
 			if($mod->modname == 'page'){
 				echo "\tExporting page: ".$mod->name."\n";
 				

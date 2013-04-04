@@ -116,32 +116,20 @@ function resizeImage($image,$image_new_name){
 	}
 	
 	// for landscape images
-	if($size[0] > $size[1] && ($ratio_src > 1.3 || $ratio_src < 0.7)){
-		if($ratio_src > $ratio_target){
-			// resize to fixed target height
-			$trim = (($image_width*$ratio_src) - $size[0])/2;
-			if ($trim < 0){
-				$trim = -$trim;
-			}
-			ImageCopyResampled($image_new, $image_src, 0, 0, $trim, 0, $image_width, $image_height, $size[0]-($trim*2), $size[1]);
-	
+	if($ratio_src > $ratio_target){
+		if($size[0] > $size[1]){
+			$border = (($size[0]/$ratio_target)-$size[1])/2/$ratio_target;
+			imagecopyresampled($image_new, $image_src, 0, $border, 0, 0, $image_width, $image_height - ($border*2), $size[0], $size[1]);
 		} else {
-			// resize to fixed target width
-			$trim = ($size[1]-($image_height*$ratio_src))/2;
-			if ($trim < 0){
-				$trim = -$trim;
-			}
-			ImageCopyResampled($image_new, $image_src, 0, 0, 0, $trim, $image_width, $image_height, $size[0], $size[1]-($trim*2));
+			$border = ($size[1]-($size[0]/$ratio_target))/2/$ratio_target;
+			imagecopyresampled($image_new, $image_src, $border, 0, 0, 0, $image_width - ($border*2), $image_height, $size[0], $size[1]);
 		}
 	} else {
 		// for portrait images
-		// crop to height with black background
-		$ratio = $image_height/$size[1];
-		$trim = ($image_width - ($size[0]*$ratio))/2;
-		ImageCopyResampled($image_new, $image_src, $trim+1, 0, 0, 0, $size[0]*$ratio, $image_height, $size[0], $size[1]);
+		$border = ($size[1]-($size[0]/$ratio_target))/2/$ratio_target;
+		imagecopyresampled($image_new, $image_src, $border, 0, 0, 0, $image_width - ($border*2), $image_height, $size[0], $size[1]);
 	}
 	
-	//header('Content-Type: '.$size['mime']);
 	imagejpeg($image_new,$image_new_name,100);
 	imagedestroy($image_new);
 	imagedestroy($image_src);

@@ -45,6 +45,10 @@ class mobile_activity_quiz extends mobile_activity {
 			$filename = extractImageFile($quiz->intro,$context->id,'mod_quiz/intro','0',$this->courseroot);
 			if($filename){
 				$this->quiz_image = $filename;
+				resizeImage($this->courseroot."/".$this->quiz_image,$this->courseroot."/images/".$cm->id);
+				$this->quiz_image = "/images/".$cm->id;
+				//delete original image
+				unlink($this->courseroot."/".$filename) or die('Unable to delete the file');
 			}
 			
 			if(count($resp->quizzes) > 0){

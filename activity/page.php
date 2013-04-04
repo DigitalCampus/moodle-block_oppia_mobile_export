@@ -20,10 +20,15 @@ class mobile_activity_page extends mobile_activity {
 		// find all the langs on this page
 		$langs = extractLangs($content);
 		
-		$filename = extractImageFile($page->intro,$context->id,'mod_page/intro','0',$this->courseroot);
-		if($filename){
-			$this->page_image = $filename;
+		$eiffilename = extractImageFile($page->intro,$context->id,'mod_page/intro','0',$this->courseroot);
+		if($eiffilename){
+			$this->page_image = $eiffilename;
+			resizeImage($this->courseroot."/".$this->page_image,$this->courseroot."/images/".$cm->id);
+			$this->page_image = "/images/".$cm->id;
+			//delete original image
+			unlink($this->courseroot."/".$eiffilename) or die('Unable to delete the file');
 		}
+		unset($eiffilename);
 		
 		if(is_array($langs) && count($langs)>0){
 			foreach($langs as $l=>$t){
@@ -33,18 +38,21 @@ class mobile_activity_page extends mobile_activity {
 				// if page has media and no special icon for page, extract the image for first video
 				if (count($this->page_media) > 0 && $this->page_image == null){
 					$this->extractMediaImage($pre_content,$context->id,'mod_page/content');
+					resizeImage($this->courseroot."/".$this->page_image,$this->courseroot."/images/".$cm->id);
+					$this->page_image = "/images/".$cm->id;
 				}
 				
 				// add html header tags etc
 				// need to do this to ensure it all has the right encoding when loaded in android webview
 				$webpage = '<body>'.$t.'</body>';
 					
-				$filename = $this->makePageFilename($this->section,$cm->id,$l);
-				$index = $this->courseroot."/".$filename;
+				$mpffilename = $this->makePageFilename($this->section,$cm->id,$l);
+				$index = $this->courseroot."/".$mpffilename;
 				$fh = fopen($index, 'w');
 				fwrite($fh, $webpage);
 				fclose($fh);
-				$this->act .= "<location lang='".$l."'>".$filename."</location>";
+				$this->act .= "<location lang='".$l."'>".$mpffilename."</location>";
+				unset($mpffilename);
 			}
 		} else {
 			$pre_content = $content;
@@ -52,25 +60,27 @@ class mobile_activity_page extends mobile_activity {
 			// if page has media and no special icon for page, extract the image for first video
 			if (count($this->page_media) > 0 && $this->page_image == null){
 				$this->extractMediaImage($pre_content,$context->id,'mod_page/content');
+				resizeImage($this->courseroot."/".$this->page_image,$this->courseroot."/images/".$cm->id);
+				$this->page_image = "/images/".$cm->id;
 			}
 			
 			// add html header tags etc
 			// need to do this to ensure it all has the right encoding when loaded in android webview
 			$webpage = '<body>'.$content.'</body>';
 		
-			$filename = $this->makePageFilename($this->section,$cm->id,$DEFAULT_LANG);
-			$index = $this->courseroot."/".$filename;
+			$mpf2filename = $this->makePageFilename($this->section,$cm->id,$DEFAULT_LANG);
+			$index = $this->courseroot."/".$mpf2filename;
 			$fh = fopen($index, 'w');
 			fwrite($fh, $webpage);
 			fclose($fh);
-			$this->act .= "<location lang='".$DEFAULT_LANG."'>".$filename."</location>";
+			$this->act .= "<location lang='".$DEFAULT_LANG."'>".$mpf2filename."</location>";
 		}
 		
 		// resize page image
-		if($this->page_image){
+		/*if($this->page_image){
 			resizeImage($this->courseroot."/".$this->page_image,$this->courseroot."/images/".$cm->id);
 			$this->page_image = "/images/".$cm->id;
-		}
+		}*/
 		
 	}
 	
@@ -193,7 +203,7 @@ class mobile_activity_page extends mobile_activity {
 		
 		preg_match_all($regex,$content,$files_tmp, PREG_OFFSET_CAPTURE);
 		if(!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0){
-			echo "\t\tNo image file found\n";
+			echo "\t\tNo image file found:\n";
 			return;
 		}
 		$filename = $files_tmp['filenames'][0][0];
