@@ -93,8 +93,8 @@ function extractImageFile($content, $contextid, $contextname, $itemid, $course_r
 
 function resizeImage($image,$image_new_name){
 	global $CFG;
-	$image_width = $CFG->block_export_mobile_package_thumb_width;
-	$image_height = $CFG->block_export_mobile_package_thumb_height;
+	$image_width = $CFG->block_oppia_mobile_export_thumb_width;
+	$image_height = $CFG->block_oppia_mobile_export_thumb_height;
 	$size=GetimageSize($image);
 	
 	$ratio_src = $size[0]/$size[1];

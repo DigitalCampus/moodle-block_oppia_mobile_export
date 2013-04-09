@@ -1,2 +1,2 @@
-moodle-block_export_mobile_package
+moodle-block_oppia_mobile_export
 ==================================

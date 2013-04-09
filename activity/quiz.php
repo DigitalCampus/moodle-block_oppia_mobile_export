@@ -21,8 +21,8 @@ class mobile_activity_quiz extends mobile_activity {
 	
 		$quizobj = quiz::create($cm->instance, $USER->id);
 		$mQH = new MquizHelper();
-		$mQH->init($CFG->block_export_mobile_package_mquiz_url);
-		if($CFG->block_export_mobile_package_mquiz_api_key == ""){
+		$mQH->init($CFG->block_oppia_mobile_export_mquiz_url);
+		if($CFG->block_oppia_mobile_export_mquiz_api_key == ""){
 			echo "Invalid mQuiz username/api_key";
 			die;
 		}
@@ -212,10 +212,10 @@ class MquizHelper{
 		global $CFG;
 		$json = json_encode($data_array);
 		$temp_url = $this->url.$object."/";
-		if($CFG->block_export_mobile_package_mquiz_api_key != ""){
+		if($CFG->block_oppia_mobile_export_mquiz_api_key != ""){
 			$temp_url .= "?format=json";
-			$temp_url .= "&username=".$CFG->block_export_mobile_package_mquiz_username;
-			$temp_url .= "&api_key=".$CFG->block_export_mobile_package_mquiz_api_key;
+			$temp_url .= "&username=".$CFG->block_oppia_mobile_export_mquiz_username;
+			$temp_url .= "&api_key=".$CFG->block_oppia_mobile_export_mquiz_api_key;
 		}
 		curl_setopt($this->curl, CURLOPT_URL, $temp_url );
 		if($type == 'post'){

@@ -16,15 +16,15 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'block_export_mobile_package'
+ * Strings for component 'block_oppia_mobile_export'
  *
- * @package   block_export_mobile_package
+ * @package   block_oppia_mobile_export
  * @copyright 2012 Alex Little {@link http://alexlittle.net}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 
-$string['pluginname'] = 'Export to Mobile Package';
+$string['pluginname'] = 'Oppia Mobile Export';
 
 $string['mquizurl'] = 'mQuiz API URL';
 $string['mquizusername'] = 'mQuiz Username';
