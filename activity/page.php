@@ -75,13 +75,6 @@ class mobile_activity_page extends mobile_activity {
 			fclose($fh);
 			$this->act .= "<location lang='".$DEFAULT_LANG."'>".$mpf2filename."</location>";
 		}
-		
-		// resize page image
-		/*if($this->page_image){
-			resizeImage($this->courseroot."/".$this->page_image,$this->courseroot."/images/".$cm->id);
-			$this->page_image = "/images/".$cm->id;
-		}*/
-		
 	}
 	
 	function getXML($mod,$counter,$activity=true){
