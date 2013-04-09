@@ -1,11 +1,11 @@
 <?php 
 require_once(dirname(__FILE__) . '/../../config.php');
-require_once($CFG->dirroot . '/blocks/export_mobile_package/lib.php');
+require_once($CFG->dirroot . '/blocks/oppia_mobile_export/lib.php');
 
 $id = required_param('id',PARAM_INT);
 $course = $DB->get_record('course', array('id'=>$id));
 
-$PAGE->set_url('/blocks/export_mobile_package/export.php', array('id' => $id));
+$PAGE->set_url('/blocks/oppia_mobile_export/export.php', array('id' => $id));
 preload_course_contexts($id);
 if (!$context = get_context_instance(CONTEXT_COURSE, $course->id)) {
 	print_error('nocontext');

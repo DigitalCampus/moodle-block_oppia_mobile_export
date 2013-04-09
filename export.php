@@ -7,19 +7,19 @@ require_once($CFG->dirroot . '/lib/filestorage/file_storage.php');
 require_once($CFG->dirroot . '/question/format.php');
 require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 require_once($CFG->dirroot . '/question/format/gift/format.php');
-require_once($CFG->dirroot . '/blocks/export_mobile_package/lib.php');
-require_once($CFG->dirroot . '/blocks/export_mobile_package/langfilter.php');
+require_once($CFG->dirroot . '/blocks/oppia_mobile_export/lib.php');
+require_once($CFG->dirroot . '/blocks/oppia_mobile_export/langfilter.php');
 
-require_once($CFG->dirroot . '/blocks/export_mobile_package/activity/activity.class.php');
-require_once($CFG->dirroot . '/blocks/export_mobile_package/activity/page.php');
-require_once($CFG->dirroot . '/blocks/export_mobile_package/activity/quiz.php');
+require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/activity.class.php');
+require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/page.php');
+require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/quiz.php');
 
 require_once($CFG->libdir.'/componentlib.class.php');
 
 $id = required_param('id',PARAM_INT);
 $course = $DB->get_record('course', array('id'=>$id));
 
-$PAGE->set_url('/blocks/export_mobile_package/export.php', array('id' => $id));
+$PAGE->set_url('/blocks/oppia_mobile_export/export.php', array('id' => $id));
 preload_course_contexts($id);
 if (!$context = get_context_instance(CONTEXT_COURSE, $course->id)) {
 	print_error('nocontext');

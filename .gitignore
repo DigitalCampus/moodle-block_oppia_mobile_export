@@ -1,4 +1,4 @@
 .project
 .buildpath
-.settings
+.settings/*
 output/
