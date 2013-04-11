@@ -30,7 +30,7 @@ class block_oppia_mobile_export extends block_base {
 
         $this->content = new stdClass;
         
-        if (!has_capability('moodle/site:config', get_context_instance(CONTEXT_SYSTEM))) {
+        if (!has_capability('block/oppia_mobile_export:addinstance', get_context_instance(CONTEXT_COURSE, $COURSE->id))) {
         	return $this->content;
         }
         $this->content->text = "Current MQuiz API: ".$CFG->block_oppia_mobile_export_mquiz_url;

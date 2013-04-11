@@ -25,6 +25,7 @@
 
 
 $string['pluginname'] = 'Oppia Mobile Export';
+$string['oppia_mobile_export:addinstance'] = 'Add a new Oppia export block';
 
 $string['mquizurl'] = 'mQuiz API URL';
 $string['mquizusername'] = 'mQuiz Username';
