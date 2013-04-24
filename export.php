@@ -66,23 +66,30 @@ $sections = $modinfo->get_section_info_all();
 $mods = $modinfo->get_cms();
 
 $versionid = date("YmdHis");
-$module_xml = '<?xml version="1.0" encoding="utf-8"?>';
-$module_xml .= "<module>";
-$module_xml .= "<meta>";
-$module_xml .= "<versionid>".$versionid."</versionid>";
+$xmlDoc = new DOMDocument();
+$root = $xmlDoc->appendChild($xmlDoc->createElement("module"));
+$meta = $root->appendChild($xmlDoc->createElement("meta"));
+$meta->appendChild($xmlDoc->createElement("versionid",$versionid));
 
 echo "<pre>";
+
 echo "Exporting Course: ".strip_tags($course->fullname)."\n";
 $title = extractLangs($course->fullname);
 if(is_array($title) && count($title)>0){
 	foreach($title as $l=>$t){
-		$module_xml .= "<title lang='".$l."'>".strip_tags($t)."</title>";
+		$temp = $xmlDoc->createElement("title");
+		$temp->appendChild($xmlDoc->createTextNode(strip_tags($t)));
+		$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($l));
+		$meta->appendChild($temp);
 	}
-} else {
-	$module_xml .= "<title lang='".$DEFAULT_LANG."'>".strip_tags($course->fullname)."</title>";
+} else {;
+	$temp = $xmlDoc->createElement("title");
+	$temp->appendChild($xmlDoc->createTextNode(strip_tags($course->fullname)));
+	$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
+	$meta->appendChild($temp);
 }
 
-$module_xml .= "<shortname>".strtolower($course->shortname)."</shortname>";
+$meta->appendChild($xmlDoc->createElement("shortname",strtolower($course->shortname)));
 
 /*-------Get course info pages/about etc----------------------*/
 $thissection = $sections[0];
@@ -103,8 +110,7 @@ foreach ($sectionmods as $modnumber) {
 		$page->id = $mod->id;
 		$page->section = 0;
 		$page->process();
-		$structure_xml = $page->getXML($mod,$i,false);
-		$module_xml .= $structure_xml;
+		$page->getXML($mod,$i,false,$meta,$xmlDoc);
 	}
 	$i++;
 }
@@ -114,11 +120,13 @@ foreach ($sectionmods as $modnumber) {
 // get module image (from course summary)
 $filename = extractImageFile($course->summary,$context->id,'course/summary','0',$course_root );
 if($filename){
-	$module_xml .= "<image filename='".$filename."'/>";
+	$temp = $xmlDoc->createElement("image");
+	$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode($filename));
+	$meta->appendChild($temp);
 }
 $index = Array();
 
-$structure_xml = "<structure>";
+$structure = $xmlDoc->createElement("structure");
 $orderno = 1;
 foreach($sections as $thissection) {
 	flush_buffers();
@@ -126,25 +134,33 @@ foreach($sections as $thissection) {
 		
 		echo "\nExporting Section: ".strip_tags($thissection->summary,'<span>')."\n";
 		
-		$structure_xml .= "<section order='".$orderno."'>";
+		$section = $xmlDoc->createElement("section");
+		$section->appendChild($xmlDoc->createAttribute("order"))->appendChild($xmlDoc->createTextNode($orderno));
 		$title = extractLangs($thissection->summary);
 		if(is_array($title) && count($title)>0){
 			foreach($title as $l=>$t){
-				$structure_xml .= "<title lang='".$l."'>".strip_tags($t)."</title>";
+				$temp = $xmlDoc->createElement("title",strip_tags($t));
+				$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($l));
+				$section->appendChild($temp);;
+				
 			}
 		} else {
-			$structure_xml .= "<title lang='".$DEFAULT_LANG."'>".strip_tags($thissection->summary)."</title>";
+			$temp = $xmlDoc->createElement("title",strip_tags($thissection->summary));
+			$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
+			$section->appendChild($temp);
 		}
 		// get image for this section
 		$filename = extractImageFile($thissection->summary, $context->id, 'course/section', $thissection->id, $course_root);
 		
 		if($filename){
-			$structure_xml .= "<image filename='".$filename."'/>";
+			$temp = $xmlDoc->createElement("image");
+			$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode($filename));
+			$section->appendChild($temp);
 		}
 		
 		$sectionmods = explode(",", $thissection->sequence);
 		$i=1;
-		$structure_xml .= "<activities>";
+		$activities = $xmlDoc->createElement("activities");
 		foreach ($sectionmods as $modnumber) {
 			
 			if (empty($modinfo->sections[$orderno])) {																																																									
@@ -160,8 +176,7 @@ foreach($sections as $thissection) {
 				$page->id = $mod->id;
 				$page->section = $orderno;
 				$page->process();
-				$structure_xml .= $page->getXML($mod,$i);
-
+				$page->getXML($mod,$i,true,$activities,$xmlDoc);
 			}
 			
 			if($mod->modname == 'quiz'){
@@ -173,45 +188,44 @@ foreach($sections as $thissection) {
 				$quiz->id = $mod->id;
 				$quiz->section = $orderno;
 				$quiz->process();
-				$structure_xml .= $quiz->getXML($mod,$i);
+				$quiz->getXML($mod,$i,true,$activities,$xmlDoc);
 			}
 			flush_buffers();
 			$i++;
 		}
-		$structure_xml .= "</activities>";
-		
-		$structure_xml .= "</section>";
+		$section->appendChild($activities);
+		$structure->appendChild($section);
 		$orderno++;
 	}
 }
-$structure_xml .= "</structure>";
+$root->appendChild($structure);
 
 // add in the langs available here
-$module_xml .="<langs>";
+$langs = $xmlDoc->createElement("langs");
 foreach($MOBILE_LANGS as $k=>$v){
-	$module_xml .= "<lang>".$k."</lang>";
+	$temp = $xmlDoc->createElement("lang",$k);
+	$langs->appendChild($temp);
 }
 if(count($MOBILE_LANGS) == 0){
-	$module_xml .= "<lang>".$DEFAULT_LANG."</lang>";
+	$temp = $xmlDoc->createElement("lang",$DEFAULT_LANG);
+	$langs->appendChild($temp);
 }
-$module_xml .="</langs>";
-$module_xml .= "</meta>";
-$module_xml .= $structure_xml;
+$meta->appendChild($langs);
 
 // add media includes
 if(count($MEDIA) > 0){
-	$module_xml .= "<media>";
+	$media = $xmlDoc->createElement("media");
 	foreach ($MEDIA as $m){
-		$module_xml .= "<file filename='".$m->filename."' download_url='".$m->download_url."' digest='".$m->digest."'/>";
+		$temp = $xmlDoc->createElement("file");
+		$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode($m->filename));
+		$temp->appendChild($xmlDoc->createAttribute("download_url"))->appendChild($xmlDoc->createTextNode($m->download_url));
+		$temp->appendChild($xmlDoc->createAttribute("digest"))->appendChild($xmlDoc->createTextNode($m->digest));
+		$media->appendChild($temp);
 	}
-	$module_xml .= "</media>";
+	$root->appendChild($media);
 }
 
-$module_xml .= "</module>";
-$index = $course_root."/module.xml";
-$fh = fopen($index, 'w');
-fwrite($fh, $module_xml);
-fclose($fh);
+$xmlDoc->save($course_root."/module.xml");
 
 echo "\nCreated module xml file\n";
 
@@ -222,7 +236,7 @@ $dir2zip = "output/".$USER->id."/temp";
 $outputzip = "output/".$USER->id."/".strtolower($course->shortname)."-".$versionid.".zip";
 Zip($dir2zip,$outputzip);
 echo "\nCompressed file\n";
-deleteDir("output/".$USER->id."/temp");
+//deleteDir("output/".$USER->id."/temp");
 echo "</pre>";
 echo "Download exported course at <a href='".$outputzip."'>".$course->fullname."</a>";
 

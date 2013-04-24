@@ -186,15 +186,29 @@ class mobile_activity_quiz extends mobile_activity {
 		}
 	}
 	
-	function getXML($mod,$counter,$activity=true){
-		$structure_xml = "<activity type='".$mod->modname."' order='".$counter."' digest='".$this->md5."'>";
-		$structure_xml .= "<title lang='en'>".$mod->name."</title>";
-		$structure_xml .= "<content lang='en'>".$this->content."</content>";
+	function getXML($mod,$counter,$activity=true,&$node,&$xmlDoc){
+		
+		$act = $xmlDoc->createElement("activity");
+		$act->appendChild($xmlDoc->createAttribute("type"))->appendChild($xmlDoc->createTextNode($mod->modname));
+		$act->appendChild($xmlDoc->createAttribute("order"))->appendChild($xmlDoc->createTextNode($counter));
+		$act->appendChild($xmlDoc->createAttribute("digest"))->appendChild($xmlDoc->createTextNode($this->md5));
+		
+		$temp = $xmlDoc->createElement("title");
+		$temp->appendChild($xmlDoc->createTextNode($mod->name));
+		$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode("en"));
+		$act->appendChild($temp);
+		
+		$temp = $xmlDoc->createElement("content");
+		$temp->appendChild($xmlDoc->createTextNode($this->content));
+		$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode("en"));
+		$act->appendChild($temp);
+		
 		if($this->quiz_image){
-			$structure_xml .= "<image filename='".$this->quiz_image."'/>";
+			$temp = $xmlDoc->createElement("image");
+			$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode($this->quiz_image));
+			$act->appendChild($temp);
 		}
-		$structure_xml .= "</activity>";
-		return $structure_xml;
+		$node->appendChild($act);
 	}
 }
 

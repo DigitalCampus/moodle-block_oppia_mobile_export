@@ -3,7 +3,7 @@
 
 class mobile_activity_page extends mobile_activity {
 	
-	private $act = "";
+	private $act = array();
 	private $page_media = array();
 	private $page_image = null;
 	
@@ -51,7 +51,10 @@ class mobile_activity_page extends mobile_activity {
 				$fh = fopen($index, 'w');
 				fwrite($fh, $webpage);
 				fclose($fh);
-				$this->act .= "<location lang='".$l."'>".$mpffilename."</location>";
+				$o = new stdClass();
+				$o->lang = $l;
+				$o->filename = $mpffilename;
+				array_push($this->act,$o);
 				unset($mpffilename);
 			}
 		} else {
@@ -73,44 +76,63 @@ class mobile_activity_page extends mobile_activity {
 			$fh = fopen($index, 'w');
 			fwrite($fh, $webpage);
 			fclose($fh);
-			$this->act .= "<location lang='".$DEFAULT_LANG."'>".$mpf2filename."</location>";
+			$o = new stdClass();
+			$o->lang = $DEFAULT_LANG;
+			$o->filename = $mpf2filename;
+			array_push($this->act,$o);
+			//$this->act .= "<location lang='".$DEFAULT_LANG."'>".$mpf2filename."</location>";
 		}
 	}
 	
-	function getXML($mod,$counter,$activity=true){
+	function getXML($mod,$counter,$activity=true,&$node,&$xmlDoc){
 		global $DEFAULT_LANG;
 		if($activity){
-			$structure_xml = "<activity type='".$mod->modname."' order='".$counter."' digest='".$this->md5."'>";
+			$struct = $xmlDoc->createElement("activity");
+			$struct->appendChild($xmlDoc->createAttribute("type"))->appendChild($xmlDoc->createTextNode($mod->modname));
+			$struct->appendChild($xmlDoc->createAttribute("order"))->appendChild($xmlDoc->createTextNode($counter));
+			$struct->appendChild($xmlDoc->createAttribute("digest"))->appendChild($xmlDoc->createTextNode($this->md5));
+			$node->appendChild($struct);
 		} else {
-			$structure_xml = "<page id='".$this->id."'>";
+			$struct = $xmlDoc->createElement("page");
+			$struct->appendChild($xmlDoc->createAttribute("id"))->appendChild($xmlDoc->createTextNode($this->id));
+			$node->appendChild($struct);
 		}
 		$title = extractLangs($mod->name);
 		if(is_array($title) && count($title)>0){
 			foreach($title as $l=>$t){
-				$structure_xml .= "<title lang='".$l."'>".strip_tags($t)."</title>";
+				$temp = $xmlDoc->createElement("title");
+				$temp->appendChild($xmlDoc->createTextNode(strip_tags($t)));
+				$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($l));
+				$struct->appendChild($temp);
 			}
 		} else {
-			$structure_xml .= "<title lang='".$DEFAULT_LANG."'>".strip_tags($mod->name)."</title>";
+			$temp = $xmlDoc->createElement("title");
+			$temp->appendChild($xmlDoc->createTextNode(strip_tags($mod->name)));
+			$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
+			$struct->appendChild($temp);
 		}
 		// add in page media
 		if(count($this->page_media) > 0){
-			$structure_xml .= "<media>";
+			$media = $xmlDoc->createElement("media");
 			foreach ($this->page_media as $m){
-				$structure_xml .= "<file filename='".$m->filename."' download_url='".$m->download_url."' digest='".$m->digest."'/>";
+				$temp = $xmlDoc->createElement("file");
+				$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode($m->filename));
+				$temp->appendChild($xmlDoc->createAttribute("download_url"))->appendChild($xmlDoc->createTextNode($m->download_url));
+				$temp->appendChild($xmlDoc->createAttribute("digest"))->appendChild($xmlDoc->createTextNode($m->digest));
+				$media->appendChild($temp);
 			}
-			$structure_xml .= "</media>";
+			$struct->appendChild($media);
 		}
 		if($this->page_image){
-			$structure_xml .= "<image filename='".$this->page_image."'/>";
+			$temp = $xmlDoc->createElement("image");
+			$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode($this->page_image));
+			$struct->appendChild($temp);
 		}
-		$structure_xml .= $this->act;
-		if($activity){
-			$structure_xml .= "</activity>";
-		} else {
-			$structure_xml .= "</page>";
+		foreach($this->act as $act){
+			$temp = $xmlDoc->createElement("location",$act->filename);
+			$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($act->lang));
+			$struct->appendChild($temp);
 		}
-		
-		return $structure_xml;
 	}
 	
 	private function extractFiles($content, $contextid, $component, $filearea, $itemid, $course_root){
