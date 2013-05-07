@@ -116,9 +116,9 @@ class mobile_activity_page extends mobile_activity {
 			$media = $xmlDoc->createElement("media");
 			foreach ($this->page_media as $m){
 				$temp = $xmlDoc->createElement("file");
-				$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode($m->filename));
-				$temp->appendChild($xmlDoc->createAttribute("download_url"))->appendChild($xmlDoc->createTextNode($m->download_url));
-				$temp->appendChild($xmlDoc->createAttribute("digest"))->appendChild($xmlDoc->createTextNode($m->digest));
+				foreach($m as $var => $value) {
+					$temp->appendChild($xmlDoc->createAttribute($var))->appendChild($xmlDoc->createTextNode($value));
+				}
 				$media->appendChild($temp);
 			}
 			$struct->appendChild($media);
@@ -199,14 +199,15 @@ class mobile_activity_page extends mobile_activity {
 			// replace [[media]] with <a href
 			$r = "<a href='/video/".$mediajson->filename."'>";
 			$content = str_replace($toreplace, $r, $content);
-
-			$m = new StdClass;
-			$m->filename = $mediajson->filename;
-			$m->download_url = $mediajson->download_url;
-			$m->digest = $mediajson->digest;
+			// check all the required attrs exist
+			if(!isset($mediajson->digest) || !isset($mediajson->download_url) || !isset($mediajson->filename)){
+				echo "You must supply digest, download_url and filename for every media object\n";
+				die;
+			}
+			
 			// put the media in both the structure for page ($this->page_media) and for module ($MEDIA)
-			$MEDIA[$m->digest] = $m;
-			$this->page_media[$m->digest] = $m;
+			$MEDIA[$mediajson->digest] = $mediajson;
+			$this->page_media[$mediajson->digest] = $mediajson;
 		}
 		//replace all [[/media]] with </a>
 		$content = str_replace("[[/media]]", "</a>", $content);

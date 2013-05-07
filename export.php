@@ -217,9 +217,9 @@ if(count($MEDIA) > 0){
 	$media = $xmlDoc->createElement("media");
 	foreach ($MEDIA as $m){
 		$temp = $xmlDoc->createElement("file");
-		$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode($m->filename));
-		$temp->appendChild($xmlDoc->createAttribute("download_url"))->appendChild($xmlDoc->createTextNode($m->download_url));
-		$temp->appendChild($xmlDoc->createAttribute("digest"))->appendChild($xmlDoc->createTextNode($m->digest));
+		foreach($m as $var => $value) {
+			$temp->appendChild($xmlDoc->createAttribute($var))->appendChild($xmlDoc->createTextNode($value));
+		}
 		$media->appendChild($temp);
 	}
 	$root->appendChild($media);
