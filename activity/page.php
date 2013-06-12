@@ -20,6 +20,7 @@ class mobile_activity_page extends mobile_activity {
 		// find all the langs on this page
 		$langs = extractLangs($content);
 		
+		// get the image from the intro section
 		$eiffilename = extractImageFile($page->intro,$context->id,'mod_page/intro','0',$this->courseroot);
 		if($eiffilename){
 			$this->page_image = $eiffilename;
@@ -65,6 +66,14 @@ class mobile_activity_page extends mobile_activity {
 				$this->extractMediaImage($pre_content,$context->id,'mod_page/content');
 				resizeImage($this->courseroot."/".$this->page_image,$this->courseroot."/images/".$cm->id);
 				$this->page_image = "/images/".$cm->id;
+			} else if ($this->page_image == null){
+				$piffilename = extractImageFile($page->content,$context->id,'mod_page/content','0',$this->courseroot);	
+				if($piffilename){
+					$this->page_image = $piffilename;
+					resizeImage($this->courseroot."/".$this->page_image,$this->courseroot."/images/".$cm->id);
+					$this->page_image = "/images/".$cm->id;
+					unlink($this->courseroot."/".$piffilename) or die('Unable to delete the file');
+				}
 			}
 			
 			// add html header tags etc

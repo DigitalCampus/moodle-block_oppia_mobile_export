@@ -236,7 +236,7 @@ $dir2zip = "output/".$USER->id."/temp";
 $outputzip = "output/".$USER->id."/".strtolower($course->shortname)."-".$versionid.".zip";
 Zip($dir2zip,$outputzip);
 echo "\nCompressed file\n";
-//deleteDir("output/".$USER->id."/temp");
+deleteDir("output/".$USER->id."/temp");
 echo "</pre>";
 echo "Download exported course at <a href='".$outputzip."'>".$course->fullname."</a>";
 

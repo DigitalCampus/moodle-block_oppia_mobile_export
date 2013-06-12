@@ -96,8 +96,9 @@ function resizeImage($image,$image_new_name){
 	$image_width = $CFG->block_oppia_mobile_export_thumb_width;
 	$image_height = $CFG->block_oppia_mobile_export_thumb_height;
 	$size=GetimageSize($image);
-	
-	$ratio_src = $size[0]/$size[1];
+	$orig_w = $size[0];
+	$orig_h = $size[1];
+	$ratio_src = $orig_w/$orig_h;
 	
 	$ratio_target = $image_width/$image_height;
 	
@@ -115,20 +116,13 @@ function resizeImage($image,$image_new_name){
 			break;
 	}
 	
-	// for landscape images
-	if($ratio_src > $ratio_target){
-		if($size[0] > $size[1]){
-			$border = (($size[0]/$ratio_target)-$size[1])/2/$ratio_target;
-			imagecopyresampled($image_new, $image_src, 0, $border, 0, 0, $image_width, $image_height - ($border*2), $size[0], $size[1]);
-		} else {
-			$border = ($size[1]-($size[0]/$ratio_target))/2/$ratio_target;
-			imagecopyresampled($image_new, $image_src, $border, 0, 0, 0, $image_width - ($border*2), $image_height, $size[0], $size[1]);
-		}
+	if($orig_h > $orig_w || $ratio_src < $ratio_target){
+		$border = ($image_width - ($image_height*$orig_w/$orig_h))/2;
+		imagecopyresampled($image_new, $image_src, $border, 0, 0, 0, $image_width -($border*2), $image_height , $orig_w, $orig_h);
 	} else {
-		// for portrait images
-		$border = ($size[1]-($size[0]/$ratio_target))/2/$ratio_target;
-		imagecopyresampled($image_new, $image_src, $border, 0, 0, 0, $image_width - ($border*2), $image_height, $size[0], $size[1]);
-	}
+		$border = ($image_height - ($image_width*$orig_h/$orig_w))/2;
+		imagecopyresampled($image_new, $image_src, 0, $border, 0, 0, $image_width , $image_height- ($border*2) , $orig_w, $orig_h);
+	} 
 	
 	imagejpeg($image_new,$image_new_name,100);
 	imagedestroy($image_new);
