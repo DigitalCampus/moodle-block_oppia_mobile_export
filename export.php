@@ -130,7 +130,8 @@ $structure = $xmlDoc->createElement("structure");
 $orderno = 1;
 foreach($sections as $thissection) {
 	flush_buffers();
-	if($thissection->summary){
+	$sectionmods = explode(",", $thissection->sequence);
+	if($thissection->summary && count($sectionmods)>1){
 		
 		echo "\nExporting Section: ".strip_tags($thissection->summary,'<span>')."\n";
 		
@@ -158,7 +159,7 @@ foreach($sections as $thissection) {
 			$section->appendChild($temp);
 		}
 		
-		$sectionmods = explode(",", $thissection->sequence);
+		
 		$i=1;
 		$activities = $xmlDoc->createElement("activities");
 		foreach ($sectionmods as $modnumber) {
