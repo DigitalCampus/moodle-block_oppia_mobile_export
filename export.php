@@ -13,6 +13,7 @@ require_once($CFG->dirroot . '/blocks/oppia_mobile_export/langfilter.php');
 require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/activity.class.php');
 require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/page.php');
 require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/quiz.php');
+require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/resource.php');
 
 require_once($CFG->libdir.'/componentlib.class.php');
 
@@ -168,7 +169,7 @@ foreach($sections as $thissection) {
 				continue;
 			}
 			$mod = $mods[$modnumber];
-
+			
 			if($mod->modname == 'page'){
 				echo "\tExporting page: ".$mod->name."\n";
 				
@@ -191,6 +192,16 @@ foreach($sections as $thissection) {
 				$quiz->process();
 				$quiz->getXML($mod,$i,true,$activities,$xmlDoc);
 			}
+			
+			/*if($mod->modname == 'resource'){
+				echo "\tExporting resource: ".$mod->name."\n";
+				$resource = new mobile_activity_resource();
+				$resource->courseroot = $course_root;
+				$resource->id = $mod->id;
+				$resource->section = $orderno;
+				$resource->process();
+				$resource->getXML($mod,$i,true,$activities,$xmlDoc);
+			}*/
 			flush_buffers();
 			$i++;
 		}
