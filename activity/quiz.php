@@ -20,10 +20,10 @@ class mobile_activity_quiz extends mobile_activity {
 		$quiz = $DB->get_record('quiz', array('id'=>$cm->instance), '*', MUST_EXIST);
 	
 		$quizobj = quiz::create($cm->instance, $USER->id);
-		$mQH = new MquizHelper();
-		$mQH->init($CFG->block_oppia_mobile_export_mquiz_url);
-		if($CFG->block_oppia_mobile_export_mquiz_api_key == ""){
-			echo "Invalid mQuiz username/api_key";
+		$mQH = new QuizHelper();
+		$mQH->init($CFG->block_oppia_mobile_export_url."/quiz/api/v1/");
+		if($CFG->block_oppia_mobile_export_api_key == ""){
+			echo "Invalid OppiaMobile username/api_key";
 			die;
 		}
 
@@ -38,7 +38,7 @@ class mobile_activity_quiz extends mobile_activity {
 			// find if this quiz already exists
 			$resp = $mQH->exec('quizprops/'.$this->md5, array(),'get');
 			if(!isset($resp->quizzes)){
-				echo "Error connecting to mquiz server, please check the API url in the block settings.\n";
+				echo "Error connecting to OppiaMobile server, please check the API url in the block settings.\n";
 				die;
 			}
 			
@@ -63,7 +63,7 @@ class mobile_activity_quiz extends mobile_activity {
 			$props = array();
 			$props[0] = array('name' => "digest", 'value' => $this->md5);
 			
-			//create the Mquiz
+			//create the quiz
 			$post = array('title' => $this->shortname." ".$this->section." ".$cm->name,
 					'description' => $this->summary,
 					'questions' => array(),
@@ -177,7 +177,7 @@ class mobile_activity_quiz extends mobile_activity {
 				$i++;
 			}
 			
-			// get the final mquiz object
+			// get the final quiz object
 			$quiz = $mQH->exec('quiz/'.$quiz_id, array(),'get');
 			$this->content = json_encode($quiz);
 			
@@ -212,7 +212,7 @@ class mobile_activity_quiz extends mobile_activity {
 	}
 }
 
-class MquizHelper{
+class QuizHelper{
 	private $url;
 	private $curl;
 	
@@ -226,10 +226,10 @@ class MquizHelper{
 		global $CFG;
 		$json = json_encode($data_array);
 		$temp_url = $this->url.$object."/";
-		if($CFG->block_oppia_mobile_export_mquiz_api_key != ""){
+		if($CFG->block_oppia_mobile_export_api_key != ""){
 			$temp_url .= "?format=json";
-			$temp_url .= "&username=".$CFG->block_oppia_mobile_export_mquiz_username;
-			$temp_url .= "&api_key=".$CFG->block_oppia_mobile_export_mquiz_api_key;
+			$temp_url .= "&username=".$CFG->block_oppia_mobile_export_username;
+			$temp_url .= "&api_key=".$CFG->block_oppia_mobile_export_api_key;
 		}
 		curl_setopt($this->curl, CURLOPT_URL, $temp_url );
 		if($type == 'post'){

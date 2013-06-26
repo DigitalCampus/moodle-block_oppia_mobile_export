@@ -27,13 +27,13 @@
 $string['pluginname'] = 'Oppia Mobile Export';
 $string['oppia_mobile_export:addinstance'] = 'Add a new Oppia export block';
 
-$string['mquizurl'] = 'mQuiz API URL';
-$string['mquizusername'] = 'mQuiz Username';
-$string['mquizapikey'] = 'mQuiz API Key';
+$string['oppiaurl'] = 'OppiaMobile API URL';
+$string['oppiausername'] = 'OppiaMobile Username';
+$string['oppiaapikey'] = 'OppiaMobile API Key';
 
-$string['mquizurlfull'] = 'Full URL to MQuiz server API (include the trailing slash)';
-$string['mquizusernamefull'] = 'Your mQuiz username';
-$string['mquizapikeyfull'] = 'Your mQuiz API Key';
+$string['oppiaurlfull'] = 'Full URL to OppiaMobile server API (include the trailing slash)';
+$string['oppiausernamefull'] = 'Your OppiaMobile username';
+$string['oppiaapikeyfull'] = 'Your OppiaMobile API Key';
 
 $string['thumbheight'] = 'Icon height';
 $string['thumbwidth'] = 'Icon width';
