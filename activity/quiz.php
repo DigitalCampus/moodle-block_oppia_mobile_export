@@ -21,7 +21,7 @@ class mobile_activity_quiz extends mobile_activity {
 	
 		$quizobj = quiz::create($cm->instance, $USER->id);
 		$mQH = new QuizHelper();
-		$mQH->init($CFG->block_oppia_mobile_export_url."/quiz/api/v1/");
+		$mQH->init($CFG->block_oppia_mobile_export_url."/api/v1/");
 		if($CFG->block_oppia_mobile_export_api_key == ""){
 			echo "Invalid OppiaMobile username/api_key";
 			die;
@@ -57,8 +57,6 @@ class mobile_activity_quiz extends mobile_activity {
 				$this->content = json_encode($quiz);
 				return;
 			}
-			
-			
 			
 			$props = array();
 			$props[0] = array('name' => "digest", 'value' => $this->md5);
