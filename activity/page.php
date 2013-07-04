@@ -38,9 +38,10 @@ class mobile_activity_page extends mobile_activity {
 				$t = $this->extractMedia($t);
 				// if page has media and no special icon for page, extract the image for first video
 				if (count($this->page_media) > 0 && $this->page_image == null){
-					$this->extractMediaImage($pre_content,$context->id,'mod_page/content');
-					resizeImage($this->courseroot."/".$this->page_image,$this->courseroot."/images/".$cm->id);
-					$this->page_image = "/images/".$cm->id;
+					if($this->extractMediaImage($pre_content,$context->id,'mod_page/content')){
+						resizeImage($this->courseroot."/".$this->page_image,$this->courseroot."/images/".$cm->id);
+						$this->page_image = "/images/".$cm->id;
+					}
 				}
 				
 				// add html header tags etc
@@ -63,9 +64,10 @@ class mobile_activity_page extends mobile_activity {
 			$content = $this->extractMedia($content);
 			// if page has media and no special icon for page, extract the image for first video
 			if (count($this->page_media) > 0 && $this->page_image == null){
-				$this->extractMediaImage($pre_content,$context->id,'mod_page/content');
-				resizeImage($this->courseroot."/".$this->page_image,$this->courseroot."/images/".$cm->id);
-				$this->page_image = "/images/".$cm->id;
+				if($this->extractMediaImage($pre_content,$context->id,'mod_page/content')){
+					resizeImage($this->courseroot."/".$this->page_image,$this->courseroot."/images/".$cm->id);
+					$this->page_image = "/images/".$cm->id;
+				}
 			} else if ($this->page_image == null){
 				$piffilename = extractImageFile($page->content,$context->id,'mod_page/content','0',$this->courseroot);	
 				if($piffilename){
@@ -229,7 +231,7 @@ class mobile_activity_page extends mobile_activity {
 		preg_match_all($regex,$content,$files_tmp, PREG_OFFSET_CAPTURE);
 		if(!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0){
 			echo "\t\tNo image file found:\n";
-			return;
+			return false;
 		}
 		$filename = $files_tmp['filenames'][0][0];
 			
@@ -256,6 +258,7 @@ class mobile_activity_page extends mobile_activity {
 		fclose($fh);
 		echo "\t\tImage for Media file: ".$filename." successfully exported\n";
 		$this->page_image = "images/".$filename;
+		return true;
 	}
 	
 	private function makePageFilename($sectionno, $name, $lang){
