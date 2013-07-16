@@ -104,6 +104,14 @@ function resizeImage($image,$image_new_name){
 	
 	$image_new = ImageCreateTrueColor($image_width, $image_height);
 	
+
+	$bg_colour = imagecolorallocate($image_new, 
+					$CFG->block_oppia_mobile_export_thumb_bg_r, 
+					$CFG->block_oppia_mobile_export_thumb_bg_g, 
+					$CFG->block_oppia_mobile_export_thumb_bg_b);
+	imagefill($image_new, 0, 0, $bg_colour);
+
+	
 	switch($size['mime']){
 		case 'image/jpeg':
 			$image_src = imagecreatefromjpeg($image);

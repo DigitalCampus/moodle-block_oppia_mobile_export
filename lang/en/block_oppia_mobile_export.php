@@ -37,3 +37,7 @@ $string['oppiaapikeyfull'] = 'Your OppiaMobile API Key';
 
 $string['thumbheight'] = 'Icon height';
 $string['thumbwidth'] = 'Icon width';
+
+$string['thumb_bg_r'] = 'Background colour for images (red channel)';
+$string['thumb_bg_g'] = 'Background colour for images (green channel)';
+$string['thumb_bg_b'] = 'Background colour for images (blue channel)';
