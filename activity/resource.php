@@ -28,10 +28,8 @@ class mobile_activity_resource extends mobile_activity {
 		if ($this->resource_type == "image/jpeg" && $this->resource_image == null){
 			resizeImage($this->courseroot."/".$this->resource_filename,$this->courseroot."/images/".$cm->id);
 			$this->resource_image = "/images/".$cm->id;
-			//delete original image
-			unlink($this->courseroot."/".$this->resource_filename) or die('Unable to delete the file');
+			//DON'T delete original image!
 		}
-		
 	}
 	
 	function getXML($mod,$counter,$activity=true,&$node,&$xmlDoc){
