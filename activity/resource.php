@@ -14,6 +14,24 @@ class mobile_activity_resource extends mobile_activity {
 		$this->resource = $DB->get_record('resource', array('id'=>$cm->instance), '*', MUST_EXIST);
 		$context = get_context_instance(CONTEXT_MODULE, $cm->id);
 		$this->extractResource($context->id, $this->resource->revision);
+		
+		$eiffilename = extractImageFile($this->resource->intro,$context->id,'mod_resource/intro','0',$this->courseroot);
+		if($eiffilename){
+			$this->resource_image = $eiffilename;
+			resizeImage($this->courseroot."/".$this->resource_image,$this->courseroot."/images/".$cm->id);
+			$this->resource_image = "/images/".$cm->id;
+			//delete original image
+			unlink($this->courseroot."/".$eiffilename) or die('Unable to delete the file');
+		}
+		unset($eiffilename);
+		
+		if ($this->resource_type == "image/jpeg" && $this->resource_image == null){
+			resizeImage($this->courseroot."/".$this->resource_filename,$this->courseroot."/images/".$cm->id);
+			$this->resource_image = "/images/".$cm->id;
+			//delete original image
+			unlink($this->courseroot."/".$this->resource_filename) or die('Unable to delete the file');
+		}
+		
 	}
 	
 	function getXML($mod,$counter,$activity=true,&$node,&$xmlDoc){
@@ -57,6 +75,11 @@ class mobile_activity_resource extends mobile_activity {
 		$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
 		$temp->appendChild($xmlDoc->createAttribute("type"))->appendChild($xmlDoc->createTextNode($this->resource_type));
 		$struct->appendChild($temp);
+		if($this->resource_image){
+			$temp = $xmlDoc->createElement("image");
+			$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode($this->resource_image));
+			$struct->appendChild($temp);
+		}	
 	}
 	
 	private function extractResource($contextid,$revision){
