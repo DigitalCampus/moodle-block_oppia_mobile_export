@@ -58,6 +58,7 @@ mkdir("output/".$USER->id."/temp/",0777);
 $course_root = "output/".$USER->id."/temp/".strtolower($course->shortname);
 mkdir($course_root,0777);
 mkdir($course_root."/images",0777);
+mkdir($course_root."/resources",0777);
 
 $context = get_context_instance(CONTEXT_COURSE, $course->id);
 $PAGE->set_context($context);
@@ -193,7 +194,7 @@ foreach($sections as $thissection) {
 				$quiz->getXML($mod,$i,true,$activities,$xmlDoc);
 			}
 			
-			/*if($mod->modname == 'resource'){
+			if($mod->modname == 'resource'){
 				echo "\tExporting resource: ".$mod->name."\n";
 				$resource = new mobile_activity_resource();
 				$resource->courseroot = $course_root;
@@ -201,7 +202,7 @@ foreach($sections as $thissection) {
 				$resource->section = $orderno;
 				$resource->process();
 				$resource->getXML($mod,$i,true,$activities,$xmlDoc);
-			}*/
+			}
 			flush_buffers();
 			$i++;
 		}

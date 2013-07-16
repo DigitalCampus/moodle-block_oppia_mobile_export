@@ -14,7 +14,7 @@ class mobile_activity_page extends mobile_activity {
 		
 		$context = get_context_instance(CONTEXT_MODULE, $cm->id);
 
-		$content = $this->extractFiles($page->content, $context->id, 'mod_page', 'content', $page->revision, $this->courseroot);
+		$content = $this->extractFiles($page->content, $context->id, 'content', $page->revision, $this->courseroot);
 		$this->md5 =  md5($page->content);
 		
 		// find all the langs on this page
@@ -91,7 +91,6 @@ class mobile_activity_page extends mobile_activity {
 			$o->lang = $DEFAULT_LANG;
 			$o->filename = $mpf2filename;
 			array_push($this->act,$o);
-			//$this->act .= "<location lang='".$DEFAULT_LANG."'>".$mpf2filename."</location>";
 		}
 	}
 	
@@ -146,7 +145,7 @@ class mobile_activity_page extends mobile_activity {
 		}
 	}
 	
-	private function extractFiles($content, $contextid, $component, $filearea, $itemid, $course_root){
+	private function extractFiles($content, $contextid, $filearea, $itemid, $course_root){
 		global $CFG;
 		
 		preg_match_all('((@@PLUGINFILE@@/(?P<filenames>[\w\W]*?)[\"|\']))',$content,$files_tmp, PREG_OFFSET_CAPTURE);
