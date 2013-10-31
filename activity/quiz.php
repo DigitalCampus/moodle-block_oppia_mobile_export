@@ -7,6 +7,7 @@ class mobile_activity_quiz extends mobile_activity {
 	private $content = "";
 	private $MATCHING_SEPERATOR = "|";
 	private $quiz_image = null;
+	private $is_valid = true; //i.e. doesn't only contain essay questions.
 	
 	function init($shortname,$summary){
 		$this->shortname = strip_tags($shortname);
@@ -34,6 +35,20 @@ class mobile_activity_quiz extends mobile_activity {
 			
 			// generate the md5 of the quiz
 			$this->md5 = md5(serialize($qs));
+		
+			
+			// check has at least one non-essay question
+			$count_essay = 0;
+			foreach($qs as $q){
+				if($q->qtype == 'essay'){
+					$count_essay++;
+				}
+			}
+			if($count_essay == count($qs)){
+				echo "\t\tSkipping quiz since contains essay questions\n";
+				$this->is_valid = false;
+				return;
+			}
 			
 			// find if this quiz already exists
 			$resp = $mQH->exec('quizprops/'.$this->md5, array(),'get');
@@ -180,7 +195,9 @@ class mobile_activity_quiz extends mobile_activity {
 			$this->content = json_encode($quiz);
 			
 		} catch (moodle_exception $me){
-			//echo "no questions in this quiz";
+			echo "\t\tSkipping quiz since contains no questions\n";
+			$this->is_valid = false;
+			return;
 		}
 	}
 	
@@ -207,6 +224,10 @@ class mobile_activity_quiz extends mobile_activity {
 			$act->appendChild($temp);
 		}
 		$node->appendChild($act);
+	}
+	
+	function get_is_valid(){
+		return $this->is_valid;
 	}
 }
 

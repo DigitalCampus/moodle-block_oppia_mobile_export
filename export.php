@@ -191,7 +191,9 @@ foreach($sections as $sect) {
 				$quiz->id = $mod->id;
 				$quiz->section = $orderno;
 				$quiz->process();
-				$quiz->getXML($mod,$i,true,$activities,$xmlDoc);
+				if ($quiz->get_is_valid()){
+					$quiz->getXML($mod,$i,true,$activities,$xmlDoc);
+				}
 			}
 			
 			if($mod->modname == 'resource'){
