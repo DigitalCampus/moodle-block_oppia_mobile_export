@@ -130,16 +130,16 @@ $index = Array();
 
 $structure = $xmlDoc->createElement("structure");
 $orderno = 1;
-foreach($sections as $thissection) {
+foreach($sections as $sect) {
 	flush_buffers();
-	$sectionmods = explode(",", $thissection->sequence);
-	if($thissection->summary && count($sectionmods)>1){
+	$sectionmods = explode(",", $sect->sequence);
+	if($sect->summary && count($sectionmods)>0){
 		
-		echo "\nExporting Section: ".strip_tags($thissection->summary,'<span>')."\n";
+		echo "\nExporting Section: ".strip_tags($sect->summary,'<span>')."\n";
 		
 		$section = $xmlDoc->createElement("section");
 		$section->appendChild($xmlDoc->createAttribute("order"))->appendChild($xmlDoc->createTextNode($orderno));
-		$title = extractLangs($thissection->summary);
+		$title = extractLangs($sect->summary);
 		if(is_array($title) && count($title)>0){
 			foreach($title as $l=>$t){
 				$temp = $xmlDoc->createElement("title",strip_tags($t));
@@ -148,12 +148,12 @@ foreach($sections as $thissection) {
 				
 			}
 		} else {
-			$temp = $xmlDoc->createElement("title",strip_tags($thissection->summary));
+			$temp = $xmlDoc->createElement("title",strip_tags($sect->summary));
 			$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
 			$section->appendChild($temp);
 		}
 		// get image for this section
-		$filename = extractImageFile($thissection->summary, $context->id, 'course/section', $thissection->id, $course_root);
+		$filename = extractImageFile($thissection->summary, $context->id, 'course/section', $sect->id, $course_root);
 		
 		if($filename){
 			$temp = $xmlDoc->createElement("image");
@@ -186,7 +186,7 @@ foreach($sections as $thissection) {
 				echo "\tExporting quiz: ".$mod->name."\n";
 				
 				$quiz = new mobile_activity_quiz();
-				$quiz->init($course->shortname,$thissection->summary);
+				$quiz->init($course->shortname,$sect->summary);
 				$quiz->courseroot = $course_root;
 				$quiz->id = $mod->id;
 				$quiz->section = $orderno;
