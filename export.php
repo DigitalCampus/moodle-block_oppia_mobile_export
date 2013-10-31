@@ -46,6 +46,8 @@ $MOBILE_LANGS = array();
 global $MEDIA;
 $MEDIA = array();
 
+$advice = array();
+
 //make course dir etc for output
 
 deleteDir("output/".$USER->id."/temp");
@@ -256,6 +258,15 @@ echo "</pre>";
 echo "Download exported course at <a href='".$outputzip."'>".$course->fullname."</a>";
 
 echo "<p><a href='cleanup.php?id=".$id."'>Cleanup files</a></p>";
+
+if(count($advice)> 0){
+	echo "<p>Although your course has been exported you may want to address the following issues to make sure your course is easy to use on mobile devices:</p><ol>";
+	foreach($advice as $a){
+		echo "<li>".$a."</li>";
+	}
+	
+	echo "</ol>";
+}
 
 echo $OUTPUT->footer();
 
