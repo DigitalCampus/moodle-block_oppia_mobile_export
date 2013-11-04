@@ -116,6 +116,19 @@ foreach ($sectionmods as $modnumber) {
 		$page->process();
 		$page->getXML($mod,$i,false,$meta,$xmlDoc);
 	}
+	if($mod->modname == 'quiz'){
+		echo "\tExporting quiz: ".$mod->name."\n";
+
+		$quiz = new mobile_activity_quiz();
+		$quiz->init($course->shortname,"Pre-test");
+		$quiz->courseroot = $course_root;
+		$quiz->id = $mod->id;
+		$quiz->section = 0;
+		$quiz->process();
+		if ($quiz->get_is_valid()){
+			$quiz->getXML($mod,$i,true,$meta,$xmlDoc);
+		}
+	}
 	$i++;
 }
 
