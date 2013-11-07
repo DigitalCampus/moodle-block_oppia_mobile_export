@@ -64,7 +64,12 @@ li:before {
       color: #77A240;
       font-size: 30px;
     }
-    
+  
+a {
+	color: #495525;
+	text-decoration: underline;
+}
+
 .box {
 	margin:10px 5px;
 	padding: 5px;
@@ -77,4 +82,5 @@ li:before {
 
 .credit {
 	font-size: 80%;
+	margin: 3px 0 10px 0;
 }
