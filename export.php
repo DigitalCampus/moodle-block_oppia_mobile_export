@@ -259,9 +259,13 @@ $xmlDoc->save($course_root."/module.xml");
 
 echo "\nCreated module xml file\n";
 
+echo "\nAdding style sheet\n";
+
+if (!copy("styles/default.css", $course_root."/style.css")) {
+	echo "\n\nfailed to copy stylesheet...\n";
+}
 
 echo "\nCourse Export Complete\n";
-
 $dir2zip = "output/".$USER->id."/temp";
 $outputzip = "output/".$USER->id."/".strtolower($course->shortname)."-".$versionid.".zip";
 Zip($dir2zip,$outputzip);
