@@ -34,7 +34,7 @@ class mobile_activity_quiz extends mobile_activity {
 			$qs = $quizobj->get_questions();
 			
 			// generate the md5 of the quiz
-			$this->md5 = md5(serialize($qs));
+			$this->md5 = md5(serialize($qs)).$this->id;
 		
 			
 			// check has at least one non-essay question

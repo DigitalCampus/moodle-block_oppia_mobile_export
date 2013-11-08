@@ -15,7 +15,7 @@ class mobile_activity_page extends mobile_activity {
 		$context = get_context_instance(CONTEXT_MODULE, $cm->id);
 
 		$content = $this->extractFiles($page->content, $context->id, 'content', $page->revision, $this->courseroot);
-		$this->md5 =  md5($page->content);
+		$this->md5 =  md5($page->content).$this->id;
 		
 		// find all the langs on this page
 		$langs = extractLangs($content);
@@ -158,7 +158,7 @@ class mobile_activity_page extends mobile_activity {
 		for($i=0;$i<count($files_tmp['filenames']);$i++){
 			$filename = urldecode($files_tmp['filenames'][$i][0]);
 			
-			echo "\t\t trying file: ".$filename."\n";
+			echo "\t\ttrying file: ".$filename."\n";
 			$fullpath = "/$contextid/mod_page/$filearea/0/". $filename;
 			$fs = get_file_storage();
 			$file = $fs->get_file_by_hash(sha1($fullpath));
@@ -234,7 +234,7 @@ class mobile_activity_page extends mobile_activity {
 		}
 		$filename = $files_tmp['filenames'][0][0];
 			
-		echo "\t\t trying file: ".$filename."\n";
+		echo "\t\ttrying file: ".$filename."\n";
 		$fullpath = "/$contextid/$filearea/0/$filename";
 		$fs = get_file_storage();
 		$file = $fs->get_file_by_hash(sha1($fullpath));

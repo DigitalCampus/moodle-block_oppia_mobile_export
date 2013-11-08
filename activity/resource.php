@@ -103,7 +103,7 @@ class mobile_activity_resource extends mobile_activity {
 		$type = $finfo->file($resourcefile);
 		$this->resource_type = substr($type, 0, strpos($type, ';'));
 		
-		$this->md5 = md5_file($resourcefile);
+		$this->md5 = md5_file($resourcefile).$contextid;
 		$this->resource_filename = "/resources/".$file->get_filename();
 	}
 	
