@@ -156,15 +156,15 @@ class mobile_activity_page extends mobile_activity {
 
 		$toreplace = array();
 		for($i=0;$i<count($files_tmp['filenames']);$i++){
-			$filename = $files_tmp['filenames'][$i][0];
+			$filename = urldecode($files_tmp['filenames'][$i][0]);
 			
 			echo "\t\t trying file: ".$filename."\n";
-			$fullpath = "/$contextid/mod_page/$filearea/0/$filename";
+			$fullpath = "/$contextid/mod_page/$filearea/0/". $filename;
 			$fs = get_file_storage();
 			$file = $fs->get_file_by_hash(sha1($fullpath));
 			$fh = $file->get_content_file_handle();
 	
-			$originalfilename = $filename;
+			$originalfilename = $files_tmp['filenames'][$i][0];
 			//hack to get around the possibilty of the filename being in a directory structure
 			$tmp = explode("/",$filename);
 			$filename = $tmp[count($tmp)-1];
