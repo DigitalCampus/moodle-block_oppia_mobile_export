@@ -35,6 +35,9 @@ $string['oppiaurlfull'] = 'Full URL to OppiaMobile server API (include the trail
 $string['oppiausernamefull'] = 'Your OppiaMobile username';
 $string['oppiaapikeyfull'] = 'Your OppiaMobile API Key';
 
+$string['course_icon_width'] = 'Course icon width';
+$string['course_icon_height'] = 'Course icon height';
+
 $string['thumbheight'] = 'Icon height';
 $string['thumbwidth'] = 'Icon width';
 

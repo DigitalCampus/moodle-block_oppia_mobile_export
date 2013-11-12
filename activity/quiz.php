@@ -15,7 +15,7 @@ class mobile_activity_quiz extends mobile_activity {
 	}
 	
 	function process(){
-		global $DB,$USER,$QUIZ_CACHE,$CFG;
+		global $DB,$CFG,$USER,$QUIZ_CACHE,$CFG;
 		$cm = get_coursemodule_from_id('quiz', $this->id);
 		$context = get_context_instance(CONTEXT_MODULE, $cm->id);
 		$quiz = $DB->get_record('quiz', array('id'=>$cm->instance), '*', MUST_EXIST);
@@ -60,7 +60,10 @@ class mobile_activity_quiz extends mobile_activity {
 			$filename = extractImageFile($quiz->intro,$context->id,'mod_quiz/intro','0',$this->courseroot);
 			if($filename){
 				$this->quiz_image = $filename;
-				resizeImage($this->courseroot."/".$this->quiz_image,$this->courseroot."/images/".$cm->id);
+				resizeImage($this->courseroot."/".$this->quiz_image,
+							$this->courseroot."/images/".$cm->id,
+							$CFG->block_oppia_mobile_export_thumb_width,
+							$CFG->block_oppia_mobile_export_thumb_height);
 				$this->quiz_image = "/images/".$cm->id;
 				//delete original image
 				unlink($this->courseroot."/".$filename) or die('Unable to delete the file');

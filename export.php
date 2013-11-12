@@ -135,10 +135,20 @@ foreach ($sectionmods as $modnumber) {
 /*-----------------------------*/
 
 // get module image (from course summary)
-$filename = extractImageFile($course->summary,$context->id,'course/summary','0',$course_root );
+$filename = extractImageFile($course->summary,
+								$context->id,
+								'course/summary',
+								'0',
+								$course_root );
 if($filename){
+	resizeImage($course_root."/".$filename,
+				$course_root."/images/".$context->id,
+						$CFG->block_oppia_mobile_export_course_icon_width,
+						$CFG->block_oppia_mobile_export_course_icon_height,
+						true);
+	unlink($course_root."/".$filename) or die('Unable to delete the file');
 	$temp = $xmlDoc->createElement("image");
-	$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode($filename));
+	$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode("/images/".$context->id));
 	$meta->appendChild($temp);
 }
 $index = Array();
@@ -270,7 +280,7 @@ $dir2zip = "output/".$USER->id."/temp";
 $outputzip = "output/".$USER->id."/".strtolower($course->shortname)."-".$versionid.".zip";
 Zip($dir2zip,$outputzip);
 echo "\nCompressed file\n";
-deleteDir("output/".$USER->id."/temp");
+//deleteDir("output/".$USER->id."/temp");
 echo "</pre>";
 echo "Download exported course at <a href='".$outputzip."'>".$course->fullname."</a>";
 

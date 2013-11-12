@@ -91,10 +91,8 @@ function extractImageFile($content, $contextid, $contextname, $itemid, $course_r
 	return "images/".sha1($fullpath);
 }
 
-function resizeImage($image,$image_new_name){
+function resizeImage($image,$image_new_name, $image_width, $image_height, $transparent=false){
 	global $CFG;
-	$image_width = $CFG->block_oppia_mobile_export_thumb_width;
-	$image_height = $CFG->block_oppia_mobile_export_thumb_height;
 	$size=GetimageSize($image);
 	$orig_w = $size[0];
 	$orig_h = $size[1];
@@ -103,13 +101,18 @@ function resizeImage($image,$image_new_name){
 	$ratio_target = $image_width/$image_height;
 	
 	$image_new = ImageCreateTrueColor($image_width, $image_height);
-	
 
-	$bg_colour = imagecolorallocate($image_new, 
-					$CFG->block_oppia_mobile_export_thumb_bg_r, 
-					$CFG->block_oppia_mobile_export_thumb_bg_g, 
-					$CFG->block_oppia_mobile_export_thumb_bg_b);
-	imagefill($image_new, 0, 0, $bg_colour);
+	
+	if(!$transparent){
+		$bg_colour = imagecolorallocate($image_new, 
+						$CFG->block_oppia_mobile_export_thumb_bg_r, 
+						$CFG->block_oppia_mobile_export_thumb_bg_g, 
+						$CFG->block_oppia_mobile_export_thumb_bg_b);
+		imagefill($image_new, 0, 0, $bg_colour);
+	} else {
+		imagealphablending( $image_new, false );
+		imagesavealpha($image_new, true);
+	}
 
 	
 	switch($size['mime']){
@@ -125,14 +128,26 @@ function resizeImage($image,$image_new_name){
 	}
 	
 	if($orig_h > $orig_w || $ratio_src < $ratio_target){
-		$border = ($image_width - ($image_height*$orig_w/$orig_h))/2;
+		$border = floor(($image_width - ($image_height*$orig_w/$orig_h))/2);
 		imagecopyresampled($image_new, $image_src, $border, 0, 0, 0, $image_width -($border*2), $image_height , $orig_w, $orig_h);
 	} else {
-		$border = ($image_height - ($image_width*$orig_h/$orig_w))/2;
+		$border = floor(($image_height - ($image_width*$orig_h/$orig_w))/2);
 		imagecopyresampled($image_new, $image_src, 0, $border, 0, 0, $image_width , $image_height- ($border*2) , $orig_w, $orig_h);
 	} 
 	
-	imagejpeg($image_new,$image_new_name,100);
+	switch($size['mime']){
+		case 'image/jpeg':
+			imagejpeg($image_new,$image_new_name,75);
+			break;
+		case 'image/png':
+			imagepng($image_new,$image_new_name,9);
+			break;
+		case 'image/gif':
+			imagegif($image_new,$image_new_name);
+			break;
+	}
+	
+
 	imagedestroy($image_new);
 	imagedestroy($image_src);
 }

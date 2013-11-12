@@ -8,7 +8,7 @@ class mobile_activity_page extends mobile_activity {
 	private $page_image = null;
 	
 	function process(){
-		global $DB, $MOBILE_LANGS, $DEFAULT_LANG, $MEDIA;
+		global $DB, $CFG, $MOBILE_LANGS, $DEFAULT_LANG, $MEDIA;
 		$cm= get_coursemodule_from_id('page', $this->id);
 		$page = $DB->get_record('page', array('id'=>$cm->instance), '*', MUST_EXIST);
 		
@@ -21,10 +21,17 @@ class mobile_activity_page extends mobile_activity {
 		$langs = extractLangs($content);
 		
 		// get the image from the intro section
-		$eiffilename = extractImageFile($page->intro,$context->id,'mod_page/intro','0',$this->courseroot);
+		$eiffilename = extractImageFile($page->intro,
+										$context->id,
+										'mod_page/intro',
+										'0',
+										$this->courseroot);
 		if($eiffilename){
 			$this->page_image = $eiffilename;
-			resizeImage($this->courseroot."/".$this->page_image,$this->courseroot."/images/".$cm->id);
+			resizeImage($this->courseroot."/".$this->page_image,
+						$this->courseroot."/images/".$cm->id,
+						$CFG->block_oppia_mobile_export_thumb_width,
+						$CFG->block_oppia_mobile_export_thumb_height);
 			$this->page_image = "/images/".$cm->id;
 			//delete original image
 			unlink($this->courseroot."/".$eiffilename) or die('Unable to delete the file');
@@ -39,7 +46,10 @@ class mobile_activity_page extends mobile_activity {
 				// if page has media and no special icon for page, extract the image for first video
 				if (count($this->page_media) > 0 && $this->page_image == null){
 					if($this->extractMediaImage($pre_content,$context->id,'mod_page/content')){
-						resizeImage($this->courseroot."/".$this->page_image,$this->courseroot."/images/".$cm->id);
+						resizeImage($this->courseroot."/".$this->page_image,
+									$this->courseroot."/images/".$cm->id,
+									$CFG->block_oppia_mobile_export_thumb_width,
+									$CFG->block_oppia_mobile_export_thumb_height);
 						$this->page_image = "/images/".$cm->id;
 					}
 				}
@@ -65,14 +75,20 @@ class mobile_activity_page extends mobile_activity {
 			// if page has media and no special icon for page, extract the image for first video
 			if (count($this->page_media) > 0 && $this->page_image == null){
 				if($this->extractMediaImage($pre_content,$context->id,'mod_page/content')){
-					resizeImage($this->courseroot."/".$this->page_image,$this->courseroot."/images/".$cm->id);
+					resizeImage($this->courseroot."/".$this->page_image,
+								$this->courseroot."/images/".$cm->id,
+								$CFG->block_oppia_mobile_export_thumb_width,
+								$CFG->block_oppia_mobile_export_thumb_height);
 					$this->page_image = "/images/".$cm->id;
 				}
 			} else if ($this->page_image == null){
 				$piffilename = extractImageFile($page->content,$context->id,'mod_page/content','0',$this->courseroot);	
 				if($piffilename){
 					$this->page_image = $piffilename;
-					resizeImage($this->courseroot."/".$this->page_image,$this->courseroot."/images/".$cm->id);
+					resizeImage($this->courseroot."/".$this->page_image,
+								$this->courseroot."/images/".$cm->id,
+								$CFG->block_oppia_mobile_export_thumb_width,
+								$CFG->block_oppia_mobile_export_thumb_height);
 					$this->page_image = "/images/".$cm->id;
 					unlink($this->courseroot."/".$piffilename) or die('Unable to delete the file');
 				}

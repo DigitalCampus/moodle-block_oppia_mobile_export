@@ -9,7 +9,7 @@ class mobile_activity_resource extends mobile_activity {
 	private $resource_type = null;
 	
 	function process(){
-		global $DB, $MOBILE_LANGS, $DEFAULT_LANG, $MEDIA;
+		global $DB, $CFG, $MOBILE_LANGS, $DEFAULT_LANG, $MEDIA;
 		$cm= get_coursemodule_from_id('resource', $this->id);
 		$this->resource = $DB->get_record('resource', array('id'=>$cm->instance), '*', MUST_EXIST);
 		$context = get_context_instance(CONTEXT_MODULE, $cm->id);
@@ -18,7 +18,10 @@ class mobile_activity_resource extends mobile_activity {
 		$eiffilename = extractImageFile($this->resource->intro,$context->id,'mod_resource/intro','0',$this->courseroot);
 		if($eiffilename){
 			$this->resource_image = $eiffilename;
-			resizeImage($this->courseroot."/".$this->resource_image,$this->courseroot."/images/".$cm->id);
+			resizeImage($this->courseroot."/".$this->resource_image,
+						$this->courseroot."/images/".$cm->id,
+						$CFG->block_oppia_mobile_export_thumb_width,
+						$CFG->block_oppia_mobile_export_thumb_height);
 			$this->resource_image = "/images/".$cm->id;
 			//delete original image
 			unlink($this->courseroot."/".$eiffilename) or die('Unable to delete the file');
@@ -26,7 +29,10 @@ class mobile_activity_resource extends mobile_activity {
 		unset($eiffilename);
 		
 		if ($this->resource_type == "image/jpeg" && $this->resource_image == null){
-			resizeImage($this->courseroot."/".$this->resource_filename,$this->courseroot."/images/".$cm->id);
+			resizeImage($this->courseroot."/".$this->resource_filename,
+						$this->courseroot."/images/".$cm->id,
+						$CFG->block_oppia_mobile_export_thumb_width,
+						$CFG->block_oppia_mobile_export_thumb_height);
 			$this->resource_image = "/images/".$cm->id;
 			//DON'T delete original image!
 		}
