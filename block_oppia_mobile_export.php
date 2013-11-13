@@ -33,8 +33,8 @@ class block_oppia_mobile_export extends block_base {
         if (!has_capability('block/oppia_mobile_export:addinstance', get_context_instance(CONTEXT_COURSE, $COURSE->id))) {
         	return $this->content;
         }
-        $this->content->text = "<p>".get_string('oppia_block_api','block_oppia_mobile_export')." <a href=''>".$CFG->block_oppia_mobile_export_url."</a></p>";
-        $this->content->text .= "<form action='".$CFG->wwwroot."/blocks/oppia_mobile_export/export.php' method='post'>";
+        $this->content->text = "<p>".get_string('oppia_block_api','block_oppia_mobile_export')." <a href='".$CFG->block_oppia_mobile_export_url."'>".$CFG->block_oppia_mobile_export_url."</a></p>";
+        $this->content->text .= "<form action='".$CFG->wwwroot."/blocks/oppia_mobile_export/export1.php' method='post'>";
         $this->content->text .= "<input type='hidden' name='id' value='".$COURSE->id."'>";
         $this->content->text .= "<input type='hidden' name='sesskey' value='".sesskey()."'>";
         if ($handle = opendir(dirname(__FILE__).'/styles/')) {

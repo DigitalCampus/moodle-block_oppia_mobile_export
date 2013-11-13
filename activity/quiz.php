@@ -7,11 +7,39 @@ class mobile_activity_quiz extends mobile_activity {
 	private $content = "";
 	private $MATCHING_SEPERATOR = "|";
 	private $quiz_image = null;
-	private $is_valid = true; //i.e. doesn't only contain essay questions.
+	private $is_valid = true; //i.e. doesn't only contain essay or random questions.
+	private $no_questions = 0; // total no of valid questions
+	private $no_random_questions = 0; // no random questions to ask - 0 to select all (don't randomise)
 	
-	function init($shortname,$summary){
+	function init($shortname,$summary,$random){
 		$this->shortname = strip_tags($shortname);
 		$this->summary = strip_tags($summary);
+		$this->no_random_questions = $random;
+	}
+	
+	function preprocess(){
+		global $DB,$USER;
+		$cm = get_coursemodule_from_id('quiz', $this->id);
+		$context = get_context_instance(CONTEXT_MODULE, $cm->id);
+		$quiz = $DB->get_record('quiz', array('id'=>$cm->instance), '*', MUST_EXIST);
+		
+		$quizobj = quiz::create($cm->instance, $USER->id);
+		$quizobj->preload_questions();
+		$quizobj->load_questions();
+		$qs = $quizobj->get_questions();
+		
+		// check has at least one non-essay and non-random question
+		$count_omitted = 0;
+		foreach($qs as $q){
+			if($q->qtype == 'essay' || $q->qtype == 'random'){
+				$count_omitted++;
+			} else {
+				$this->no_questions++;
+			}
+		}
+		if($count_omitted == count($qs)){
+			$this->is_valid = false;
+		}
 	}
 	
 	function process(){
@@ -32,23 +60,9 @@ class mobile_activity_quiz extends mobile_activity {
 			$quizobj->preload_questions();
 			$quizobj->load_questions();
 			$qs = $quizobj->get_questions();
-			
+
 			// generate the md5 of the quiz
-			$this->md5 = md5(serialize($qs)).$this->id;
-		
-			
-			// check has at least one non-essay question
-			$count_essay = 0;
-			foreach($qs as $q){
-				if($q->qtype == 'essay'){
-					$count_essay++;
-				}
-			}
-			if($count_essay == count($qs)){
-				echo "\t\tSkipping quiz since contains essay questions\n";
-				$this->is_valid = false;
-				return;
-			}
+			$this->md5 = md5(serialize($qs)).$this->id."r".$this->no_random_questions;
 			
 			// find if this quiz already exists
 			$resp = $mQH->exec('quizprops/'.$this->md5, array(),'get');
@@ -78,6 +92,9 @@ class mobile_activity_quiz extends mobile_activity {
 			
 			$props = array();
 			$props[0] = array('name' => "digest", 'value' => $this->md5);
+			if ($this->no_random_questions > 0){
+				$props[1] = array('name' => "randomselect", 'value' => $this->no_random_questions);
+			}
 			
 			//create the quiz
 			$post = array('title' => $this->shortname." ".$this->section." ".$cm->name,
@@ -93,6 +110,12 @@ class mobile_activity_quiz extends mobile_activity {
 				// skip any essay questions
 				if($q->qtype == 'essay'){
 					echo "\t\tSkipping essay question";
+					continue;
+				}
+				
+				// skip any random questions
+				if($q->qtype == 'random'){
+					echo "\t\tSkipping random question";
 					continue;
 				}
 				
@@ -231,6 +254,10 @@ class mobile_activity_quiz extends mobile_activity {
 	
 	function get_is_valid(){
 		return $this->is_valid;
+	}
+	
+	function get_no_questions(){
+		return $this->no_questions;
 	}
 }
 

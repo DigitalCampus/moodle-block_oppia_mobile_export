@@ -122,12 +122,14 @@ foreach ($sectionmods as $modnumber) {
 		echo "\tExporting quiz: ".$mod->name."\n";
 
 		$quiz = new mobile_activity_quiz();
-		$quiz->init($course->shortname,"Pre-test");
+		$random = optional_param('quiz_'.$mod->id,0,PARAM_INT);
+		$quiz->init($course->shortname,"Pre-test",$random);
 		$quiz->courseroot = $course_root;
 		$quiz->id = $mod->id;
 		$quiz->section = 0;
-		$quiz->process();
+		$quiz->preprocess();
 		if ($quiz->get_is_valid()){
+			$quiz->process();
 			$quiz->getXML($mod,$i,true,$meta,$xmlDoc);
 		}
 	}
@@ -213,12 +215,14 @@ foreach($sections as $sect) {
 				echo "\tExporting quiz: ".$mod->name."\n";
 				
 				$quiz = new mobile_activity_quiz();
-				$quiz->init($course->shortname,$sect->summary);
+				$random = optional_param('quiz_'.$mod->id,0,PARAM_INT);
+				$quiz->init($course->shortname,$sect->summary,$random);
 				$quiz->courseroot = $course_root;
 				$quiz->id = $mod->id;
 				$quiz->section = $orderno;
-				$quiz->process();
+				$quiz->preprocess();
 				if ($quiz->get_is_valid()){
+					$quiz->process();
 					$quiz->getXML($mod,$i,true,$activities,$xmlDoc);
 				}
 			}
