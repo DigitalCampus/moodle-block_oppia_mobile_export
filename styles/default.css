@@ -6,7 +6,8 @@
 #a5c727 - DC light green
 */
 
-		* { padding:0px;
+* { 
+	padding:0px;
     margin:0px;
 }
 
@@ -17,24 +18,21 @@ body {
 	font-size:100%;
 }
 
-h1 {
+h1,h2,h3 {
 	margin: 10px 5px;
 	text-align:center;
 	color: #495525;
+}
+
+h1 {
 	font-size: 160%;
 }
 
 h2 {
-	margin: 10px 5px;
-	text-align:center;
-	color: #495525;
 	font-size: 140%;
 }
 
 h3 {
-	margin: 10px 5px;
-	text-align:center;
-	color: #495525;
 	font-size: 120%;
 }
 

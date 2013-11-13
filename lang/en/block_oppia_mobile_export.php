@@ -31,6 +31,10 @@ $string['oppiaurl'] = 'OppiaMobile API URL';
 $string['oppiausername'] = 'OppiaMobile Username';
 $string['oppiaapikey'] = 'OppiaMobile API Key';
 
+$string['oppia_block_api'] = 'Current OppiaMobile API:';
+$string['oppia_block_style'] = 'Stylesheet to use:';
+$string['oppia_block_export_button'] = 'Export to Oppia Package';
+
 $string['oppiaurlfull'] = 'Full URL to OppiaMobile server API (include the trailing slash)';
 $string['oppiausernamefull'] = 'Your OppiaMobile username';
 $string['oppiaapikeyfull'] = 'Your OppiaMobile API Key';

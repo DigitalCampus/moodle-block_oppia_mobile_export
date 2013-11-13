@@ -18,6 +18,8 @@ require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/resource.php'
 require_once($CFG->libdir.'/componentlib.class.php');
 
 $id = required_param('id',PARAM_INT);
+$stylesheet = required_param('stylesheet',PARAM_TEXT);
+
 $course = $DB->get_record('course', array('id'=>$id));
 
 $PAGE->set_url('/blocks/oppia_mobile_export/export.php', array('id' => $id));
@@ -271,7 +273,7 @@ echo "\nCreated module xml file\n";
 
 echo "\nAdding style sheet\n";
 
-if (!copy("styles/default.css", $course_root."/style.css")) {
+if (!copy("styles/".$stylesheet, $course_root."/style.css")) {
 	echo "\n\nfailed to copy stylesheet...\n";
 }
 
