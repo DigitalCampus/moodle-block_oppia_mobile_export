@@ -24,6 +24,11 @@ class mobile_activity_quiz extends mobile_activity {
 		$quiz = $DB->get_record('quiz', array('id'=>$cm->instance), '*', MUST_EXIST);
 		
 		$quizobj = quiz::create($cm->instance, $USER->id);
+		if(!$quizobj->has_questions()){
+			$this->no_questions = 0;
+			$this->is_valid = false;
+			return;
+		}
 		$quizobj->preload_questions();
 		$quizobj->load_questions();
 		$qs = $quizobj->get_questions();
