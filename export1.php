@@ -127,10 +127,20 @@ if (count($quizzes)> 0){
 		echo "<tr>";
 			echo "<td>".$quiz->section."</td>";
 			echo "<td>".$quiz->name."</td>";
-			echo "<td><select name='quiz_".$quiz->id."'>";
-			echo "<option value='0'>Use all questions (don't randomise)</option>";
+			echo "<td>";
+			$current = get_oppiaconfig($quiz->id,'randomselect');
+			echo "<select name='quiz_".$quiz->id."' id='id_s_quiz_".$quiz->id."'>";
+			echo "<option value='0'";
+				if ($current == 0){
+					echo " selected='selected'";
+				}
+			echo ">Use all questions (don't randomise)</option>";
 			for ($i=1; $i<$quiz->noquestions; $i++){
-				echo "<option value='".$i."'>select ".$i." random questions</option>";
+				echo "<option value='".$i."'";
+				if ($current == $i){
+					echo " selected='selected'";
+				}
+				echo ">select ".$i." random questions</option>";
 			}
 			echo "</select></td>";
 		echo "</tr>";

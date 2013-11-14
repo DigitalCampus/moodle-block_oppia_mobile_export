@@ -20,6 +20,28 @@ function deleteDir($dirPath) {
 	rmdir($dirPath);
 }
 
+function add_or_update_oppiaconfig($modid, $name, $value){
+	global $DB;
+	
+	$record = $DB->get_record('block_oppia_mobile_config', array('modid'=>$modid,'name'=>$name));
+	
+	if ($record){
+		$DB->update_record("block_oppia_mobile_config",array('id'=>$record->id,'value'=>$value));
+	} else {
+		$DB->insert_record("block_oppia_mobile_config", array('modid'=>$modid,'name'=>$name,'value'=>$value));
+	}
+}
+
+function get_oppiaconfig($modid,$name){
+	global $DB;
+	$record = $DB->get_record('block_oppia_mobile_config', array('modid'=>$modid,'name'=>$name));
+	if ($record){
+		return $record->value;
+	} else {
+		return 0;
+	}
+}
+
 function extractLangs($content){
 	global $MOBILE_LANGS, $CURRENT_LANG;
 	preg_match_all('((lang=[\'|\"](?P<langs>[\w\-]*)[\'|\"]))',$content,$langs_tmp, PREG_OFFSET_CAPTURE);

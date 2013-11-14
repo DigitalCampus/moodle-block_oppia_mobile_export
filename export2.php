@@ -123,6 +123,7 @@ foreach ($sectionmods as $modnumber) {
 
 		$quiz = new mobile_activity_quiz();
 		$random = optional_param('quiz_'.$mod->id,0,PARAM_INT);
+		add_or_update_oppiaconfig($mod->id, 'randomselect', $random);
 		$quiz->init($course->shortname,"Pre-test",$random);
 		$quiz->courseroot = $course_root;
 		$quiz->id = $mod->id;
@@ -216,6 +217,7 @@ foreach($sections as $sect) {
 				
 				$quiz = new mobile_activity_quiz();
 				$random = optional_param('quiz_'.$mod->id,0,PARAM_INT);
+				add_or_update_oppiaconfig($mod->id, 'randomselect', $random);
 				$quiz->init($course->shortname,$sect->summary,$random);
 				$quiz->courseroot = $course_root;
 				$quiz->id = $mod->id;
