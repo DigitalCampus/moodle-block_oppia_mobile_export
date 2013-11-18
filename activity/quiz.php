@@ -147,6 +147,12 @@ class mobile_activity_quiz extends mobile_activity {
 				$props = array();
 				$props[0] = array('name' => "maxscore", 'value' => $q->maxmark);
 				
+				// find if the question text has any images in it
+				$question_image = extractImageFile($q->questiontext,$q->contextid,'question/questiontext',$q->id,$this->courseroot);
+				if($question_image){
+					$props[1] = array('name' => "image", 'value' => $question_image);
+				}
+				
 				// create question
 				$post = array('title' => strip_tags($q->questiontext),
 						'type' => $q->qtype,
@@ -171,8 +177,6 @@ class mobile_activity_quiz extends mobile_activity {
 						// add response
 						
 						$props = array();
-						// TODO - figure out how to do feedback for matching questions
-						//$props[0] = array('name' => 'feedback', 'value' => '');
 						
 						$post = array('question' => $question_uri,
 								'order' => $j,

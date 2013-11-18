@@ -87,7 +87,6 @@ class mobile_activity_resource extends mobile_activity {
 	}
 	
 	private function extractResource($contextid,$revision){
-		//$fullpath = "/$contextid/$component/0/$filename";
 		$fs = get_file_storage();
 		$files = $fs->get_area_files($contextid, 'mod_resource', 'content', 0, 'sortorder DESC, id ASC', false);
 		$file = reset($files);

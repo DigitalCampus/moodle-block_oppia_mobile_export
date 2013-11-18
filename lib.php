@@ -85,7 +85,7 @@ function extractImageFile($content, $contextid, $contextname, $itemid, $course_r
 		$filename = $files_tmp['filenames'][$i][0];
 		echo "\t\ttrying file: ".$filename."\n";
 		$fullpath = "/$contextid/$contextname/$itemid/$filename";
-		
+		//echo "\t\ttrying file: ".$fullpath."\n";
 		$fs = get_file_storage();
 		$file = $fs->get_file_by_hash(sha1($fullpath));
 		$fh = $file->get_content_file_handle();
