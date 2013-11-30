@@ -291,7 +291,7 @@ libxml_use_internal_errors(true);
 $xml = new DOMDocument();
 $xml->load($course_root."/module.xml");
 
-if (!$xml->schemaValidate('./schema/schema.xsd')) {
+if (!$xml->schemaValidate('./oppia-schema.xsd')) {
 	print '<b>Errors Found!</b>';
 	libxml_display_errors();
 } else {
