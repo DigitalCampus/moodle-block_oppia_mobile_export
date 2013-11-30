@@ -193,6 +193,7 @@ foreach($sections as $sect) {
 		
 		
 		$i=1;
+		$no_activities = 0;
 		$activities = $xmlDoc->createElement("activities");
 		foreach ($sectionmods as $modnumber) {
 			
@@ -210,6 +211,7 @@ foreach($sections as $sect) {
 				$page->section = $orderno;
 				$page->process();
 				$page->getXML($mod,$i,true,$activities,$xmlDoc);
+				$no_activities++;
 			}
 			
 			if($mod->modname == 'quiz'){
@@ -226,6 +228,7 @@ foreach($sections as $sect) {
 				if ($quiz->get_is_valid()){
 					$quiz->process();
 					$quiz->getXML($mod,$i,true,$activities,$xmlDoc);
+					$no_activities++;
 				}
 			}
 			
@@ -237,12 +240,17 @@ foreach($sections as $sect) {
 				$resource->section = $orderno;
 				$resource->process();
 				$resource->getXML($mod,$i,true,$activities,$xmlDoc);
+				$no_activities++;
 			}
 			flush_buffers();
 			$i++;
 		}
-		$section->appendChild($activities);
-		$structure->appendChild($section);
+		if ($no_activities>0){
+			$section->appendChild($activities);
+			$structure->appendChild($section);
+		} else {
+			echo "\t\tNot exporting section as doesn't contain any activities\n";
+		}
 		$orderno++;
 	}
 }
@@ -275,32 +283,46 @@ if(count($MEDIA) > 0){
 
 $xmlDoc->save($course_root."/module.xml");
 
-echo "\nCreated module xml file\n";
-
-echo "\nAdding style sheet\n";
-
-if (!copy("styles/".$stylesheet, $course_root."/style.css")) {
-	echo "\n\nfailed to copy stylesheet...\n";
-}
-
-echo "\nCourse Export Complete\n";
-$dir2zip = "output/".$USER->id."/temp";
-$outputzip = "output/".$USER->id."/".strtolower($course->shortname)."-".$versionid.".zip";
-Zip($dir2zip,$outputzip);
-echo "\nCompressed file\n";
-deleteDir("output/".$USER->id."/temp");
 echo "</pre>";
-echo "Download exported course at <a href='".$outputzip."'>".$course->fullname."</a>";
 
-echo "<p><a href='cleanup.php?id=".$id."'>Cleanup files</a></p>";
+echo "<p>Validating module XML file...";
+libxml_use_internal_errors(true);
 
-if(count($advice)> 0){
-	echo "<p>Although your course has been exported you may want to address the following issues to make sure your course is easy to use on mobile devices:</p><ol>";
-	foreach($advice as $a){
-		echo "<li>".$a."</li>";
+$xml = new DOMDocument();
+$xml->load($course_root."/module.xml");
+
+if (!$xml->schemaValidate('./schema/schema.xsd')) {
+	print '<b>Errors Found!</b>';
+	libxml_display_errors();
+} else {
+	echo "validated<p/>";
+	echo "<p>Created module XMLfile</p>";
+	
+	echo "<p>Adding style sheet</p>";
+	
+	if (!copy("styles/".$stylesheet, $course_root."/style.css")) {
+		echo "<p>failed to copy stylesheet...</p>";
 	}
 	
-	echo "</ol>";
+	echo "<p>Course Export Complete</p>";
+	$dir2zip = "output/".$USER->id."/temp";
+	$outputzip = "output/".$USER->id."/".strtolower($course->shortname)."-".$versionid.".zip";
+	Zip($dir2zip,$outputzip);
+	echo "<p>Compressed file</p>";
+	deleteDir("output/".$USER->id."/temp");
+	
+	echo "<p>Download exported course at <a href='".$outputzip."'>".$course->fullname."</a></p>";
+	
+	echo "<p><a href='cleanup.php?id=".$id."'>Cleanup files</a></p>";
+	
+	if(count($advice)> 0){
+		echo "<p>Although your course has been exported you may want to address the following issues to make sure your course is easy to use on mobile devices:</p><ol>";
+		foreach($advice as $a){
+			echo "<li>".$a."</li>";
+		}
+	
+		echo "</ol>";
+	}
 }
 
 echo $OUTPUT->footer();
