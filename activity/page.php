@@ -6,6 +6,7 @@ class mobile_activity_page extends mobile_activity {
 	private $act = array();
 	private $page_media = array();
 	private $page_image = null;
+	private $page_related = array();
 	
 	function process(){
 		global $DB, $CFG, $MOBILE_LANGS, $DEFAULT_LANG, $MEDIA;
@@ -14,8 +15,10 @@ class mobile_activity_page extends mobile_activity {
 		
 		$context = get_context_instance(CONTEXT_MODULE, $cm->id);
 
-		$content = $this->extractFiles($page->content, $context->id, 'content', $page->revision, $this->courseroot);
 		$this->md5 =  md5($page->content).$this->id;
+		
+		$content = $this->extractFiles($page->content, $context->id, 'content', $page->revision, $this->courseroot);
+		$content = $this->extractRelated($page->content);
 		
 		// find all the langs on this page
 		$langs = extractLangs($content);
@@ -149,6 +152,23 @@ class mobile_activity_page extends mobile_activity {
 			}
 			$struct->appendChild($media);
 		}
+		if(count($this->page_related) > 0){
+			$related = $xmlDoc->createElement("related");
+			foreach ($this->page_related as $r){
+				$temp = $xmlDoc->createElement("activity");
+				$temp->appendChild($xmlDoc->createAttribute("order"))->appendChild($xmlDoc->createTextNode($r->order));
+				$temp->appendChild($xmlDoc->createAttribute("digest"))->appendChild($xmlDoc->createTextNode($r->digest));
+				foreach($r->activity as $a) {
+					$title = $xmlDoc->createElement("title");
+					$title->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($a->lang));
+					$title->appendChild($xmlDoc->createTextNode(strip_tags($a->title)));
+					$temp->appendChild($title);
+				}
+				$related->appendChild($temp);
+			}
+			$struct->appendChild($related);
+		}
+		
 		if($this->page_image){
 			$temp = $xmlDoc->createElement("image");
 			$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode($this->page_image));
@@ -237,6 +257,36 @@ class mobile_activity_page extends mobile_activity {
 		}
 		//replace all [[/media]] with </a>
 		$content = str_replace("[[/media]]", "</a>", $content);
+		return $content;
+	}
+	
+	private function extractRelated($content){
+		global $DB, $RELATED;
+		$regex = '((\[\[[[:space:]]?related=[\"|\'](?P<relatedobject>[\{\}\'\"\:0-9[:space:]]*)[[:space:]]?[\"|\']\]\]))';
+		preg_match_all($regex,$content,$related_tmp, PREG_OFFSET_CAPTURE);
+		
+		if(!isset($related_tmp['relatedobject']) || count($related_tmp['relatedobject']) == 0){
+			return $content;
+		}
+		
+		for($i=0;$i<count($related_tmp['relatedobject']);$i++){
+			$related = new stdClass();
+			$related->order = $i+1;
+			$related->activity = array();
+			$cm= get_coursemodule_from_id('page', $related_tmp['relatedobject'][$i][0]);
+			$page = $DB->get_record('page', array('id'=>$cm->instance), '*', MUST_EXIST);
+			$related->digest = md5($page->content).$related_tmp['relatedobject'][$i][0];
+			
+			$activity = new stdClass();
+			$activity->lang = "en";
+			$activity->title = $page->intro;
+			array_push($related->activity,$activity);
+			
+			array_push($this->page_related,$related);
+			
+			$toreplace = $related_tmp[0][$i][0];
+			$content = str_replace($toreplace, "", $content);
+		}
 		return $content;
 	}
 	
