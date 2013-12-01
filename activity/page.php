@@ -18,7 +18,7 @@ class mobile_activity_page extends mobile_activity {
 		$this->md5 =  md5($page->content).$this->id;
 		
 		$content = $this->extractFiles($page->content, $context->id, 'content', $page->revision, $this->courseroot);
-		$content = $this->extractRelated($page->content);
+		$content = $this->extractRelated($content);
 		
 		// find all the langs on this page
 		$langs = extractLangs($content);
