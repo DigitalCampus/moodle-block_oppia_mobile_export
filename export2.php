@@ -63,6 +63,7 @@ $course_root = "output/".$USER->id."/temp/".strtolower($course->shortname);
 mkdir($course_root,0777);
 mkdir($course_root."/images",0777);
 mkdir($course_root."/resources",0777);
+mkdir($course_root."/style_resources",0777);
 
 $context = get_context_instance(CONTEXT_COURSE, $course->id);
 $PAGE->set_context($context);
@@ -303,6 +304,10 @@ if (!$xml->schemaValidate('./oppia-schema.xsd')) {
 	if (!copy("styles/".$stylesheet, $course_root."/style.css")) {
 		echo "<p>failed to copy stylesheet...</p>";
 	}
+	
+	echo "<p>Copying style resources</p>";
+	list($filename, $extn) = explode('.', $stylesheet);
+	recurse_copy("styles/".$filename."-style-resources/", $course_root."/style_resources/");
 	
 	echo "<p>Course Export Complete</p>";
 	$dir2zip = "output/".$USER->id."/temp";

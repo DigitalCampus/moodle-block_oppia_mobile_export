@@ -41,7 +41,7 @@ class block_oppia_mobile_export extends block_base {
 	        $this->content->text .= "<p>".get_string('oppia_block_style','block_oppia_mobile_export')."<br/>";
 	        $this->content->text .= "<select name='stylesheet'>";
 	        while (false !== ($file = readdir($handle))) {
-	        	if($file!="." && $file!=".."){
+	        	if($file!="." && $file!=".." && !is_dir(dirname(__FILE__).'/styles/'.$file)){
 	        		$this->content->text .= "<option value='".$file."'>".$file."</option>";
 	        	}
 	        }
