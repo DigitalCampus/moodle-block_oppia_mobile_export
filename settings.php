@@ -12,9 +12,9 @@ if ($ADMIN->fulltree) {
 	$settings->add(new admin_setting_configtext('block_oppia_mobile_export_api_key', get_string('oppiaapikey', 'block_oppia_mobile_export'),
 			get_string('oppiaapikeyfull', 'block_oppia_mobile_export'), '', PARAM_TEXT));
 
-	$settings->add(new admin_setting_configtext('block_oppia_mobile_export_thumb_height', get_string('thumbheight', 'block_oppia_mobile_export'),'', 80, PARAM_INT));
+	$settings->add(new admin_setting_configtext('block_oppia_mobile_export_thumb_height', get_string('thumbheight', 'block_oppia_mobile_export'),'', 90, PARAM_INT));
 	 
-	$settings->add(new admin_setting_configtext('block_oppia_mobile_export_thumb_width', get_string('thumbwidth', 'block_oppia_mobile_export'),'', 140, PARAM_INT));
+	$settings->add(new admin_setting_configtext('block_oppia_mobile_export_thumb_width', get_string('thumbwidth', 'block_oppia_mobile_export'),'', 135, PARAM_INT));
 	
 	$settings->add(new admin_setting_configtext('block_oppia_mobile_export_thumb_bg_r', get_string('thumb_bg_r', 'block_oppia_mobile_export'),'', 51, PARAM_INT));
 	$settings->add(new admin_setting_configtext('block_oppia_mobile_export_thumb_bg_g', get_string('thumb_bg_g', 'block_oppia_mobile_export'),'', 51, PARAM_INT));
