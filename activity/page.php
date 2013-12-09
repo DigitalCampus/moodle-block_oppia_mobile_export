@@ -59,7 +59,11 @@ class mobile_activity_page extends mobile_activity {
 				
 				// add html header tags etc
 				// need to do this to ensure it all has the right encoding when loaded in android webview
-				$webpage = '<body>'.$t.'</body>';
+				$webpage =  "<html><head>";
+				$webpage .= "<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>";
+				$webpage .= "<link href='style.css' rel='stylesheet' type='text/css'/>";
+				$webpage .= "</head>";
+				$webpage .= '<body>'.$t.'</body></html>';
 					
 				$mpffilename = $this->makePageFilename($this->section,$cm->id,$l);
 				$index = $this->courseroot."/".$mpffilename;

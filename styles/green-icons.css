@@ -80,25 +80,25 @@ a {
 
 .definition{
 	padding: 4px 4px 4px 30px;
-	background-image: url('book.png'); 
+	background-image: url('style_resources/book.png'); 
 	background-repeat: no-repeat;
 }
 
 .action {
 	padding: 4px 4px 4px 30px;
-	background-image: url('tick.png'); 
+	background-image: url('style_resources/tick.png'); 
 	background-repeat: no-repeat;
 }
 
 .warning {
 	padding: 4px 4px 4px 30px;
-	background-image: url('warning.png'); 
+	background-image: url('style_resources/warning.png'); 
 	background-repeat: no-repeat;
 }
 
 .suggestion {
 	padding: 4px 4px 4px 30px;
-	background-image: url('info.png'); 
+	background-image: url('style_resources/info.png'); 
 	background-repeat: no-repeat;
 }
 
