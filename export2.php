@@ -230,6 +230,8 @@ foreach($sections as $sect) {
 					$quiz->process();
 					$quiz->getXML($mod,$i,true,$activities,$xmlDoc);
 					$no_activities++;
+				} else {
+					echo "\t\tNot exporting quiz as doesn't contain any supported questions.\n";
 				}
 			}
 			

@@ -2,6 +2,7 @@
 
 class mobile_activity_quiz extends mobile_activity {
 
+	private $supported_types = array('multichoice', 'match', 'truefalse', 'description', 'shortanswer', 'numerical');
 	private $summary;
 	private $shortname;
 	private $content = "";
@@ -36,10 +37,10 @@ class mobile_activity_quiz extends mobile_activity {
 		// check has at least one non-essay and non-random question
 		$count_omitted = 0;
 		foreach($qs as $q){
-			if($q->qtype == 'essay' || $q->qtype == 'random'){
-				$count_omitted++;
-			} else {
+			if(in_array($q->qtype,$this->supported_types)){
 				$this->no_questions++;
+			} else {
+				$count_omitted++;
 			}
 		}
 		if($count_omitted == count($qs)){
@@ -92,6 +93,7 @@ class mobile_activity_quiz extends mobile_activity {
 				$quiz_id = $resp->quizzes[0]->quiz_id;	
 				$quiz = $mQH->exec('quiz/'.$quiz_id, array(),'get');
 				$this->content = json_encode($quiz);
+				$this->exportQuestionImages();
 				return;
 			}
 			
@@ -232,6 +234,26 @@ class mobile_activity_quiz extends mobile_activity {
 		} catch (moodle_exception $me){
 			echo "\t\tSkipping quiz since contains no questions\n";
 			$this->is_valid = false;
+			return;
+		}
+	}
+	
+	function exportQuestionImages (){
+		global $DB,$CFG,$USER,$QUIZ_CACHE,$CFG;
+		$cm = get_coursemodule_from_id('quiz', $this->id);
+		$context = get_context_instance(CONTEXT_MODULE, $cm->id);
+		$quiz = $DB->get_record('quiz', array('id'=>$cm->instance), '*', MUST_EXIST);
+		
+		$quizobj = quiz::create($cm->instance, $USER->id);
+		try {
+			$quizobj->preload_questions();
+			$quizobj->load_questions();
+			$qs = $quizobj->get_questions();
+			foreach($qs as $q){
+				$question_image = extractImageFile($q->questiontext,$q->contextid,'question/questiontext',$q->id,$this->courseroot);
+			}
+			
+		} catch (moodle_exception $me){
 			return;
 		}
 	}
