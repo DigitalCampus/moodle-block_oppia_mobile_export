@@ -157,18 +157,7 @@ function resizeImage($image,$image_new_name, $image_width, $image_height, $trans
 		imagecopyresampled($image_new, $image_src, 0, $border, 0, 0, $image_width , $image_height- ($border*2) , $orig_w, $orig_h);
 	} 
 	
-	switch($size['mime']){
-		case 'image/jpeg':
-			imagejpeg($image_new,$image_new_name,75);
-			break;
-		case 'image/png':
-			imagepng($image_new,$image_new_name,9);
-			break;
-		case 'image/gif':
-			imagegif($image_new,$image_new_name);
-			break;
-	}
-	
+	imagepng($image_new,$image_new_name,9);
 
 	imagedestroy($image_new);
 	imagedestroy($image_src);
