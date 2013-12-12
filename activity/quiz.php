@@ -77,7 +77,13 @@ class mobile_activity_quiz extends mobile_activity {
 				die;
 			}
 			
-			$filename = extractImageFile($quiz->intro,$context->id,'mod_quiz/intro','0',$this->courseroot);
+			$filename = extractImageFile($quiz->intro,
+										'mod_quiz',
+										'intro',
+										'0',
+										$context->id,
+										$this->courseroot); 		
+			
 			if($filename){
 				$this->quiz_image = $filename;
 				resizeImage($this->courseroot."/".$this->quiz_image,
@@ -150,7 +156,13 @@ class mobile_activity_quiz extends mobile_activity {
 				$props[0] = array('name' => "maxscore", 'value' => $q->maxmark);
 				
 				// find if the question text has any images in it
-				$question_image = extractImageFile($q->questiontext,$q->contextid,'question/questiontext',$q->id,$this->courseroot);
+				$question_image = extractImageFile($q->questiontext,
+										'question',
+										'questiontext',
+										$q->id,
+										$q->contextid,
+										$this->courseroot); 
+			
 				if($question_image){
 					$props[1] = array('name' => "image", 'value' => $question_image);
 				}
@@ -243,14 +255,18 @@ class mobile_activity_quiz extends mobile_activity {
 		$cm = get_coursemodule_from_id('quiz', $this->id);
 		$context = get_context_instance(CONTEXT_MODULE, $cm->id);
 		$quiz = $DB->get_record('quiz', array('id'=>$cm->instance), '*', MUST_EXIST);
-		
 		$quizobj = quiz::create($cm->instance, $USER->id);
 		try {
 			$quizobj->preload_questions();
 			$quizobj->load_questions();
 			$qs = $quizobj->get_questions();
 			foreach($qs as $q){
-				$question_image = extractImageFile($q->questiontext,$q->contextid,'question/questiontext',$q->id,$this->courseroot);
+				$question_image = extractImageFile($q->questiontext,
+										'question',
+										'questiontext',
+										$q->id,
+										$q->contextid,
+										$this->courseroot); 
 			}
 			
 		} catch (moodle_exception $me){

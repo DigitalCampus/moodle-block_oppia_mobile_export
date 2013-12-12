@@ -17,7 +17,12 @@ class mobile_activity_page extends mobile_activity {
 
 		$this->md5 =  md5($page->content).$this->id;
 		
-		$content = $this->extractFiles($page->content, $context->id, 'content', $page->revision, $this->courseroot);
+		$content = $this->extractFiles($page->content,
+										'mod_page',
+										'content',
+										$page->revision,
+										$context->id,
+										$this->courseroot);
 		$content = $this->extractRelated($content);
 		
 		// find all the langs on this page
@@ -25,9 +30,10 @@ class mobile_activity_page extends mobile_activity {
 		
 		// get the image from the intro section
 		$eiffilename = extractImageFile($page->intro,
-										$context->id,
-										'mod_page/intro',
+										'mod_page',
+										'intro',
 										'0',
+										$context->id,
 										$this->courseroot);
 		if($eiffilename){
 			$this->page_image = $eiffilename;
@@ -48,7 +54,7 @@ class mobile_activity_page extends mobile_activity {
 				$t = $this->extractMedia($t);
 				// if page has media and no special icon for page, extract the image for first video
 				if (count($this->page_media) > 0 && $this->page_image == null){
-					if($this->extractMediaImage($pre_content,$context->id,'mod_page/content')){
+					if($this->extractMediaImage($pre_content,'mod_page','content',0, $context->id)){
 						resizeImage($this->courseroot."/".$this->page_image,
 									$this->courseroot."/images/".$cm->id,
 									$CFG->block_oppia_mobile_export_thumb_width,
@@ -81,7 +87,7 @@ class mobile_activity_page extends mobile_activity {
 			$content = $this->extractMedia($content);
 			// if page has media and no special icon for page, extract the image for first video
 			if (count($this->page_media) > 0 && $this->page_image == null){
-				if($this->extractMediaImage($pre_content,$context->id,'mod_page/content')){
+				if($this->extractMediaImage($pre_content,'mod_page','content',0, $context->id)){
 					resizeImage($this->courseroot."/".$this->page_image,
 								$this->courseroot."/images/".$cm->id,
 								$CFG->block_oppia_mobile_export_thumb_width,
@@ -89,7 +95,13 @@ class mobile_activity_page extends mobile_activity {
 					$this->page_image = "/images/".$cm->id;
 				}
 			} else if ($this->page_image == null){
-				$piffilename = extractImageFile($page->content,$context->id,'mod_page/content','0',$this->courseroot);	
+				$piffilename = extractImageFile($page->content,
+										'mod_page',
+										'content',
+										'0',
+										$context->id,
+										$this->courseroot);
+	
 				if($piffilename){
 					$this->page_image = $piffilename;
 					resizeImage($this->courseroot."/".$this->page_image,
@@ -189,7 +201,7 @@ class mobile_activity_page extends mobile_activity {
 		}
 	}
 	
-	private function extractFiles($content, $contextid, $filearea, $itemid, $course_root){
+	private function extractFiles($content, $component, $filearea, $itemid, $contextid){
 		global $CFG;
 		
 		preg_match_all('((@@PLUGINFILE@@/(?P<filenames>[\w\W]*?)[\"|\']))',$content,$files_tmp, PREG_OFFSET_CAPTURE);
@@ -203,34 +215,32 @@ class mobile_activity_page extends mobile_activity {
 			$filename = urldecode($files_tmp['filenames'][$i][0]);
 			
 			echo "\t\ttrying file: ".$filename."\n";
-			$fullpath = "/$contextid/mod_page/$filearea/0/". $filename;
+			$fullpath = "/$contextid/$component/$filearea/$itemid/$filename";
 			$fs = get_file_storage();
-			$file = $fs->get_file_by_hash(sha1($fullpath));
-			$fh = $file->get_content_file_handle();
-	
-			$originalfilename = $files_tmp['filenames'][$i][0];
-			//hack to get around the possibilty of the filename being in a directory structure
-			$tmp = explode("/",$filename);
-			$filename = $tmp[count($tmp)-1];
-	
-			//copy file
-			$imgfile = $course_root."/images/".$filename;
-			$ifh = fopen($imgfile, 'w');
-	
-			while(!feof($fh)) {
-				$data = fgets($fh, 1024);
-				fwrite($ifh, $data);
+			$fileinfo = array(
+					'component' => $component,
+					'filearea' => $filearea,
+					'itemid' => $itemid,
+					'contextid' => $contextid,
+					'filepath' => '/',
+					'filename' => $filename);
+			$file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
+					$fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
+			
+			if ($file) {
+				$imgfile = $this->courseroot."/images/".$filename;
+				$file->copy_content_to($imgfile);
+			} else {
+				echo "\nImage file not found\n";
 			}
-			fclose($ifh);
-			fclose($fh);
+			
 			$tr = new StdClass;
-			$tr->originalfilename = $originalfilename;
 			$tr->filename = $filename;
 			array_push($toreplace, $tr);
 			echo "\t\tFile: ".$filename." successfully exported\n";
 		}
 		foreach($toreplace as $tr){
-			$content = str_replace('src="@@PLUGINFILE@@/'.$tr->originalfilename, 'src="images/'.$tr->filename, $content);
+			$content = str_replace('src="@@PLUGINFILE@@/'.$tr->filename, 'src="images/'.$tr->filename, $content);
 		}
 		return $content;
 	}
@@ -298,7 +308,7 @@ class mobile_activity_page extends mobile_activity {
 		return $content;
 	}
 	
-	private function extractMediaImage($content,$contextid, $filearea){
+	private function extractMediaImage($content,$component, $filearea, $itemid, $contextid){
 		$regex = '((\]\])([[:space:]]*)(\<img[[:space:]]src=[\"|\']images/(?P<filenames>[\w\W]*?)[\"|\']))';
 		
 		preg_match_all($regex,$content,$files_tmp, PREG_OFFSET_CAPTURE);
@@ -309,26 +319,26 @@ class mobile_activity_page extends mobile_activity {
 		$filename = $files_tmp['filenames'][0][0];
 			
 		echo "\t\ttrying file: ".$filename."\n";
-		$fullpath = "/$contextid/$filearea/0/$filename";
+		
+		$fullpath = "/$contextid/$component/$filearea/$itemid/$filename";
 		$fs = get_file_storage();
-		$file = $fs->get_file_by_hash(sha1($fullpath));
-		$fh = $file->get_content_file_handle();
-		
-		$originalfilename = $filename;
-		//hack to get around the possibilty of the filename being in a directory structure
-		$tmp = explode("/",$filename);
-		$filename = $tmp[count($tmp)-1];
-		
-		//copy file
-		$imgfile = $this->courseroot."/images/".$filename;
-		$ifh = fopen($imgfile, 'w');
-		
-		while(!feof($fh)) {
-			$data = fgets($fh, 1024);
-			fwrite($ifh, $data);
+		$fileinfo = array(
+				'component' => $component,
+				'filearea' => $filearea,
+				'itemid' => 0,
+				'contextid' => $contextid,
+				'filepath' => '/',
+				'filename' => $filename);
+		$file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
+				$fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
+			
+		if ($file) {
+			$imgfile = $this->courseroot."/images/".$filename;
+			$file->copy_content_to($imgfile);
+		} else {
+			echo "\nImage file not found\n";
 		}
-		fclose($ifh);
-		fclose($fh);
+		
 		echo "\t\tImage for Media file: ".$filename." successfully exported\n";
 		$this->page_image = "images/".$filename;
 		return true;

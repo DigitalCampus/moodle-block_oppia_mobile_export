@@ -142,10 +142,12 @@ foreach ($sectionmods as $modnumber) {
 
 // get module image (from course summary)
 $filename = extractImageFile($course->summary,
-								$context->id,
-								'course/summary',
-								'0',
-								$course_root );
+							'course',
+							'summary',
+							'0',
+							$context->id,
+							$course_root);
+
 if($filename){
 	resizeImage($course_root."/".$filename,
 				$course_root."/images/".$context->id,
@@ -184,7 +186,12 @@ foreach($sections as $sect) {
 			$section->appendChild($temp);
 		}
 		// get image for this section
-		$filename = extractImageFile($thissection->summary, $context->id, 'course/section', $sect->id, $course_root);
+		$filename = extractImageFile($thissection->summary,
+										'course',
+										'section',
+										$sect->id,
+										$context->id,
+										$course_root); 
 		
 		if($filename){
 			$temp = $xmlDoc->createElement("image");

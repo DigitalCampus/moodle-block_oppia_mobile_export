@@ -71,7 +71,7 @@ function extractLangs($content){
 	return $tempLangsRev;
 }
 
-function extractImageFile($content, $contextid, $contextname, $itemid, $course_root){
+function extractImageFile($content, $component, $filearea, $itemid, $contextid, $course_root){
 	global $CFG;
 	//find if any images/links exist
 	preg_match_all('((@@PLUGINFILE@@/(?P<filenames>[\w\.\-\_[:space:]]*)[\"|\']))',$content,$files_tmp, PREG_OFFSET_CAPTURE);
@@ -84,29 +84,29 @@ function extractImageFile($content, $contextid, $contextname, $itemid, $course_r
 	for($i=0;$i<count($files_tmp['filenames']);$i++){
 		$filename = $files_tmp['filenames'][$i][0];
 		echo "\t\ttrying file: ".$filename."\n";
-		$fullpath = "/$contextid/$contextname/$itemid/$filename";
-		//echo "\t\ttrying file: ".$fullpath."\n";
+		
+		
+		$fullpath = "/$contextid/$component/$filearea/$itemid/$filename";
 		$fs = get_file_storage();
-		$file = $fs->get_file_by_hash(sha1($fullpath));
-		$fh = $file->get_content_file_handle();
-
-		$originalfilename = $filename;
-		//hack to get around the possibilty of the filename being in a directory structure
-		$tmp = explode("/",$filename);
-		$filename = $tmp[count($tmp)-1];
-
-		//copy file
-		$imgfile = $course_root."/images/".sha1($fullpath);
-		$ifh = fopen($imgfile, 'w');
-
-		while(!feof($fh)) {
-			$data = fgets($fh, 1024);
-			fwrite($ifh, $data);
+		$fileinfo = array(
+				'component' => $component,   
+				'filearea' => $filearea,     
+				'itemid' => $itemid,               
+				'contextid' => $contextid,
+				'filepath' => '/',           
+				'filename' => $filename);
+		$file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
+				$fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
+		
+		if ($file) {
+			$imgfile = $course_root."/images/".sha1($fullpath);
+			$file->copy_content_to($imgfile);
+		} else {
+			echo "\nImage file not found\n";
 		}
-		fclose($ifh);
-		fclose($fh);
+		
 		$tr = new StdClass;
-		$tr->originalfilename = $originalfilename;
+		$tr->originalfilename = $filename;
 		$tr->filename = sha1($fullpath);
 		echo "\t\tFile: ".sha1($fullpath)." successfully exported\n";
 	}

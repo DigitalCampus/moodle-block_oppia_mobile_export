@@ -15,7 +15,13 @@ class mobile_activity_resource extends mobile_activity {
 		$context = get_context_instance(CONTEXT_MODULE, $cm->id);
 		$this->extractResource($context->id, $this->resource->revision);
 		
-		$eiffilename = extractImageFile($this->resource->intro,$context->id,'mod_resource/intro','0',$this->courseroot);
+		$eiffilename = extractImageFile($this->resource->intro,
+										'mod_resource',
+										'intro',
+										'0',
+										$context->id,
+										$this->courseroot); 
+	
 		if($eiffilename){
 			$this->resource_image = $eiffilename;
 			resizeImage($this->courseroot."/".$this->resource_image,
@@ -69,12 +75,12 @@ class mobile_activity_resource extends mobile_activity {
 				$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($l));
 				$struct->appendChild($temp);
 			}
-			} else {
-				$temp = $xmlDoc->createElement("description");
-				$temp->appendChild($xmlDoc->createTextNode(strip_tags($this->resource->intro)));
-				$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
-				$struct->appendChild($temp);
-			}
+		} else {
+			$temp = $xmlDoc->createElement("description");
+			$temp->appendChild($xmlDoc->createTextNode(strip_tags($this->resource->intro)));
+			$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
+			$struct->appendChild($temp);
+		}
 		$temp = $xmlDoc->createElement("location",$this->resource_filename);
 		$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
 		$temp->appendChild($xmlDoc->createAttribute("type"))->appendChild($xmlDoc->createTextNode($this->resource_type));
@@ -90,19 +96,9 @@ class mobile_activity_resource extends mobile_activity {
 		$fs = get_file_storage();
 		$files = $fs->get_area_files($contextid, 'mod_resource', 'content', 0, 'sortorder DESC, id ASC', false);
 		$file = reset($files);
-		$path = '/'.$contextid.'/mod_resource/content/0'. $file->get_filepath().$file->get_filename();
-		$fh = $file->get_content_file_handle();
-		
-		//copy file
 		$resourcefile = $this->courseroot."/resources/".$file->get_filename();
-		$ifh = fopen($resourcefile, 'w');
-		
-		while(!feof($fh)) {
-			$data = fgets($fh, 1024);
-			fwrite($ifh, $data);
-		}
-		fclose($ifh);
-		fclose($fh);
+		$file->copy_content_to($resourcefile);
+
 
 		$finfo = new finfo(FILEINFO_MIME);
 		$type = $finfo->file($resourcefile);
