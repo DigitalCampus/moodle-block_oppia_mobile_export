@@ -20,7 +20,7 @@ class mobile_activity_page extends mobile_activity {
 		$content = $this->extractFiles($page->content,
 										'mod_page',
 										'content',
-										$page->revision,
+										0,
 										$context->id,
 										$this->courseroot);
 		$content = $this->extractRelated($content);
@@ -32,7 +32,7 @@ class mobile_activity_page extends mobile_activity {
 		$eiffilename = extractImageFile($page->intro,
 										'mod_page',
 										'intro',
-										'0',
+										0,
 										$context->id,
 										$this->courseroot);
 		if($eiffilename){
@@ -98,7 +98,7 @@ class mobile_activity_page extends mobile_activity {
 				$piffilename = extractImageFile($page->content,
 										'mod_page',
 										'content',
-										'0',
+										0,
 										$context->id,
 										$this->courseroot);
 	
