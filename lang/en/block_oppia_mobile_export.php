@@ -44,6 +44,8 @@ $string['course_icon_height'] = 'Course icon height';
 
 $string['thumbheight'] = 'Icon height';
 $string['thumbwidth'] = 'Icon width';
+$string['thumbcrop'] = 'Crop Icon';
+$string['thumbcrop_info'] = 'Whether to crop the icon, untick to just scale the icon (which may leave borders around the image)';
 
 $string['thumb_bg_r'] = 'Background colour for images (red channel)';
 $string['thumb_bg_g'] = 'Background colour for images (green channel)';

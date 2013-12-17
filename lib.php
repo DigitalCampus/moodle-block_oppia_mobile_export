@@ -115,6 +115,17 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
 
 function resizeImage($image,$image_new_name, $image_width, $image_height, $transparent=false){
 	global $CFG;
+	
+	if($CFG->block_oppia_mobile_export_thumb_crop){
+		resizeImageCrop($image,$image_new_name, $image_width, $image_height, $transparent);
+	} else {
+		resizeImageScale($image,$image_new_name, $image_width, $image_height, $transparent);
+	}
+	
+}
+
+function resizeImageScale($image,$image_new_name, $image_width, $image_height, $transparent=false){
+	global $CFG;
 	$size=GetimageSize($image);
 	$orig_w = $size[0];
 	$orig_h = $size[1];
@@ -157,6 +168,57 @@ function resizeImage($image,$image_new_name, $image_width, $image_height, $trans
 		imagecopyresampled($image_new, $image_src, 0, $border, 0, 0, $image_width , $image_height- ($border*2) , $orig_w, $orig_h);
 	} 
 	
+	imagepng($image_new,$image_new_name,9);
+
+	imagedestroy($image_new);
+	imagedestroy($image_src);
+}
+
+function resizeImageCrop($image,$image_new_name, $image_width, $image_height, $transparent=false){
+	global $CFG;
+	$size=GetimageSize($image);
+	$orig_w = $size[0];
+	$orig_h = $size[1];
+	$ratio_src = $orig_w/$orig_h;
+
+	$ratio_target = $image_width/$image_height;
+
+	$image_new = ImageCreateTrueColor($image_width, $image_height);
+
+
+	if(!$transparent){
+		$bg_colour = imagecolorallocate($image_new,
+				$CFG->block_oppia_mobile_export_thumb_bg_r,
+				$CFG->block_oppia_mobile_export_thumb_bg_g,
+				$CFG->block_oppia_mobile_export_thumb_bg_b);
+		imagefill($image_new, 0, 0, $bg_colour);
+	} else {
+		imagealphablending( $image_new, false );
+		imagesavealpha($image_new, true);
+	}
+
+
+	switch($size['mime']){
+		case 'image/jpeg':
+			$image_src = imagecreatefromjpeg($image);
+			break;
+		case 'image/png':
+			$image_src = imagecreatefrompng($image);
+			break;
+		case 'image/gif':
+			$image_src = imagecreatefromgif($image);
+			break;
+	}
+
+	
+	if($ratio_src > $ratio_target){
+		$crop = floor(($orig_w - ($orig_h*$image_width/$image_height))/2);
+		imagecopyresampled($image_new, $image_src, 0, 0, $crop, 0, $image_width, $image_height, $orig_w-(2*$crop), $orig_h);
+	} else {
+		$crop = floor(($orig_h - ($orig_w*$image_height/$image_width))/2);
+		imagecopyresampled($image_new, $image_src, 0, 0,  0, $crop,  $image_width, $image_height, $orig_w, $orig_h -(2*$crop));
+	}
+
 	imagepng($image_new,$image_new_name,9);
 
 	imagedestroy($image_new);
