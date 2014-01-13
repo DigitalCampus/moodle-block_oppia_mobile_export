@@ -56,7 +56,6 @@ foreach ($sectionmods as $modnumber) {
 	$mod = $mods[$modnumber];
 		
 	if($mod->modname == 'quiz'){
-		echo "\tExporting quiz: ".$mod->name."\n";
 
 		$quiz = new mobile_activity_quiz();
 		$quiz->init($course->shortname,"Pre-test",0);
