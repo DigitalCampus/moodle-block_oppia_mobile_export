@@ -12,9 +12,7 @@ class mobile_activity_page extends mobile_activity {
 		global $DB, $CFG, $MOBILE_LANGS, $DEFAULT_LANG, $MEDIA;
 		$cm= get_coursemodule_from_id('page', $this->id);
 		$page = $DB->get_record('page', array('id'=>$cm->instance), '*', MUST_EXIST);
-		
-		$context = get_context_instance(CONTEXT_MODULE, $cm->id);
-
+		$context = context_module::instance($cm->id);
 		$this->md5 =  md5($page->content).$this->id;
 		
 		$content = $this->extractFiles($page->content,

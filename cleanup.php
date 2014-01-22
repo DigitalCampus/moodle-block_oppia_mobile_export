@@ -6,8 +6,9 @@ $id = required_param('id',PARAM_INT);
 $course = $DB->get_record('course', array('id'=>$id));
 
 $PAGE->set_url('/blocks/oppia_mobile_export/export.php', array('id' => $id));
-preload_course_contexts($id);
-if (!$context = get_context_instance(CONTEXT_COURSE, $course->id)) {
+context_helper::preload_course($id);
+$context = context_course::instance($course->id);
+if (!$context) {
 	print_error('nocontext');
 }
 

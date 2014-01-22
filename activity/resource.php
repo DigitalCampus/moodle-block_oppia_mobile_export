@@ -12,7 +12,7 @@ class mobile_activity_resource extends mobile_activity {
 		global $DB, $CFG, $MOBILE_LANGS, $DEFAULT_LANG, $MEDIA;
 		$cm= get_coursemodule_from_id('resource', $this->id);
 		$this->resource = $DB->get_record('resource', array('id'=>$cm->instance), '*', MUST_EXIST);
-		$context = get_context_instance(CONTEXT_MODULE, $cm->id);
+		$context = context_module::instance($cm->id);
 		$this->extractResource($context->id, $this->resource->revision);
 		
 		$eiffilename = extractImageFile($this->resource->intro,

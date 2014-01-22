@@ -21,7 +21,7 @@ class mobile_activity_quiz extends mobile_activity {
 	function preprocess(){
 		global $DB,$USER;
 		$cm = get_coursemodule_from_id('quiz', $this->id);
-		$context = get_context_instance(CONTEXT_MODULE, $cm->id);
+		$context = context_module::instance($cm->id);
 		$quiz = $DB->get_record('quiz', array('id'=>$cm->instance), '*', MUST_EXIST);
 		
 		$quizobj = quiz::create($cm->instance, $USER->id);
@@ -51,7 +51,7 @@ class mobile_activity_quiz extends mobile_activity {
 	function process(){
 		global $DB,$CFG,$USER,$QUIZ_CACHE,$CFG;
 		$cm = get_coursemodule_from_id('quiz', $this->id);
-		$context = get_context_instance(CONTEXT_MODULE, $cm->id);
+		$context = context_module::instance($cm->id);
 		$quiz = $DB->get_record('quiz', array('id'=>$cm->instance), '*', MUST_EXIST);
 	
 		$quizobj = quiz::create($cm->instance, $USER->id);
@@ -253,7 +253,7 @@ class mobile_activity_quiz extends mobile_activity {
 	function exportQuestionImages (){
 		global $DB,$CFG,$USER,$QUIZ_CACHE,$CFG;
 		$cm = get_coursemodule_from_id('quiz', $this->id);
-		$context = get_context_instance(CONTEXT_MODULE, $cm->id);
+		$context = context_module::instance($cm->id);
 		$quiz = $DB->get_record('quiz', array('id'=>$cm->instance), '*', MUST_EXIST);
 		$quizobj = quiz::create($cm->instance, $USER->id);
 		try {
