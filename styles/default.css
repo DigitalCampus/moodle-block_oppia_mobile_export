@@ -44,12 +44,12 @@ ul {
 	margin: 10px 0;
 }
 
-li {
+ul li {
 	margin-left:25px;
 	list-style: none;	
 }
 
-li:before {
+ul li:before {
       /* For a round bullet */
       content:'\2022';
       /* For a square bullet */
@@ -63,7 +63,15 @@ li:before {
       color: #77A240;
       font-size: 30px;
     }
-  
+
+ol {
+	margin: 10px 0;
+}
+
+ol li {
+	margin-left:25px;
+}
+
 a {
 	color: #495525;
 	text-decoration: underline;
