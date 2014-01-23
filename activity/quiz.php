@@ -250,6 +250,68 @@ class mobile_activity_quiz extends mobile_activity {
 		}
 	}
 	
+	function export2print(){
+		global $DB,$CFG,$USER,$QUIZ_CACHE,$CFG;
+		$cm = get_coursemodule_from_id('quiz', $this->id);
+		$context = context_module::instance($cm->id);
+		$quiz = $DB->get_record('quiz', array('id'=>$cm->instance), '*', MUST_EXIST);
+		
+		$quizobj = quiz::create($cm->instance, $USER->id);
+		$return_content = "";
+		try {
+			$quizobj->preload_questions();
+			$quizobj->load_questions();
+			$qs = $quizobj->get_questions();
+			
+			$return_content = "<ol>";
+			
+			$i = 1;
+			foreach($qs as $q){
+				// skip any essay questions
+				if($q->qtype == 'essay'){
+					continue;
+				}
+			
+				// skip any random questions
+				if($q->qtype == 'random'){
+					continue;
+				}
+				
+				$return_content .= "<li>";
+				$return_content .= "[".$q->qtype."] ".strip_tags($q->questiontext);
+				
+				if(isset($q->options->subquestions)){
+					$return_content .= "<ul>";
+					foreach($q->options->subquestions as $sq){
+						$return_content .= "<li>".strip_tags($sq->questiontext)." -> ".strip_tags($sq->answertext)."</li>";
+					}
+					$return_content .= "</ul>";
+				}
+				
+				if(isset($q->options->answers)){
+					$return_content .= "<ul>";
+					foreach($q->options->answers as $r){
+						$return_content .= "<li>".strip_tags($r->answer)." [". ($r->fraction * $q->maxmark) ."] ";
+						if(strip_tags($r->feedback) != ""){
+							$return_content .= "feedback: ".strip_tags($r->feedback);
+						}
+						$return_content .= "</li>";
+					}
+					$return_content .= "</ul>";
+				}
+				$return_content .= "</li>";
+				
+				$i++;
+			}
+			$return_content .= "</ol>";
+			return $return_content;
+			
+		} catch (moodle_exception $me){
+			$this->is_valid = false;
+			return;
+		}	
+	}
+	
 	function exportQuestionImages (){
 		global $DB,$CFG,$USER,$QUIZ_CACHE,$CFG;
 		$cm = get_coursemodule_from_id('quiz', $this->id);

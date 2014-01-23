@@ -44,6 +44,10 @@ class mobile_activity_resource extends mobile_activity {
 		}
 	}
 	
+	function export2print(){
+	
+	}
+	
 	function getXML($mod,$counter,$activity=true,&$node,&$xmlDoc){
 		global $DEFAULT_LANG;
 		if($activity){

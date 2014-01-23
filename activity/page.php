@@ -131,6 +131,94 @@ class mobile_activity_page extends mobile_activity {
 		}
 	}
 	
+	function export2print(){
+		global $DB, $CFG, $MOBILE_LANGS, $DEFAULT_LANG, $MEDIA;
+		$cm= get_coursemodule_from_id('page', $this->id);
+		$page = $DB->get_record('page', array('id'=>$cm->instance), '*', MUST_EXIST);
+		$context = context_module::instance($cm->id);
+		$content = $this->extractFiles($page->content,
+				'mod_page',
+				'content',
+				0,
+				$context->id,
+				$this->courseroot);
+		$langs = extractLangs($content);
+		
+		// get the image from the intro section
+		$eiffilename = extractImageFile($page->intro,
+				'mod_page',
+				'intro',
+				0,
+				$context->id,
+				$this->courseroot);
+		if($eiffilename){
+			$this->page_image = $eiffilename;
+			resizeImage($this->courseroot."/".$this->page_image,
+			$this->courseroot."/images/".$cm->id,
+			$CFG->block_oppia_mobile_export_thumb_width,
+			$CFG->block_oppia_mobile_export_thumb_height);
+			$this->page_image = "/images/".$cm->id;
+			//delete original image
+			unlink($this->courseroot."/".$eiffilename) or die('Unable to delete the file');
+		}
+		unset($eiffilename);
+		$return_content = "";
+		if(is_array($langs) && count($langs)>0){
+			foreach($langs as $l=>$t){
+		
+				$pre_content = $t;
+				$t = $this->extractMedia($t);
+				// if page has media and no special icon for page, extract the image for first video
+				if (count($this->page_media) > 0 && $this->page_image == null){
+					if($this->extractMediaImage($pre_content,'mod_page','content',0, $context->id)){
+						resizeImage($this->courseroot."/".$this->page_image,
+						$this->courseroot."/images/".$cm->id,
+						$CFG->block_oppia_mobile_export_thumb_width,
+						$CFG->block_oppia_mobile_export_thumb_height);
+						$this->page_image = "/images/".$cm->id;
+					}
+				}
+	
+				$return_content .= $t;
+					
+			}
+		} else {
+			$pre_content = $content;
+			$content = $this->extractMedia($content);
+			// if page has media and no special icon for page, extract the image for first video
+			if (count($this->page_media) > 0 && $this->page_image == null){
+				if($this->extractMediaImage($pre_content,'mod_page','content',0, $context->id)){
+					resizeImage($this->courseroot."/".$this->page_image,
+					$this->courseroot."/images/".$cm->id,
+					$CFG->block_oppia_mobile_export_thumb_width,
+					$CFG->block_oppia_mobile_export_thumb_height);
+					$this->page_image = "/images/".$cm->id;
+				}
+			} else if ($this->page_image == null){
+				$piffilename = extractImageFile($page->content,
+						'mod_page',
+						'content',
+						0,
+						$context->id,
+						$this->courseroot);
+		
+				if($piffilename){
+					$this->page_image = $piffilename;
+					resizeImage($this->courseroot."/".$this->page_image,
+					$this->courseroot."/images/".$cm->id,
+					$CFG->block_oppia_mobile_export_thumb_width,
+					$CFG->block_oppia_mobile_export_thumb_height);
+					$this->page_image = "/images/".$cm->id;
+					unlink($this->courseroot."/".$piffilename) or die('Unable to delete the file');
+				}
+			}
+			$return_content = $content;
+				
+		}
+		return $return_content;
+		
+	}
+	
 	function getXML($mod,$counter,$activity=true,&$node,&$xmlDoc){
 		global $DEFAULT_LANG;
 		if($activity){
@@ -212,7 +300,7 @@ class mobile_activity_page extends mobile_activity {
 		for($i=0;$i<count($files_tmp['filenames']);$i++){
 			$filename = urldecode($files_tmp['filenames'][$i][0]);
 			
-			echo "\t\ttrying file: ".$filename."\n";
+			//echo "\t\ttrying file: ".$filename."\n";
 			$fullpath = "/$contextid/$component/$filearea/$itemid/$filename";
 			$fs = get_file_storage();
 			$fileinfo = array(
@@ -235,7 +323,7 @@ class mobile_activity_page extends mobile_activity {
 			$tr = new StdClass;
 			$tr->filename = $filename;
 			array_push($toreplace, $tr);
-			echo "\t\tFile: ".$filename." successfully exported\n";
+			//echo "\t\tFile: ".$filename." successfully exported\n";
 		}
 		foreach($toreplace as $tr){
 			$content = str_replace('src="@@PLUGINFILE@@/'.$tr->filename, 'src="images/'.$tr->filename, $content);
@@ -316,7 +404,7 @@ class mobile_activity_page extends mobile_activity {
 		}
 		$filename = $files_tmp['filenames'][0][0];
 			
-		echo "\t\ttrying file: ".$filename."\n";
+		//echo "\t\ttrying file: ".$filename."\n";
 		
 		$fullpath = "/$contextid/$component/$filearea/$itemid/$filename";
 		$fs = get_file_storage();
@@ -337,7 +425,7 @@ class mobile_activity_page extends mobile_activity {
 			echo "\nImage file not found\n";
 		}
 		
-		echo "\t\tImage for Media file: ".$filename." successfully exported\n";
+		//echo "\t\tImage for Media file: ".$filename." successfully exported\n";
 		$this->page_image = "images/".$filename;
 		return true;
 	}

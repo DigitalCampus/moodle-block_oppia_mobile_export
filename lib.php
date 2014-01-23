@@ -83,7 +83,7 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
 	$toreplace = array();
 	for($i=0;$i<count($files_tmp['filenames']);$i++){
 		$filename = $files_tmp['filenames'][$i][0];
-		echo "\t\ttrying file: ".$filename."\n";
+		//echo "\t\ttrying file: ".$filename."\n";
 		
 		
 		$fullpath = "/$contextid/$component/$filearea/$itemid/$filename";
@@ -108,7 +108,7 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
 		$tr = new StdClass;
 		$tr->originalfilename = $filename;
 		$tr->filename = sha1($fullpath);
-		echo "\t\tFile: ".sha1($fullpath)." successfully exported\n";
+		//echo "\t\tFile: ".sha1($fullpath)." successfully exported\n";
 	}
 	return "images/".sha1($fullpath);
 }

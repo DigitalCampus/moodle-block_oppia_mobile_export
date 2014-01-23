@@ -9,5 +9,6 @@ abstract class mobile_activity {
 	
 	abstract function process();
 	abstract function getXML($mod,$counter,$activity=true,&$node,&$xmlDoc);
+	abstract function export2print();
 }
 
