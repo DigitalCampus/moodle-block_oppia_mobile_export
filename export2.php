@@ -163,7 +163,7 @@ $orderno = 1;
 foreach($sections as $sect) {
 	flush_buffers();
 	$sectionmods = explode(",", $sect->sequence);
-	if($sect->summary && count($sectionmods)>0){
+	if(strip_tags($sect->summary) != "" && count($sectionmods)>0){
 		
 		echo "<h3>Exporting Section: ".strip_tags($sect->summary,'<span>')."</h3>";
 		

@@ -73,7 +73,7 @@ foreach($sections as $sect) {
 	
 	$sectionmods = explode(",", $sect->sequence);
 	
-	if($sect->summary && count($sectionmods)>0){
+	if(strip_tags($sect->summary) != "" && count($sectionmods)>0){
 		$webpage =  "<html><head>";
 		$webpage .= "<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>";
 		$webpage .= "<link href='style.css' rel='stylesheet' type='text/css'/>";
