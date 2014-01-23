@@ -300,7 +300,9 @@ class mobile_activity_page extends mobile_activity {
 		for($i=0;$i<count($files_tmp['filenames']);$i++){
 			$filename = urldecode($files_tmp['filenames'][$i][0]);
 			
-			//echo "\t\ttrying file: ".$filename."\n";
+			if($CFG->block_oppia_mobile_export_debug){
+				echo "trying file: ".$filename."<br/>";
+			}
 			$fullpath = "/$contextid/$component/$filearea/$itemid/$filename";
 			$fs = get_file_storage();
 			$fileinfo = array(
@@ -317,13 +319,17 @@ class mobile_activity_page extends mobile_activity {
 				$imgfile = $this->courseroot."/images/".$filename;
 				$file->copy_content_to($imgfile);
 			} else {
-				echo "\nImage file not found\n";
+				if($CFG->block_oppia_mobile_export_debug){
+					echo "<span style='color:red'>Image file not found</span><br/>";
+				}
 			}
 			
 			$tr = new StdClass;
 			$tr->filename = $filename;
 			array_push($toreplace, $tr);
-			//echo "\t\tFile: ".$filename." successfully exported\n";
+			if($CFG->block_oppia_mobile_export_debug){
+				echo "File: ".$filename." successfully exported<br/>";
+			}
 		}
 		foreach($toreplace as $tr){
 			$content = str_replace('src="@@PLUGINFILE@@/'.$tr->filename, 'src="images/'.$tr->filename, $content);
@@ -395,16 +401,18 @@ class mobile_activity_page extends mobile_activity {
 	}
 	
 	private function extractMediaImage($content,$component, $filearea, $itemid, $contextid){
+		global $CFG;
 		$regex = '((\]\])([[:space:]]*)(\<img[[:space:]]src=[\"|\']images/(?P<filenames>[\w\W]*?)[\"|\']))';
 		
 		preg_match_all($regex,$content,$files_tmp, PREG_OFFSET_CAPTURE);
 		if(!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0){
-			echo "\t\tNo image file found:\n";
 			return false;
 		}
 		$filename = $files_tmp['filenames'][0][0];
 			
-		//echo "\t\ttrying file: ".$filename."\n";
+		if($CFG->block_oppia_mobile_export_debug){
+			echo "trying file: ".$filename."<br/>";
+		}
 		
 		$fullpath = "/$contextid/$component/$filearea/$itemid/$filename";
 		$fs = get_file_storage();
@@ -422,10 +430,14 @@ class mobile_activity_page extends mobile_activity {
 			$imgfile = $this->courseroot."/images/".$filename;
 			$file->copy_content_to($imgfile);
 		} else {
-			echo "\nImage file not found\n";
+			if($CFG->block_oppia_mobile_export_debug){
+				echo "<span style='color:red'>Image file not found</span><br/>";
+			}
 		}
 		
-		//echo "\t\tImage for Media file: ".$filename." successfully exported\n";
+		if($CFG->block_oppia_mobile_export_debug){
+			echo "Image for Media file: ".$filename." successfully exported<br/>";
+		}
 		$this->page_image = "images/".$filename;
 		return true;
 	}

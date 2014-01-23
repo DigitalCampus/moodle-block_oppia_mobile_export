@@ -51,3 +51,6 @@ $string['thumbcrop_info'] = 'Whether to crop the icon, untick to just scale the 
 $string['thumb_bg_r'] = 'Background colour for images (red channel)';
 $string['thumb_bg_g'] = 'Background colour for images (green channel)';
 $string['thumb_bg_b'] = 'Background colour for images (blue channel)';
+
+$string['debug'] = 'Debug mode';
+$string['debug_info'] = 'Show extended output info when exporting';

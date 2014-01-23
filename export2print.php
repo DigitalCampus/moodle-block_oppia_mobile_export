@@ -113,6 +113,17 @@ foreach($sections as $sect) {
 					$webpage .= "</div>";
 				}
 			}
+			if($mod->modname == 'resource'){
+				$resource = new mobile_activity_resource();
+				$resource->courseroot = $course_root;
+				$resource->id = $mod->id;
+				$resource->section = $orderno;
+				$resource->process();
+				$webpage .= "<h2>".$mod->name."</h2>";
+				$webpage .= "<div class='resource'>";
+				$webpage .= $resource->export2print();
+				$webpage .= "</div>";
+			}
 
 		}
 		$webpage .= "</body></html>";

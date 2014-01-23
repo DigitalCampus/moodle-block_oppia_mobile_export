@@ -78,9 +78,7 @@ $root = $xmlDoc->appendChild($xmlDoc->createElement("module"));
 $meta = $root->appendChild($xmlDoc->createElement("meta"));
 $meta->appendChild($xmlDoc->createElement("versionid",$versionid));
 
-echo "<pre>";
-
-echo "Exporting Course: ".strip_tags($course->fullname)."\n";
+echo "<p>Exporting Course: ".strip_tags($course->fullname)."</p>";
 $title = extractLangs($course->fullname);
 if(is_array($title) && count($title)>0){
 	foreach($title as $l=>$t){
@@ -110,8 +108,7 @@ foreach ($sectionmods as $modnumber) {
 	$mod = $mods[$modnumber];
 		
 	if($mod->modname == 'page'){
-		print_r($mod->name);
-		echo "\n";
+		echo "<p>".$mod->name."</p>";
 		$page = new mobile_activity_page();
 		$page->courseroot = $course_root;
 		$page->id = $mod->id;
@@ -120,7 +117,7 @@ foreach ($sectionmods as $modnumber) {
 		$page->getXML($mod,$i,false,$meta,$xmlDoc);
 	}
 	if($mod->modname == 'quiz'){
-		echo "\tExporting quiz: ".$mod->name."\n";
+		echo "<p>".$mod->name."</p>";
 
 		$quiz = new mobile_activity_quiz();
 		$random = optional_param('quiz_'.$mod->id,0,PARAM_INT);
@@ -168,7 +165,7 @@ foreach($sections as $sect) {
 	$sectionmods = explode(",", $sect->sequence);
 	if($sect->summary && count($sectionmods)>0){
 		
-		echo "\nExporting Section: ".strip_tags($sect->summary,'<span>')."\n";
+		echo "<h3>Exporting Section: ".strip_tags($sect->summary,'<span>')."</h3>";
 		
 		$section = $xmlDoc->createElement("section");
 		$section->appendChild($xmlDoc->createAttribute("order"))->appendChild($xmlDoc->createTextNode($orderno));
@@ -211,7 +208,7 @@ foreach($sections as $sect) {
 			$mod = $mods[$modnumber];
 			
 			if($mod->modname == 'page'){
-				echo "\tExporting page: ".$mod->name."\n";
+				echo $mod->name."<br/>";
 				
 				$page = new mobile_activity_page();
 				$page->courseroot = $course_root;
@@ -223,7 +220,7 @@ foreach($sections as $sect) {
 			}
 			
 			if($mod->modname == 'quiz'){
-				echo "\tExporting quiz: ".$mod->name."\n";
+				echo $mod->name."<br/>";
 				
 				$quiz = new mobile_activity_quiz();
 				$random = optional_param('quiz_'.$mod->id,0,PARAM_INT);
@@ -238,12 +235,12 @@ foreach($sections as $sect) {
 					$quiz->getXML($mod,$i,true,$activities,$xmlDoc);
 					$no_activities++;
 				} else {
-					echo "\t\tNot exporting quiz as doesn't contain any supported questions.\n";
+					echo "Not exporting quiz as doesn't contain any supported questions.<br/>";
 				}
 			}
 			
 			if($mod->modname == 'resource'){
-				echo "\tExporting resource: ".$mod->name."\n";
+				echo $mod->name."<br/>";
 				$resource = new mobile_activity_resource();
 				$resource->courseroot = $course_root;
 				$resource->id = $mod->id;
@@ -259,7 +256,7 @@ foreach($sections as $sect) {
 			$section->appendChild($activities);
 			$structure->appendChild($section);
 		} else {
-			echo "\t\tNot exporting section as doesn't contain any activities\n";
+			echo "Not exporting section as doesn't contain any activities.<br/>";
 		}
 		$orderno++;
 	}
@@ -292,8 +289,6 @@ if(count($MEDIA) > 0){
 }
 
 $xmlDoc->save($course_root."/module.xml");
-
-echo "</pre>";
 
 echo "<p>Validating module XML file...";
 libxml_use_internal_errors(true);

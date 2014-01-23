@@ -83,7 +83,9 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
 	$toreplace = array();
 	for($i=0;$i<count($files_tmp['filenames']);$i++){
 		$filename = $files_tmp['filenames'][$i][0];
-		//echo "\t\ttrying file: ".$filename."\n";
+		if($CFG->block_oppia_mobile_export_debug){
+			echo "trying file: ".$filename."<br/>";
+		}
 		
 		
 		$fullpath = "/$contextid/$component/$filearea/$itemid/$filename";
@@ -102,13 +104,17 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
 			$imgfile = $course_root."/images/".sha1($fullpath);
 			$file->copy_content_to($imgfile);
 		} else {
-			echo "\nImage file not found\n";
+			if($CFG->block_oppia_mobile_export_debug){
+				echo "<span style='color:red'>Extract image file not found</span><br/>";
+			}
 		}
 		
 		$tr = new StdClass;
 		$tr->originalfilename = $filename;
 		$tr->filename = sha1($fullpath);
-		//echo "\t\tFile: ".sha1($fullpath)." successfully exported\n";
+		if($CFG->block_oppia_mobile_export_debug){
+			echo "Extract Image: ".$filename." successfully exported<br/>";
+		}
 	}
 	return "images/".sha1($fullpath);
 }

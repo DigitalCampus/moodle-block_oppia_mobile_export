@@ -122,13 +122,13 @@ class mobile_activity_quiz extends mobile_activity {
 			foreach($qs as $q){
 				// skip any essay questions
 				if($q->qtype == 'essay'){
-					echo "\t\tSkipping essay question";
+					echo "Skipping essay question<br/>";
 					continue;
 				}
 				
 				// skip any random questions
 				if($q->qtype == 'random'){
-					echo "\t\tSkipping random question";
+					echo "Skipping random question<br/>";
 					continue;
 				}
 				
@@ -244,7 +244,7 @@ class mobile_activity_quiz extends mobile_activity {
 			$this->content = json_encode($quiz);
 			
 		} catch (moodle_exception $me){
-			echo "\t\tSkipping quiz since contains no questions\n";
+			echo "Skipping quiz since contains no questions<br/>";
 			$this->is_valid = false;
 			return;
 		}
