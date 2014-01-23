@@ -35,11 +35,10 @@ class mobile_activity_page extends mobile_activity {
 										$this->courseroot);
 		if($eiffilename){
 			$this->page_image = $eiffilename;
-			resizeImage($this->courseroot."/".$this->page_image,
+			$this->page_image = "/images/".resizeImage($this->courseroot."/".$this->page_image,
 						$this->courseroot."/images/".$cm->id,
 						$CFG->block_oppia_mobile_export_thumb_width,
 						$CFG->block_oppia_mobile_export_thumb_height);
-			$this->page_image = "/images/".$cm->id;
 			//delete original image
 			unlink($this->courseroot."/".$eiffilename) or die('Unable to delete the file');
 		}
@@ -53,11 +52,10 @@ class mobile_activity_page extends mobile_activity {
 				// if page has media and no special icon for page, extract the image for first video
 				if (count($this->page_media) > 0 && $this->page_image == null){
 					if($this->extractMediaImage($pre_content,'mod_page','content',0, $context->id)){
-						resizeImage($this->courseroot."/".$this->page_image,
+						$this->page_image = "/images/".resizeImage($this->courseroot."/".$this->page_image,
 									$this->courseroot."/images/".$cm->id,
 									$CFG->block_oppia_mobile_export_thumb_width,
 									$CFG->block_oppia_mobile_export_thumb_height);
-						$this->page_image = "/images/".$cm->id;
 					}
 				}
 				
@@ -86,11 +84,10 @@ class mobile_activity_page extends mobile_activity {
 			// if page has media and no special icon for page, extract the image for first video
 			if (count($this->page_media) > 0 && $this->page_image == null){
 				if($this->extractMediaImage($pre_content,'mod_page','content',0, $context->id)){
-					resizeImage($this->courseroot."/".$this->page_image,
+					$this->page_image = "/images/".resizeImage($this->courseroot."/".$this->page_image,
 								$this->courseroot."/images/".$cm->id,
 								$CFG->block_oppia_mobile_export_thumb_width,
 								$CFG->block_oppia_mobile_export_thumb_height);
-					$this->page_image = "/images/".$cm->id;
 				}
 			} else if ($this->page_image == null){
 				$piffilename = extractImageFile($page->content,
@@ -102,11 +99,10 @@ class mobile_activity_page extends mobile_activity {
 	
 				if($piffilename){
 					$this->page_image = $piffilename;
-					resizeImage($this->courseroot."/".$this->page_image,
+					$this->page_image = "/images/".resizeImage($this->courseroot."/".$this->page_image,
 								$this->courseroot."/images/".$cm->id,
 								$CFG->block_oppia_mobile_export_thumb_width,
 								$CFG->block_oppia_mobile_export_thumb_height);
-					$this->page_image = "/images/".$cm->id;
 					unlink($this->courseroot."/".$piffilename) or die('Unable to delete the file');
 				}
 			}
@@ -153,11 +149,10 @@ class mobile_activity_page extends mobile_activity {
 				$this->courseroot);
 		if($eiffilename){
 			$this->page_image = $eiffilename;
-			resizeImage($this->courseroot."/".$this->page_image,
-			$this->courseroot."/images/".$cm->id,
-			$CFG->block_oppia_mobile_export_thumb_width,
-			$CFG->block_oppia_mobile_export_thumb_height);
-			$this->page_image = "/images/".$cm->id;
+			$this->page_image = "/images/".resizeImage($this->courseroot."/".$this->page_image,
+				$this->courseroot."/images/".$cm->id,
+				$CFG->block_oppia_mobile_export_thumb_width,
+				$CFG->block_oppia_mobile_export_thumb_height);
 			//delete original image
 			unlink($this->courseroot."/".$eiffilename) or die('Unable to delete the file');
 		}
@@ -171,11 +166,11 @@ class mobile_activity_page extends mobile_activity {
 				// if page has media and no special icon for page, extract the image for first video
 				if (count($this->page_media) > 0 && $this->page_image == null){
 					if($this->extractMediaImage($pre_content,'mod_page','content',0, $context->id)){
-						resizeImage($this->courseroot."/".$this->page_image,
-						$this->courseroot."/images/".$cm->id,
-						$CFG->block_oppia_mobile_export_thumb_width,
-						$CFG->block_oppia_mobile_export_thumb_height);
-						$this->page_image = "/images/".$cm->id;
+						$this->page_image = "/images/".resizeImage($this->courseroot."/".$this->page_image,
+									$this->courseroot."/images/".$cm->id,
+									$CFG->block_oppia_mobile_export_thumb_width,
+									$CFG->block_oppia_mobile_export_thumb_height);
+
 					}
 				}
 	
@@ -188,11 +183,10 @@ class mobile_activity_page extends mobile_activity {
 			// if page has media and no special icon for page, extract the image for first video
 			if (count($this->page_media) > 0 && $this->page_image == null){
 				if($this->extractMediaImage($pre_content,'mod_page','content',0, $context->id)){
-					resizeImage($this->courseroot."/".$this->page_image,
-					$this->courseroot."/images/".$cm->id,
-					$CFG->block_oppia_mobile_export_thumb_width,
-					$CFG->block_oppia_mobile_export_thumb_height);
-					$this->page_image = "/images/".$cm->id;
+					$this->page_image = "/images/".resizeImage($this->courseroot."/".$this->page_image,
+							$this->courseroot."/images/".$cm->id,
+							$CFG->block_oppia_mobile_export_thumb_width,
+							$CFG->block_oppia_mobile_export_thumb_height);
 				}
 			} else if ($this->page_image == null){
 				$piffilename = extractImageFile($page->content,
@@ -204,11 +198,10 @@ class mobile_activity_page extends mobile_activity {
 		
 				if($piffilename){
 					$this->page_image = $piffilename;
-					resizeImage($this->courseroot."/".$this->page_image,
-					$this->courseroot."/images/".$cm->id,
-					$CFG->block_oppia_mobile_export_thumb_width,
-					$CFG->block_oppia_mobile_export_thumb_height);
-					$this->page_image = "/images/".$cm->id;
+					$this->page_image = "/images/".resizeImage($this->courseroot."/".$this->page_image,
+							$this->courseroot."/images/".$cm->id,
+							$CFG->block_oppia_mobile_export_thumb_width,
+							$CFG->block_oppia_mobile_export_thumb_height);
 					unlink($this->courseroot."/".$piffilename) or die('Unable to delete the file');
 				}
 			}

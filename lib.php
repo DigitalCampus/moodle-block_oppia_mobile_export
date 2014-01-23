@@ -123,11 +123,14 @@ function resizeImage($image,$image_new_name, $image_width, $image_height, $trans
 	global $CFG;
 	
 	if($CFG->block_oppia_mobile_export_thumb_crop){
-		resizeImageCrop($image,$image_new_name, $image_width, $image_height, $transparent);
+		$filename = resizeImageCrop($image,$image_new_name, $image_width, $image_height, $transparent);
 	} else {
-		resizeImageScale($image,$image_new_name, $image_width, $image_height, $transparent);
+		$filename = resizeImageScale($image,$image_new_name, $image_width, $image_height, $transparent);
 	}
+	// just return the last part of the filename (name + extn... not the dir path)
+	$pieces = explode("/",$filename);
 	
+	return $pieces[count($pieces)-1];
 }
 
 function resizeImageScale($image,$image_new_name, $image_width, $image_height, $transparent=false){
@@ -173,11 +176,13 @@ function resizeImageScale($image,$image_new_name, $image_width, $image_height, $
 		$border = floor(($image_height - ($image_width*$orig_h/$orig_w))/2);
 		imagecopyresampled($image_new, $image_src, 0, $border, 0, 0, $image_width , $image_height- ($border*2) , $orig_w, $orig_h);
 	} 
-	
+	$image_new_name = $image_new_name.".png";
 	imagepng($image_new,$image_new_name,9);
 
 	imagedestroy($image_new);
 	imagedestroy($image_src);
+	return $image_new_name;
+	
 }
 
 function resizeImageCrop($image,$image_new_name, $image_width, $image_height, $transparent=false){
@@ -225,10 +230,12 @@ function resizeImageCrop($image,$image_new_name, $image_width, $image_height, $t
 		imagecopyresampled($image_new, $image_src, 0, 0,  0, $crop,  $image_width, $image_height, $orig_w, $orig_h -(2*$crop));
 	}
 
+	$image_new_name = $image_new_name.".png";
 	imagepng($image_new,$image_new_name,9);
 
 	imagedestroy($image_new);
 	imagedestroy($image_src);
+	return $image_new_name;
 }
 
 function Zip($source, $destination){

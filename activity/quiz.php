@@ -85,12 +85,10 @@ class mobile_activity_quiz extends mobile_activity {
 										$this->courseroot); 		
 			
 			if($filename){
-				$this->quiz_image = $filename;
-				resizeImage($this->courseroot."/".$this->quiz_image,
+				$this->quiz_image = "/images/".resizeImage($this->courseroot."/".$filename,
 							$this->courseroot."/images/".$cm->id,
 							$CFG->block_oppia_mobile_export_thumb_width,
 							$CFG->block_oppia_mobile_export_thumb_height);
-				$this->quiz_image = "/images/".$cm->id;
 				//delete original image
 				unlink($this->courseroot."/".$filename) or die('Unable to delete the file');
 			}

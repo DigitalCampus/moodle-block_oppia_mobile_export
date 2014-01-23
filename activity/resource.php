@@ -23,23 +23,20 @@ class mobile_activity_resource extends mobile_activity {
 										$this->courseroot); 
 	
 		if($eiffilename){
-			$this->resource_image = $eiffilename;
-			resizeImage($this->courseroot."/".$this->resource_image,
+			$this->resource_image = "/images/".resizeImage($this->courseroot."/".$eiffilename,
 						$this->courseroot."/images/".$cm->id,
 						$CFG->block_oppia_mobile_export_thumb_width,
 						$CFG->block_oppia_mobile_export_thumb_height);
-			$this->resource_image = "/images/".$cm->id;
 			//delete original image
 			unlink($this->courseroot."/".$eiffilename) or die('Unable to delete the file');
 		}
 		unset($eiffilename);
 		
 		if ($this->resource_type == "image/jpeg" && $this->resource_image == null){
-			resizeImage($this->courseroot."/".$this->resource_filename,
+			$this->resource_image = "/images/".resizeImage($this->courseroot."/".$this->resource_filename,
 						$this->courseroot."/images/".$cm->id,
 						$CFG->block_oppia_mobile_export_thumb_width,
 						$CFG->block_oppia_mobile_export_thumb_height);
-			$this->resource_image = "/images/".$cm->id;
 			//DON'T delete original image!
 		}
 	}

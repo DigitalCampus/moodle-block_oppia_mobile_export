@@ -146,14 +146,14 @@ $filename = extractImageFile($course->summary,
 							$course_root);
 
 if($filename){
-	resizeImage($course_root."/".$filename,
+	$resizedFilename = resizeImage($course_root."/".$filename,
 				$course_root."/images/".$context->id,
 						$CFG->block_oppia_mobile_export_course_icon_width,
 						$CFG->block_oppia_mobile_export_course_icon_height,
 						true);
 	unlink($course_root."/".$filename) or die('Unable to delete the file');
 	$temp = $xmlDoc->createElement("image");
-	$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode("/images/".$context->id));
+	$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode("/images/".$resizedFilename));
 	$meta->appendChild($temp);
 }
 $index = Array();
