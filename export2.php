@@ -78,7 +78,7 @@ $root = $xmlDoc->appendChild($xmlDoc->createElement("module"));
 $meta = $root->appendChild($xmlDoc->createElement("meta"));
 $meta->appendChild($xmlDoc->createElement("versionid",$versionid));
 
-echo "<p>Exporting Course: ".strip_tags($course->fullname)."</p>";
+echo "<h2>Exporting Course: ".strip_tags($course->fullname)."</h2>";
 $title = extractLangs($course->fullname);
 if(is_array($title) && count($title)>0){
 	foreach($title as $l=>$t){
