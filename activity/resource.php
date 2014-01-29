@@ -44,7 +44,7 @@ class mobile_activity_resource extends mobile_activity {
 	function export2print(){
 		$return_content = "";
 		$return_content .= "<p>".strip_tags($this->resource->intro)."</p>";
-		$return_content .= "<p>[".$this->$resource_type ."] Filename: ".$this->resource_filename."</p>";
+		$return_content .= "<p>[".$this->resource_type ."] Filename: ".$this->resource_filename."</p>";
 		return $return_content;
 	}
 	
