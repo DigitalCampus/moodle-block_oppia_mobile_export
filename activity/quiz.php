@@ -66,7 +66,7 @@ class mobile_activity_quiz extends mobile_activity {
 			$quizobj->preload_questions();
 			$quizobj->load_questions();
 			$qs = $quizobj->get_questions();
-
+			
 			// generate the md5 of the quiz
 			$this->md5 = md5(serialize($qs)).$this->id."r".$this->no_random_questions;
 			
@@ -166,7 +166,7 @@ class mobile_activity_quiz extends mobile_activity {
 				}
 				
 				// create question
-				$post = array('title' => strip_tags($q->questiontext),
+				$post = array('title' => trim(strip_tags($q->questiontext)),
 						'type' => $q->qtype,
 						'responses' => array(),
 						'props' => $props);
@@ -185,7 +185,7 @@ class mobile_activity_quiz extends mobile_activity {
 						}	
 					}
 					foreach($q->options->subquestions as $sq){
-						$title = strip_tags($sq->questiontext).$this->MATCHING_SEPERATOR.strip_tags($sq->answertext);
+						$title = trim(strip_tags($sq->questiontext)).$this->MATCHING_SEPERATOR.trim(strip_tags($sq->answertext));
 						// add response
 						
 						$props = array();
@@ -208,7 +208,7 @@ class mobile_activity_quiz extends mobile_activity {
 						
 						$props = array();
 						if(strip_tags($r->feedback) != ""){
-							$props[0] = array('name' => 'feedback', 'value' => strip_tags($r->feedback));
+							$props[0] = array('name' => 'feedback', 'value' => trim(strip_tags($r->feedback)));
 						}
 						
 						// if numerical also add a tolerance
@@ -219,7 +219,7 @@ class mobile_activity_quiz extends mobile_activity {
 						// add response
 						$post = array('question' => $question_uri,
 								'order' => $j,
-								'title' => strip_tags($r->answer),
+								'title' => trim(strip_tags($r->answer)),
 								'score' => ($r->fraction * $q->maxmark),
 								'props' => $props);
 						$resp = $mQH->exec('response', $post);
