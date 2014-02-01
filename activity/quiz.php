@@ -3,6 +3,7 @@
 class mobile_activity_quiz extends mobile_activity {
 
 	private $supported_types = array('multichoice', 'match', 'truefalse', 'description', 'shortanswer', 'numerical');
+	private $courseversion;
 	private $summary;
 	private $shortname;
 	private $content = "";
@@ -12,10 +13,11 @@ class mobile_activity_quiz extends mobile_activity {
 	private $no_questions = 0; // total no of valid questions
 	private $no_random_questions = 0; // no random questions to ask - 0 to select all (don't randomise)
 	
-	function init($shortname,$summary,$random){
+	function init($shortname, $summary, $random, $courseversion){
 		$this->shortname = strip_tags($shortname);
 		$this->summary = strip_tags($summary);
 		$this->no_random_questions = $random;
+		$this->courseversion = $courseversion;
 	}
 	
 	function preprocess(){
@@ -71,7 +73,7 @@ class mobile_activity_quiz extends mobile_activity {
 			$this->md5 = md5(serialize($qs)).$this->id."r".$this->no_random_questions;
 			
 			// find if this quiz already exists
-			$resp = $mQH->exec('quizprops/'.$this->md5, array(),'get');
+			$resp = $mQH->exec('quizprops/digest/'.$this->md5, array(),'get');
 			if(!isset($resp->quizzes)){
 				echo "Error connecting to OppiaMobile server, please check the API url in the block settings.\n";
 				die;
@@ -93,18 +95,27 @@ class mobile_activity_quiz extends mobile_activity {
 				unlink($this->courseroot."/".$filename) or die('Unable to delete the file');
 			}
 			
+			// Don't export the full quiz if it already exists on the server
+			// instead just add the course version
 			if(count($resp->quizzes) > 0){
 				$quiz_id = $resp->quizzes[0]->quiz_id;	
 				$quiz = $mQH->exec('quiz/'.$quiz_id, array(),'get');
 				$this->content = json_encode($quiz);
+				
+				$post = array('quiz_id' => $quiz_id,
+						'name' => "courseversion",
+						'value' => $this->courseversion);
+				$resp = $mQH->exec('quizprops/',$post);
+				
 				$this->exportQuestionImages();
 				return;
 			}
 			
 			$props = array();
 			$props[0] = array('name' => "digest", 'value' => $this->md5);
+			$props[1] = array('name' => "courseversion", 'value' => $this->courseversion);
 			if ($this->no_random_questions > 0){
-				$props[1] = array('name' => "randomselect", 'value' => $this->no_random_questions);
+				$props[2] = array('name' => "randomselect", 'value' => $this->no_random_questions);
 			}
 			
 			//create the quiz
@@ -396,6 +407,7 @@ class QuizHelper{
 			curl_setopt($this->curl, CURLOPT_HTTPGET, 1 );
 		}
 		$data = curl_exec($this->curl);
+		//echo $data."<hr/>";
 		$json = json_decode($data);
 		return $json;
 			
