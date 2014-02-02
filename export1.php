@@ -56,7 +56,7 @@ foreach ($sectionmods as $modnumber) {
 	if($mod->modname == 'quiz'){
 
 		$quiz = new mobile_activity_quiz();
-		$quiz->init($course->shortname,"Pre-test",0);
+		$quiz->init($course->shortname,"Pre-test",0,0);
 		$quiz->id = $mod->id;
 		$quiz->section = 0;
 		$quiz->preprocess();
