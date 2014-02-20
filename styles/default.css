@@ -77,6 +77,27 @@ a {
 	text-decoration: underline;
 }
 
+table {
+	border:1px solid #000;
+	width:100%;
+	border-collapse: collapse;
+}
+
+table th {
+ font-weight: bold;
+ background: #77A240;
+ padding: 0.5em;
+ border-bottom: 1px solid #000;
+ border-right: 1px solid #000;
+}
+
+table td {
+	padding: 0.5em;
+	border-bottom: 1px solid #000;
+	border-right: 1px solid #000;
+}
+
+
 .box {
 	margin:10px 5px;
 	padding: 4px 4px 4px 4px;
