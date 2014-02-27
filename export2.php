@@ -6,14 +6,17 @@ require_once($CFG->dirroot . '/lib/filestorage/file_storage.php');
 
 require_once($CFG->dirroot . '/question/format.php');
 require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once($CFG->dirroot . '/mod/feedback/lib.php');
 require_once($CFG->dirroot . '/question/format/gift/format.php');
 require_once($CFG->dirroot . '/blocks/oppia_mobile_export/lib.php');
 require_once($CFG->dirroot . '/blocks/oppia_mobile_export/langfilter.php');
+require_once($CFG->dirroot . '/blocks/oppia_mobile_export/oppia_api_helper.php');
 
 require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/activity.class.php');
 require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/page.php');
 require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/quiz.php');
 require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/resource.php');
+require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/feedback.php');
 
 require_once($CFG->libdir.'/componentlib.class.php');
 
@@ -249,6 +252,24 @@ foreach($sections as $sect) {
 				$resource->getXML($mod,$i,true,$activities,$xmlDoc);
 				$no_activities++;
 			}
+			
+			
+			if($mod->modname == 'feedback'){
+				echo $mod->name."<br/>";
+				$feedback = new mobile_activity_feedback();
+				$feedback->courseroot = $course_root;
+				$feedback->id = $mod->id;
+				$feedback->section = $orderno;
+				$feedback->preprocess();
+				if ($feedback->get_is_valid()){
+					$feedback->process();
+					$feedback->getXML($mod,$i,true,$activities,$xmlDoc);
+					$no_activities++;
+				} else {
+					echo "Not exporting feedback as doesn't contain any supported questions.<br/>";
+				}
+			}
+			
 			flush_buffers();
 			$i++;
 		}
