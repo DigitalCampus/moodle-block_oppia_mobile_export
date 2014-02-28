@@ -110,8 +110,13 @@ class mobile_activity_feedback extends mobile_activity {
 				continue;
 			}
 			
+			if($fi->required){
+				$value = "true";
+			} else {
+				$value = "false";
+			}
 			$props = array();
-			$props[0] = array('name' => "required", 'value' => $fi->required);
+			$props[0] = array('name' => "required", 'value' => $value);
 			
 			//create the question
 			if($fi->typ == "multichoice" || $fi->typ == "multichoicerated"){
@@ -157,7 +162,6 @@ class mobile_activity_feedback extends mobile_activity {
 				$response_options = explode("|",$presentation);
 				foreach($response_options as $ro){
 					$new_ro = preg_replace("([0-9]+[#]+)",'',$ro);
-					echo "<br><b>".$new_ro."</b><br/>";
 					$post = array('question' => $question_uri,
 							'order' => $j,
 							'title' => trim(strip_tags($new_ro)),
@@ -176,6 +180,10 @@ class mobile_activity_feedback extends mobile_activity {
 			
 			$i++;
 		}
+		
+		// get the final quiz object
+		$feedback = $mQH->exec('quiz/'.$quiz_id, array(),'get');
+		$this->content = json_encode($feedback);
 	}
 	
 	
