@@ -11,12 +11,12 @@ class mobile_activity_quiz extends mobile_activity {
 	private $quiz_image = null;
 	private $is_valid = true; //i.e. doesn't only contain essay or random questions.
 	private $no_questions = 0; // total no of valid questions
-	private $no_random_questions = 0; // no random questions to ask - 0 to select all (don't randomise)
+	private $configArray = array(); // config (quiz props) array
 	
-	function init($shortname, $summary, $random, $courseversion){
+	function init($shortname, $summary, $configArray, $courseversion){
 		$this->shortname = strip_tags($shortname);
 		$this->summary = strip_tags($summary);
-		$this->no_random_questions = $random;
+		$this->configArray = $configArray;
 		$this->courseversion = $courseversion;
 	}
 	
@@ -69,9 +69,12 @@ class mobile_activity_quiz extends mobile_activity {
 			$quizobj->load_questions();
 			$qs = $quizobj->get_questions();
 			
+			$md5postfix = "";
+			foreach($this->configArray as $key => $value){
+				$md5postfix .= (string) $value;
+			}
 			// generate the md5 of the quiz
-			$this->md5 = md5(serialize($qs)).$this->id."r".$this->no_random_questions;
-			
+			$this->md5 = md5(serialize($qs)).$this->id."c".$md5postfix;
 			// find if this quiz already exists
 			$resp = $mQH->exec('quizprops/digest/'.$this->md5, array(),'get');
 			if(!isset($resp->quizzes)){
@@ -112,10 +115,12 @@ class mobile_activity_quiz extends mobile_activity {
 			}
 			
 			$props = array();
-			$props[0] = array('name' => "digest", 'value' => $this->md5);
-			$props[1] = array('name' => "courseversion", 'value' => $this->courseversion);
-			if ($this->no_random_questions > 0){
-				$props[2] = array('name' => "randomselect", 'value' => $this->no_random_questions);
+			array_push($props,array('name' => "digest", 'value' => $this->md5));
+			array_push($props,array('name' => "courseversion", 'value' => $this->courseversion));
+			foreach($this->configArray as $k=>$v){
+				if ($k != 'randomselect' || $v != 0){
+					array_push($props,array('name' => $k, 'value' => $v));
+				}
 			}
 			
 			//create the quiz

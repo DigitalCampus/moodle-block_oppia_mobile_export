@@ -60,7 +60,7 @@ foreach ($sectionmods as $modnumber) {
 		$quiz->id = $mod->id;
 		$quiz->section = 0;
 		$quiz->preprocess();
-		if ($quiz->get_is_valid() && $quiz->get_no_questions()> 1){
+		if ($quiz->get_is_valid() && $quiz->get_no_questions()> 0){
 			$temp = new stdClass;
 			$temp->section = "Topic 0";
 			$temp->name = $mod->name;
@@ -89,7 +89,7 @@ foreach($sections as $sect) {
 				$quiz->id = $mod->id;
 				$quiz->section = $orderno;
 				$quiz->preprocess();
-				if ($quiz->get_is_valid() && $quiz->get_no_questions()> 1){
+				if ($quiz->get_is_valid() && $quiz->get_no_questions()> 0){
 					$temp = new stdClass;
 					$temp->section = strip_tags($sect->summary);
 					$temp->name = $mod->name;
@@ -103,14 +103,17 @@ foreach($sections as $sect) {
 	}
 }
 
+echo $OUTPUT->header();
+echo "<form name='courseconfig' method='post' action='".$CFG->wwwroot."/blocks/oppia_mobile_export/export2.php'>";
+
+echo "<h2>Export - step 1</h2>";
+echo "<input type='hidden' name='id' value='".$COURSE->id."'>";
+echo "<input type='hidden' name='sesskey' value='".sesskey()."'>";
+echo "<input type='hidden' name='stylesheet' value='".$stylesheet."'>";
 
 if (count($quizzes)> 0){
-	echo $OUTPUT->header();
-	echo "<form name='selectquizzes' method='post' action='".$CFG->wwwroot."/blocks/oppia_mobile_export/export2.php'>";
-	echo "<h2>Export - step 1</h2>";
-	echo "<input type='hidden' name='id' value='".$COURSE->id."'>";
-	echo "<input type='hidden' name='sesskey' value='".sesskey()."'>";
-	echo "<input type='hidden' name='stylesheet' value='".$stylesheet."'>";
+	
+	
 	echo "<p>Since this course contains quizzes, please select which quizzes (if any) should be a random selection of the questions available</p>";
 	
 	// using table not ideal but works for now
@@ -119,13 +122,16 @@ if (count($quizzes)> 0){
 	echo "<th>Section Name</th>";
 	echo "<th>Quiz Title</th>";
 	echo "<th>No random questions</th>";
+	echo "<th>Show feedback</th>";
+	echo "<th>Allow try-again</th>";
 	echo "</tr>";
 	foreach ($quizzes as $quiz){
 		echo "<tr>";
 			echo "<td>".$quiz->section."</td>";
 			echo "<td>".$quiz->name."</td>";
+			
 			echo "<td>";
-			$current = get_oppiaconfig($quiz->id,'randomselect');
+			$current = get_oppiaconfig($quiz->id,'randomselect',0);
 			echo "<select name='quiz_".$quiz->id."' id='id_s_quiz_".$quiz->id."'>";
 			echo "<option value='0'";
 				if ($current == 0){
@@ -140,14 +146,45 @@ if (count($quizzes)> 0){
 				echo ">select ".$i." random questions</option>";
 			}
 			echo "</select></td>";
+			
+			echo "<td>";
+			$showfeedback = get_oppiaconfig($quiz->id,'showfeedback',1);
+			echo "<select name='quiz_".$quiz->id."_showfeedback' id='id_showfeedback_quiz_".$quiz->id."'>";
+			echo "<option value='1'";
+				if ($showfeedback == 1){
+					echo " selected='selected'";
+				}
+			echo ">True</option>";
+			echo "<option value='0'";
+			if ($showfeedback == 0){
+				echo " selected='selected'";
+			}
+			echo ">False</option>";
+			echo "</select></td>";
+			
+			echo "<td>";
+			$allowtryagain = get_oppiaconfig($quiz->id,'allowtryagain',1);
+			echo "<select name='quiz_".$quiz->id."_allowtryagain' id='id_allowtryagain_quiz_".$quiz->id."'>";
+			echo "<option value='1'";
+				if ($allowtryagain == 1){
+					echo " selected='selected'";
+				}
+			echo ">True</option>";
+			echo "<option value='0'";
+			if ($allowtryagain == 0){
+				echo " selected='selected'";
+			}
+			echo ">False</option>";
+			echo "</select></td>";
 		echo "</tr>";
 	}
 	echo "</table>";
-	echo "<input type='submit' name='submit' value='Continue'>";
-	echo "</form>";
-	echo $OUTPUT->footer();
-} else {
-	redirect($CFG->wwwroot."/blocks/oppia_mobile_export/export2.php?id=".$id."&sesskey=".sesskey()."&stylesheet=".$stylesheet);
 }
+	
+echo "<input type='submit' name='submit' value='Continue'>";
+echo "</form>";
+echo $OUTPUT->footer();
+//redirect($CFG->wwwroot."/blocks/oppia_mobile_export/export2.php?id=".$id."&sesskey=".sesskey()."&stylesheet=".$stylesheet);
+
 
 ?>

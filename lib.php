@@ -32,13 +32,13 @@ function add_or_update_oppiaconfig($modid, $name, $value){
 	}
 }
 
-function get_oppiaconfig($modid,$name){
+function get_oppiaconfig($modid,$name,$default){
 	global $DB;
 	$record = $DB->get_record('block_oppia_mobile_config', array('modid'=>$modid,'name'=>$name));
 	if ($record){
 		return $record->value;
 	} else {
-		return 0;
+		return $default;
 	}
 }
 

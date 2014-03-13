@@ -140,9 +140,18 @@ foreach ($sectionmods as $modnumber) {
 		echo "<p>".$mod->name."</p>";
 
 		$quiz = new mobile_activity_quiz();
+		
 		$random = optional_param('quiz_'.$mod->id,0,PARAM_INT);
 		add_or_update_oppiaconfig($mod->id, 'randomselect', $random);
-		$quiz->init($course->shortname,"Pre-test",$random,$versionid);
+		
+		$showfeedback = optional_param('quiz_'.$mod->id.'_showfeedback',1,PARAM_BOOL);
+		add_or_update_oppiaconfig($mod->id, 'showfeedback', $showfeedback);
+		
+		$allowtryagain = optional_param('quiz_'.$mod->id.'_allowtryagain',1,PARAM_BOOL);
+		add_or_update_oppiaconfig($mod->id, 'allowtryagain', $allowtryagain);
+		
+		$configArray = Array('randomselect'=>$random, 'showfeedback'=>$showfeedback,'allowtryagain'=>$allowtryagain);
+		$quiz->init($course->shortname,"Pre-test",$configArray,$versionid);
 		$quiz->courseroot = $course_root;
 		$quiz->id = $mod->id;
 		$quiz->section = 0;
@@ -245,7 +254,15 @@ foreach($sections as $sect) {
 				$quiz = new mobile_activity_quiz();
 				$random = optional_param('quiz_'.$mod->id,0,PARAM_INT);
 				add_or_update_oppiaconfig($mod->id, 'randomselect', $random);
-				$quiz->init($course->shortname,$sect->summary,$random,$versionid);
+				
+				$showfeedback = optional_param('quiz_'.$mod->id.'_showfeedback',1,PARAM_INT);
+				add_or_update_oppiaconfig($mod->id, 'showfeedback', $showfeedback);
+				
+				$allowtryagain = optional_param('quiz_'.$mod->id.'_allowtryagain',1,PARAM_INT);
+				add_or_update_oppiaconfig($mod->id, 'allowtryagain', $allowtryagain);
+				
+				$configArray = Array('randomselect'=>$random, 'showfeedback'=>$showfeedback,'allowtryagain'=>$allowtryagain);
+				$quiz->init($course->shortname,$sect->summary,$configArray,$versionid);
 				$quiz->courseroot = $course_root;
 				$quiz->id = $mod->id;
 				$quiz->section = $orderno;
