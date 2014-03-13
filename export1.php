@@ -180,8 +180,19 @@ if (count($quizzes)> 0){
 	}
 	echo "</table>";
 }
-	
-echo "<input type='submit' name='submit' value='Continue'>";
+echo "<p>Course Priority";
+echo "<br/>This is the relative weight given to a course to help determin the ordering in which it will appear on the mobile (10 = highest priority)</p>";
+echo "<select name='coursepriority' id='coursepriority'>";
+for ($i=0; $i<11; $i++){
+	echo "<option value='$i'";
+		if ($i == 0){
+			echo " selected='selected'";
+		}
+	echo ">$i</option>";
+}
+echo "</select>";
+
+echo "<p><input type='submit' name='submit' value='Continue'></p>";
 echo "</form>";
 echo $OUTPUT->footer();
 //redirect($CFG->wwwroot."/blocks/oppia_mobile_export/export2.php?id=".$id."&sesskey=".sesskey()."&stylesheet=".$stylesheet);

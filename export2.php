@@ -22,6 +22,7 @@ require_once($CFG->libdir.'/componentlib.class.php');
 
 $id = required_param('id',PARAM_INT);
 $stylesheet = required_param('stylesheet',PARAM_TEXT);
+$priority = required_param('coursepriority',PARAM_INT);
 
 $course = $DB->get_record('course', array('id'=>$id));
 
@@ -80,6 +81,7 @@ $xmlDoc = new DOMDocument();
 $root = $xmlDoc->appendChild($xmlDoc->createElement("module"));
 $meta = $root->appendChild($xmlDoc->createElement("meta"));
 $meta->appendChild($xmlDoc->createElement("versionid",$versionid));
+$meta->appendChild($xmlDoc->createElement("priority",$priority));
 
 echo "<h2>Exporting Course: ".strip_tags($course->fullname)."</h2>";
 $title = extractLangs($course->fullname);
