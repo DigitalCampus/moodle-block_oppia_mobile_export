@@ -91,6 +91,7 @@ $root = $xmlDoc->appendChild($xmlDoc->createElement("module"));
 $meta = $root->appendChild($xmlDoc->createElement("meta"));
 $meta->appendChild($xmlDoc->createElement("versionid",$versionid));
 $meta->appendChild($xmlDoc->createElement("priority",$priority));
+$meta->appendChild($xmlDoc->createElement("server",$server_connection->url));
 
 echo "<h2>Exporting Course: ".strip_tags($course->fullname)."</h2>";
 $title = extractLangs($course->fullname);
