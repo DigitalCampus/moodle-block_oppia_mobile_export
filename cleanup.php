@@ -5,7 +5,7 @@ require_once($CFG->dirroot . '/blocks/oppia_mobile_export/lib.php');
 $id = required_param('id',PARAM_INT);
 $course = $DB->get_record('course', array('id'=>$id));
 
-$PAGE->set_url('/blocks/oppia_mobile_export/export.php', array('id' => $id));
+$PAGE->set_url('/blocks/oppia_mobile_export/cleanup.php', array('id' => $id));
 context_helper::preload_course($id);
 $context = context_course::instance($course->id);
 if (!$context) {

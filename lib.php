@@ -42,6 +42,12 @@ function get_oppiaconfig($modid,$name,$default){
 	}
 }
 
+function get_oppiaservers(){
+	global $DB, $USER;
+	$servers = $DB->get_records('block_oppia_mobile_server', array('moodleuserid'=>$USER->id));
+	return $servers;
+}
+
 function extractLangs($content){
 	global $MOBILE_LANGS, $CURRENT_LANG;
 	preg_match_all('((lang=[\'|\"](?P<langs>[\w\-]*)[\'|\"]))',$content,$langs_tmp, PREG_OFFSET_CAPTURE);

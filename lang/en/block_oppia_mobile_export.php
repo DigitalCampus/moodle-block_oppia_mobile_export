@@ -40,6 +40,8 @@ $string['oppiaurlfull'] = 'Full URL to OppiaMobile server API (include the trail
 $string['oppiausernamefull'] = 'Your OppiaMobile username';
 $string['oppiaapikeyfull'] = 'Your OppiaMobile API Key';
 
+$string['oppia_block_export_servers'] = 'OppiaMobile Servers';
+
 $string['course_icon_width'] = 'Course icon width';
 $string['course_icon_height'] = 'Course icon height';
 
@@ -54,3 +56,16 @@ $string['thumb_bg_b'] = 'Background colour for images (blue channel)';
 
 $string['debug'] = 'Debug mode';
 $string['debug_info'] = 'Show extended output info when exporting';
+
+$string['servers_current'] = 'Your current OppiaMobile servers';
+$string['servers_add'] = 'Add new OppiaMobile server connection';
+$string['servers_none'] = 'You don\'t current have any OppiaMobile server connections set up. Add one using the form below.';
+
+$string['server_form_name'] = 'Server Name (your reference)';
+$string['server_form_name_error_none'] = 'Please enter a reference name for your server.';
+$string['server_form_url'] = 'URL';
+$string['server_form_url_error_none'] = 'Please enter the url to the server.';
+$string['server_form_username'] = 'Username';
+$string['server_form_username_error_none'] = 'Please enter your OppiaMobile username for the server';
+$string['server_form_apikey'] = 'API Key';
+$string['server_form_apikey_error_none'] = 'Please enter your OppiaMobile API key for the server';
