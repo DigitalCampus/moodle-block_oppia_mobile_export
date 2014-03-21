@@ -1,24 +1,21 @@
 <?php 
 
 class QuizHelper{
-	private $url;
+	private $connection;
 	private $curl;
 	
-	function init($url){
-		$this->url = $url;
+	function init($connection){
+		$this->connection = $connection;
 		$this->curl = curl_init();
 		curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, 1 );
 	}
 	
 	function exec($object, $data_array, $type='post'){
-		global $CFG;
 		$json = json_encode($data_array);
-		$temp_url = $this->url.$object."/";
-		if($CFG->block_oppia_mobile_export_api_key != ""){
-			$temp_url .= "?format=json";
-			$temp_url .= "&username=".$CFG->block_oppia_mobile_export_username;
-			$temp_url .= "&api_key=".$CFG->block_oppia_mobile_export_api_key;
-		}
+		$temp_url = $this->connection->url."/api/v1/".$object."/";
+		$temp_url .= "?format=json";
+		$temp_url .= "&username=".$this->connection->username;
+		$temp_url .= "&api_key=".$this->connection->apikey;
 		curl_setopt($this->curl, CURLOPT_URL, $temp_url );
 		if($type == 'post'){
 			curl_setopt($this->curl, CURLOPT_POSTFIELDS, $json);
@@ -28,7 +25,6 @@ class QuizHelper{
 			curl_setopt($this->curl, CURLOPT_HTTPGET, 1 );
 		}
 		$data = curl_exec($this->curl);
-		//echo $data."<hr/>";
 		$json = json_decode($data);
 		return $json;
 			

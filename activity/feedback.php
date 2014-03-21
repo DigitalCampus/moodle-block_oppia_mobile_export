@@ -10,11 +10,13 @@ class mobile_activity_feedback extends mobile_activity {
 	private $feedback_image = null;
 	private $is_valid = true; //i.e. doesn't only contain essay or random questions.
 	private $no_questions = 0; // total no of valid questions
+	private $server_connection;
 	
-	function init($shortname, $summary, $courseversion){
+	function init($server_connection, $shortname, $summary, $courseversion){
 		$this->shortname = strip_tags($shortname);
 		$this->summary = strip_tags($summary);
 		$this->courseversion = $courseversion;
+		$this->server_connection = $server_connection;
 	}
 	
 	
@@ -52,11 +54,7 @@ class mobile_activity_feedback extends mobile_activity {
 		
 		
 		$mQH = new QuizHelper();
-		$mQH->init($CFG->block_oppia_mobile_export_url."/api/v1/");
-		if($CFG->block_oppia_mobile_export_api_key == ""){
-			echo "Invalid OppiaMobile username/api_key";
-			die;
-		}
+		$mQH->init($this->server_connection);
 		
 		$this->md5 = md5(serialize($feedbackitems)).$this->id;
 		

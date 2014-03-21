@@ -19,6 +19,7 @@ require_once($CFG->libdir.'/componentlib.class.php');
 
 $id = required_param('id',PARAM_INT);
 $stylesheet = required_param('stylesheet',PARAM_TEXT);
+$server = required_param('server',PARAM_INT);
 
 $course = $DB->get_record('course', array('id'=>$id));
 
@@ -42,6 +43,17 @@ $modinfo = get_fast_modinfo($course);
 $sections = $modinfo->get_section_info_all();
 $mods = $modinfo->get_cms();
 
+echo $OUTPUT->header();
+
+// Check specified server belongs to current user
+$server_connection = $DB->get_record('block_oppia_mobile_server', array('moodleuserid'=>$USER->id,'id'=>$server));
+if(!$server_connection){
+	echo "<p>".get_string('server_not_owner','block_oppia_mobile_export')."</p>";
+	echo $OUTPUT->footer();
+	die();
+}
+
+
 $quizzes = array();
 /*-------Get course info pages/about etc----------------------*/
 $thissection = $sections[0];
@@ -56,7 +68,7 @@ foreach ($sectionmods as $modnumber) {
 	if($mod->modname == 'quiz'){
 
 		$quiz = new mobile_activity_quiz();
-		$quiz->init($course->shortname,"Pre-test",0,0);
+		$quiz->init($server_connection,$course->shortname,"Pre-test",0,0);
 		$quiz->id = $mod->id;
 		$quiz->section = 0;
 		$quiz->preprocess();
@@ -85,7 +97,7 @@ foreach($sections as $sect) {
 			if($mod->modname == 'quiz'){
 			
 				$quiz = new mobile_activity_quiz();
-				$quiz->init($course->shortname,$sect->summary,0,0);
+				$quiz->init($server_connection,$course->shortname,$sect->summary,0,0);
 				$quiz->id = $mod->id;
 				$quiz->section = $orderno;
 				$quiz->preprocess();
@@ -103,13 +115,14 @@ foreach($sections as $sect) {
 	}
 }
 
-echo $OUTPUT->header();
+
 echo "<form name='courseconfig' method='post' action='".$CFG->wwwroot."/blocks/oppia_mobile_export/export2.php'>";
 
 echo "<h2>Export - step 1</h2>";
 echo "<input type='hidden' name='id' value='".$COURSE->id."'>";
 echo "<input type='hidden' name='sesskey' value='".sesskey()."'>";
 echo "<input type='hidden' name='stylesheet' value='".$stylesheet."'>";
+echo "<input type='hidden' name='server' value='".$server."'>";
 
 if (count($quizzes)> 0){
 	
@@ -181,7 +194,7 @@ if (count($quizzes)> 0){
 	echo "</table>";
 }
 echo "<p>Course Priority";
-echo "<br/>This is the relative weight given to a course to help determin the ordering in which it will appear on the mobile (10 = highest priority)</p>";
+echo "<br/>This is the relative weight given to a course to help determine the ordering in which it will appear on the mobile (10 = highest priority)</p>";
 echo "<select name='coursepriority' id='coursepriority'>";
 for ($i=0; $i<11; $i++){
 	echo "<option value='$i'";

@@ -23,6 +23,7 @@ require_once($CFG->libdir.'/componentlib.class.php');
 $id = required_param('id',PARAM_INT);
 $stylesheet = required_param('stylesheet',PARAM_TEXT);
 $priority = required_param('coursepriority',PARAM_INT);
+$server = required_param('server',PARAM_INT);
 
 $course = $DB->get_record('course', array('id'=>$id));
 
@@ -41,6 +42,14 @@ $PAGE->set_other_editing_capability('moodle/course:manageactivities');
 $PAGE->set_title(get_string('course') . ': ' . $course->fullname);
 $PAGE->set_heading($course->fullname);
 echo $OUTPUT->header();
+
+// Check specified server belongs to current user
+$server_connection = $DB->get_record('block_oppia_mobile_server', array('moodleuserid'=>$USER->id,'id'=>$server));
+if(!$server_connection){
+	echo "<p>".get_string('server_not_owner','block_oppia_mobile_export')."</p>";
+	echo $OUTPUT->footer();
+	die();
+}
 
 global $QUIZ_CACHE;
 $QUIZ_CACHE = array();
@@ -153,7 +162,7 @@ foreach ($sectionmods as $modnumber) {
 		add_or_update_oppiaconfig($mod->id, 'allowtryagain', $allowtryagain);
 		
 		$configArray = Array('randomselect'=>$random, 'showfeedback'=>$showfeedback,'allowtryagain'=>$allowtryagain);
-		$quiz->init($course->shortname,"Pre-test",$configArray,$versionid);
+		$quiz->init($server_connection, $course->shortname,"Pre-test",$configArray,$versionid);
 		$quiz->courseroot = $course_root;
 		$quiz->id = $mod->id;
 		$quiz->section = 0;
@@ -264,7 +273,7 @@ foreach($sections as $sect) {
 				add_or_update_oppiaconfig($mod->id, 'allowtryagain', $allowtryagain);
 				
 				$configArray = Array('randomselect'=>$random, 'showfeedback'=>$showfeedback,'allowtryagain'=>$allowtryagain);
-				$quiz->init($course->shortname,$sect->summary,$configArray,$versionid);
+				$quiz->init($server_connection, $course->shortname,$sect->summary,$configArray,$versionid);
 				$quiz->courseroot = $course_root;
 				$quiz->id = $mod->id;
 				$quiz->section = $orderno;
@@ -293,6 +302,7 @@ foreach($sections as $sect) {
 			if($mod->modname == 'feedback'){
 				echo $mod->name."<br/>";
 				$feedback = new mobile_activity_feedback();
+				$feedback->init($server_connection, $course->shortname,$sect->summary,$versionid);
 				$feedback->courseroot = $course_root;
 				$feedback->id = $mod->id;
 				$feedback->section = $orderno;
