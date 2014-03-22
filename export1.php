@@ -118,7 +118,7 @@ foreach($sections as $sect) {
 
 echo "<form name='courseconfig' method='post' action='".$CFG->wwwroot."/blocks/oppia_mobile_export/export2.php'>";
 
-echo "<h2>Export - step 1</h2>";
+echo "<h2>".get_string('export1_title','block_oppia_mobile_export')."</h2>";
 echo "<input type='hidden' name='id' value='".$COURSE->id."'>";
 echo "<input type='hidden' name='sesskey' value='".sesskey()."'>";
 echo "<input type='hidden' name='stylesheet' value='".$stylesheet."'>";
@@ -126,17 +126,16 @@ echo "<input type='hidden' name='server' value='".$server."'>";
 
 if (count($quizzes)> 0){
 	
-	
-	echo "<p>Since this course contains quizzes, please select which quizzes (if any) should be a random selection of the questions available</p>";
+	echo "<p>".get_string('export1_contains_quizzes','block_oppia_mobile_export')."</p>";
 	
 	// using table not ideal but works for now
 	echo "<table>";
 	echo "<tr>";
-	echo "<th>Section Name</th>";
-	echo "<th>Quiz Title</th>";
-	echo "<th>No random questions</th>";
-	echo "<th>Show feedback</th>";
-	echo "<th>Allow try-again</th>";
+	echo "<th>".get_string('export1_quiz_sectionname','block_oppia_mobile_export')."</th>";
+	echo "<th>".get_string('export1_quiz_title','block_oppia_mobile_export')."</th>";
+	echo "<th>".get_string('export1_quiz_norandom','block_oppia_mobile_export')."</th>";
+	echo "<th>".get_string('export1_quiz_feedback','block_oppia_mobile_export')."</th>";
+	echo "<th>".get_string('export1_quiz_tryagain','block_oppia_mobile_export')."</th>";
 	echo "</tr>";
 	foreach ($quizzes as $quiz){
 		echo "<tr>";
@@ -150,13 +149,13 @@ if (count($quizzes)> 0){
 				if ($current == 0){
 					echo " selected='selected'";
 				}
-			echo ">Use all questions (don't randomise)</option>";
+			echo ">".get_string('export1_quiz_norandom_all','block_oppia_mobile_export')."</option>";
 			for ($i=1; $i<$quiz->noquestions; $i++){
 				echo "<option value='".$i."'";
 				if ($current == $i){
 					echo " selected='selected'";
 				}
-				echo ">select ".$i." random questions</option>";
+				echo ">".get_string('export1_quiz_norandom_selectx','block_oppia_mobile_export',$i)."</option>";
 			}
 			echo "</select></td>";
 			
@@ -167,12 +166,12 @@ if (count($quizzes)> 0){
 				if ($showfeedback == 1){
 					echo " selected='selected'";
 				}
-			echo ">True</option>";
+			echo ">".get_string('true','block_oppia_mobile_export')."</option>";
 			echo "<option value='0'";
 			if ($showfeedback == 0){
 				echo " selected='selected'";
 			}
-			echo ">False</option>";
+			echo ">".get_string('false','block_oppia_mobile_export')."</option>";
 			echo "</select></td>";
 			
 			echo "<td>";
@@ -182,19 +181,19 @@ if (count($quizzes)> 0){
 				if ($allowtryagain == 1){
 					echo " selected='selected'";
 				}
-			echo ">True</option>";
+			echo ">".get_string('true','block_oppia_mobile_export')."</option>";
 			echo "<option value='0'";
 			if ($allowtryagain == 0){
 				echo " selected='selected'";
 			}
-			echo ">False</option>";
+			echo ">".get_string('false','block_oppia_mobile_export')."</option>";
 			echo "</select></td>";
 		echo "</tr>";
 	}
 	echo "</table>";
 }
-echo "<p>Course Priority";
-echo "<br/>This is the relative weight given to a course to help determine the ordering in which it will appear on the mobile (10 = highest priority)</p>";
+echo "<p>".get_string('export1_priority_title','block_oppia_mobile_export');
+echo "<br/>".get_string('export1_priority_desc','block_oppia_mobile_export')."</p>";
 echo "<select name='coursepriority' id='coursepriority'>";
 for ($i=0; $i<11; $i++){
 	echo "<option value='$i'";
@@ -205,10 +204,9 @@ for ($i=0; $i<11; $i++){
 }
 echo "</select>";
 
-echo "<p><input type='submit' name='submit' value='Continue'></p>";
+echo "<p><input type='submit' name='submit' value='".get_string('continue','block_oppia_mobile_export')."'></p>";
 echo "</form>";
 echo $OUTPUT->footer();
-//redirect($CFG->wwwroot."/blocks/oppia_mobile_export/export2.php?id=".$id."&sesskey=".sesskey()."&stylesheet=".$stylesheet);
 
 
 ?>

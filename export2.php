@@ -93,7 +93,7 @@ $meta->appendChild($xmlDoc->createElement("versionid",$versionid));
 $meta->appendChild($xmlDoc->createElement("priority",$priority));
 $meta->appendChild($xmlDoc->createElement("server",$server_connection->url));
 
-echo "<h2>Exporting Course: ".strip_tags($course->fullname)."</h2>";
+echo "<h2>".get_string('export2_title','block_oppia_mobile_export',strip_tags($course->fullname))."</h2>";
 $title = extractLangs($course->fullname);
 if(is_array($title) && count($title)>0){
 	foreach($title as $l=>$t){
@@ -206,7 +206,7 @@ foreach($sections as $sect) {
 	$sectionmods = explode(",", $sect->sequence);
 	if(strip_tags($sect->summary) != "" && count($sectionmods)>0){
 		
-		echo "<h3>Exporting Section: ".strip_tags($sect->summary,'<span>')."</h3>";
+		echo "<h3>".get_string('export2_section_title','block_oppia_mobile_export',strip_tags($sect->summary,'<span>'))."</h3>";
 		
 		$section = $xmlDoc->createElement("section");
 		$section->appendChild($xmlDoc->createAttribute("order"))->appendChild($xmlDoc->createTextNode($orderno));
@@ -284,7 +284,7 @@ foreach($sections as $sect) {
 					$quiz->getXML($mod,$i,true,$activities,$xmlDoc);
 					$no_activities++;
 				} else {
-					echo "Not exporting quiz as doesn't contain any supported questions.<br/>";
+					echo get_string('error_quiz_no_questions','block_oppia_mobile_export')."<br/>";
 				}
 			}
 			
@@ -313,7 +313,7 @@ foreach($sections as $sect) {
 					$feedback->getXML($mod,$i,true,$activities,$xmlDoc);
 					$no_activities++;
 				} else {
-					echo "Not exporting feedback as doesn't contain any supported questions.<br/>";
+					echo get_string('error_feedback_no_questions','block_oppia_mobile_export')."<br/>";
 				}
 			}
 			
@@ -324,7 +324,7 @@ foreach($sections as $sect) {
 			$section->appendChild($activities);
 			$structure->appendChild($section);
 		} else {
-			echo "Not exporting section as doesn't contain any activities.<br/>";
+			echo get_string('error_section_no_activities','block_oppia_mobile_export')."<br/>";
 		}
 		$orderno++;
 	}
@@ -358,34 +358,35 @@ if(count($MEDIA) > 0){
 
 $xmlDoc->save($course_root."/module.xml");
 
-echo "<p>Validating module XML file...";
+echo "<p>".get_string('export2_xml_valid_start','block_oppia_mobile_export');
 libxml_use_internal_errors(true);
 
 $xml = new DOMDocument();
 $xml->load($course_root."/module.xml");
 
 if (!$xml->schemaValidate('./oppia-schema.xsd')) {
-	print '<b>Errors Found!</b>';
+	print '<p><b>'.get_string('error_xml_invalid','block_oppia_mobile_export').'</b></p>';
 	libxml_display_errors();
 } else {
-	echo "validated<p/>";
-	echo "<p>Created module XMLfile</p>";
+	echo get_string('export2_xml_validated','block_oppia_mobile_export')."<p/>";
 	
-	echo "<p>Adding style sheet</p>";
+	echo "<p>".get_string('export2_course_xml_created','block_oppia_mobile_export')."</p>";
+	
+	echo "<p>".get_string('export2_style_start','block_oppia_mobile_export')."</p>";
 	
 	if (!copy("styles/".$stylesheet, $course_root."/style.css")) {
-		echo "<p>failed to copy stylesheet...</p>";
+		echo "<p>".get_string('error_style_copy','block_oppia_mobile_export')."</p>";
 	}
 	
-	echo "<p>Copying style resources</p>";
+	echo "<p>".get_string('export2_style_resources','block_oppia_mobile_export')."</p>";
 	list($filename, $extn) = explode('.', $stylesheet);
 	recurse_copy("styles/".$filename."-style-resources/", $course_root."/style_resources/");
 	
-	echo "<p>Course Export Complete</p>";
+	echo "<p>".get_string('export2_export_complete','block_oppia_mobile_export')."</p>";
 	$dir2zip = "output/".$USER->id."/temp";
 	$outputzip = "output/".$USER->id."/".strtolower($course->shortname)."-".$versionid.".zip";
 	Zip($dir2zip,$outputzip);
-	echo "<p>Compressed file</p>";
+	echo "<p>".get_string('export2_export_compressed','block_oppia_mobile_export')."</p>";
 	deleteDir("output/".$USER->id."/temp");
 	
 	echo "<p>Download exported course at <a href='".$outputzip."'>".$course->fullname."</a></p>";

@@ -21,8 +21,8 @@ $PAGE->set_title(get_string('course') . ': ' . $course->fullname);
 $PAGE->set_heading($course->fullname);
 echo $OUTPUT->header();
 
-echo "<p>cleaning up now...</p>";
+echo "<p>".get_string('cleanup_start','block_oppia_mobile_export')."</p>";
 deleteDir("output/".$USER->id);
-echo "<p>cleaned output files</p>";
+echo "<p>".get_string('cleanup_end','block_oppia_mobile_export')."</p>";
 
 echo $OUTPUT->footer();

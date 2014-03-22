@@ -27,18 +27,10 @@
 $string['pluginname'] = 'Oppia Mobile Export';
 $string['oppia_mobile_export:addinstance'] = 'Add a new Oppia export block';
 
-$string['oppiaurl'] = 'OppiaMobile API URL';
-$string['oppiausername'] = 'OppiaMobile Username';
-$string['oppiaapikey'] = 'OppiaMobile API Key';
-
 $string['oppia_block_api'] = 'Current OppiaMobile API:';
 $string['oppia_block_style'] = 'Stylesheet to use:';
 $string['oppia_block_export_button'] = 'Export to Oppia Package';
 $string['oppia_block_export2print_button'] = 'Export to print';
-
-$string['oppiaurlfull'] = 'Full URL to OppiaMobile server API (include the trailing slash)';
-$string['oppiausernamefull'] = 'Your OppiaMobile username';
-$string['oppiaapikeyfull'] = 'Your OppiaMobile API Key';
 
 $string['oppia_block_export_servers'] = 'OppiaMobile Servers';
 
@@ -73,3 +65,42 @@ $string['server_form_username'] = 'Username';
 $string['server_form_username_error_none'] = 'Please enter your OppiaMobile username for the server';
 $string['server_form_apikey'] = 'API Key';
 $string['server_form_apikey_error_none'] = 'Please enter your OppiaMobile API key for the server';
+
+$string['cleanup_start'] = 'Starting cleanup now...';
+$string['cleanup_end'] = 'Cleanup completed';
+
+$string['error_feedback_no_questions'] = 'Not exporting feedback as doesn\'t contain any supported questions.';
+$string['error_quiz_no_questions'] = 'Not exporting quiz as doesn\'t contain any supported questions.';
+$string['error_section_no_activities'] = 'Not exporting section as doesn\'t contain any activities.';
+$string['error_xml_invalid'] = 'Errors in course XML Found!';
+$string['error_style_copy'] = 'Failed to copy stylesheet.';
+
+$string['export1_title'] = 'Export - step 1';
+$string['export1_contains_quizzes'] = 'Since this course contains quizzes, please select which quizzes (if any) should be a random selection of the questions available';
+
+$string['export1_quiz_sectionname'] = 'Section Name';
+$string['export1_quiz_title'] = 'Quiz Title';
+$string['export1_quiz_norandom'] = 'No random questions';
+$string['export1_quiz_feedback'] = 'Show feedback';
+$string['export1_quiz_tryagain'] = 'Allow try-again?';
+
+$string['export1_quiz_norandom_all'] = 'Use all questions (don\'t randomise)';
+$string['export1_quiz_norandom_selectx'] = 'Select {$a} random questions';
+
+$string['export1_priority_title'] = 'Course Priority';
+$string['export1_priority_desc'] = 'This is the relative weight given to a course to help determine the ordering in which it will appear on the mobile (10 = highest priority)';
+
+$string['export2_title'] = 'Export - step 2: {$a}';
+$string['export2_section_title'] = 'Exporting Section: {$a}';
+$string['export2_xml_valid_start'] = 'Validating course XML file...';
+$string['export2_xml_validated'] = 'validated';
+$string['export2_course_xml_created'] = 'Exported coursee XML file';
+$string['export2_style_start'] = 'Adding style sheet';
+$string['export2_style_resources'] = 'Copying style resources';
+$string['export2_export_complete'] = 'Course export complete';
+$string['export2_export_compressed'] = 'Compressed file';
+
+$string['true'] = 'True';
+$string['false'] = 'False';
+$string['continue'] = 'Continue';
+
