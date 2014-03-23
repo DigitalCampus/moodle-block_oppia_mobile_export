@@ -80,7 +80,7 @@ $string['error_xml_invalid'] = 'Errors in course XML Found!';
 $string['error_style_copy'] = 'Failed to copy stylesheet.';
 
 $string['export_title'] = 'Export - step {$a->stepno}: {$a->coursename}';
-
+$string['export2print_title'] = 'Export to Print - step {$a->stepno}: {$a->coursename}';
 $string['export_contains_quizzes'] = 'Since this course contains quizzes, please select which quizzes (if any) should be a random selection of the questions available';
 
 $string['export_quiz_sectionname'] = 'Section Name';

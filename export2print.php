@@ -59,6 +59,11 @@ $modinfo = get_fast_modinfo($course);
 $sections = $modinfo->get_section_info_all();
 $mods = $modinfo->get_cms();
 
+$a = new stdClass();
+$a->stepno = 1;
+$a->coursename = strip_tags($course->fullname);
+echo "<h2>".get_string('export2print_title','block_oppia_mobile_export', $a)."</h2>";
+
 if (!copy("styles/".$stylesheet, $course_root."/style.css")) {
 	echo "<p>".get_string('error_style_copy','block_oppia_mobile_export')."</p>";
 }
