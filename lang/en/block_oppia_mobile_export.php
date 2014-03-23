@@ -69,7 +69,11 @@ $string['server_form_apikey_error_none'] = 'Please enter your OppiaMobile API ke
 $string['cleanup_start'] = 'Starting cleanup now...';
 $string['cleanup_end'] = 'Cleanup completed';
 
+$string['error_connection'] = 'Error connecting to OppiaMobile server, please check the your API url, username and API key.';
 $string['error_feedback_no_questions'] = 'Not exporting feedback as doesn\'t contain any supported questions.';
+$string['error_file_delete'] = 'Unable to delete the file';
+$string['error_file_not_found'] = 'File not found: {$a}';
+$string['error_media_attributes'] = 'You must supply digest, download_url and filename for every media object';
 $string['error_quiz_no_questions'] = 'Not exporting quiz as doesn\'t contain any supported questions.';
 $string['error_section_no_activities'] = 'Not exporting section as doesn\'t contain any activities.';
 $string['error_xml_invalid'] = 'Errors in course XML Found!';
@@ -105,6 +109,16 @@ $string['export_download'] = 'Download exported course at <a href="{$a->zip}">{$
 $string['export_cleanup'] = 'Cleanup files';
 
 $string['export_advice_desc'] = 'Although your course has been exported you may want to address the following issues to make sure your course is easy to use on mobile devices:';
+
+$string['export_preview_download'] = 'Download exported course preview at <a href="{$a->zip}">{$a->coursename}</a>';
+
+$string['export_file_trying'] = 'Trying file: {$a}';
+$string['export_file_success'] = 'File: {$a} successfully exported';
+$string['export_image_success'] = 'Image: {$a} successfully exported';
+
+$string['export_quiz_skip'] = 'Skipping quiz since contains no questions';
+$string['export_quiz_skip_essay'] = 'Skipping essay question';
+$string['export_quiz_skip_random'] = 'Skipping random question';
 
 $string['true'] = 'True';
 $string['false'] = 'False';

@@ -76,7 +76,7 @@ class mobile_activity_quiz extends mobile_activity {
 			// find if this quiz already exists
 			$resp = $mQH->exec('quizprops/digest/'.$this->md5, array(),'get');
 			if(!isset($resp->quizzes)){
-				echo "Error connecting to OppiaMobile server, please check the API url in the block settings.\n";
+				echo get_string('error_connection','block_oppia_mobile_export');
 				die;
 			}
 			
@@ -93,7 +93,7 @@ class mobile_activity_quiz extends mobile_activity {
 							$CFG->block_oppia_mobile_export_thumb_width,
 							$CFG->block_oppia_mobile_export_thumb_height);
 				//delete original image
-				unlink($this->courseroot."/".$filename) or die('Unable to delete the file');
+				unlink($this->courseroot."/".$filename) or die(get_string('error_file_delete','block_oppia_mobile_export'));
 			}
 			
 			// Don't export the full quiz if it already exists on the server
@@ -134,13 +134,13 @@ class mobile_activity_quiz extends mobile_activity {
 			foreach($qs as $q){
 				// skip any essay questions
 				if($q->qtype == 'essay'){
-					echo "Skipping essay question<br/>";
+					echo get_string('export_quiz_skip_essay','block_oppia_mobile_export')."<br/>";
 					continue;
 				}
 				
 				// skip any random questions
 				if($q->qtype == 'random'){
-					echo "Skipping random question<br/>";
+					echo get_string('export_quiz_skip_random','block_oppia_mobile_export')."<br/>";
 					continue;
 				}
 				
@@ -256,7 +256,7 @@ class mobile_activity_quiz extends mobile_activity {
 			$this->content = json_encode($quiz);
 			
 		} catch (moodle_exception $me){
-			echo "Skipping quiz since contains no questions<br/>";
+			echo get_string('export_quiz_skip','block_oppia_mobile_export')."<br/>";
 			$this->is_valid = false;
 			return;
 		}

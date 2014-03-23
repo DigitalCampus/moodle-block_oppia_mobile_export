@@ -40,7 +40,7 @@ class mobile_activity_page extends mobile_activity {
 						$CFG->block_oppia_mobile_export_thumb_width,
 						$CFG->block_oppia_mobile_export_thumb_height);
 			//delete original image
-			unlink($this->courseroot."/".$eiffilename) or die('Unable to delete the file');
+			unlink($this->courseroot."/".$eiffilename) or die(get_string('error_file_delete','block_oppia_mobile_export'));
 		}
 		unset($eiffilename);
 		
@@ -103,7 +103,7 @@ class mobile_activity_page extends mobile_activity {
 								$this->courseroot."/images/".$cm->id,
 								$CFG->block_oppia_mobile_export_thumb_width,
 								$CFG->block_oppia_mobile_export_thumb_height);
-					unlink($this->courseroot."/".$piffilename) or die('Unable to delete the file');
+					unlink($this->courseroot."/".$piffilename) or die(get_string('error_file_delete','block_oppia_mobile_export'));
 				}
 			}
 			
@@ -154,7 +154,7 @@ class mobile_activity_page extends mobile_activity {
 				$CFG->block_oppia_mobile_export_thumb_width,
 				$CFG->block_oppia_mobile_export_thumb_height);
 			//delete original image
-			unlink($this->courseroot."/".$eiffilename) or die('Unable to delete the file');
+			unlink($this->courseroot."/".$eiffilename) or die(get_string('error_file_delete','block_oppia_mobile_export'));
 		}
 		unset($eiffilename);
 		$return_content = "";
@@ -202,7 +202,7 @@ class mobile_activity_page extends mobile_activity {
 							$this->courseroot."/images/".$cm->id,
 							$CFG->block_oppia_mobile_export_thumb_width,
 							$CFG->block_oppia_mobile_export_thumb_height);
-					unlink($this->courseroot."/".$piffilename) or die('Unable to delete the file');
+					unlink($this->courseroot."/".$piffilename) or die(get_string('error_file_delete','block_oppia_mobile_export'));
 				}
 			}
 			$return_content = $content;
@@ -313,7 +313,7 @@ class mobile_activity_page extends mobile_activity {
 				$file->copy_content_to($imgfile);
 			} else {
 				if($CFG->block_oppia_mobile_export_debug){
-					echo "<span style='color:red'>Image file not found</span><br/>";
+					echo "<span style='color:red'>".get_string('error_file_not_found','block_oppia_mobile_export',$filename)."</span><br/>";
 				}
 			}
 			
@@ -321,7 +321,7 @@ class mobile_activity_page extends mobile_activity {
 			$tr->filename = $filename;
 			array_push($toreplace, $tr);
 			if($CFG->block_oppia_mobile_export_debug){
-				echo "File: ".$filename." successfully exported<br/>";
+				echo get_string('export_file_success','block_oppia_mobile_export',$filename)."<br/>";
 			}
 		}
 		foreach($toreplace as $tr){
@@ -350,7 +350,7 @@ class mobile_activity_page extends mobile_activity {
 			$content = str_replace($toreplace, $r, $content);
 			// check all the required attrs exist
 			if(!isset($mediajson->digest) || !isset($mediajson->download_url) || !isset($mediajson->filename)){
-				echo "You must supply digest, download_url and filename for every media object\n";
+				echo get_string('error_media_attributes','block_oppia_mobile_export')."<br/>";
 				die;
 			}
 			
@@ -404,7 +404,7 @@ class mobile_activity_page extends mobile_activity {
 		$filename = $files_tmp['filenames'][0][0];
 			
 		if($CFG->block_oppia_mobile_export_debug){
-			echo "trying file: ".$filename."<br/>";
+			echo get_string('export_file_trying','block_oppia_mobile_export',$filename)."<br/>";
 		}
 		
 		$fullpath = "/$contextid/$component/$filearea/$itemid/$filename";
@@ -424,12 +424,12 @@ class mobile_activity_page extends mobile_activity {
 			$file->copy_content_to($imgfile);
 		} else {
 			if($CFG->block_oppia_mobile_export_debug){
-				echo "<span style='color:red'>Image file not found</span><br/>";
+				echo "<span style='color:red'>".get_string('error_file_not_found','block_oppia_mobile_export',$filename)."</span><br/>";
 			}
 		}
 		
 		if($CFG->block_oppia_mobile_export_debug){
-			echo "Image for Media file: ".$filename." successfully exported<br/>";
+			echo get_string('export_file_success','block_oppia_mobile_export',$filename)."<br/>";
 		}
 		$this->page_image = "images/".$filename;
 		return true;

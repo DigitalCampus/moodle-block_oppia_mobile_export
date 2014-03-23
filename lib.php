@@ -111,7 +111,7 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
 			$file->copy_content_to($imgfile);
 		} else {
 			if($CFG->block_oppia_mobile_export_debug){
-				echo "<span style='color:red'>Extract image file not found</span><br/>";
+				echo "<span style='color:red'>".get_string('error_file_not_found','block_oppia_mobile_export',$filename)."</span><br/>";
 			}
 		}
 		
@@ -119,7 +119,7 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
 		$tr->originalfilename = $filename;
 		$tr->filename = sha1($fullpath);
 		if($CFG->block_oppia_mobile_export_debug){
-			echo "Extract Image: ".$filename." successfully exported<br/>";
+			echo get_string('export_image_success','block_oppia_mobile_export',$filename)."<br/>";
 		}
 	}
 	return "images/".sha1($fullpath);

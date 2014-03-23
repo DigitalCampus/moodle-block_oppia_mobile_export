@@ -60,10 +60,10 @@ $sections = $modinfo->get_section_info_all();
 $mods = $modinfo->get_cms();
 
 if (!copy("styles/".$stylesheet, $course_root."/style.css")) {
-	echo "<p>failed to copy stylesheet...</p>";
+	echo "<p>".get_string('error_style_copy','block_oppia_mobile_export')."</p>";
 }
 
-echo "<p>Copying style resources</p>";
+echo "<p>".get_string('export_style_resources','block_oppia_mobile_export')."</p>";
 list($filename, $extn) = explode('.', $stylesheet);
 recurse_copy("styles/".$filename."-style-resources/", $course_root."/style_resources/");
 
@@ -160,7 +160,10 @@ $dir2zip = "output/".$USER->id."/temp/print/";
 $outputzip = "output/".$USER->id."/".strtolower($course->shortname)."-preview-".$versionid.".zip";
 Zip($dir2zip,$outputzip);
 
-echo "<p>Download exported course preview at <a href='".$outputzip."'>".$course->fullname."</a></p>";
+$a = new stdClass();
+$a->zip = $outputzip;
+$a->coursename = strip_tags($course->fullname);
+echo "<p>".get_string('export_preview_download','block_oppia_mobile_export', $a )."</p>";
 
 echo $OUTPUT->footer();
 ?>

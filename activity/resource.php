@@ -28,7 +28,7 @@ class mobile_activity_resource extends mobile_activity {
 						$CFG->block_oppia_mobile_export_thumb_width,
 						$CFG->block_oppia_mobile_export_thumb_height);
 			//delete original image
-			unlink($this->courseroot."/".$eiffilename) or die('Unable to delete the file');
+			unlink($this->courseroot."/".$eiffilename) or die(get_string('error_file_delete','block_oppia_mobile_export'));
 		}
 		unset($eiffilename);
 		
