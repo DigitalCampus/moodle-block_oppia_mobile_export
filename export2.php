@@ -156,7 +156,7 @@ foreach ($sectionmods as $modnumber) {
 
 		$quiz = new mobile_activity_quiz();
 		
-		$random = optional_param('quiz_'.$mod->id,0,PARAM_INT);
+		$random = optional_param('quiz_'.$mod->id.'_randomselect',0,PARAM_INT);
 		add_or_update_oppiaconfig($mod->id, 'randomselect', $random);
 		
 		$showfeedback = optional_param('quiz_'.$mod->id.'_showfeedback',1,PARAM_BOOL);
@@ -165,7 +165,13 @@ foreach ($sectionmods as $modnumber) {
 		$allowtryagain = optional_param('quiz_'.$mod->id.'_allowtryagain',1,PARAM_BOOL);
 		add_or_update_oppiaconfig($mod->id, 'allowtryagain', $allowtryagain);
 		
-		$configArray = Array('randomselect'=>$random, 'showfeedback'=>$showfeedback,'allowtryagain'=>$allowtryagain);
+		$passthreshold = optional_param('quiz_'.$mod->id.'_passthreshold',0,PARAM_INT);
+		add_or_update_oppiaconfig($mod->id, 'passthreshold', $passthreshold);
+		
+		$configArray = Array('randomselect'=>$random, 
+								'showfeedback'=>$showfeedback,
+								'allowtryagain'=>$allowtryagain, 
+								'passthreshold'=>$passthreshold);
 		$quiz->init($server_connection, $course->shortname,"Pre-test",$configArray,$versionid);
 		$quiz->courseroot = $course_root;
 		$quiz->id = $mod->id;
@@ -267,7 +273,7 @@ foreach($sections as $sect) {
 				echo $mod->name."<br/>";
 				
 				$quiz = new mobile_activity_quiz();
-				$random = optional_param('quiz_'.$mod->id,0,PARAM_INT);
+				$random = optional_param('quiz_'.$mod->id.'_randomselect',0,PARAM_INT);
 				add_or_update_oppiaconfig($mod->id, 'randomselect', $random);
 				
 				$showfeedback = optional_param('quiz_'.$mod->id.'_showfeedback',1,PARAM_INT);
@@ -276,7 +282,14 @@ foreach($sections as $sect) {
 				$allowtryagain = optional_param('quiz_'.$mod->id.'_allowtryagain',1,PARAM_INT);
 				add_or_update_oppiaconfig($mod->id, 'allowtryagain', $allowtryagain);
 				
-				$configArray = Array('randomselect'=>$random, 'showfeedback'=>$showfeedback,'allowtryagain'=>$allowtryagain);
+				$passthreshold = optional_param('quiz_'.$mod->id.'_passthreshold',0,PARAM_INT);
+				add_or_update_oppiaconfig($mod->id, 'passthreshold', $passthreshold);
+		
+				$configArray = Array('randomselect'=>$random, 
+										'showfeedback'=>$showfeedback,
+										'allowtryagain'=>$allowtryagain, 
+										'passthreshold'=>$passthreshold);
+				
 				$quiz->init($server_connection, $course->shortname,$sect->summary,$configArray,$versionid);
 				$quiz->courseroot = $course_root;
 				$quiz->id = $mod->id;

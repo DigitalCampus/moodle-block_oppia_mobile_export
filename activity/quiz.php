@@ -69,7 +69,7 @@ class mobile_activity_quiz extends mobile_activity {
 			
 			$md5postfix = "";
 			foreach($this->configArray as $key => $value){
-				$md5postfix .= (string) $value;
+				$md5postfix .= $key[0].((string) $value);
 			}
 			// generate the md5 of the quiz
 			$this->md5 = md5(serialize($qs)).$this->id."c".$md5postfix;

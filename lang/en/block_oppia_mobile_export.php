@@ -87,6 +87,7 @@ $string['export_quiz_sectionname'] = 'Section Name';
 $string['export_quiz_title'] = 'Quiz Title';
 $string['export_quiz_norandom'] = 'No random questions';
 $string['export_quiz_feedback'] = 'Show feedback';
+$string['export_quiz_passthreshold'] = 'Pass Threshold (%)';
 $string['export_quiz_tryagain'] = 'Allow try-again?';
 
 $string['export_quiz_norandom_all'] = 'Use all questions (don\'t randomise)';

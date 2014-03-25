@@ -139,6 +139,7 @@ if (count($quizzes)> 0){
 	echo "<th>".get_string('export_quiz_norandom','block_oppia_mobile_export')."</th>";
 	echo "<th>".get_string('export_quiz_feedback','block_oppia_mobile_export')."</th>";
 	echo "<th>".get_string('export_quiz_tryagain','block_oppia_mobile_export')."</th>";
+	echo "<th>".get_string('export_quiz_passthreshold','block_oppia_mobile_export')."</th>";
 	echo "</tr>";
 	foreach ($quizzes as $quiz){
 		echo "<tr>";
@@ -147,7 +148,7 @@ if (count($quizzes)> 0){
 			
 			echo "<td>";
 			$current = get_oppiaconfig($quiz->id,'randomselect',0);
-			echo "<select name='quiz_".$quiz->id."' id='id_s_quiz_".$quiz->id."'>";
+			echo "<select name='quiz_".$quiz->id."_randomselect' id='id_s_quiz_".$quiz->id."'>";
 			echo "<option value='0'";
 				if ($current == 0){
 					echo " selected='selected'";
@@ -162,8 +163,8 @@ if (count($quizzes)> 0){
 			}
 			echo "</select></td>";
 			
-			echo "<td>";
 			$showfeedback = get_oppiaconfig($quiz->id,'showfeedback',1);
+			echo "<td>";
 			echo "<select name='quiz_".$quiz->id."_showfeedback' id='id_showfeedback_quiz_".$quiz->id."'>";
 			echo "<option value='1'";
 				if ($showfeedback == 1){
@@ -177,8 +178,8 @@ if (count($quizzes)> 0){
 			echo ">".get_string('false','block_oppia_mobile_export')."</option>";
 			echo "</select></td>";
 			
-			echo "<td>";
 			$allowtryagain = get_oppiaconfig($quiz->id,'allowtryagain',1);
+			echo "<td>";
 			echo "<select name='quiz_".$quiz->id."_allowtryagain' id='id_allowtryagain_quiz_".$quiz->id."'>";
 			echo "<option value='1'";
 				if ($allowtryagain == 1){
@@ -191,6 +192,19 @@ if (count($quizzes)> 0){
 			}
 			echo ">".get_string('false','block_oppia_mobile_export')."</option>";
 			echo "</select></td>";
+			
+			$passthreshold = get_oppiaconfig($quiz->id,'passthreshold',80);
+			echo "<td>";
+			echo "<select name='quiz_".$quiz->id."_passthreshold' id='id_passthreshold_quiz_".$quiz->id."'>";
+			for ($i=100; $i>0; $i = $i-5){
+				echo "<option value='".$i."'";
+				if ($passthreshold == $i){
+					echo " selected='selected'";
+				}
+				echo ">".$i."</option>";
+			}
+			
+			echo "</td>";
 		echo "</tr>";
 	}
 	echo "</table>";
