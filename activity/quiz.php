@@ -109,7 +109,7 @@ class mobile_activity_quiz extends mobile_activity {
 				$resp = $mQH->exec('quizprops/',$post);
 				
 				$this->exportQuestionImages();
-				return;
+				//return;
 			}
 			
 			$props = array();
@@ -144,9 +144,7 @@ class mobile_activity_quiz extends mobile_activity {
 					continue;
 				}
 				
-				if($q->qtype == 'match'){
-					$q->qtype = 'matching';
-				}
+				
 				//check to see if a multichoice is actually a multiselect
 				if($q->qtype == 'multichoice'){
 					$counter = 0;
@@ -166,6 +164,24 @@ class mobile_activity_quiz extends mobile_activity {
 				// add max score property
 				$props = array();
 				$props[0] = array('name' => "maxscore", 'value' => $q->maxmark);
+				
+				//add feedback for matching questions
+				if($q->qtype == 'match'){
+					$q->qtype = 'matching';
+					$prop_i = 1;
+					if($q->options->correctfeedback != ""){
+						$props[$prop_i] = array('name' => "correctfeedback", 'value' => strip_tags($q->options->correctfeedback));
+						$prop_i++;
+					}
+					if($q->options->partiallycorrectfeedback != ""){
+						$props[$prop_i] = array('name' => "partiallycorrectfeedback", 'value' => strip_tags($q->options->partiallycorrectfeedback));
+						$prop_i++;
+					}
+					if($q->options->incorrectfeedback != ""){
+						$props[$prop_i] = array('name' => "incorrectfeedback", 'value' => strip_tags($q->options->incorrectfeedback));
+						$prop_i++;
+					}
+				}
 				
 				// find if the question text has any images in it
 				$question_image = extractImageFile($q->questiontext,
