@@ -159,7 +159,7 @@ foreach ($sectionmods as $modnumber) {
 		$random = optional_param('quiz_'.$mod->id.'_randomselect',0,PARAM_INT);
 		add_or_update_oppiaconfig($mod->id, 'randomselect', $random);
 		
-		$showfeedback = optional_param('quiz_'.$mod->id.'_showfeedback',1,PARAM_BOOL);
+		$showfeedback = optional_param('quiz_'.$mod->id.'_showfeedback',2,PARAM_BOOL);
 		add_or_update_oppiaconfig($mod->id, 'showfeedback', $showfeedback);
 		
 		$allowtryagain = optional_param('quiz_'.$mod->id.'_allowtryagain',1,PARAM_BOOL);

@@ -100,7 +100,7 @@ $string['export_priority_desc'] = 'This is the relative weight given to a course
 $string['export_section_title'] = 'Exporting Section: {$a}';
 $string['export_xml_valid_start'] = 'Validating course XML file...';
 $string['export_xml_validated'] = 'validated';
-$string['export_course_xml_created'] = 'Exported coursee XML file';
+$string['export_course_xml_created'] = 'Exported course XML file';
 $string['export_style_start'] = 'Adding style sheet';
 $string['export_style_resources'] = 'Copying style resources';
 $string['export_export_complete'] = 'Course export complete';
@@ -124,4 +124,8 @@ $string['export_quiz_skip_random'] = 'Skipping random question';
 $string['true'] = 'True';
 $string['false'] = 'False';
 $string['continue'] = 'Continue';
+
+$string['feedback_always'] = 'After question and end of quiz';
+$string['feedback_never'] = 'Never show feedback';
+$string['feedback_endonly'] = 'At end of quiz only';
 

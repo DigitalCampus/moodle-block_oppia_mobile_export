@@ -163,19 +163,27 @@ if (count($quizzes)> 0){
 			}
 			echo "</select></td>";
 			
-			$showfeedback = get_oppiaconfig($quiz->id,'showfeedback',1);
+			$showfeedback = get_oppiaconfig($quiz->id,'showfeedback',2);
 			echo "<td>";
 			echo "<select name='quiz_".$quiz->id."_showfeedback' id='id_showfeedback_quiz_".$quiz->id."'>";
+			
 			echo "<option value='1'";
 				if ($showfeedback == 1){
 					echo " selected='selected'";
 				}
-			echo ">".get_string('true','block_oppia_mobile_export')."</option>";
+			echo ">".get_string('feedback_always','block_oppia_mobile_export')."</option>";
+			
 			echo "<option value='0'";
 			if ($showfeedback == 0){
 				echo " selected='selected'";
 			}
-			echo ">".get_string('false','block_oppia_mobile_export')."</option>";
+			echo ">".get_string('feedback_never','block_oppia_mobile_export')."</option>";
+			
+			echo "<option value='2'";
+			if ($showfeedback == 2){
+				echo " selected='selected'";
+			}
+			echo ">".get_string('feedback_endonly','block_oppia_mobile_export')."</option>";
 			echo "</select></td>";
 			
 			$allowtryagain = get_oppiaconfig($quiz->id,'allowtryagain',1);
