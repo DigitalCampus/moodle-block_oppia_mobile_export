@@ -78,6 +78,7 @@ mkdir($course_root,0777);
 mkdir($course_root."/images",0777);
 mkdir($course_root."/resources",0777);
 mkdir($course_root."/style_resources",0777);
+mkdir($course_root."/js",0777);
 
 $PAGE->set_context($context);
 context_helper::preload_course($id);
@@ -397,6 +398,8 @@ if (!$xml->schemaValidate('./oppia-schema.xsd')) {
 	echo "<p>".get_string('export_style_resources','block_oppia_mobile_export')."</p>";
 	list($filename, $extn) = explode('.', $stylesheet);
 	recurse_copy("styles/".$filename."-style-resources/", $course_root."/style_resources/");
+	
+	recurse_copy("js/", $course_root."/js/");
 	
 	echo "<p>".get_string('export_export_complete','block_oppia_mobile_export')."</p>";
 	$dir2zip = "output/".$USER->id."/temp";

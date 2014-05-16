@@ -52,6 +52,7 @@ mkdir($course_root,0777);
 mkdir($course_root."/images",0777);
 mkdir($course_root."/resources",0777);
 mkdir($course_root."/style_resources",0777);
+mkdir($course_root."/js",0777);
 
 $PAGE->set_context($context);
 context_helper::preload_course($id);
@@ -72,6 +73,8 @@ echo "<p>".get_string('export_style_resources','block_oppia_mobile_export')."</p
 list($filename, $extn) = explode('.', $stylesheet);
 recurse_copy("styles/".$filename."-style-resources/", $course_root."/style_resources/");
 
+recurse_copy("js/", $course_root."/js/");
+
 $orderno = 1;
 $course_index = "<ol>";
 foreach($sections as $sect) {
@@ -82,9 +85,12 @@ foreach($sections as $sect) {
 		$webpage =  "<html><head>";
 		$webpage .= "<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>";
 		$webpage .= "<link href='style.css' rel='stylesheet' type='text/css'/>";
+		$webpage .= "<script src='js/jquery-1.11.0.min.js'></script>";
+		$webpage .= "<script src='js/jquery-ui-1.10.3.custom.min.js'></script>";
+		$webpage .= "<script src='js/oppia.js'></script>";
 		$webpage .= "<style>div.page {width:400px; border: 1px solid #000; margin: 10px auto;}</style>";
 		$webpage .= "</head>";
-		$webpage .= "<body>";
+		$webpage .= "<body onload='init();'>";
 		$webpage .= "<h1>".strip_tags($sect->summary,'<span>')."</h1>";
 		$empty = false;
 		foreach ($sectionmods as $modnumber) {
