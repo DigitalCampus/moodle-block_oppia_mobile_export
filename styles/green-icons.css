@@ -111,9 +111,10 @@ table td {
 	padding: 4px 4px 4px 30px;
 	background-image: url('style_resources/warning.png'); 
 	background-repeat: no-repeat;
+	font-weight:bold;
 }
 
-.suggestion {
+.suggestion, .info {
 	padding: 4px 4px 4px 30px;
 	background-image: url('style_resources/info.png'); 
 	background-repeat: no-repeat;
@@ -123,6 +124,10 @@ table td {
 	padding: 4px 4px 4px 30px;
 	background-image: url('style_resources/question.png'); 
 	background-repeat: no-repeat;
+}
+
+div.question > p:first-child {
+	font-weight:bold;
 }
 
 p.reveal {
