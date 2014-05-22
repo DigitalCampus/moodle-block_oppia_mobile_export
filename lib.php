@@ -103,7 +103,6 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
 				'contextid' => $contextid,
 				'filepath' => '/',           
 				'filename' => $filename);
-		print_r($fileinfo);
 		$file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
 				$fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
 		
