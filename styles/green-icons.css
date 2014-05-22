@@ -130,7 +130,7 @@ div.question > p:first-child {
 	font-weight:bold;
 }
 
-p.reveal {
+.reveal {
 	text-decoration: underline;
 	color: #495525;
 	cursor: pointer;
