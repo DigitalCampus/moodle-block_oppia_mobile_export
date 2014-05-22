@@ -70,6 +70,7 @@ $string['cleanup_start'] = 'Starting cleanup now...';
 $string['cleanup_end'] = 'Cleanup completed';
 
 $string['error_connection'] = 'Error connecting to OppiaMobile server, please check the your API url, username and API key.';
+$string['error_edit_page'] = 'Image not found, <a target="_blank" href="{$a}">please edit the activity</a>';
 $string['error_feedback_no_questions'] = 'Not exporting feedback as doesn\'t contain any supported questions.';
 $string['error_file_delete'] = 'Unable to delete the file';
 $string['error_file_not_found'] = 'File not found: {$a}';

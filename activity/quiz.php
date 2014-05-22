@@ -85,7 +85,8 @@ class mobile_activity_quiz extends mobile_activity {
 										'intro',
 										'0',
 										$context->id,
-										$this->courseroot); 		
+										$this->courseroot,
+										$cm->id); 		
 			
 			if($filename){
 				$this->quiz_image = "/images/".resizeImage($this->courseroot."/".$filename,
@@ -189,7 +190,8 @@ class mobile_activity_quiz extends mobile_activity {
 										'questiontext',
 										$q->id,
 										$q->contextid,
-										$this->courseroot); 
+										$this->courseroot,
+										$cm->id); 
 			
 				if($question_image){
 					$props[1] = array('name' => "image", 'value' => $question_image);
@@ -356,7 +358,8 @@ class mobile_activity_quiz extends mobile_activity {
 										'questiontext',
 										$q->id,
 										$q->contextid,
-										$this->courseroot); 
+										$this->courseroot,
+										$cm->id); 
 			}
 			
 		} catch (moodle_exception $me){

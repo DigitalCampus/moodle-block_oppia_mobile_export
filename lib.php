@@ -77,7 +77,7 @@ function extractLangs($content){
 	return $tempLangsRev;
 }
 
-function extractImageFile($content, $component, $filearea, $itemid, $contextid, $course_root){
+function extractImageFile($content, $component, $filearea, $itemid, $contextid, $course_root, $cmid){
 	global $CFG;
 	//find if any images/links exist
 	preg_match_all('((@@PLUGINFILE@@/(?P<filenames>[\w\.\-\_[:space:]]*)[\"|\']))',$content,$files_tmp, PREG_OFFSET_CAPTURE);
@@ -103,6 +103,7 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
 				'contextid' => $contextid,
 				'filepath' => '/',           
 				'filename' => $filename);
+		print_r($fileinfo);
 		$file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
 				$fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
 		
@@ -110,9 +111,9 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
 			$imgfile = $course_root."/images/".sha1($fullpath);
 			$file->copy_content_to($imgfile);
 		} else {
-			if($CFG->block_oppia_mobile_export_debug){
-				echo "<span style='color:red'>".get_string('error_file_not_found','block_oppia_mobile_export',$filename)."</span><br/>";
-			}
+			$link = $CFG->wwwroot."/course/modedit.php?return=0&sr=0&update=".$cmid;
+			echo "<span style='color:red'>".get_string('error_edit_page','block_oppia_mobile_export',$link)."</span><br/>";
+			return false;
 		}
 		
 		$tr = new StdClass;
@@ -193,6 +194,9 @@ function resizeImageScale($image,$image_new_name, $image_width, $image_height, $
 
 function resizeImageCrop($image,$image_new_name, $image_width, $image_height, $transparent=false){
 	global $CFG;
+	if (!file_exists($image)){
+		return false;
+	}
 	$size=GetimageSize($image);
 	$orig_w = $size[0];
 	$orig_h = $size[1];

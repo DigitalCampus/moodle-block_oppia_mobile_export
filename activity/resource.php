@@ -20,7 +20,8 @@ class mobile_activity_resource extends mobile_activity {
 										'intro',
 										'0',
 										$context->id,
-										$this->courseroot); 
+										$this->courseroot,
+										$cm->id); 
 	
 		if($eiffilename){
 			$this->resource_image = "/images/".resizeImage($this->courseroot."/".$eiffilename,

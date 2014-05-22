@@ -194,7 +194,7 @@ $filename = extractImageFile($course->summary,
 							'summary',
 							'0',
 							$context->id,
-							$course_root);
+							$course_root,0);
 
 if($filename){
 	$resizedFilename = resizeImage($course_root."/".$filename,
@@ -239,7 +239,7 @@ foreach($sections as $sect) {
 										'section',
 										$sect->id,
 										$context->id,
-										$course_root); 
+										$course_root,0); 
 		
 		if($filename){
 			$temp = $xmlDoc->createElement("image");

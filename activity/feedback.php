@@ -70,7 +70,8 @@ class mobile_activity_feedback extends mobile_activity {
 				'intro',
 				'0',
 				$context->id,
-				$this->courseroot);
+				$this->courseroot,
+				$cm->id);
 			
 		if($filename){
 			$this->feedback_image = "/images/".resizeImage($this->courseroot."/".$filename,

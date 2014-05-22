@@ -10,7 +10,7 @@ class mobile_activity_page extends mobile_activity {
 	
 	function process(){
 		global $DB, $CFG, $MOBILE_LANGS, $DEFAULT_LANG, $MEDIA;
-		$cm= get_coursemodule_from_id('page', $this->id);
+		$cm = get_coursemodule_from_id('page', $this->id);
 		$page = $DB->get_record('page', array('id'=>$cm->instance), '*', MUST_EXIST);
 		$context = context_module::instance($cm->id);
 		$this->md5 =  md5($page->content).$this->id;
@@ -20,7 +20,8 @@ class mobile_activity_page extends mobile_activity {
 										'content',
 										0,
 										$context->id,
-										$this->courseroot);
+										$this->courseroot,
+										$cm->id);
 		$content = $this->extractRelated($content);
 		
 		// find all the langs on this page
@@ -32,7 +33,8 @@ class mobile_activity_page extends mobile_activity {
 										'intro',
 										0,
 										$context->id,
-										$this->courseroot);
+										$this->courseroot,
+										$cm->id);
 		if($eiffilename){
 			$this->page_image = $eiffilename;
 			$this->page_image = "/images/".resizeImage($this->courseroot."/".$this->page_image,
@@ -41,7 +43,12 @@ class mobile_activity_page extends mobile_activity {
 						$CFG->block_oppia_mobile_export_thumb_height);
 			//delete original image
 			unlink($this->courseroot."/".$eiffilename) or die(get_string('error_file_delete','block_oppia_mobile_export'));
-		}
+		} 
+		/*
+		else {
+			$link = $CFG->wwwroot."/course/modedit.php?return=0&sr=0&update=".$cm->id;
+			echo "<span style='color:red'>".get_string('error_edit_page','block_oppia_mobile_export',$link,$page->name)."</span><br/>";
+		}*/
 		unset($eiffilename);
 		
 		if(is_array($langs) && count($langs)>0){
@@ -98,16 +105,23 @@ class mobile_activity_page extends mobile_activity {
 										'content',
 										0,
 										$context->id,
-										$this->courseroot);
+										$this->courseroot,
+										$cm->id);
 	
 				if($piffilename){
 					$this->page_image = $piffilename;
-					$this->page_image = "/images/".resizeImage($this->courseroot."/".$this->page_image,
+					$imageResized = resizeImage($this->courseroot."/".$this->page_image,
 								$this->courseroot."/images/".$cm->id,
 								$CFG->block_oppia_mobile_export_thumb_width,
 								$CFG->block_oppia_mobile_export_thumb_height);
-					unlink($this->courseroot."/".$piffilename) or die(get_string('error_file_delete','block_oppia_mobile_export'));
-				}
+					if ($imageResized){
+						$this->page_image = "/images/".$imageResized;
+						unlink($this->courseroot."/".$piffilename) or die(get_string('error_file_delete','block_oppia_mobile_export'));
+					} else {
+						$link = $CFG->wwwroot."/course/modedit.php?return=0&sr=0&update=".$cm->id;
+						echo "<span style='color:red'>".get_string('error_edit_page','block_oppia_mobile_export',$link)."</span><br/>";
+					}
+				} 
 			}
 			
 			// add html header tags etc
@@ -152,7 +166,9 @@ class mobile_activity_page extends mobile_activity {
 				'intro',
 				0,
 				$context->id,
-				$this->courseroot);
+				$this->courseroot,
+				$cm->id);
+		
 		if($eiffilename){
 			$this->page_image = $eiffilename;
 			$this->page_image = "/images/".resizeImage($this->courseroot."/".$this->page_image,
@@ -200,7 +216,8 @@ class mobile_activity_page extends mobile_activity {
 						'content',
 						0,
 						$context->id,
-						$this->courseroot);
+						$this->courseroot,
+						$cm->id);
 		
 				if($piffilename){
 					$this->page_image = $piffilename;
@@ -320,6 +337,7 @@ class mobile_activity_page extends mobile_activity {
 			} else {
 				if($CFG->block_oppia_mobile_export_debug){
 					echo "<span style='color:red'>".get_string('error_file_not_found','block_oppia_mobile_export',$filename)."</span><br/>";
+					return;
 				}
 			}
 			
