@@ -37,6 +37,10 @@ $string['oppia_block_export_servers'] = 'OppiaMobile Servers';
 $string['course_icon_width'] = 'Course icon width';
 $string['course_icon_height'] = 'Course icon height';
 
+$string['default_server'] = 'Default server';
+$string['default_username'] = 'Default username';
+$string['default_api_key'] = 'Default api_key';
+
 $string['thumbheight'] = 'Icon height';
 $string['thumbwidth'] = 'Icon width';
 $string['thumbcrop'] = 'Crop Icon';

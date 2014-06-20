@@ -39,21 +39,21 @@ class block_oppia_mobile_export extends block_base {
         $this->content->text .= "<input type='hidden' name='sesskey' value='".sesskey()."'>";
         // show the OppiaServer options
         $servers = get_oppiaservers();
-        if(count($servers) == 0){
-        	$this->content->text .= "<p>".get_string('servers_block_none','block_oppia_mobile_export',$CFG->wwwroot."/blocks/oppia_mobile_export/servers.php")."</p>";
-        } else {
-        	$this->content->text .= "<p>".get_string('servers_block_select_connection','block_oppia_mobile_export')."<br/>";
-        	$this->content->text .= "<select name='server'>";
-        	foreach ($servers as $s){
-        		$this->content->text .= "<option value='$s->id' ";
-        		if ($s->defaultserver != 0){
-        			$this->content->text .= "selected='selected'";
-        		}
-        		$this->content->text .= ">".$s->servername. " (".$s->username.")</option>";
+       	$this->content->text .= "<p>".get_string('servers_block_select_connection','block_oppia_mobile_export')."<br/>";
+        $this->content->text .= "<select name='server'>";
+        foreach ($servers as $s){
+        	$this->content->text .= "<option value='$s->id' ";
+        	if ($s->defaultserver != 0){
+        		$this->content->text .= "selected='selected'";
         	}
-        	$this->content->text .= "</select></p>";
-        	$this->content->text .= "<p>".get_string('servers_block_add','block_oppia_mobile_export',$CFG->wwwroot."/blocks/oppia_mobile_export/servers.php")."</p>";
+        	$this->content->text .= ">".$s->servername. " (".$s->username.")</option>";
         }
+        if (count($servers) == 0){
+        	$this->content->text .= "<option value='default' selected='selected'>". $CFG->block_oppia_mobile_export_default_server ."</option>";
+        }
+        $this->content->text .= "</select></p>";
+        $this->content->text .= "<p>".get_string('servers_block_add','block_oppia_mobile_export',$CFG->wwwroot."/blocks/oppia_mobile_export/servers.php")."</p>";
+
        
         // Show the style options
         if ($handle = opendir(dirname(__FILE__).'/styles/')) {

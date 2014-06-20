@@ -19,7 +19,7 @@ require_once($CFG->libdir.'/componentlib.class.php');
 
 $id = required_param('id',PARAM_INT);
 $stylesheet = required_param('stylesheet',PARAM_TEXT);
-$server = required_param('server',PARAM_INT);
+$server = required_param('server',PARAM_TEXT);
 
 $course = $DB->get_record('course', array('id'=>$id));
 
@@ -47,7 +47,7 @@ echo $OUTPUT->header();
 
 // Check specified server belongs to current user
 $server_connection = $DB->get_record('block_oppia_mobile_server', array('moodleuserid'=>$USER->id,'id'=>$server));
-if(!$server_connection){
+if(!$server_connection && $server != "default"){
 	echo "<p>".get_string('server_not_owner','block_oppia_mobile_export')."</p>";
 	echo $OUTPUT->footer();
 	die();
