@@ -34,7 +34,7 @@ class block_oppia_mobile_export extends block_base {
         	return $this->content;
         }
         
-        $this->content->text .= "<form action='".$CFG->wwwroot."/blocks/oppia_mobile_export/export1.php' method='post'>";
+        $this->content->text = "<form action='".$CFG->wwwroot."/blocks/oppia_mobile_export/export1.php' method='post'>";
         $this->content->text .= "<input type='hidden' name='id' value='".$COURSE->id."'>";
         $this->content->text .= "<input type='hidden' name='sesskey' value='".sesskey()."'>";
         // show the OppiaServer options
