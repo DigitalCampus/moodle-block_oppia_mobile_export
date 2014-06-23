@@ -71,7 +71,7 @@ class block_oppia_mobile_export extends block_base {
         $this->content->text .= "</form>";
         
         $this->content->text .= "<form action='".$CFG->wwwroot."/blocks/oppia_mobile_export/export2print.php' method='post'>";
-        $this->content->text .= "<input type='hidden' name='id' value='".$COURSE->id."'>";
+        $this->content->text .= "<input type='hidden' name='courseid' value='".$COURSE->id."'>";
         $this->content->text .= "<input type='hidden' name='sesskey' value='".sesskey()."'>";
         if ($handle = opendir(dirname(__FILE__).'/styles/')) {
         	$this->content->text .= "<p>".get_string('oppia_block_style','block_oppia_mobile_export')."<br/>";

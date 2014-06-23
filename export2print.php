@@ -17,7 +17,7 @@ require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/resource.php'
 
 require_once($CFG->libdir.'/componentlib.class.php');
 
-$id = required_param('id',PARAM_INT);
+$id = required_param('courseid',PARAM_INT);
 $stylesheet = required_param('stylesheet',PARAM_TEXT);
 
 $course = $DB->get_record('course', array('id'=>$id));
@@ -77,6 +77,35 @@ recurse_copy("js/", $course_root."/js/");
 
 $orderno = 1;
 $course_index = "<ol>";
+$quiz_output = "";
+
+
+/*-------Get course info pages/about etc----------------------*/
+$thissection = $sections[0];
+$sectionmods = explode(",", $thissection->sequence);
+foreach ($sectionmods as $modnumber) {
+
+	if (empty($modinfo->sections[0])) {
+		continue;
+	}
+	$mod = $mods[$modnumber];
+
+	if($mod->modname == 'quiz'){
+		$quiz = new mobile_activity_quiz();
+		$quiz->courseroot = $course_root;
+		$quiz->id = $mod->id;
+		$quiz->section = $orderno;
+		$quiz->preprocess();
+		if ($quiz->get_is_valid()){
+			$quiz_output .= "<h2>".$mod->name."</h2>";
+			$quiz_output .= $quiz->export2print();
+		}
+	}
+}
+
+
+
+
 foreach($sections as $sect) {
 	
 	$sectionmods = explode(",", $sect->sequence);
@@ -121,6 +150,8 @@ foreach($sections as $sect) {
 					$webpage .= "<h2>".$mod->name."</h2>";
 					$webpage .= "<div class='quiz'>";
 					$webpage .= $quiz->export2print();
+					$quiz_output .= "<h2>".$mod->name."</h2>";
+					$quiz_output .= $quiz->export2print();
 					$webpage .= "</div>";
 				}
 			}
@@ -150,6 +181,9 @@ foreach($sections as $sect) {
 	}
 }
 
+/*
+ * Add course index
+ */
 $course_index .= "</ol>";
 echo $course_index;
 $course_index = str_replace($course_root."/","", $course_index);
@@ -165,6 +199,30 @@ $index = $course_root."/index.html";
 $fh = fopen($index, 'w');
 fwrite($fh, $webpage);
 fclose($fh);
+
+/*
+ * Export question bank - for review of all questions
+ */
+$quizpage =  "<html><head>";
+$quizpage .= "<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>";
+$quizpage .= "<link href='style.css' rel='stylesheet' type='text/css'/>";
+$quizpage .= "</head>";
+$quizpage .= "<body>";
+$quizpage .= "<h1>".strip_tags($course->fullname)." - Quizzes </h1>";
+$quizpage .= $quiz_output;
+$quizpage .= "</body></html>";
+$quiz = $course_root."/quiz.html";
+$fh = fopen($quiz, 'w');
+fwrite($fh, $quizpage);
+fclose($fh);
+
+$a = new stdClass();
+$a->link = $course_root."/quiz.html";
+echo "<p>".get_string('export_preview_quiz','block_oppia_mobile_export', $a )."</p>";
+
+/*
+ * create download package
+ */
 
 $versionid = date("YmdHis");
 $dir2zip = "output/".$USER->id."/temp/print/";

@@ -308,7 +308,7 @@ class mobile_activity_quiz extends mobile_activity {
 				}
 				
 				$return_content .= "<li>";
-				$return_content .= "[".$q->qtype."] ".strip_tags($q->questiontext);
+				$return_content .= "[".$q->name .": ".$q->qtype."] ".strip_tags($q->questiontext);
 				
 				if(isset($q->options->subquestions)){
 					$return_content .= "<ul>";

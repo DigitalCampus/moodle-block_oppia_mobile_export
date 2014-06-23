@@ -117,6 +117,7 @@ $string['export_cleanup'] = 'Cleanup files';
 $string['export_advice_desc'] = 'Although your course has been exported you may want to address the following issues to make sure your course is easy to use on mobile devices:';
 
 $string['export_preview_download'] = 'Download exported course preview at <a href="{$a->zip}">{$a->coursename}</a>';
+$string['export_preview_quiz'] = '<a href="{$a->link}" target="_blank">View all quiz questions</a>';
 
 $string['export_file_trying'] = 'Trying file: {$a}';
 $string['export_file_success'] = 'File: {$a} successfully exported';
