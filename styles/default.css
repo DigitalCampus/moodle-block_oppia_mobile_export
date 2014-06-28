@@ -109,8 +109,9 @@ table td {
 .suggestion, 
 .info,
 .question {
-	padding: 10px 10px 5px 40px;
+	padding: 10px 10px 5px 60px;
 	background-repeat: no-repeat;
+	min-height: 60px;
 }
 
 .definition{
