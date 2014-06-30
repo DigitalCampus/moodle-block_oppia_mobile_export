@@ -141,7 +141,8 @@ class mobile_activity_feedback extends mobile_activity {
 			// add the response options
 			if($fi->typ == "multichoice"){
 				$j = 1;
-				$presentation = preg_replace("(r[>>]+)",'',$fi->presentation);				
+				$presentation = preg_replace("(r[>]+)",'',$fi->presentation);	
+				$presentation = preg_replace("(c[>]+)",'',$presentation);
 				$response_options = explode("|",$presentation);
 				foreach($response_options as $ro){
 					$post = array('question' => $question_uri,
