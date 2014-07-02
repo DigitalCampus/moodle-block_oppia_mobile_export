@@ -90,7 +90,7 @@ foreach ($sectionmods as $modnumber) {
 	}
 	$mod = $mods[$modnumber];
 
-	if($mod->modname == 'quiz'){
+	if($mod->modname == 'quiz' && $mod->visible == 1){
 		$quiz = new mobile_activity_quiz();
 		$quiz->courseroot = $course_root;
 		$quiz->id = $mod->id;
@@ -130,7 +130,7 @@ foreach($sections as $sect) {
 			}
 			$mod = $mods[$modnumber];
 				
-			if($mod->modname == 'page'){
+			if($mod->modname == 'page' && $mod->visible == 1){
 				$webpage .= "<h2>".$mod->name."</h2>";
 				$webpage .= "<div class='page'>";
 				$page = new mobile_activity_page();
@@ -140,7 +140,7 @@ foreach($sections as $sect) {
 				$webpage .= $page->export2print();
 				$webpage .= "</div>";
 			}
-			if($mod->modname == 'quiz'){
+			if($mod->modname == 'quiz' && $mod->visible == 1){
 				$quiz = new mobile_activity_quiz();
 				$quiz->courseroot = $course_root;
 				$quiz->id = $mod->id;
@@ -155,7 +155,7 @@ foreach($sections as $sect) {
 					$webpage .= "</div>";
 				}
 			}
-			if($mod->modname == 'resource'){
+			if($mod->modname == 'resource' && $mod->visible == 1){
 				$resource = new mobile_activity_resource();
 				$resource->courseroot = $course_root;
 				$resource->id = $mod->id;
