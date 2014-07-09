@@ -175,10 +175,14 @@ foreach ($sectionmods as $modnumber) {
 		$passthreshold = optional_param('quiz_'.$mod->id.'_passthreshold',0,PARAM_INT);
 		add_or_update_oppiaconfig($mod->id, 'passthreshold', $passthreshold);
 		
+		$availability = optional_param('quiz_'.$mod->id.'_availability',0,PARAM_INT);
+		add_or_update_oppiaconfig($mod->id, 'availability', $availability);
+		
 		$configArray = Array('randomselect'=>$random, 
 								'showfeedback'=>$showfeedback,
 								'allowtryagain'=>$allowtryagain, 
-								'passthreshold'=>$passthreshold);
+								'passthreshold'=>$passthreshold,
+								'availability'=>$availability);
 		$quiz->init($server_connection, $course->shortname,"Pre-test",$configArray,$versionid);
 		$quiz->courseroot = $course_root;
 		$quiz->id = $mod->id;
@@ -292,10 +296,14 @@ foreach($sections as $sect) {
 				$passthreshold = optional_param('quiz_'.$mod->id.'_passthreshold',0,PARAM_INT);
 				add_or_update_oppiaconfig($mod->id, 'passthreshold', $passthreshold);
 		
+				$availability = optional_param('quiz_'.$mod->id.'_availability',0,PARAM_INT);
+				add_or_update_oppiaconfig($mod->id, 'availability', $availability);
+				
 				$configArray = Array('randomselect'=>$random, 
 										'showfeedback'=>$showfeedback,
 										'allowtryagain'=>$allowtryagain, 
-										'passthreshold'=>$passthreshold);
+										'passthreshold'=>$passthreshold,
+										'availability'=>$availability);
 				
 				$quiz->init($server_connection, $course->shortname,$sect->summary,$configArray,$versionid);
 				$quiz->courseroot = $course_root;

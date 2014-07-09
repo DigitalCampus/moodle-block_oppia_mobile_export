@@ -140,6 +140,7 @@ if (count($quizzes)> 0){
 	echo "<th>".get_string('export_quiz_feedback','block_oppia_mobile_export')."</th>";
 	echo "<th>".get_string('export_quiz_tryagain','block_oppia_mobile_export')."</th>";
 	echo "<th>".get_string('export_quiz_passthreshold','block_oppia_mobile_export')."</th>";
+	echo "<th>".get_string('export_quiz_availability','block_oppia_mobile_export')."</th>";
 	echo "</tr>";
 	foreach ($quizzes as $quiz){
 		echo "<tr>";
@@ -211,8 +212,30 @@ if (count($quizzes)> 0){
 				}
 				echo ">".$i."</option>";
 			}
+			echo "</select></td>";
 			
-			echo "</td>";
+			$availability = get_oppiaconfig($quiz->id,'availability','0');
+			echo "<td>";
+			echo "<select name='quiz_".$quiz->id."_availability' id='id_availability_quiz_".$quiz->id."'>";
+			echo "<option value='0'";
+				if ($availability == 0){
+					echo " selected='selected'";
+				}
+			echo ">".get_string('availability_always','block_oppia_mobile_export')."</option>";
+			
+			echo "<option value='1'";
+			if ($availability == 1){
+				echo " selected='selected'";
+			}
+			echo ">".get_string('availability_section','block_oppia_mobile_export')."</option>";
+			
+			echo "<option value='2'";
+			if ($availability == 2){
+				echo " selected='selected'";
+			}
+			echo ">".get_string('availability_course','block_oppia_mobile_export')."</option>";
+			echo "</select></td>";
+			
 		echo "</tr>";
 	}
 	echo "</table>";
