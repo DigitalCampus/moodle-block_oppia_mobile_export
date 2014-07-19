@@ -12,7 +12,12 @@ class QuizHelper{
 	
 	function exec($object, $data_array, $type='post'){
 		$json = json_encode($data_array);
-		$temp_url = $this->connection->url."/api/v1/".$object."/";
+		// Check if the url already has trailing '/' or not
+		if ($this->connection->url){ 
+			$temp_url = $this->connection->url."api/v1/".$object."/";
+		} else {
+			$temp_url = $this->connection->url."/api/v1/".$object."/";
+		}
 		$temp_url .= "?format=json";
 		$temp_url .= "&username=".$this->connection->username;
 		$temp_url .= "&api_key=".$this->connection->apikey;
