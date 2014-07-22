@@ -13,7 +13,7 @@ class QuizHelper{
 	function exec($object, $data_array, $type='post'){
 		$json = json_encode($data_array);
 		// Check if the url already has trailing '/' or not
-		if ($this->connection->url){ 
+		if (substr($this->connection->url, -strlen('/'))==='/'){ 
 			$temp_url = $this->connection->url."api/v1/".$object."/";
 		} else {
 			$temp_url = $this->connection->url."/api/v1/".$object."/";
