@@ -2,7 +2,7 @@
 
 class mobile_activity_feedback extends mobile_activity {
 	
-	private $supported_types = array('multichoicerated', 'textarea', 'multichoice');
+	private $supported_types = array('multichoicerated', 'textarea', 'multichoice','numeric','textfield');
 	private $courseversion;
 	private $summary;
 	private $shortname;
@@ -105,6 +105,7 @@ class mobile_activity_feedback extends mobile_activity {
 		
 		$i = 1;
 		foreach($feedbackitems as $fi){
+			print_r ($fi);
 			if(!in_array($fi->typ,$this->supported_types)){
 				continue;
 			}
@@ -117,7 +118,7 @@ class mobile_activity_feedback extends mobile_activity {
 			$props = array();
 			$props[0] = array('name' => "required", 'value' => $value);
 			
-			//create the question
+			// create the question
 			if($fi->typ == "multichoice" || $fi->typ == "multichoicerated"){
 				$post = array('title' => trim(strip_tags($fi->name)),
 						'type' => "multichoice",
@@ -137,6 +138,23 @@ class mobile_activity_feedback extends mobile_activity {
 				$question_uri = $resp->resource_uri;
 			}
 			
+			if($fi->typ == "numeric"){
+				$post = array('title' => trim(strip_tags($fi->name)),
+						'type' => "numerical",
+						'responses' => array(),
+						'props' => $props);
+				$resp = $mQH->exec('question', $post);
+				$question_uri = $resp->resource_uri;
+			}
+			
+			if($fi->typ == "textfield"){
+				$post = array('title' => trim(strip_tags($fi->name)),
+						'type' => "shortanswer",
+						'responses' => array(),
+						'props' => $props);
+				$resp = $mQH->exec('question', $post);
+				$question_uri = $resp->resource_uri;
+			}
 			
 			// add the response options
 			if($fi->typ == "multichoice"){
