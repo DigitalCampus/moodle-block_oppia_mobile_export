@@ -87,7 +87,7 @@ class mobile_activity_feedback extends mobile_activity {
 			$quiz_id = $resp->quizzes[0]->quiz_id;
 			$quiz = $mQH->exec('quiz/'.$quiz_id, array(),'get');
 			$this->content = json_encode($quiz);
-			return;
+			//return;
 		}
 		
 		$props = array();
@@ -117,9 +117,9 @@ class mobile_activity_feedback extends mobile_activity {
 			}
 			$props = array();
 			$props[0] = array('name' => "required", 'value' => $value);
-			
+
 			// create the question
-			if($fi->typ == "multichoice" || $fi->typ == "multichoicerated"){
+			if(strpos($fi->presentation, 'r') === 0 && ($fi->typ == "multichoice" || $fi->typ == "multichoicerated")){
 				$post = array('title' => trim(strip_tags($fi->name)),
 						'type' => "multichoice",
 						'responses' => array(),
@@ -128,6 +128,14 @@ class mobile_activity_feedback extends mobile_activity {
 				$question_uri = $resp->resource_uri;
 			}
 			
+			if(strpos($fi->presentation, 'c') === 0 && $fi->typ == "multichoice"){
+				$post = array('title' => trim(strip_tags($fi->name)),
+						'type' => "multiselect",
+						'responses' => array(),
+						'props' => $props);
+				$resp = $mQH->exec('question', $post);
+				$question_uri = $resp->resource_uri;
+			}
 			
 			if($fi->typ == "textarea"){
 				$post = array('title' => trim(strip_tags($fi->name)),
