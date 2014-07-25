@@ -34,6 +34,7 @@ if (!$context) {
 	print_error('nocontext');
 }
 
+
 require_login($course);
 
 $PAGE->set_pagelayout('course');
@@ -99,6 +100,9 @@ $meta = $root->appendChild($xmlDoc->createElement("meta"));
 $meta->appendChild($xmlDoc->createElement("versionid",$versionid));
 $meta->appendChild($xmlDoc->createElement("priority",$priority));
 $meta->appendChild($xmlDoc->createElement("server",$server_connection->url));
+
+
+add_or_update_oppiaconfig($id, 'coursepriority', $priority);
 
 $a = new stdClass();
 $a->stepno = 2;

@@ -242,10 +242,11 @@ if (count($quizzes)> 0){
 }
 echo "<p>".get_string('export_priority_title','block_oppia_mobile_export');
 echo "<br/>".get_string('export_priority_desc','block_oppia_mobile_export')."</p>";
+$priority = get_oppiaconfig($id,'coursepriority','0');
 echo "<select name='coursepriority' id='coursepriority'>";
 for ($i=0; $i<11; $i++){
 	echo "<option value='$i'";
-		if ($i == 0){
+		if ($i == $priority){
 			echo " selected='selected'";
 		}
 	echo ">$i</option>";
