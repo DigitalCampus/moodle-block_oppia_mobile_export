@@ -193,6 +193,21 @@ foreach ($sectionmods as $modnumber) {
 			$quiz->getXML($mod,$i,true,$meta,$xmlDoc);
 		}
 	}
+	if($mod->modname == 'feedback' && $mod->visible == 1){
+		echo $mod->name."<br/>";
+		$feedback = new mobile_activity_feedback();
+		$feedback->init($server_connection, $course->shortname,$mod->name,$versionid);
+		$feedback->courseroot = $course_root;
+		$feedback->id = $mod->id;
+		$feedback->section = 0;
+		$feedback->preprocess();
+		if ($feedback->get_is_valid()){
+			$feedback->process();
+			$feedback->getXML($mod,$i,true,$meta,$xmlDoc);
+		} else {
+			echo get_string('error_feedback_no_questions','block_oppia_mobile_export')."<br/>";
+		}
+	}
 	$i++;
 }
 

@@ -87,7 +87,7 @@ class mobile_activity_feedback extends mobile_activity {
 			$quiz_id = $resp->quizzes[0]->quiz_id;
 			$quiz = $mQH->exec('quiz/'.$quiz_id, array(),'get');
 			$this->content = json_encode($quiz);
-			//return;
+			return;
 		}
 		
 		$props = array();
@@ -105,7 +105,7 @@ class mobile_activity_feedback extends mobile_activity {
 		
 		$i = 1;
 		foreach($feedbackitems as $fi){
-			print_r ($fi);
+
 			if(!in_array($fi->typ,$this->supported_types)){
 				continue;
 			}
