@@ -306,14 +306,14 @@ class mobile_activity_page extends mobile_activity {
 	private function extractFiles($content, $component, $filearea, $itemid, $contextid){
 		global $CFG;
 		
-		preg_match_all('((@@PLUGINFILE@@/(?P<filenames>[\w\W]*?)[\"|\']))',$content,$files_tmp, PREG_OFFSET_CAPTURE);
+		preg_match_all('((@@PLUGINFILE@@/(?P<filenames>[^\"\']*)))',$content,$files_tmp, PREG_OFFSET_CAPTURE);
 		
 		if(!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0){
 			return $content;
 		}	
-
 		$toreplace = array();
 		for($i=0;$i<count($files_tmp['filenames']);$i++){
+			$orig_filename = $files_tmp['filenames'][$i][0];
 			$filename = urldecode($files_tmp['filenames'][$i][0]);
 			
 			if($CFG->block_oppia_mobile_export_debug){
@@ -332,7 +332,7 @@ class mobile_activity_page extends mobile_activity {
 					$fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
 			
 			if ($file) {
-				$imgfile = $this->courseroot."/images/".$filename;
+				$imgfile = $this->courseroot."/images/".urldecode($orig_filename);
 				$file->copy_content_to($imgfile);
 			} else {
 				if($CFG->block_oppia_mobile_export_debug){
@@ -343,14 +343,17 @@ class mobile_activity_page extends mobile_activity {
 			
 			$tr = new StdClass;
 			$tr->filename = $filename;
+			$tr->orig_filename = $orig_filename;
 			array_push($toreplace, $tr);
 			if($CFG->block_oppia_mobile_export_debug){
 				echo get_string('export_file_success','block_oppia_mobile_export',$filename)."<br/>";
 			}
 		}
 		foreach($toreplace as $tr){
-			$content = str_replace('src="@@PLUGINFILE@@/'.$tr->filename, 'src="images/'.$tr->filename, $content);
+			$content = str_replace('src="@@PLUGINFILE@@/'.$tr->orig_filename, 'src="images/'.urldecode($tr->orig_filename), $content);
+			$content = str_replace('src="@@PLUGINFILE@@/'.urlencode($tr->filename), 'src="images/'.urldecode($tr->orig_filename), $content);
 		}
+		
 		return $content;
 	}
 	
@@ -368,8 +371,7 @@ class mobile_activity_page extends mobile_activity {
 		for($i=0;$i<count($media_tmp['mediaobject']);$i++){
 			$mediajson = json_decode($media_tmp['mediaobject'][$i][0]);
 			$toreplace = $media_tmp[0][$i][0];
-			
-			// replace [[media]] with <a href
+
 			$r = "<a href='/video/".$mediajson->filename."'>";
 			$content = str_replace($toreplace, $r, $content);
 			// check all the required attrs exist
@@ -382,7 +384,6 @@ class mobile_activity_page extends mobile_activity {
 			$MEDIA[$mediajson->digest] = $mediajson;
 			$this->page_media[$mediajson->digest] = $mediajson;
 		}
-		//replace all [[/media]] with </a>
 		$content = str_replace("[[/media]]", "</a>", $content);
 		return $content;
 	}
