@@ -22,7 +22,7 @@ class mobile_activity_page extends mobile_activity {
 										$context->id,
 										$this->courseroot,
 										$cm->id);
-		$content = $this->extractRelated($content);
+		//$content = $this->extractRelated($content);
 		
 		// find all the langs on this page
 		$langs = extractLangs($content);
@@ -44,11 +44,6 @@ class mobile_activity_page extends mobile_activity {
 			//delete original image
 			unlink($this->courseroot."/".$eiffilename) or die(get_string('error_file_delete','block_oppia_mobile_export'));
 		} 
-		/*
-		else {
-			$link = $CFG->wwwroot."/course/modedit.php?return=0&sr=0&update=".$cm->id;
-			echo "<span style='color:red'>".get_string('error_edit_page','block_oppia_mobile_export',$link,$page->name)."</span><br/>";
-		}*/
 		unset($eiffilename);
 		
 		if(is_array($langs) && count($langs)>0){

@@ -80,8 +80,10 @@ function extractLangs($content){
 function extractImageFile($content, $component, $filearea, $itemid, $contextid, $course_root, $cmid){
 	global $CFG;
 	//find if any images/links exist
-	preg_match_all('((@@PLUGINFILE@@/(?P<filenames>[\w\.\-\_[:space:]]*)[\"|\']))',$content,$files_tmp, PREG_OFFSET_CAPTURE);
+	//preg_match_all('((@@PLUGINFILE@@/(?P<filenames>[\w\.\-\_[:space:]]*)[\"|\']))',$content,$files_tmp, PREG_OFFSET_CAPTURE);
 		
+	preg_match_all('((@@PLUGINFILE@@/(?P<filenames>[^\"\']*)))',$content,$files_tmp, PREG_OFFSET_CAPTURE);
+	
 	if(!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0){
 		return false;
 	}	
@@ -90,7 +92,7 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
 	for($i=0;$i<count($files_tmp['filenames']);$i++){
 		$filename = $files_tmp['filenames'][$i][0];
 		if($CFG->block_oppia_mobile_export_debug){
-			echo "trying file: ".$filename."<br/>";
+			echo "trying file: ".urldecode($filename)."<br/>";
 		}
 		
 		
@@ -104,7 +106,7 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
 				'filepath' => '/',           
 				'filename' => $filename);
 		$file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
-				$fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
+				$fileinfo['itemid'], $fileinfo['filepath'], urldecode($fileinfo['filename']));
 		
 		if ($file) {
 			$imgfile = $course_root."/images/".sha1($fullpath);
@@ -119,7 +121,7 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
 		$tr->originalfilename = $filename;
 		$tr->filename = sha1($fullpath);
 		if($CFG->block_oppia_mobile_export_debug){
-			echo get_string('export_image_success','block_oppia_mobile_export',$filename)."<br/>";
+			echo get_string('export_image_success','block_oppia_mobile_export',urldecode($filename))."<br/>";
 		}
 	}
 	return "images/".sha1($fullpath);
