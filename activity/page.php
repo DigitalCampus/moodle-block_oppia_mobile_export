@@ -360,8 +360,7 @@ class mobile_activity_page extends mobile_activity {
 	private function extractMedia($content){
 		global $MEDIA;
 		
-		$regex = '((\[\[[[:space:]]?media[[:space:]]?object=[\"|\'](?P<mediaobject>[\{\}\'\"\:a-zA-Z0-9\._\-/,[:space:]]*)[[:space:]]?[\"|\']\]\]))';
-		
+		$regex = '((\[\[[[:space:]]?media[[:space:]]?object=[\"|\'](?P<mediaobject>[\{\}\'\"\:0-9\._\-/,[:space:]\w\W]*)[[:space:]]?[\"|\']\]\]))';
 		preg_match_all($regex,$content,$media_tmp, PREG_OFFSET_CAPTURE);
 		
 		if(!isset($media_tmp['mediaobject']) || count($media_tmp['mediaobject']) == 0){
