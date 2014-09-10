@@ -14,7 +14,7 @@ class mobile_activity_feedback extends mobile_activity {
 	
 	function init($server_connection, $shortname, $summary, $courseversion){
 		$this->shortname = strip_tags($shortname);
-		$this->summary = strip_tags($summary);
+		$this->summary = $summary;
 		$this->courseversion = $courseversion;
 		$this->server_connection = $server_connection;
 	}
@@ -94,9 +94,12 @@ class mobile_activity_feedback extends mobile_activity {
 		$props[0] = array('name' => "digest", 'value' => $this->md5);
 		$props[1] = array('name' => "courseversion", 'value' => $this->courseversion);
 		
+		$nameJSON = extractLangs($cm->name);
+		$descJSON = extractLangs($this->summary);
+		
 		//create the quiz
-		$post = array('title' => $cm->name,
-				'description' => $this->summary,
+		$post = array('title' => $nameJSON,
+				'description' => $descJSON,
 				'questions' => array(),
 				'props' => $props);
 		$resp = $mQH->exec('quiz', $post);
@@ -118,9 +121,11 @@ class mobile_activity_feedback extends mobile_activity {
 			$props = array();
 			$props[0] = array('name' => "required", 'value' => $value);
 
+			$qtitle = extractLangs($fi->name, true);
+			
 			// create the question
 			if(strpos($fi->presentation, 'r') === 0 && ($fi->typ == "multichoice" || $fi->typ == "multichoicerated")){
-				$post = array('title' => trim(strip_tags($fi->name)),
+				$post = array('title' => $qtitle,
 						'type' => "multichoice",
 						'responses' => array(),
 						'props' => $props);
@@ -129,7 +134,7 @@ class mobile_activity_feedback extends mobile_activity {
 			}
 			
 			if(strpos($fi->presentation, 'c') === 0 && $fi->typ == "multichoice"){
-				$post = array('title' => trim(strip_tags($fi->name)),
+				$post = array('title' => $qtitle,
 						'type' => "multiselect",
 						'responses' => array(),
 						'props' => $props);
@@ -138,7 +143,7 @@ class mobile_activity_feedback extends mobile_activity {
 			}
 			
 			if($fi->typ == "textarea"){
-				$post = array('title' => trim(strip_tags($fi->name)),
+				$post = array('title' => $qtitle,
 						'type' => "essay",
 						'responses' => array(),
 						'props' => $props);
@@ -147,7 +152,7 @@ class mobile_activity_feedback extends mobile_activity {
 			}
 			
 			if($fi->typ == "numeric"){
-				$post = array('title' => trim(strip_tags($fi->name)),
+				$post = array('title' => $qtitle,
 						'type' => "numerical",
 						'responses' => array(),
 						'props' => $props);
@@ -156,7 +161,7 @@ class mobile_activity_feedback extends mobile_activity {
 			}
 			
 			if($fi->typ == "textfield"){
-				$post = array('title' => trim(strip_tags($fi->name)),
+				$post = array('title' => $qtitle,
 						'type' => "shortanswer",
 						'responses' => array(),
 						'props' => $props);
@@ -171,9 +176,10 @@ class mobile_activity_feedback extends mobile_activity {
 				$presentation = preg_replace("(c[>]+)",'',$presentation);
 				$response_options = explode("|",$presentation);
 				foreach($response_options as $ro){
+					$responseopt = extractLangs($ro,true);
 					$post = array('question' => $question_uri,
 							'order' => $j,
-							'title' => trim(strip_tags($ro)),
+							'title' => $responseopt,
 							'score' => 0,
 							'props' => array());
 					$resp = $mQH->exec('response', $post);
@@ -188,9 +194,10 @@ class mobile_activity_feedback extends mobile_activity {
 				$response_options = explode("|",$presentation);
 				foreach($response_options as $ro){
 					$new_ro = preg_replace("([0-9]+[#]+)",'',$ro);
+					$responseopt = extractLangs($new_ro,true);
 					$post = array('question' => $question_uri,
 							'order' => $j,
-							'title' => trim(strip_tags($new_ro)),
+							'title' => $responseopt,
 							'score' => 0,
 							'props' => array());
 					$resp = $mQH->exec('response', $post);

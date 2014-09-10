@@ -48,8 +48,8 @@ function get_oppiaservers(){
 	return $servers;
 }
 
-function extractLangs($content){
-	global $MOBILE_LANGS, $CURRENT_LANG;
+function extractLangs($content, $asJSON = false){
+	global $MOBILE_LANGS, $CURRENT_LANG, $DEFAULT_LANG;
 	preg_match_all('((lang=[\'|\"](?P<langs>[\w\-]*)[\'|\"]))',$content,$langs_tmp, PREG_OFFSET_CAPTURE);
 	$tempLangs = array();
 	if(isset($langs_tmp['langs']) && count($langs_tmp['langs']) > 0){
@@ -58,14 +58,18 @@ function extractLangs($content){
 			$lang = str_replace("-","_",$lang);
 			$tempLangs[$lang] = true;
 		}
-	} else {
+	} else if (!$asJSON){
 		return $content;
+	} else {
+		$json = new stdClass;
+		$json->{$DEFAULT_LANG} = trim($content);
+		return json_encode($json);
 	}
 
 	$filter = new tomobile_langfilter();
 	foreach($tempLangs as $k=>$v){
 		$CURRENT_LANG = $k;
-		$tempLangs[$k] = $filter->filter($content);
+		$tempLangs[$k] = trim($filter->filter($content));
 	}
 	
 	//reverse array
@@ -73,9 +77,13 @@ function extractLangs($content){
 	foreach($tempLangsRev as $k=>$v){
 		$MOBILE_LANGS[$k] = true;
 	}
-
-	return $tempLangsRev;
+	if ($asJSON){
+		return json_encode($tempLangsRev);
+	} else {
+		return $tempLangsRev;
+	}
 }
+
 
 function extractImageFile($content, $component, $filearea, $itemid, $contextid, $course_root, $cmid){
 	global $CFG;
