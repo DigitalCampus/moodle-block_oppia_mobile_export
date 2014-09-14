@@ -254,7 +254,7 @@ foreach($sections as $sect) {
 			foreach($title as $l=>$t){
 				$temp = $xmlDoc->createElement("title",strip_tags($t));
 				$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($l));
-				$section->appendChild($temp);;
+				$section->appendChild($temp);
 				
 			}
 		} else {

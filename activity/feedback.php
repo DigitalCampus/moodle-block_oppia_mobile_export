@@ -94,8 +94,8 @@ class mobile_activity_feedback extends mobile_activity {
 		$props[0] = array('name' => "digest", 'value' => $this->md5);
 		$props[1] = array('name' => "courseversion", 'value' => $this->courseversion);
 		
-		$nameJSON = extractLangs($cm->name);
-		$descJSON = extractLangs($this->summary);
+		$nameJSON = extractLangs($cm->name,true);
+		$descJSON = extractLangs($this->summary,true);
 		
 		//create the quiz
 		$post = array('title' => $nameJSON,
@@ -226,15 +226,26 @@ class mobile_activity_feedback extends mobile_activity {
 	}
 	
 	function getXML($mod,$counter,$activity=true,&$node,&$xmlDoc){
+		global $DEFAULT_LANG;
 		$act = $xmlDoc->createElement("activity");
 		$act->appendChild($xmlDoc->createAttribute("type"))->appendChild($xmlDoc->createTextNode($mod->modname));
 		$act->appendChild($xmlDoc->createAttribute("order"))->appendChild($xmlDoc->createTextNode($counter));
 		$act->appendChild($xmlDoc->createAttribute("digest"))->appendChild($xmlDoc->createTextNode($this->md5));
 		
-		$temp = $xmlDoc->createElement("title");
-		$temp->appendChild($xmlDoc->createTextNode($mod->name));
-		$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode("en"));
-		$act->appendChild($temp);
+		$title = extractLangs($mod->name);
+		if(is_array($title) && count($title)>0){
+			foreach($title as $l=>$t){
+				$temp = $xmlDoc->createElement("title");
+				$temp->appendChild($xmlDoc->createTextNode(strip_tags($t)));
+				$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($l));
+				$act->appendChild($temp);
+			}
+		} else {
+			$temp = $xmlDoc->createElement("title");
+			$temp->appendChild($xmlDoc->createTextNode(strip_tags($mod->name)));
+			$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
+			$act->appendChild($temp);
+		}
 		
 		$temp = $xmlDoc->createElement("content");
 		$temp->appendChild($xmlDoc->createTextNode($this->content));
