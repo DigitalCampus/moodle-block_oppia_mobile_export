@@ -122,9 +122,12 @@ class mobile_activity_quiz extends mobile_activity {
 				}
 			}
 			
+			$nameJSON = extractLangs($cm->name,true);
+			$descJSON = extractLangs($this->summary,true);
+			
 			//create the quiz
-			$post = array('title' => $this->shortname." ".$this->section." ".$cm->name,
-					'description' => $this->summary,
+			$post = array('title' => $nameJSON,
+					'description' => $descJSON,
 					'questions' => array(),
 					'props' => $props);
 			$resp = $mQH->exec('quiz', $post);
@@ -171,15 +174,18 @@ class mobile_activity_quiz extends mobile_activity {
 					$q->qtype = 'matching';
 					$prop_i = 1;
 					if($q->options->correctfeedback != ""){
-						$props[$prop_i] = array('name' => "correctfeedback", 'value' => strip_tags($q->options->correctfeedback));
+						$feedbackJSON = extractLangs($q->options->correctfeedback, true);
+						$props[$prop_i] = array('name' => "correctfeedback", 'value' => $feedbackJSON);
 						$prop_i++;
 					}
 					if($q->options->partiallycorrectfeedback != ""){
-						$props[$prop_i] = array('name' => "partiallycorrectfeedback", 'value' => strip_tags($q->options->partiallycorrectfeedback));
+						$feedbackJSON = extractLangs($q->options->partiallycorrectfeedback, true);
+						$props[$prop_i] = array('name' => "partiallycorrectfeedback", 'value' => $feedbackJSON);
 						$prop_i++;
 					}
 					if($q->options->incorrectfeedback != ""){
-						$props[$prop_i] = array('name' => "incorrectfeedback", 'value' => strip_tags($q->options->incorrectfeedback));
+						$feedbackJSON = extractLangs($q->options->incorrectfeedback, true);
+						$props[$prop_i] = array('name' => "incorrectfeedback", 'value' => $feedbackJSON);
 						$prop_i++;
 					}
 				}
@@ -197,8 +203,9 @@ class mobile_activity_quiz extends mobile_activity {
 					$props[1] = array('name' => "image", 'value' => $question_image);
 				}
 				
+				$questionJSON = extractLangs($q->questiontext, true);
 				// create question
-				$post = array('title' => trim(strip_tags($q->questiontext)),
+				$post = array('title' => $questionJSON,
 						'type' => $q->qtype,
 						'responses' => array(),
 						'props' => $props);
@@ -217,14 +224,14 @@ class mobile_activity_quiz extends mobile_activity {
 						}	
 					}
 					foreach($q->options->subquestions as $sq){
-						$title = trim(strip_tags($sq->questiontext)).$this->MATCHING_SEPERATOR.trim(strip_tags($sq->answertext));
+						$titleJSON = extractLangs($sq->questiontext.$this->MATCHING_SEPERATOR.$sq->answertext, true);
 						// add response
 						
 						$props = array();
 						
 						$post = array('question' => $question_uri,
 								'order' => $j,
-								'title' => $title,
+								'title' => $titleJSON,
 								'score' => ($q->maxmark / $subqs),
 								'props' => $props);
 						$resp = $mQH->exec('response', $post);
@@ -240,7 +247,8 @@ class mobile_activity_quiz extends mobile_activity {
 						
 						$props = array();
 						if(strip_tags($r->feedback) != ""){
-							$props[0] = array('name' => 'feedback', 'value' => trim(strip_tags($r->feedback)));
+							$feedbackJSON = extractLangs($r->feedback, true);
+							$props[0] = array('name' => 'feedback', 'value' => $feedbackJSON);
 						}
 						
 						// if numerical also add a tolerance
