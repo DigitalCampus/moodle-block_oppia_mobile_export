@@ -16,7 +16,7 @@ class mobile_activity_quiz extends mobile_activity {
 	
 	function init($server_connection, $shortname, $summary, $configArray, $courseversion){
 		$this->shortname = strip_tags($shortname);
-		$this->summary = strip_tags($summary);
+		$this->summary = $summary;
 		$this->configArray = $configArray;
 		$this->courseversion = $courseversion;
 		$this->server_connection = $server_connection;
@@ -256,10 +256,11 @@ class mobile_activity_quiz extends mobile_activity {
 							$props[1] = array('name' => 'tolerance', 'value' => $r->tolerance);
 						}
 						
+						$responseJSON = extractLangs($r->answer, true);
 						// add response
 						$post = array('question' => $question_uri,
 								'order' => $j,
-								'title' => trim(strip_tags($r->answer)),
+								'title' => $responseJSON,
 								'score' => ($r->fraction * $q->maxmark),
 								'props' => $props);
 						$resp = $mQH->exec('response', $post);
