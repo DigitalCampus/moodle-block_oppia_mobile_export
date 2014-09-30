@@ -87,6 +87,20 @@ table td {
 	vertical-align: top;
 }
 
+td > ul > li:before {
+        /* For a round bullet */
+      content:'\2022';
+      /* For a square bullet */
+      /*content:'\25A0';*/
+      display: block;
+      position: relative;
+      max-width: 0px;
+      max-height: 0px;
+      left: -20px;
+      top: -0px;
+      color: #000;
+}
+
 .box {
 	margin:10px 5px;
 	padding: 4px 4px 4px 4px;
