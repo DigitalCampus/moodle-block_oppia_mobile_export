@@ -62,7 +62,7 @@ function extractLangs($content, $asJSON = false){
 		return $content;
 	} else {
 		$json = new stdClass;
-		$json->{$DEFAULT_LANG} = trim($content);
+		$json->{$DEFAULT_LANG} = trim(strip_tags($content));
 		return json_encode($json);
 	}
 
