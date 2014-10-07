@@ -31,6 +31,10 @@ class QuizHelper{
 		}
 		$data = curl_exec($this->curl);
 		$json = json_decode($data);
+		$http_status = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
+		if ($http_status != 200 && $http_status != 201){
+			echo "<p style='color:red'>".get_string('error_creating_quiz','block_oppia_mobile_export')."</p>";
+		}
 		return $json;
 			
 	}
