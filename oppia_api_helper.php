@@ -35,10 +35,10 @@ class QuizHelper{
 		if ($http_status != 200 && $http_status != 201){
 			echo "<p style='color:red'>".get_string('error_creating_quiz','block_oppia_mobile_export')."</p>";
 		}
-		echo "<h1>".$http_status."</h1>";
+		/*echo "<h1>".$http_status."</h1>";
 		echo "<pre>";
 		echo $data;
-		echo "</pre><hr/>";
+		echo "</pre><hr/>";*/
 		return $json;
 			
 	}
