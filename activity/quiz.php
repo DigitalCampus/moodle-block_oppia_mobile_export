@@ -107,7 +107,7 @@ class mobile_activity_quiz extends mobile_activity {
 				$post = array('quiz_id' => $quiz_id,
 						'name' => "courseversion",
 						'value' => $this->courseversion);
-				$resp = $mQH->exec('quizprops/',$post);
+				$resp = $mQH->exec('quizprops',$post);
 				
 				$this->exportQuestionImages();
 				return;
