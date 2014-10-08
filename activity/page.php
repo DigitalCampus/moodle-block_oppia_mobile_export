@@ -70,7 +70,7 @@ class mobile_activity_page extends mobile_activity {
 				$webpage .= "<script src='js/jquery-ui-1.10.3.custom.min.js'></script>";
 				$webpage .= "<script src='js/oppia.js'></script>";
 				$webpage .= "</head>";
-				$webpage .= '<body onload="init();">'.$t.'</body></html>';
+				$webpage .= '<body>'.$t.'</body></html>';
 					
 				$mpffilename = $this->makePageFilename($this->section,$cm->id,$l);
 				$index = $this->courseroot."/".$mpffilename;
@@ -128,7 +128,7 @@ class mobile_activity_page extends mobile_activity {
 			$webpage .= "<script src='js/jquery-ui-1.10.3.custom.min.js'></script>";
 			$webpage .= "<script src='js/oppia.js'></script>";
 			$webpage .= "</head>";
-			$webpage .= '<body onload="init();">'.$content.'</body></html>';
+			$webpage .= '<body>'.$content.'</body></html>';
 		
 			$mpf2filename = $this->makePageFilename($this->section,$cm->id,$DEFAULT_LANG);
 			$index = $this->courseroot."/".$mpf2filename;
