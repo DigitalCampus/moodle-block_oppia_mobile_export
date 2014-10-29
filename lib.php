@@ -9,12 +9,18 @@ function deleteDir($dirPath) {
 	if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') {
 		$dirPath .= '/';
 	}
-	$files = glob($dirPath . '*', GLOB_MARK);
-	foreach ($files as $file) {
-		if (is_dir($file)) {
-			deleteDir($file);
+
+	$it = new RecursiveDirectoryIterator($dirPath, RecursiveDirectoryIterator::SKIP_DOTS);
+	$files = new RecursiveIteratorIterator($it,
+			RecursiveIteratorIterator::CHILD_FIRST);
+	foreach($files as $file) {
+		if ($file->getFilename() === '.' || $file->getFilename() === '..') {
+			continue;
+		}
+		if ($file->isDir()){
+			rmdir($file->getRealPath());
 		} else {
-			unlink($file);
+			unlink($file->getRealPath());
 		}
 	}
 	rmdir($dirPath);

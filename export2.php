@@ -83,7 +83,12 @@ mkdir("output/".$USER->id."/temp/",0777);
 $course_root = "output/".$USER->id."/temp/".strtolower($course->shortname);
 mkdir($course_root,0777);
 mkdir($course_root."/images",0777);
+$fh = fopen($course_root."/images/.nomedia", 'w');
+fclose($fh);
 mkdir($course_root."/resources",0777);
+$fh = fopen($course_root."/resources/.nomedia", 'w');
+fclose($fh);
+
 mkdir($course_root."/style_resources",0777);
 mkdir($course_root."/js",0777);
 
