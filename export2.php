@@ -17,6 +17,7 @@ require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/page.php');
 require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/quiz.php');
 require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/resource.php');
 require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/feedback.php');
+require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/url.php');
 
 require_once($CFG->libdir.'/componentlib.class.php');
 
@@ -354,6 +355,16 @@ foreach($sections as $sect) {
 				$no_activities++;
 			}
 			
+			if($mod->modname == 'url' && $mod->visible == 1){
+				echo $mod->name."<br/>";
+				$url = new mobile_activity_url();
+				$url->courseroot = $course_root;
+				$url->id = $mod->id;
+				$url->section = $orderno;
+				$url->process();
+				$url->getXML($mod,$i,true,$activities,$xmlDoc);
+				$no_activities++;
+			}
 			
 			if($mod->modname == 'feedback' && $mod->visible == 1){
 				echo $mod->name."<br/>";
