@@ -250,7 +250,7 @@ foreach($sections as $sect) {
 	flush_buffers();
 	$sectionmods = explode(",", $sect->sequence);
 	if(strip_tags($sect->summary) != "" && count($sectionmods)>0){
-		
+
 		echo "<h3>".get_string('export_section_title','block_oppia_mobile_export',strip_tags($sect->summary,'<span>'))."</h3>";
 		
 		$section = $xmlDoc->createElement("section");
@@ -269,7 +269,7 @@ foreach($sections as $sect) {
 			$section->appendChild($temp);
 		}
 		// get image for this section
-		$filename = extractImageFile($thissection->summary,
+		$filename = extractImageFile($sect->summary,
 										'course',
 										'section',
 										$sect->id,
@@ -291,6 +291,11 @@ foreach($sections as $sect) {
 			if (empty($modinfo->sections[$orderno])) {																																																									
 				continue;
 			}
+			
+			if (!in_array($modnumber, $mods)){
+				continue;
+			}
+			
 			$mod = $mods[$modnumber];
 			
 			if($mod->modname == 'page' && $mod->visible == 1){

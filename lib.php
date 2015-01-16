@@ -106,7 +106,7 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
 	for($i=0;$i<count($files_tmp['filenames']);$i++){
 		$filename = $files_tmp['filenames'][$i][0];
 		if($CFG->block_oppia_mobile_export_debug){
-			echo "trying file: ".urldecode($filename)."<br/>";
+			echo "Attempting to export file: ".urldecode($filename)."<br/>";
 		}
 		
 		
