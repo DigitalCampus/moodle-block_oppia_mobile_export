@@ -286,7 +286,7 @@ foreach($sections as $sect) {
 		$activities = $xmlDoc->createElement("activities");
 		foreach ($sectionmods as $modnumber) {
 			
-			if ($modnumber == ""){
+			if ($modnumber == "" || $modnumber === false){
 				continue;
 			}
 			
@@ -394,6 +394,7 @@ foreach($sections as $sect) {
 		
 	}
 }
+echo "Finished exporting activities and sections";
 $root->appendChild($structure);
 
 // add in the langs available here
