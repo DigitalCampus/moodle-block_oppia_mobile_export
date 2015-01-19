@@ -391,9 +391,8 @@ foreach($sections as $sect) {
 		} else {
 			echo get_string('error_section_no_activities','block_oppia_mobile_export')."<br/>";
 		}
-		
+		flush_buffers();
 	}
-	echo "still going";
 }
 echo "Finished exporting activities and sections";
 $root->appendChild($structure);
