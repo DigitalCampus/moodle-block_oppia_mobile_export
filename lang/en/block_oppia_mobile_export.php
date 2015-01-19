@@ -81,7 +81,7 @@ $string['error_file_delete'] = 'Unable to delete the file';
 $string['error_file_not_found'] = 'File not found: {$a}';
 $string['error_media_attributes'] = 'You must supply digest, download_url and filename for every media object';
 $string['error_quiz_no_questions'] = 'Not exporting quiz as doesn\'t contain any supported questions.';
-$string['error_section_no_activities'] = 'Not exporting section as doesn\'t contain any activities.';
+$string['error_section_no_activities'] = 'Not exporting section as doesn\'t contain any supported activities.';
 $string['error_xml_invalid'] = 'Errors in course XML Found!';
 $string['error_style_copy'] = 'Failed to copy stylesheet.';
 

@@ -245,7 +245,7 @@ if($filename){
 $index = Array();
 
 $structure = $xmlDoc->createElement("structure");
-$orderno = 1;
+$sect_orderno = 1;
 foreach($sections as $sect) {
 	flush_buffers();
 	$sectionmods = explode(",", $sect->sequence);
@@ -254,7 +254,7 @@ foreach($sections as $sect) {
 		echo "<h3>".get_string('export_section_title','block_oppia_mobile_export',strip_tags($sect->summary,'<span>'))."</h3>";
 		
 		$section = $xmlDoc->createElement("section");
-		$section->appendChild($xmlDoc->createAttribute("order"))->appendChild($xmlDoc->createTextNode($orderno));
+		$section->appendChild($xmlDoc->createAttribute("order"))->appendChild($xmlDoc->createTextNode($sect_orderno));
 		$title = extractLangs($sect->summary);
 		if(is_array($title) && count($title)>0){
 			foreach($title as $l=>$t){
@@ -282,17 +282,11 @@ foreach($sections as $sect) {
 			$section->appendChild($temp);
 		}
 		
-		
-		$i=1;
-		$no_activities = 0;
+		$act_orderno = 1;
 		$activities = $xmlDoc->createElement("activities");
 		foreach ($sectionmods as $modnumber) {
 			
-			if (empty($modinfo->sections[$orderno])) {																																																									
-				continue;
-			}
-			
-			if (!in_array($modnumber, $mods)){
+			if ($modnumber == ""){
 				continue;
 			}
 			
@@ -304,10 +298,10 @@ foreach($sections as $sect) {
 				$page = new mobile_activity_page();
 				$page->courseroot = $course_root;
 				$page->id = $mod->id;
-				$page->section = $orderno;
+				$page->section = $sect_orderno;
 				$page->process();
-				$page->getXML($mod,$i,true,$activities,$xmlDoc);
-				$no_activities++;
+				$page->getXML($mod,$act_orderno,true,$activities,$xmlDoc);
+				$act_orderno++;
 			}
 			
 			if($mod->modname == 'quiz' && $mod->visible == 1){
@@ -338,12 +332,12 @@ foreach($sections as $sect) {
 				$quiz->init($server_connection, $course->shortname,$sect->summary,$configArray,$versionid);
 				$quiz->courseroot = $course_root;
 				$quiz->id = $mod->id;
-				$quiz->section = $orderno;
+				$quiz->section = $sect_orderno;
 				$quiz->preprocess();
 				if ($quiz->get_is_valid()){
 					$quiz->process();
-					$quiz->getXML($mod,$i,true,$activities,$xmlDoc);
-					$no_activities++;
+					$quiz->getXML($mod,$act_orderno,true,$activities,$xmlDoc);
+					$act_orderno++;
 				} else {
 					echo get_string('error_quiz_no_questions','block_oppia_mobile_export')."<br/>";
 				}
@@ -354,10 +348,10 @@ foreach($sections as $sect) {
 				$resource = new mobile_activity_resource();
 				$resource->courseroot = $course_root;
 				$resource->id = $mod->id;
-				$resource->section = $orderno;
+				$resource->section = $sect_orderno;
 				$resource->process();
-				$resource->getXML($mod,$i,true,$activities,$xmlDoc);
-				$no_activities++;
+				$resource->getXML($mod,$act_orderno,true,$activities,$xmlDoc);
+				$act_orderno++;
 			}
 			
 			if($mod->modname == 'url' && $mod->visible == 1){
@@ -365,10 +359,10 @@ foreach($sections as $sect) {
 				$url = new mobile_activity_url();
 				$url->courseroot = $course_root;
 				$url->id = $mod->id;
-				$url->section = $orderno;
+				$url->section = $sect_orderno;
 				$url->process();
-				$url->getXML($mod,$i,true,$activities,$xmlDoc);
-				$no_activities++;
+				$url->getXML($mod,$act_orderno,true,$activities,$xmlDoc);
+				$act_orderno++;
 			}
 			
 			if($mod->modname == 'feedback' && $mod->visible == 1){
@@ -377,27 +371,27 @@ foreach($sections as $sect) {
 				$feedback->init($server_connection, $course->shortname,$sect->summary,$versionid);
 				$feedback->courseroot = $course_root;
 				$feedback->id = $mod->id;
-				$feedback->section = $orderno;
+				$feedback->section = $sect_orderno;
 				$feedback->preprocess();
 				if ($feedback->get_is_valid()){
 					$feedback->process();
-					$feedback->getXML($mod,$i,true,$activities,$xmlDoc);
-					$no_activities++;
+					$feedback->getXML($mod,$act_orderno,true,$activities,$xmlDoc);
+					$act_orderno++;
 				} else {
 					echo get_string('error_feedback_no_questions','block_oppia_mobile_export')."<br/>";
 				}
 			}
 			
 			flush_buffers();
-			$i++;
 		}
-		if ($no_activities>0){
+		if ($act_orderno>1){
 			$section->appendChild($activities);
 			$structure->appendChild($section);
+			$sect_orderno++;
 		} else {
 			echo get_string('error_section_no_activities','block_oppia_mobile_export')."<br/>";
 		}
-		$orderno++;
+		
 	}
 }
 $root->appendChild($structure);
