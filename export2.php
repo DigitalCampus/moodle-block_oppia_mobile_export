@@ -393,6 +393,7 @@ foreach($sections as $sect) {
 		}
 		
 	}
+	echo "still going";
 }
 echo "Finished exporting activities and sections";
 $root->appendChild($structure);
