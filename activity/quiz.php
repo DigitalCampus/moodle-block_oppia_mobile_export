@@ -200,10 +200,16 @@ class mobile_activity_quiz extends mobile_activity {
 										$cm->id); 
 			
 				if($question_image){
-					$props[1] = array('name' => "image", 'value' => $question_image);
+					array_push($props, array('name' => "image", 'value' => $question_image));
 				}
 				
+				// find if any videos embedded in question text
+				$q->questiontext = $this->extractMedia($q->questiontext);
+				
+				
+				
 				$questionJSON = extractLangs($q->questiontext, true);
+				
 				// create question
 				$post = array('title' => $questionJSON,
 						'type' => $q->qtype,
@@ -349,6 +355,37 @@ class mobile_activity_quiz extends mobile_activity {
 			$this->is_valid = false;
 			return;
 		}	
+	}
+	
+	private function extractMedia($content){
+		global $MEDIA;
+	
+		$regex = '((\[\[[[:space:]]?media[[:space:]]?object=[\"|\'](?P<mediaobject>[\{\}\'\"\:a-zA-Z0-9\._\-/,[:space:]]*)[[:space:]]?[\"|\']\]\]))';
+	
+		preg_match_all($regex,$content,$media_tmp, PREG_OFFSET_CAPTURE);
+	
+		if(!isset($media_tmp['mediaobject']) || count($media_tmp['mediaobject']) == 0){
+			return $content;
+		}
+	
+		for($i=0;$i<count($media_tmp['mediaobject']);$i++){
+			$mediajson = json_decode($media_tmp['mediaobject'][$i][0]);
+			$toreplace = $media_tmp[0][$i][0];
+	
+			$r = "<a href='/video/".$mediajson->filename."'>";
+			$content = str_replace($toreplace, $r, $content);
+			// check all the required attrs exist
+			if(!isset($mediajson->digest) || !isset($mediajson->download_url) || !isset($mediajson->filename)){
+				echo get_string('error_media_attributes','block_oppia_mobile_export')."<br/>";
+				die;
+			}
+				
+			// put the media in both the structure for page ($this->page_media) and for module ($MEDIA)
+			$MEDIA[$mediajson->digest] = $mediajson;
+			$this->quiz_media[$mediajson->digest] = $mediajson;
+		}
+		$content = str_replace("[[/media]]", "</a>", $content);
+		return $content;
 	}
 	
 	function exportQuestionImages (){
