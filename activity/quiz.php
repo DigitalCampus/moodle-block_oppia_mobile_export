@@ -211,7 +211,6 @@ class mobile_activity_quiz extends mobile_activity {
 					foreach($this->quiz_media[$q->id] as $media){
 						array_push($props, array('name' => "media", 'value' => $media->filename));
 					}
-					
 				}
 				
 				$questionJSON = extractLangs($q->questiontext, true);
