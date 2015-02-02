@@ -13,6 +13,7 @@ class mobile_activity_quiz extends mobile_activity {
 	private $no_questions = 0; // total no of valid questions
 	private $configArray = array(); // config (quiz props) array
 	private $server_connection;
+	private $quiz_media = array();
 	
 	function init($server_connection, $shortname, $summary, $configArray, $courseversion){
 		$this->shortname = strip_tags($shortname);
@@ -204,9 +205,14 @@ class mobile_activity_quiz extends mobile_activity {
 				}
 				
 				// find if any videos embedded in question text
-				$q->questiontext = $this->extractMedia($q->questiontext);
+				$q->questiontext = $this->extractMedia($q->id, $q->questiontext);
 				
-				
+				if (array_key_exists($q->id,$this->quiz_media)){
+					foreach($this->quiz_media[$q->id] as $media){
+						array_push($props, array('name' => "media", 'value' => $media->filename));
+					}
+					
+				}
 				
 				$questionJSON = extractLangs($q->questiontext, true);
 				
@@ -357,7 +363,7 @@ class mobile_activity_quiz extends mobile_activity {
 		}	
 	}
 	
-	private function extractMedia($content){
+	private function extractMedia($question_id, $content){
 		global $MEDIA;
 	
 		$regex = '((\[\[[[:space:]]?media[[:space:]]?object=[\"|\'](?P<mediaobject>[\{\}\'\"\:a-zA-Z0-9\._\-/,[:space:]]*)[[:space:]]?[\"|\']\]\]))';
@@ -372,8 +378,7 @@ class mobile_activity_quiz extends mobile_activity {
 			$mediajson = json_decode($media_tmp['mediaobject'][$i][0]);
 			$toreplace = $media_tmp[0][$i][0];
 	
-			$r = "<a href='/video/".$mediajson->filename."'>";
-			$content = str_replace($toreplace, $r, $content);
+			$content = str_replace($toreplace, "", $content);
 			// check all the required attrs exist
 			if(!isset($mediajson->digest) || !isset($mediajson->download_url) || !isset($mediajson->filename)){
 				echo get_string('error_media_attributes','block_oppia_mobile_export')."<br/>";
@@ -382,9 +387,9 @@ class mobile_activity_quiz extends mobile_activity {
 				
 			// put the media in both the structure for page ($this->page_media) and for module ($MEDIA)
 			$MEDIA[$mediajson->digest] = $mediajson;
-			$this->quiz_media[$mediajson->digest] = $mediajson;
+			$this->quiz_media[$question_id][$mediajson->digest] = $mediajson;
 		}
-		$content = str_replace("[[/media]]", "</a>", $content);
+		$content = str_replace("[[/media]]", "", $content);
 		return $content;
 	}
 	
