@@ -111,6 +111,7 @@ class mobile_activity_quiz extends mobile_activity {
 				$resp = $mQH->exec('quizprops',$post);
 				
 				$this->exportQuestionImages();
+				$this->exportQuestionMedia();
 				return;
 			}
 			
@@ -403,7 +404,7 @@ class mobile_activity_quiz extends mobile_activity {
 			$quizobj->load_questions();
 			$qs = $quizobj->get_questions();
 			foreach($qs as $q){
-				$question_image = extractImageFile($q->questiontext,
+				extractImageFile($q->questiontext,
 										'question',
 										'questiontext',
 										$q->id,
@@ -412,6 +413,25 @@ class mobile_activity_quiz extends mobile_activity {
 										$cm->id); 
 			}
 			
+		} catch (moodle_exception $me){
+			return;
+		}
+	}
+	
+	function exportQuestionMedia(){
+		global $DB,$CFG,$USER,$QUIZ_CACHE,$CFG;
+		$cm = get_coursemodule_from_id('quiz', $this->id);
+		$context = context_module::instance($cm->id);
+		$quiz = $DB->get_record('quiz', array('id'=>$cm->instance), '*', MUST_EXIST);
+		$quizobj = quiz::create($cm->instance, $USER->id);
+		try {
+			$quizobj->preload_questions();
+			$quizobj->load_questions();
+			$qs = $quizobj->get_questions();
+			foreach($qs as $q){
+				$this->extractMedia($q->id, $q->questiontext);
+			}
+				
 		} catch (moodle_exception $me){
 			return;
 		}
