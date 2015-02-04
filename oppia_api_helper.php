@@ -11,6 +11,8 @@ class QuizHelper{
 	}
 	
 	function exec($object, $data_array, $type='post'){
+		
+		usleep(500000);
 		$json = json_encode($data_array);
 		// Check if the url already has trailing '/' or not
 		if (substr($this->connection->url, -strlen('/'))==='/'){ 
