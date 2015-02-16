@@ -114,7 +114,7 @@ $string['export_style_start'] = 'Adding style sheet';
 $string['export_style_resources'] = 'Copying style resources';
 $string['export_export_complete'] = 'Course export complete';
 $string['export_export_compressed'] = 'Compressed file';
-$string['export_download'] = 'Download exported course at <a href="{$a->zip}">{$a->coursename}</a>';
+$string['export_download'] = 'Download exported course: <a href="{$a->zip}">{$a->coursename}</a>';
 
 $string['export_cleanup'] = 'Cleanup files';
 

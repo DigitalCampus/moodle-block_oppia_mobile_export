@@ -462,7 +462,7 @@ if (!$xml->schemaValidate('./oppia-schema.xsd')) {
 	$a = new stdClass();
 	$a->zip = $outputzip;
 	$a->coursename = strip_tags($course->fullname);
-	echo "<p>".get_string('export_download','block_oppia_mobile_export', $a )."</p>";
+	echo "<div style='font-weight:bold; font-size:150%; display:block; border: 1px solid #000; padding:20px'>".get_string('export_download','block_oppia_mobile_export', $a )."</div>";
 	
 	echo "<p><a href='cleanup.php?id=".$id."'>".get_string('export_cleanup','block_oppia_mobile_export')."</a></p>";
 	
