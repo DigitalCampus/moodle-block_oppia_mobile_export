@@ -24,6 +24,7 @@ require_once($CFG->libdir.'/componentlib.class.php');
 $id = required_param('id',PARAM_INT);
 $stylesheet = required_param('stylesheet',PARAM_TEXT);
 $priority = required_param('coursepriority',PARAM_INT);
+$tags = required_param('coursetags',PARAM_TEXT);
 $server = required_param('server',PARAM_TEXT);
 
 $course = $DB->get_record('course', array('id'=>$id));
@@ -109,6 +110,7 @@ $meta->appendChild($xmlDoc->createElement("server",$server_connection->url));
 
 
 add_or_update_oppiaconfig($id, 'coursepriority', $priority);
+add_or_update_oppiaconfig($id, 'coursetags', $tags);
 
 $a = new stdClass();
 $a->stepno = 2;
