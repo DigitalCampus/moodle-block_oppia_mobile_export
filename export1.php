@@ -243,8 +243,8 @@ if (count($quizzes)> 0){
 	}
 	echo "</table>";
 }
-echo "<p>".get_string('export_priority_title','block_oppia_mobile_export');
-echo "<br/>".get_string('export_priority_desc','block_oppia_mobile_export')."</p>";
+echo "<p><b>".get_string('export_priority_title','block_oppia_mobile_export')."</b>";
+echo "<br/>".get_string('export_priority_desc','block_oppia_mobile_export')."<br/>";
 $priority = get_oppiaconfig($id,'coursepriority','0');
 echo "<select name='coursepriority' id='coursepriority'>";
 for ($i=0; $i<11; $i++){
@@ -254,8 +254,12 @@ for ($i=0; $i<11; $i++){
 		}
 	echo ">$i</option>";
 }
-echo "</select>";
+echo "</select></p>";
 
+echo "<p><b>".get_string('export_course_tags_title','block_oppia_mobile_export')."</b>";
+echo "<br/>".get_string('export_course_tags_desc','block_oppia_mobile_export')."<br/>";
+$tags = get_oppiaconfig($id,'coursetags','');
+echo "<input name='coursetags' id='coursetags' value='".$tags."' size='100'/><br/>";
 echo "<p><input type='submit' name='submit' value='".get_string('continue','block_oppia_mobile_export')."'></p>";
 echo "</form>";
 echo $OUTPUT->footer();
