@@ -142,3 +142,8 @@ $string['feedback_endonly'] = 'At end of quiz only';
 $string['availability_always'] = 'Always';
 $string['availability_section'] = 'Only after previous section activities completed';
 $string['availability_course'] = 'Only after all previous course activities completed';
+
+$string['publish_field_password'] = 'Password';
+$string['publish_field_username'] = 'Username';
+$string['publish_heading'] = 'Publish to OppiaMobile server';
+$string['publish_text'] = 'To publish your course directly on OppiaMobile, please complete your details below.';

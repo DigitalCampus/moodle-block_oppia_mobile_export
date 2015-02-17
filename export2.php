@@ -464,6 +464,26 @@ if (!$xml->schemaValidate('./oppia-schema.xsd')) {
 	$a->coursename = strip_tags($course->fullname);
 	echo "<div style='font-weight:bold; font-size:150%; display:block; border: 1px solid #000; padding:20px'>".get_string('export_download','block_oppia_mobile_export', $a )."</div>";
 	
+	// form to publish to OppiaMobile server
+	echo "<form style='display:block; border: 1px solid #000; padding:20px; margin:20px 0;' action='".$CFG->wwwroot."/blocks/oppia_mobile_export/publish_course.php' method='POST'>";
+	echo "<input type='hidden' name='id' value='".$COURSE->id."'>";
+	echo "<input type='hidden' name='sesskey' value='".sesskey()."'>";
+	echo "<input type='hidden' name='server' value='".$server."'>";
+	echo "<input type='hidden' name='tags' value='".$tags."'>";
+	echo "<input type='text' name='file' value='".$a->zip."'>";
+	
+	echo "<h2>".get_string('publish_heading','block_oppia_mobile_export')."</h2>";
+	echo "<p>".get_string('publish_text','block_oppia_mobile_export')."</p>";
+	
+	echo "<p>".get_string('publish_field_username','block_oppia_mobile_export')."<br/>";
+	echo "<input type='text' name='username' value=''></p>";
+	echo "<p>".get_string('publish_field_password','block_oppia_mobile_export')."<br/>";
+	echo "<input type='password' name='password' value=''></p>";
+	
+	echo "<p><input type='submit' name='submit' value='Publish'></p>";
+	echo "</form>";
+	
+	// link to cleanup files
 	echo "<p><a href='cleanup.php?id=".$id."'>".get_string('export_cleanup','block_oppia_mobile_export')."</a></p>";
 	
 	if(count($advice)> 0){
