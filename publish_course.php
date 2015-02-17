@@ -23,6 +23,7 @@ $tags = required_param('tags',PARAM_TEXT);
 $server = required_param('server',PARAM_TEXT);
 $username = required_param('username',PARAM_TEXT);
 $password = required_param('password',PARAM_TEXT);
+$is_draft = optional_param('is_draft',PARAM_TEXT,'True');
 
 $course = $DB->get_record('course', array('id'=>$id));
 
@@ -45,6 +46,9 @@ $PAGE->set_context($context);
 $modinfo = get_fast_modinfo($course);
 $sections = $modinfo->get_section_info_all();
 $mods = $modinfo->get_cms();
+
+
+add_or_update_oppiaconfig($id, 'is_draft', $is_draft);
 
 echo $OUTPUT->header();
 

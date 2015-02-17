@@ -470,7 +470,7 @@ if (!$xml->schemaValidate('./oppia-schema.xsd')) {
 	echo "<input type='hidden' name='sesskey' value='".sesskey()."'>";
 	echo "<input type='hidden' name='server' value='".$server."'>";
 	echo "<input type='hidden' name='tags' value='".$tags."'>";
-	echo "<input type='text' name='file' value='".$a->zip."'>";
+	echo "<input type='hidden' name='file' value='".$a->zip."'>";
 	
 	echo "<h2>".get_string('publish_heading','block_oppia_mobile_export')."</h2>";
 	echo "<p>".get_string('publish_text','block_oppia_mobile_export')."</p>";
@@ -480,6 +480,10 @@ if (!$xml->schemaValidate('./oppia-schema.xsd')) {
 	echo "<p>".get_string('publish_field_password','block_oppia_mobile_export')."<br/>";
 	echo "<input type='password' name='password' value=''></p>";
 	
+	$is_draft = get_oppiaconfig($id,'is_draft','True');
+	echo "<p>";
+	echo get_string('publish_field_draft','block_oppia_mobile_export')."<br/>";
+	echo get_string('publish_field_draft_info','block_oppia_mobile_export')."</p>";
 	echo "<p><input type='submit' name='submit' value='Publish'></p>";
 	echo "</form>";
 	

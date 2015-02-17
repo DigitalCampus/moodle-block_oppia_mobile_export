@@ -143,6 +143,8 @@ $string['availability_always'] = 'Always';
 $string['availability_section'] = 'Only after previous section activities completed';
 $string['availability_course'] = 'Only after all previous course activities completed';
 
+$string['publish_field_draft'] = 'Is draft';
+$string['publish_field_draft_info'] = 'Tick the box if the course is to be a \'draft\' (only availble to selected groups), or tick the box if it should be published publically';
 $string['publish_field_password'] = 'Password';
 $string['publish_field_username'] = 'Username';
 $string['publish_heading'] = 'Publish to OppiaMobile server';
