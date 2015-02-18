@@ -23,7 +23,7 @@ $tags = required_param('tags',PARAM_TEXT);
 $server = required_param('server',PARAM_TEXT);
 $username = required_param('username',PARAM_TEXT);
 $password = required_param('password',PARAM_TEXT);
-$is_draft = optional_param('is_draft',PARAM_TEXT,'True');
+$is_draft = optional_param('is_draft','False', PARAM_TEXT);
 
 $course = $DB->get_record('course', array('id'=>$id));
 
@@ -74,7 +74,7 @@ if (substr($server_connection->url, -strlen('/'))!=='/'){
 
 $post =  array('username' => $username,
 				'password' => $password,
-				'is_draft' => 'False',
+				'is_draft' => $is_draft,
 				'tags' => $tags,
 				'course_file' => new CurlFile($file, 'application/zip') 
 );
@@ -87,11 +87,24 @@ $result = curl_exec($curl);
 $http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
 switch ($http_status){
-	
-	
+	case "405":
+		echo "<p>".get_string('publish_message_405','block_oppia_mobile_export')."</p>";
+		break;
+	case "400":
+		echo "<p>".get_string('publish_message_400','block_oppia_mobile_export')."</p>";
+		break;
+	case "401":
+		echo "<p>".get_string('publish_message_401','block_oppia_mobile_export')."</p>";
+		break;
+	case "500":
+		echo "<p>".get_string('publish_message_500','block_oppia_mobile_export')."</p>";
+		break;
+	case "201":
+		echo "<p>".get_string('publish_message_201','block_oppia_mobile_export')."</p>";
+		break;
+	default:
+		
 }
-echo $http_status;
-
 
 curl_close ($curl);
 

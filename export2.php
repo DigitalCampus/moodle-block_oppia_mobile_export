@@ -473,15 +473,20 @@ if (!$xml->schemaValidate('./oppia-schema.xsd')) {
 	echo "<input type='hidden' name='file' value='".$a->zip."'>";
 	
 	echo "<h2>".get_string('publish_heading','block_oppia_mobile_export')."</h2>";
-	echo "<p>".get_string('publish_text','block_oppia_mobile_export')."</p>";
+	echo "<p>".get_string('publish_text','block_oppia_mobile_export',$server_connection->url)."</p>";
 	
 	echo "<p>".get_string('publish_field_username','block_oppia_mobile_export')."<br/>";
 	echo "<input type='text' name='username' value=''></p>";
 	echo "<p>".get_string('publish_field_password','block_oppia_mobile_export')."<br/>";
 	echo "<input type='password' name='password' value=''></p>";
 	
-	$is_draft = get_oppiaconfig($id,'is_draft','True');
-	echo "<p>";
+	$is_draft = get_oppiaconfig($COURSE->id,'is_draft','True');
+	echo "<p><input type='checkbox' name='is_draft' value='True'";
+	if($is_draft == 'True'){
+		echo "checked='checked'/>";
+	} else {
+		echo "/>";
+	}
 	echo get_string('publish_field_draft','block_oppia_mobile_export')."<br/>";
 	echo get_string('publish_field_draft_info','block_oppia_mobile_export')."</p>";
 	echo "<p><input type='submit' name='submit' value='Publish'></p>";

@@ -144,8 +144,13 @@ $string['availability_section'] = 'Only after previous section activities comple
 $string['availability_course'] = 'Only after all previous course activities completed';
 
 $string['publish_field_draft'] = 'Is draft';
-$string['publish_field_draft_info'] = 'Tick the box if the course is to be a \'draft\' (only availble to selected groups), or tick the box if it should be published publically';
+$string['publish_field_draft_info'] = 'Tick the box if the course is to be a \'draft\' (only availble to selected groups), or untick the box if it should be published publically';
 $string['publish_field_password'] = 'Password';
 $string['publish_field_username'] = 'Username';
 $string['publish_heading'] = 'Publish to OppiaMobile server';
-$string['publish_text'] = 'To publish your course directly on OppiaMobile, please complete your details below.';
+$string['publish_message_201'] = 'Your course has now been published on the OppiaMobile server';
+$string['publish_message_400'] = 'Bad request. This is likely due to missing fields/data. Your course has not been published.';
+$string['publish_message_401'] = 'Unauthorized. Either you entered an incorrect username/password, or you do not have permissions to publish on the specified OppiaMobile server. Your course has not been published.';
+$string['publish_message_405'] = 'Invalid HTTP request type - this probably needs a programmer to look into. Your course has not been published.';
+$string['publish_message_500'] = 'A server error occured during publishing. This could be a permissions issue, please refer to you OppiaMobile server administrator. Your course has not been published.';
+$string['publish_text'] = 'To publish your course directly on OppiaMobile ({$a}), please complete your OppiaMobile server login details below.<br/>Check with your OppiaMobile administrator if you are unsure whether you have permissions to publish on the server';
