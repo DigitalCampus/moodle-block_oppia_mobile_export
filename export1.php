@@ -92,9 +92,7 @@ foreach($sections as $sect) {
 			if (empty($modinfo->sections[$orderno])) {
 				continue;
 			}
-			if (!in_array($modnumber, $mods)){
-				continue;
-			}
+			
 			$mod = $mods[$modnumber];
 			
 			if($mod->modname == 'quiz' && $mod->visible == 1){

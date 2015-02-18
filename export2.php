@@ -480,7 +480,7 @@ if (!$xml->schemaValidate('./oppia-schema.xsd')) {
 	echo "<input type='password' name='password' value=''></p>";
 	
 	echo "<p>".get_string('publish_field_tags','block_oppia_mobile_export')."<br/>";
-	echo "<input type='text' name='tags' value='".$tags."'></p>";
+	echo "<input type='text' name='tags' value='".$tags."' size='100'></p>";
 	
 	$is_draft = get_oppiaconfig($COURSE->id,'is_draft','True');
 	echo "<p><input type='checkbox' name='is_draft' value='True'";
