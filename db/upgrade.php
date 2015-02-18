@@ -39,6 +39,20 @@ function xmldb_block_oppia_mobile_export_upgrade($oldversion) {
 		// Blocks savepoint reached.
 		upgrade_plugin_savepoint(true, 2014032100, 'error', 'blocks');
 	}
+	
+	if ($oldversion < 2015021802) {
+	
+		// Changing type of field value on table block_oppia_mobile_config to text.
+		$table = new xmldb_table('block_oppia_mobile_config');
+		$field = new xmldb_field('value', XMLDB_TYPE_TEXT, null, null, null, null, null, 'name');
+	
+		// Launch change of type for field value.
+		$dbman->change_field_type($table, $field);
+	
+		// Blocks savepoint reached.
+		upgrade_plugin_savepoint(true, 2015021802, 'error', 'blocks');
+	}
+	
 	 
 	return true;
 }
