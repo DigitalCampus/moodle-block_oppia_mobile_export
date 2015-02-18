@@ -469,7 +469,6 @@ if (!$xml->schemaValidate('./oppia-schema.xsd')) {
 	echo "<input type='hidden' name='id' value='".$COURSE->id."'>";
 	echo "<input type='hidden' name='sesskey' value='".sesskey()."'>";
 	echo "<input type='hidden' name='server' value='".$server."'>";
-	echo "<input type='hidden' name='tags' value='".$tags."'>";
 	echo "<input type='hidden' name='file' value='".$a->zip."'>";
 	
 	echo "<h2>".get_string('publish_heading','block_oppia_mobile_export')."</h2>";
@@ -479,6 +478,9 @@ if (!$xml->schemaValidate('./oppia-schema.xsd')) {
 	echo "<input type='text' name='username' value=''></p>";
 	echo "<p>".get_string('publish_field_password','block_oppia_mobile_export')."<br/>";
 	echo "<input type='password' name='password' value=''></p>";
+	
+	echo "<p>".get_string('publish_field_tags','block_oppia_mobile_export')."<br/>";
+	echo "<input type='text' name='tags' value='".$tags."'></p>";
 	
 	$is_draft = get_oppiaconfig($COURSE->id,'is_draft','True');
 	echo "<p><input type='checkbox' name='is_draft' value='True'";

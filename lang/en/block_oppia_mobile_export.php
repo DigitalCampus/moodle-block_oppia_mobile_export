@@ -143,9 +143,13 @@ $string['availability_always'] = 'Always';
 $string['availability_section'] = 'Only after previous section activities completed';
 $string['availability_course'] = 'Only after all previous course activities completed';
 
+$string['publish_error_password'] = 'No password entered, please go back and enter your password';
+$string['publish_error_tags'] = 'No tags have been given, please go back and enter at least one tag';
+$string['publish_error_username'] = 'No username entered, please go back and enter your username';
 $string['publish_field_draft'] = 'Is draft';
 $string['publish_field_draft_info'] = 'Tick the box if the course is to be a \'draft\' (only availble to selected groups), or untick the box if it should be published publically';
 $string['publish_field_password'] = 'Password';
+$string['publish_field_tags'] = 'Tags (for classifying course)';
 $string['publish_field_username'] = 'Username';
 $string['publish_heading'] = 'Publish to OppiaMobile server';
 $string['publish_message_201'] = 'Your course has now been published on the OppiaMobile server';

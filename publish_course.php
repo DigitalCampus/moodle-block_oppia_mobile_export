@@ -55,6 +55,25 @@ echo $OUTPUT->header();
 echo "<h2>Publishing course</h2>";
 flush_buffers();
 
+if (trim($username) == ''){
+	echo "<p>".get_string('publish_error_username','block_oppia_mobile_export')."</p>";
+	echo $OUTPUT->footer();
+	die();
+}
+
+if (trim($password) == ''){
+	echo "<p>".get_string('publish_error_password','block_oppia_mobile_export')."</p>";
+	echo $OUTPUT->footer();
+	die();
+}
+if (trim($tags) == ''){
+	echo "<p>".get_string('publish_error_tags','block_oppia_mobile_export')."</p>";
+	echo $OUTPUT->footer();
+	die();
+}
+
+
+
 $server_connection = $DB->get_record('block_oppia_mobile_server', array('moodleuserid'=>$USER->id,'id'=>$server));
 if(!$server_connection && $server != "default"){
 	echo "<p>".get_string('server_not_owner','block_oppia_mobile_export')."</p>";
