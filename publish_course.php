@@ -96,7 +96,7 @@ $post =  array('username' => $username,
 				'is_draft' => $is_draft,
 				'tags' => $tags,
 				'course_file' => new CurlFile($file, 'application/zip') 
-);
+		);
 $curl = curl_init();
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1 );
 curl_setopt($curl, CURLOPT_URL, $server_connection->url ."api/publish/" );
