@@ -87,7 +87,7 @@ class block_oppia_mobile_export extends block_base {
         $this->content->text .= "<input type='submit' name='submit' value='".get_string('oppia_block_export2print_button','block_oppia_mobile_export')."'>";
         $this->content->text .= "</form></p>";
         
-        $this->content->footer = '<a href="http://oppia-mobile.org">OppiaMobile</a>';
+        $this->content->footer = '<a href="https://digital-campus.org/oppiamobile/overview/">OppiaMobile</a>';
         if (empty($this->instance)) {
             return $this->content;
         }
