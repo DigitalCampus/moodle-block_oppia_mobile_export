@@ -78,10 +78,12 @@ $advice = array();
 deleteDir("output/".$USER->id."/temp");
 deleteDir("output/".$USER->id);
 if(!is_dir("output")){
-	mkdir("output",0777);
+	if (!mkdir("output",0777)){
+		echo "<h3>Failed to create the output directory, please check your server permissions to allow the webserver user to create the output directory under " . __DIR__ . "</h3>";
+		die;
+	}
 }
-mkdir("output/".$USER->id,0777);
-mkdir("output/".$USER->id."/temp/",0777);
+mkdir("output/".$USER->id."/temp/",0777, true);
 $course_root = "output/".$USER->id."/temp/".strtolower($course->shortname);
 mkdir($course_root,0777);
 mkdir($course_root."/images",0777);
