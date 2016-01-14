@@ -101,7 +101,7 @@ $sections = $modinfo->get_section_info_all();
 $mods = $modinfo->get_cms();
 
 $versionid = date("YmdHis");
-$xmlDoc = new DOMDocument();
+$xmlDoc = new DOMDocument( "1.0", "UTF-8" );
 $root = $xmlDoc->appendChild($xmlDoc->createElement("module"));
 $meta = $root->appendChild($xmlDoc->createElement("meta"));
 $meta->appendChild($xmlDoc->createElement("versionid",$versionid));
@@ -260,13 +260,15 @@ foreach($sections as $sect) {
 		$title = extractLangs($sect->summary);
 		if(is_array($title) && count($title)>0){
 			foreach($title as $l=>$t){
-				$temp = $xmlDoc->createElement("title",strip_tags($t));
+				$temp = $xmlDoc->createElement("title");
+				$temp->appendChild($xmlDoc->createCDATASection(strip_tags($t)));
 				$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($l));
 				$section->appendChild($temp);
 				
 			}
 		} else {
-			$temp = $xmlDoc->createElement("title",strip_tags($sect->summary));
+			$temp = $xmlDoc->createElement("title");
+			$temp->appendChild($xmlDoc->createCDATASection(strip_tags($sect->summary)));
 			$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
 			$section->appendChild($temp);
 		}
