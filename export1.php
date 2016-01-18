@@ -257,7 +257,18 @@ echo "</select></p>";
 echo "<p><b>".get_string('export_course_tags_title','block_oppia_mobile_export')."</b>";
 echo "<br/>".get_string('export_course_tags_desc','block_oppia_mobile_export')."<br/>";
 $tags = get_oppiaconfig($id,'coursetags','');
-echo "<input name='coursetags' id='coursetags' value='".$tags."' size='100'/><br/>";
+echo "<div class='form-item'><input name='coursetags' id='coursetags' value='".$tags."' size='100'/></div><br/></p>";
+
+echo "<p><b>".get_string('export_sequencing_title','block_oppia_mobile_export')."</b>";
+echo "<br/>".get_string('export_sequencing_desc','block_oppia_mobile_export')."<br/>";
+
+echo "<div class='form-item'><div class='form-label'><div class='fstaticlabel'>Course sequencing:</div></div><div class='form-description'>";
+echo "<input type='radio' name='coursesequencing' value='none' checked> ".get_string('export_sequencing_none','block_oppia_mobile_export')."<br>";
+echo "<input type='radio' name='coursesequencing' value='section'> ".get_string('export_sequencing_section','block_oppia_mobile_export')."<br>";
+echo "<input type='radio' name='coursesequencing' value='course'> ".get_string('export_sequencing_course','block_oppia_mobile_export')."<br>";
+echo "<br></p>";
+echo "</div></div>";
+
 echo "<p><input type='submit' name='submit' value='".get_string('continue','block_oppia_mobile_export')."'></p>";
 echo "</form>";
 echo $OUTPUT->footer();

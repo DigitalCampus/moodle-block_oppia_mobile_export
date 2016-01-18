@@ -24,6 +24,7 @@ require_once($CFG->libdir.'/componentlib.class.php');
 $id = required_param('id',PARAM_INT);
 $stylesheet = required_param('stylesheet',PARAM_TEXT);
 $priority = required_param('coursepriority',PARAM_INT);
+$sequencing = required_param('coursesequencing', PARAM_TEXT);
 $tags = required_param('coursetags',PARAM_TEXT);
 $server = required_param('server',PARAM_TEXT);
 
@@ -109,7 +110,7 @@ $meta = $root->appendChild($xmlDoc->createElement("meta"));
 $meta->appendChild($xmlDoc->createElement("versionid",$versionid));
 $meta->appendChild($xmlDoc->createElement("priority",$priority));
 $meta->appendChild($xmlDoc->createElement("server",$server_connection->url));
-
+$meta->appendChild($xmlDoc->createElement("sequencing", $sequencing));
 
 add_or_update_oppiaconfig($id, 'coursepriority', $priority);
 add_or_update_oppiaconfig($id, 'coursetags', $tags);
