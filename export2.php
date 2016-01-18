@@ -114,6 +114,7 @@ $meta->appendChild($xmlDoc->createElement("sequencing", $sequencing));
 
 add_or_update_oppiaconfig($id, 'coursepriority', $priority);
 add_or_update_oppiaconfig($id, 'coursetags', $tags);
+add_or_update_oppiaconfig($id, 'coursesequencing', $sequencing);
 
 $a = new stdClass();
 $a->stepno = 2;
