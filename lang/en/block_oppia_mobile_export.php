@@ -106,6 +106,12 @@ $string['export_priority_desc'] = 'This is the relative weight given to a course
 $string['export_course_tags_title'] = 'Course Tags';
 $string['export_course_tags_desc'] = 'Tags that will be used to classify the course on the OppiaMobile server, separate each tag by a comma';
 
+$string['export_sequencing_title'] = 'Course Sequencing';
+$string['export_sequencing_desc'] = 'Set the sequencing mode of the course. Here you can specify that the course activities must be attempted sequentially, section or course-wise.';
+$string['export_sequencing_none'] = 'None';
+$string['export_sequencing_course'] = 'Sequencing through whole course';
+$string['export_sequencing_section'] = 'Sequencing within a section';
+
 $string['export_section_title'] = 'Exporting Section: {$a}';
 $string['export_xml_valid_start'] = 'Validating course XML file...';
 $string['export_xml_validated'] = 'validated';
