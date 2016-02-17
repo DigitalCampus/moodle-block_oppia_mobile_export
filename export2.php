@@ -435,6 +435,13 @@ $xmlDoc->save($course_root."/module.xml");
 echo "<p>".get_string('export_xml_valid_start','block_oppia_mobile_export');
 libxml_use_internal_errors(true);
 
+if ($sect_orderno <= 1){
+	echo '<h3>'.get_string('error_exporting','block_oppia_mobile_export').'</h3>';
+	echo '<p>'.get_string('error_exporting_no_sections','block_oppia_mobile_export').'</p>';
+	echo $OUTPUT->footer();
+	die();
+}
+
 $xml = new DOMDocument();
 $xml->load($course_root."/module.xml");
 
