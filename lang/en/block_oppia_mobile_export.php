@@ -96,9 +96,11 @@ $string['export_quiz_norandom'] = 'No random questions';
 $string['export_quiz_feedback'] = 'Show feedback';
 $string['export_quiz_passthreshold'] = 'Pass Threshold (%)';
 $string['export_quiz_tryagain'] = 'Allow try-again?';
+$string['export_quiz_max_attempts'] = 'Max number of attempts';
 
 $string['export_quiz_norandom_all'] = 'Use all questions (don\'t randomise)';
 $string['export_quiz_norandom_selectx'] = 'Select {$a} random questions';
+$string['export_quiz_maxattempts_unlimited'] = 'Unlimited';
 
 $string['export_priority_title'] = 'Course Priority';
 $string['export_priority_desc'] = 'This is the relative weight given to a course to help determine the ordering in which it will appear on the mobile (10 = highest priority)';

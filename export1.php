@@ -142,7 +142,7 @@ if (count($quizzes)> 0){
 	echo "<th>".get_string('export_quiz_tryagain','block_oppia_mobile_export')."</th>";
 	echo "<th>".get_string('export_quiz_passthreshold','block_oppia_mobile_export')."</th>";
 	echo "<th>".get_string('export_quiz_availability','block_oppia_mobile_export')."</th>";
-	echo "<th>Max attempts</th>";
+	echo "<th>".get_string('export_quiz_max_attempts','block_oppia_mobile_export')."</th>";
 	echo "</tr>";
 	foreach ($quizzes as $quiz){
 		echo "<tr>";
@@ -242,7 +242,7 @@ if (count($quizzes)> 0){
 			echo "<td>";
 			echo "<select name='quiz_".$quiz->id."_maxattempts' id='id_maxattempts_quiz_".$quiz->id."'>";
 			echo "<option value='unlimited' ".($maxattempts=='unlimited'?"selected='selected'":"").">";
-			echo "Unlimited</option>";
+			echo get_string('export_quiz_maxattempts_unlimited','block_oppia_mobile_export')."</option>";
 			for ($i=1; $i<10; $i++){
 				echo "<option value='".$i."' ".($maxattempts==$i?"selected='selected'":"").">";
 				echo $i."</option>";
