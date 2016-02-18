@@ -193,12 +193,16 @@ foreach ($sectionmods as $modnumber) {
 		
 		$availability = optional_param('quiz_'.$mod->id.'_availability',0,PARAM_INT);
 		add_or_update_oppiaconfig($mod->id, 'availability', $availability);
+
+		$maxattempts = optional_param('quiz_'.$mod->id.'_maxattempts','unlimited',PARAM_INT);
+		add_or_update_oppiaconfig($mod->id, 'maxattempts', $maxattempts);
 		
 		$configArray = Array('randomselect'=>$random, 
 								'showfeedback'=>$showfeedback,
 								'allowtryagain'=>$allowtryagain, 
 								'passthreshold'=>$passthreshold,
-								'availability'=>$availability);
+								'availability'=>$availability,
+								'maxattempts'=>$maxattempts);
 		$quiz->init($server_connection, $course->shortname,"Pre-test",$configArray,$versionid);
 		$quiz->courseroot = $course_root;
 		$quiz->id = $mod->id;
@@ -330,12 +334,16 @@ foreach($sections as $sect) {
 		
 				$availability = optional_param('quiz_'.$mod->id.'_availability',0,PARAM_INT);
 				add_or_update_oppiaconfig($mod->id, 'availability', $availability);
+
+				$maxattempts = optional_param('quiz_'.$mod->id.'_maxattempts','unlimited',PARAM_INT);
+				add_or_update_oppiaconfig($mod->id, 'maxattempts', $maxattempts);
 				
 				$configArray = Array('randomselect'=>$random, 
-										'showfeedback'=>$showfeedback,
-										'allowtryagain'=>$allowtryagain, 
-										'passthreshold'=>$passthreshold,
-										'availability'=>$availability);
+									'showfeedback'=>$showfeedback,
+									'allowtryagain'=>$allowtryagain, 
+									'passthreshold'=>$passthreshold,
+									'availability'=>$availability,
+									'maxattempts'=>$maxattempts);
 				
 				$quiz->init($server_connection, $course->shortname,$sect->summary,$configArray,$versionid);
 				$quiz->courseroot = $course_root;
