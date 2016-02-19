@@ -110,7 +110,12 @@ foreach($sections as $sect) {
 	
 	$sectionmods = explode(",", $sect->sequence);
 	
-	if(strip_tags($sect->summary) != "" && count($sectionmods)>0){
+	$sectionTitle = strip_tags($sect->summary);
+	if ($sectionTitle == "") {
+		$sectionTitle = get_string('sectionname', 'format_topics') . ' ' . $sect->section;
+	}
+
+	if(count($sectionmods)>0){
 		$webpage =  "<html><head>";
 		$webpage .= "<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>";
 		$webpage .= "<link href='style.css' rel='stylesheet' type='text/css'/>";
@@ -120,7 +125,7 @@ foreach($sections as $sect) {
 		$webpage .= "<style>div.page {width:400px; border: 1px solid #000; margin: 10px auto;}</style>";
 		$webpage .= "</head>";
 		$webpage .= "<body onload='init();'>";
-		$webpage .= "<h1>".strip_tags($sect->summary,'<span>')."</h1>";
+		$webpage .= "<h1>".strip_tags($sectionTitle,'<span>')."</h1>";
 		$empty = false;
 		foreach ($sectionmods as $modnumber) {
 				
@@ -175,7 +180,7 @@ foreach($sections as $sect) {
 			$fh = fopen($index, 'w');
 			fwrite($fh, $webpage);
 			fclose($fh);
-			$course_index .= "<li><a href='".$index."'>".strip_tags($sect->summary,'<span>')."</a></li>";
+			$course_index .= "<li><a href='".$index."'>".$sectionTitle."</a></li>";
 		}
 		$orderno++;
 	}
