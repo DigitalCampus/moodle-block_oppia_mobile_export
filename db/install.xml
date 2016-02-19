@@ -7,6 +7,7 @@
         <FIELD NAME="modid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="id" NEXT="name"/>
       	<FIELD NAME="name" TYPE="char" LENGTH="20" NOTNULL="false" DEFAULT="" PREVIOUS="modid" SEQUENCE="false" NEXT="value"/>
       	<FIELD NAME="value" TYPE="char" LENGTH="20" NOTNULL="false" DEFAULT="" PREVIOUS="name" SEQUENCE="false"/>
+        <FIELD NAME="serverid" TYPE="char" LENGTH="20" NOTNULL="false" DEFAULT="default" PREVIOUS="value" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for oppia_mobile_export"/>
