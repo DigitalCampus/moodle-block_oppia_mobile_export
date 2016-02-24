@@ -26,25 +26,36 @@ function deleteDir($dirPath) {
 	rmdir($dirPath);
 }
 
-function add_or_update_oppiaconfig($modid, $name, $value){
+function add_or_update_oppiaconfig($modid, $name, $value, $servid="default"){
 	global $DB;
 	
-	$record = $DB->get_record('block_oppia_mobile_config', array('modid'=>$modid,'name'=>$name));
+	$record = $DB->get_record('block_oppia_mobile_config', 
+		array('modid'=>$modid,'name'=>$name,'serverid'=>$servid));
 	
 	if ($record){
-		$DB->update_record("block_oppia_mobile_config",array('id'=>$record->id,'value'=>$value));
+		$DB->update_record("block_oppia_mobile_config",
+			array('id'=>$record->id,'value'=>$value));
 	} else {
-		$DB->insert_record("block_oppia_mobile_config", array('modid'=>$modid,'name'=>$name,'value'=>$value));
+		$DB->insert_record("block_oppia_mobile_config", 
+			array('modid'=>$modid,'name'=>$name,'value'=>$value,'serverid'=>$servid));
 	}
 }
 
-function get_oppiaconfig($modid,$name,$default){
+function get_oppiaconfig($modid, $name, $default, $servid="default"){
 	global $DB;
-	$record = $DB->get_record('block_oppia_mobile_config', array('modid'=>$modid,'name'=>$name));
+	$record = $DB->get_record('block_oppia_mobile_config', 
+		array('modid'=>$modid,'name'=>$name,'serverid'=>$servid));
 	if ($record){
 		return $record->value;
 	} else {
-		return $default;
+		//Try if there is a non-server value saved
+		$record = $DB->get_record('block_oppia_mobile_config', 
+			array('modid'=>$modid,'name'=>$name));
+		if ($record){
+			return $record->value;
+		} else {
+			return $default;	
+		}
 	}
 }
 
