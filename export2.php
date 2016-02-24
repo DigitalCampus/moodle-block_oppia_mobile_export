@@ -258,6 +258,7 @@ foreach($sections as $sect) {
 	if ($sect->section == 0) continue;
 	$sectionmods = explode(",", $sect->sequence);
 
+	$defaultSectionTitle = false;
 	$sectionTitle = strip_tags($sect->summary);
 	if ($sectionTitle == "") {
 		$sectionTitle = get_string('sectionname', 'format_topics') . ' ' . $sect->section;
