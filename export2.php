@@ -112,9 +112,9 @@ $meta->appendChild($xmlDoc->createElement("priority",$priority));
 $meta->appendChild($xmlDoc->createElement("server",$server_connection->url));
 $meta->appendChild($xmlDoc->createElement("sequencing", $sequencing));
 
-add_or_update_oppiaconfig($id, 'coursepriority', $priority);
-add_or_update_oppiaconfig($id, 'coursetags', $tags);
-add_or_update_oppiaconfig($id, 'coursesequencing', $sequencing);
+add_or_update_oppiaconfig($id, 'coursepriority', $priority, $server);
+add_or_update_oppiaconfig($id, 'coursetags', $tags, $server);
+add_or_update_oppiaconfig($id, 'coursesequencing', $sequencing, $server);
 
 $a = new stdClass();
 $a->stepno = 2;
@@ -258,15 +258,24 @@ $structure = $xmlDoc->createElement("structure");
 $sect_orderno = 1;
 foreach($sections as $sect) {
 	flush_buffers();
+	//We avoid the topic0 as is not a section as the rest
+	if ($sect->section == 0) continue;
 	$sectionmods = explode(",", $sect->sequence);
-	if(strip_tags($sect->summary) != "" && count($sectionmods)>0){
 
-		echo "<h3>".get_string('export_section_title','block_oppia_mobile_export',strip_tags($sect->summary,'<span>'))."</h3>";
+	$defaultSectionTitle = false;
+	$sectionTitle = strip_tags($sect->summary);
+	if ($sectionTitle == "") {
+		$sectionTitle = get_string('sectionname', 'format_topics') . ' ' . $sect->section;
+		$defaultSectionTitle = true;
+	}
+
+	if(count($sectionmods)>0){
+		echo "<h3>".get_string('export_section_title','block_oppia_mobile_export', $sectionTitle)."</h3>";
 		
 		$section = $xmlDoc->createElement("section");
 		$section->appendChild($xmlDoc->createAttribute("order"))->appendChild($xmlDoc->createTextNode($sect_orderno));
 		$title = extractLangs($sect->summary);
-		if(is_array($title) && count($title)>0){
+		if(!$defaultSectionTitle && is_array($title) && count($title)>0){
 			foreach($title as $l=>$t){
 				$temp = $xmlDoc->createElement("title");
 				$temp->appendChild($xmlDoc->createCDATASection(strip_tags($t)));
@@ -276,7 +285,7 @@ foreach($sections as $sect) {
 			}
 		} else {
 			$temp = $xmlDoc->createElement("title");
-			$temp->appendChild($xmlDoc->createCDATASection(strip_tags($sect->summary)));
+			$temp->appendChild($xmlDoc->createCDATASection($sectionTitle));
 			$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
 			$section->appendChild($temp);
 		}
@@ -442,6 +451,13 @@ $xmlDoc->save($course_root."/module.xml");
 
 echo "<p>".get_string('export_xml_valid_start','block_oppia_mobile_export');
 libxml_use_internal_errors(true);
+
+if ($sect_orderno <= 1){
+	echo '<h3>'.get_string('error_exporting','block_oppia_mobile_export').'</h3>';
+	echo '<p>'.get_string('error_exporting_no_sections','block_oppia_mobile_export').'</p>';
+	echo $OUTPUT->footer();
+	die();
+}
 
 $xml = new DOMDocument();
 $xml->load($course_root."/module.xml");

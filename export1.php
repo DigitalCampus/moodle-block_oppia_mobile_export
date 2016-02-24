@@ -20,7 +20,6 @@ require_once($CFG->libdir.'/componentlib.class.php');
 $id = required_param('id',PARAM_INT);
 $stylesheet = required_param('stylesheet',PARAM_TEXT);
 $server = required_param('server',PARAM_TEXT);
-
 $course = $DB->get_record('course', array('id'=>$id));
 
 $PAGE->set_url('/blocks/oppia_mobile_export/export1.php', array('id' => $id));
@@ -255,7 +254,7 @@ if (count($quizzes)> 0){
 }
 echo "<p><b>".get_string('export_priority_title','block_oppia_mobile_export')."</b>";
 echo "<br/>".get_string('export_priority_desc','block_oppia_mobile_export')."<br/>";
-$priority = get_oppiaconfig($id,'coursepriority','0');
+$priority = get_oppiaconfig($id,'coursepriority','0',$server);
 echo "<select name='coursepriority' id='coursepriority'>";
 for ($i=0; $i<11; $i++){
 	echo "<option value='$i'";
@@ -268,13 +267,13 @@ echo "</select></p>";
 
 echo "<p><b>".get_string('export_course_tags_title','block_oppia_mobile_export')."</b>";
 echo "<br/>".get_string('export_course_tags_desc','block_oppia_mobile_export')."<br/>";
-$tags = get_oppiaconfig($id,'coursetags','');
+$tags = get_oppiaconfig($id,'coursetags','',$server);
 echo "<div class='form-item'><input name='coursetags' id='coursetags' value='".$tags."' size='100'/></div><br/></p>";
 
 echo "<p><b>".get_string('export_sequencing_title','block_oppia_mobile_export')."</b>";
 echo "<br/>".get_string('export_sequencing_desc','block_oppia_mobile_export')."<br/>";
 
-$sequencing = get_oppiaconfig($id,'coursesequencing','');
+$sequencing = get_oppiaconfig($id,'coursesequencing','',$server);
 echo "<div class='form-item'><div class='form-label'><div class='fstaticlabel'>Course sequencing:</div></div><div class='form-description'>";
 echo "<input type='radio' name='coursesequencing' value='none' ".((($sequencing == '') || ($sequencing == 'none'))?"checked":"")."> ".get_string('export_sequencing_none','block_oppia_mobile_export')."<br>";
 echo "<input type='radio' name='coursesequencing' value='section' ".(($sequencing == 'section')?"checked":"")."> ".get_string('export_sequencing_section','block_oppia_mobile_export')."<br>";
