@@ -58,7 +58,7 @@ function xmldb_block_oppia_mobile_export_upgrade($oldversion) {
 		// Add the field serverid to table block_oppia_mobile_config
 		$table = new xmldb_table('block_oppia_mobile_config');
 		if (!$dbman->field_exists($table, 'serverid')){
-			$field = new xmldb_field('serverid', XMLDB_TYPE_TEXT, null, null, null, null, 'default', 'value');
+			$field = new xmldb_field('serverid', XMLDB_TYPE_TEXT, null, null, null, null, null, 'value');
 			$dbman->add_field($table, $field);
 		}
 
