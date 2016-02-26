@@ -356,8 +356,12 @@ class mobile_activity_page extends mobile_activity {
 		global $MEDIA;
 		
 		//$regex = '((\[\[[[:space:]]?media[[:space:]]?object=[\"|\'](?P<mediaobject>[\{\}\'\"\:0-9\._\-/,[:space:]\w\W]*)[[:space:]]?[\"|\']\]\]))';
-		$regex = '((\[\[[[:space:]]?media[[:space:]]?object=[\"|\'](?P<mediaobject>[\{\}\'\"\:a-zA-Z0-9\._\-/,[:space:]]*)[[:space:]]?[\"|\']\]\]))';
+		//$regex = '((\[\[[[:space:]]?media[[:space:]]?object=[\"|\'](?P<mediaobject>[\{\}\'\"\:a-zA-Z0-9\._\-/,[:space:]]*)[[:space:]]?[\"|\']\]\]))';
 		
+		//This is the regex for detecting any number of spaces or <br> tags (in any of its forms) 
+		$space_or_br_regex = '([[:space:]]|\<br\/?[[:space:]]*\>)*';
+		$regex = '((\[\[' . $space_or_br_regex . 'media' . $space_or_br_regex . 'object=[\"|\'](?P<mediaobject>[\{\}\'\"\:a-zA-Z0-9\._\-\/,[:space:]]*)([[:space:]]|\<br\/?[[:space:]]*\>)*[\"|\']' . $space_or_br_regex . '\]\]))';
+
 		preg_match_all($regex,$content,$media_tmp, PREG_OFFSET_CAPTURE);
 		
 		if(!isset($media_tmp['mediaobject']) || count($media_tmp['mediaobject']) == 0){
