@@ -259,6 +259,8 @@ if (count($quizzes)> 0){
 	}
 	echo "</div>";
 }
+echo "<br/>";
+echo "<div class='export-section-icon'><img src='".$OUTPUT->pix_url('ic_priority', 'block_oppia_mobile_export')."'/></div>";
 echo "<p><b>".get_string('export_priority_title','block_oppia_mobile_export')."</b>";
 echo "<br/>".get_string('export_priority_desc','block_oppia_mobile_export')."<br/>";
 
@@ -274,11 +276,13 @@ for ($i=0; $i<11; $i++){
 }
 echo "</select></p>";
 
+echo "<div class='export-section-icon'><img src='".$OUTPUT->pix_url('ic_tags', 'block_oppia_mobile_export')."'/></div>";
 echo "<p><b>".get_string('export_course_tags_title','block_oppia_mobile_export')."</b>";
 echo "<br/>".get_string('export_course_tags_desc','block_oppia_mobile_export')."<br/>";
 $tags = get_oppiaconfig($id,'coursetags','',$server);
 echo "<div class='pure-g'><input name='coursetags' id='coursetags' value='".$tags."' size='100'/></div><br/></p>";
 
+echo "<div class='export-section-icon'><img src='".$OUTPUT->pix_url('ic_sequencing', 'block_oppia_mobile_export')."'/></div>";
 echo "<p><b>".get_string('export_sequencing_title','block_oppia_mobile_export')."</b>";
 echo "<br/>".get_string('export_sequencing_desc','block_oppia_mobile_export')."<br/>";
 

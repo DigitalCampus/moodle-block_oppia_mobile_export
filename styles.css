@@ -41,9 +41,24 @@
 	box-sizing: border-box;
 }
 
+.export-section-icon{
+	float: left;
+	padding:11px;
+	border-radius: 100%;
+	background-color: #9ACA3C;
+	margin-right: 10px;
+	margin-bottom: 5px;
+}
+.export-section-icon img{
+	max-width: 25px;
+}
+
 .pure-md-right{ box-sizing: border-box; text-align: right; padding-right: 2em; }
 @media screen and (max-width:48em){
 	.pure-md-right{ text-align: left; padding-right: 0;}
+
+	.export-section-icon{ padding: 10px; }
+	.export-section-icon img{ max-width: 22px; }
 }
 @media screen and (max-width:63.938em){
 	.quizzes-table .pure-g > div{
