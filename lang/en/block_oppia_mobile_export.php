@@ -105,6 +105,7 @@ $string['export_quiz_norandom_selectx'] = 'Select {$a} random questions';
 $string['export_quiz_maxattempts_unlimited'] = 'Unlimited';
 
 $string['export_priority_title'] = 'Course Priority';
+$string['export_priority_label'] = 'Priority';
 $string['export_priority_desc'] = 'This is the relative weight given to a course to help determine the ordering in which it will appear on the mobile (10 = highest priority)';
 
 $string['export_course_tags_title'] = 'Course Tags';
@@ -115,6 +116,7 @@ $string['export_sequencing_desc'] = 'Set the sequencing mode of the course. Here
 $string['export_sequencing_none'] = 'None';
 $string['export_sequencing_course'] = 'Sequencing through whole course';
 $string['export_sequencing_section'] = 'Sequencing within a section';
+$string['export_sequencing_label'] = 'Sequencing mode';
 
 $string['export_section_title'] = 'Exporting Section: {$a}';
 $string['export_xml_valid_start'] = 'Validating course XML file...';
