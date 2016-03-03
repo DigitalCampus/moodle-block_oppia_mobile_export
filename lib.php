@@ -102,9 +102,16 @@ function extractLangs($content, $asJSON = false){
 }
 
 function cleanTagList($tags){
-	$tags_no_spaces_btwn_colon = preg_replace('([[:space:]]*\,[[:space:]])', ',', $tags);
-	$tags_no_special_chars = preg_replace('([^a-zA-z0-9,\_]+)', "-", $tags_no_spaces_btwn_colon);
-	return $tags_no_special_chars;
+	$cleantags = trim($tags);
+	$cleantags = preg_replace('([[:space:]]*\,[[:space:]])', ',', $tags);
+	$cleantags = preg_replace('([^a-zA-z0-9,\_]+)', "-", $cleantags);
+	
+	if (strlen($cleantags) == 0) return $cleantags;
+	$strStart = ($cleantags[0] == ',') ? 1 : 0; //avoid first colon
+	$strEnd = $strStart + (($cleantags[strlen($cleantags)-1] == ',') ? 1 : 0); //avoid last colon
+	$cleantags = substr($cleantags, $strStart, strlen($cleantags) - $strEnd);
+	
+	return $cleantags;
 }
 
 
