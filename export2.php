@@ -111,6 +111,7 @@ $meta->appendChild($xmlDoc->createElement("versionid",$versionid));
 $meta->appendChild($xmlDoc->createElement("priority",$priority));
 $meta->appendChild($xmlDoc->createElement("server",$server_connection->url));
 $meta->appendChild($xmlDoc->createElement("sequencing", $sequencing));
+$meta->appendChild($xmlDoc->createElement("tags",$tags));
 
 add_or_update_oppiaconfig($id, 'coursepriority', $priority, $server);
 add_or_update_oppiaconfig($id, 'coursetags', $tags, $server);
