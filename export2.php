@@ -26,6 +26,7 @@ $stylesheet = required_param('stylesheet',PARAM_TEXT);
 $priority = required_param('coursepriority',PARAM_INT);
 $sequencing = required_param('coursesequencing', PARAM_TEXT);
 $tags = required_param('coursetags',PARAM_TEXT);
+$tags = cleanTagList($tags);
 $server = required_param('server',PARAM_TEXT);
 
 $course = $DB->get_record('course', array('id'=>$id));
@@ -36,7 +37,6 @@ $context = context_course::instance($course->id);
 if (!$context) {
 	print_error('nocontext');
 }
-
 
 require_login($course);
 

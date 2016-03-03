@@ -101,6 +101,12 @@ function extractLangs($content, $asJSON = false){
 	}
 }
 
+function cleanTagList($tags){
+	$tags_no_spaces_btwn_colon = preg_replace('([[:space:]]*\,[[:space:]])', ',', $tags);
+	$tags_no_special_chars = preg_replace('([^a-zA-z0-9,\_]+)', "-", $tags_no_spaces_btwn_colon);
+	return $tags_no_special_chars;
+}
+
 
 function extractImageFile($content, $component, $filearea, $itemid, $contextid, $course_root, $cmid){
 	global $CFG;
