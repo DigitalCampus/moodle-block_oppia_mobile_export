@@ -6,7 +6,7 @@
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="userid"/>
         <FIELD NAME="modid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="id" NEXT="name"/>
       	<FIELD NAME="name" TYPE="char" LENGTH="20" NOTNULL="false" DEFAULT="" PREVIOUS="modid" SEQUENCE="false" NEXT="value"/>
-      	<FIELD NAME="value" TYPE="char" LENGTH="20" NOTNULL="false" DEFAULT="" PREVIOUS="name" SEQUENCE="false"/>
+      	<FIELD NAME="value" TYPE="char" LENGTH="70" NOTNULL="false" DEFAULT="" PREVIOUS="name" SEQUENCE="false"/>
         <FIELD NAME="serverid" TYPE="char" LENGTH="20" NOTNULL="false" DEFAULT="" PREVIOUS="value" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
