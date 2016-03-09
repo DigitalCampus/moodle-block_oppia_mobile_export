@@ -19,7 +19,7 @@ require_once($CFG->libdir.'/componentlib.class.php');
 
 $id = required_param('id',PARAM_INT);
 $file = required_param('file',PARAM_TEXT);
-$tags = required_param('tags',PARAM_TEXT);
+$tags = cleanTagList(required_param('tags',PARAM_TEXT));
 $server = required_param('server',PARAM_TEXT);
 $username = required_param('username',PARAM_TEXT);
 $password = required_param('password',PARAM_TEXT);
@@ -105,6 +105,7 @@ curl_setopt($curl, CURLOPT_POSTFIELDS, $post);
 $result = curl_exec($curl);
 $http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
+echo $result;
 switch ($http_status){
 	case "405":
 		echo "<p>".get_string('publish_message_405','block_oppia_mobile_export')."</p>";

@@ -101,6 +101,19 @@ function extractLangs($content, $asJSON = false){
 	}
 }
 
+function cleanTagList($tags){
+	$cleantags = trim($tags);
+	$cleantags = preg_replace('([[:space:]]*\,[[:space:]])', ',', $tags);
+	$cleantags = preg_replace('([^a-zA-z0-9,\_]+)', "-", $cleantags);
+	
+	if (strlen($cleantags) == 0) return $cleantags;
+	$strStart = ($cleantags[0] == ',') ? 1 : 0; //avoid first colon
+	$strEnd = $strStart + (($cleantags[strlen($cleantags)-1] == ',') ? 1 : 0); //avoid last colon
+	$cleantags = substr($cleantags, $strStart, strlen($cleantags) - $strEnd);
+	
+	return $cleantags;
+}
+
 
 function extractImageFile($content, $component, $filearea, $itemid, $contextid, $course_root, $cmid){
 	global $CFG;
