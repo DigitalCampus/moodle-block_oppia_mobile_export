@@ -63,6 +63,15 @@ class mobile_activity_quiz extends mobile_activity {
 		return;
 	}
 
+	function generate_md5($quiz_questions){
+		$md5postfix = "";
+		foreach($this->configArray as $key => $value){
+			$md5postfix .= $key[0].((string) $value);
+		}
+		// generate the md5 of the quiz
+		$this->md5 = md5(serialize($quiz_questions)).$this->id."c".$md5postfix;
+	}
+
 	function process_pushing_to_server(){
 		global $DB,$CFG,$USER,$QUIZ_CACHE;
 
@@ -78,15 +87,8 @@ class mobile_activity_quiz extends mobile_activity {
 			$quizobj->preload_questions();
 			$quizobj->load_questions();
 			$qs = $quizobj->get_questions();
-			
-			$md5postfix = "";
-			foreach($this->configArray as $key => $value){
-				$md5postfix .= $key[0].((string) $value);
-			}
-			// generate the md5 of the quiz
-			$this->md5 = md5(serialize($qs)).$this->id."c".$md5postfix;
-			
-			
+		
+			$this->generate_md5($qs);	
 			// find if this quiz already exists
 			$resp = $mQH->exec('quizprops/digest/'.$this->md5, array(),'get');
 			if(!isset($resp->quizzes)){
@@ -327,20 +329,9 @@ class mobile_activity_quiz extends mobile_activity {
 		$quizobj->load_questions();
 		$qs = $quizobj->get_questions();
 
-		$md5postfix = "";
-		foreach($this->configArray as $key => $value){
-			$md5postfix .= $key[0].((string) $value);
-		}
-		// generate the md5 of the quiz
-		$this->md5 = md5(serialize($qs)).$this->id."c".$md5postfix;
-		
-		$filename = extractImageFile($quiz->intro,
-									'mod_quiz',
-									'intro',
-									'0',
-									$context->id,
-									$this->courseroot,
-									$cm->id); 		
+		$this->generate_md5($qs);
+		$filename = extractImageFile($quiz->intro,'mod_quiz','intro','0',
+									$context->id,$this->courseroot,$cm->id); 		
 		
 		if($filename){
 			$this->quiz_image = "/images/".resizeImage($this->courseroot."/".$filename,
@@ -368,8 +359,6 @@ class mobile_activity_quiz extends mobile_activity {
 
 		$i = 1;
 		foreach($qs as $q){
-
-			
 			// skip any essay questions
 			if($q->qtype == 'essay'){
 				echo get_string('export_quiz_skip_essay','block_oppia_mobile_export')."<br/>";
@@ -420,13 +409,8 @@ class mobile_activity_quiz extends mobile_activity {
 				}
 			}
 			// find if the question text has any images in it
-			$question_image = extractImageFile($q->questiontext,
-									'question',
-									'questiontext',
-									$q->id,
-									$q->contextid,
-									$this->courseroot,
-									$cm->id); 
+			$question_image = extractImageFile($q->questiontext,'question','questiontext',
+									$q->id,$q->contextid,$this->courseroot,$cm->id); 
 		
 			if($question_image){
 				$questionprops["image"] = $question_image;
@@ -459,7 +443,7 @@ class mobile_activity_quiz extends mobile_activity {
 
 					array_push($responses, array(
 						'order' => $j,
-						'id' => rand(1,1000),
+						'id' 	=> rand(1,1000),
 						'props' => json_decode ("{}"),
 						'title' => json_decode($titleJSON),
 						'score' => sprintf("%.4f", $score)
@@ -484,7 +468,7 @@ class mobile_activity_quiz extends mobile_activity {
 					$score = ($r->fraction * $q->maxmark);
 					array_push($responses, array(
 						'order' => $j,
-						'id' => rand(1,1000),
+						'id' 	=> rand(1,1000),
 						'props' => $responseprops,
 						'title' => json_decode(extractLangs($r->answer, true)),
 						'score' => sprintf("%.4f", $score)
@@ -494,16 +478,15 @@ class mobile_activity_quiz extends mobile_activity {
 			}
 
 			$questionJson = array(
-				"id" => rand(1,1000),
-				"type" => $q->qtype,
+				"id" 	=> rand(1,1000),
+				"type" 	=> $q->qtype,
 				"title" => json_decode($questionTitle),
 				"props" => $questionprops,
-				"responses" => $responses
-				);
+				"responses" => $responses);
 
 			array_push($quizJsonQuestions, array(
-				'order' => $i,
-				'id' => rand(1,1000),
+				'order'    => $i,
+				'id'	   => rand(1,1000),
 				'question' => $questionJson));
 			$i++;
 		}
@@ -511,15 +494,12 @@ class mobile_activity_quiz extends mobile_activity {
 		$quizprops["maxscore"] = $quizMaxScore;
 
 		$quizJson = array(
-			'id' => rand(1,1000),
-			'title' => json_decode($nameJSON),
-			'description' => json_decode($descJSON),
-			'props' => $quizprops,
-			'questions' => $quizJsonQuestions);
+			'id' 		 => rand(1,1000),
+			'title' 	 => json_decode($nameJSON),
+			'description'=> json_decode($descJSON),
+			'props' 	 => $quizprops,
+			'questions'  => $quizJsonQuestions);
 
-		echo '<pre>'.json_encode($quizJson, JSON_PRETTY_PRINT).'</pre>';
-		// get the final quiz object
-		//$quiz = $mQH->exec('quiz/'.$quiz_id, array(),'get');
 		$this->content = json_encode($quizJson);
 	}
 	
