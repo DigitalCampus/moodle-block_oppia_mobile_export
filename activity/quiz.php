@@ -363,7 +363,7 @@ class mobile_activity_quiz extends mobile_activity {
 		
 		$nameJSON = extractLangs($cm->name,true);
 		$descJSON = extractLangs($this->summary,true);
-
+		$quizJson['id'] = 0;
 		$quizJson['props'] = $props;
 		$quizJson['title'] = json_decode($nameJSON);
 		$quizJson['description'] = json_decode($descJSON);
@@ -372,7 +372,6 @@ class mobile_activity_quiz extends mobile_activity {
 		//$quiz_uri = $resp->resource_uri;
 		//$quiz_id = $resp->id;
 		$quiz_uri = 'quiz_uri';
-	
 
 		$i = 1;
 		foreach($qs as $q){
@@ -413,7 +412,7 @@ class mobile_activity_quiz extends mobile_activity {
 
 			$questionTitle = extractLangs($q->questiontext, true);
 			$questionJson["title"] = json_decode($questionTitle);
-			
+			$questionJson["id"] = 0;
 			//add feedback for matching questions
 			if($q->qtype == 'match'){
 				$q->qtype = 'matching';
@@ -493,6 +492,7 @@ class mobile_activity_quiz extends mobile_activity {
 
 					array_push($responses, array(
 						'order' => $j,
+						'id' => 0,
 						'title' => json_decode(extractLangs($r->answer, true)),
 						'props' => $responseprops,
 						'score' => ($r->fraction * $q->maxmark)
@@ -506,6 +506,7 @@ class mobile_activity_quiz extends mobile_activity {
 
 			array_push($quizJsonQuestions, array(
 				'order' => $i,
+				'id' => 0,
 				'question' => $questionJson));
 			$i++;
 		}
@@ -514,7 +515,7 @@ class mobile_activity_quiz extends mobile_activity {
 		echo '<pre>'.json_encode($quizJson, JSON_PRETTY_PRINT).'</pre>';
 		// get the final quiz object
 		//$quiz = $mQH->exec('quiz/'.$quiz_id, array(),'get');
-		$this->content = json_encode($quiz);
+		$this->content = json_encode($quizJson);
 	}
 	
 	function export2print(){
