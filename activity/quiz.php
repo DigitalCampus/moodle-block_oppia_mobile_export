@@ -317,17 +317,23 @@ class mobile_activity_quiz extends mobile_activity {
 	}
 
 	function process_locally(){
+		global $DB,$CFG,$USER,$QUIZ_CACHE;
+
+		$cm = get_coursemodule_from_id('quiz', $this->id);
+		$context = context_module::instance($cm->id);
+		$quiz = $DB->get_record('quiz', array('id'=>$cm->instance), '*', MUST_EXIST);
+		$quizobj = quiz::create($cm->instance, $USER->id);
 		$quizobj->preload_questions();
 		$quizobj->load_questions();
 		$qs = $quizobj->get_questions();
-		
+		$quizJson = array();
+
 		$md5postfix = "";
 		foreach($this->configArray as $key => $value){
 			$md5postfix .= $key[0].((string) $value);
 		}
 		// generate the md5 of the quiz
 		$this->md5 = md5(serialize($qs)).$this->id."c".$md5postfix;
-		
 		
 		$filename = extractImageFile($quiz->intro,
 									'mod_quiz',
@@ -346,47 +352,32 @@ class mobile_activity_quiz extends mobile_activity {
 			unlink($this->courseroot."/".$filename) or die(get_string('error_file_delete','block_oppia_mobile_export'));
 		}
 		
-		// Don't export the full quiz if it already exists on the server
-		// instead just add the course version
-		if(count($resp->quizzes) > 0){
-			$quiz_id = $resp->quizzes[0]->quiz_id;	
-			$quiz = $mQH->exec('quiz/'.$quiz_id, array(),'get');
-			$this->content = json_encode($quiz);
-			
-			$post = array('quiz_id' => $quiz_id,
-					'name' => "courseversion",
-					'value' => $this->courseversion);
-			$resp = $mQH->exec('quizprops',$post);
-			$this->exportQuestionImages();
-			$this->exportQuestionMedia();
-			return;
-		}
-		
 		$props = array();
-		array_push($props,array('name' => "digest", 'value' => $this->md5));
-		array_push($props,array('name' => "courseversion", 'value' => $this->courseversion));
+		$props["digest"] = $this->md5;
+		$props["courseversion"] = $this->courseversion;
 		foreach($this->configArray as $k=>$v){
 			if ($k != 'randomselect' || $v != 0){
-				array_push($props,array('name' => $k, 'value' => $v));
+				$props[$k] = $v;
 			}
 		}
 		
 		$nameJSON = extractLangs($cm->name,true);
 		$descJSON = extractLangs($this->summary,true);
-		
-		//create the quiz
-		$post = array('title' => $nameJSON,
-				'description' => $descJSON,
-				'questions' => array(),
-				'props' => $props);
-		$resp = $mQH->exec('quiz', $post);
 
-		$quiz_uri = $resp->resource_uri;
-		$quiz_id = $resp->id;
+		$quizJson['props'] = $props;
+		$quizJson['title'] = json_decode($nameJSON);
+		$quizJson['description'] = json_decode($descJSON);
+		$quizJsonQuestions = array();
+
+		//$quiz_uri = $resp->resource_uri;
+		//$quiz_id = $resp->id;
+		$quiz_uri = 'quiz_uri';
 	
 
 		$i = 1;
 		foreach($qs as $q){
+
+			$questionJson = array();
 			// skip any essay questions
 			if($q->qtype == 'essay'){
 				echo get_string('export_quiz_skip_essay','block_oppia_mobile_export')."<br/>";
@@ -417,30 +408,29 @@ class mobile_activity_quiz extends mobile_activity {
 			}
 			
 			// add max score property
-			$props = array();
-			$props[0] = array('name' => "maxscore", 'value' => $q->maxmark);
+			$quizprops = array();
+			$quizprops["maxscore"] = $q->maxmark;
+
+			$questionTitle = extractLangs($q->questiontext, true);
+			$questionJson["title"] = json_decode($questionTitle);
 			
 			//add feedback for matching questions
 			if($q->qtype == 'match'){
 				$q->qtype = 'matching';
-				$prop_i = 1;
 				if($q->options->correctfeedback != ""){
 					$feedbackJSON = extractLangs($q->options->correctfeedback, true);
-					$props[$prop_i] = array('name' => "correctfeedback", 'value' => $feedbackJSON);
-					$prop_i++;
+					$quizprops["correctfeedback"] = json_decode($feedbackJSON);
 				}
 				if($q->options->partiallycorrectfeedback != ""){
 					$feedbackJSON = extractLangs($q->options->partiallycorrectfeedback, true);
-					$props[$prop_i] = array('name' => "partiallycorrectfeedback", 'value' => $feedbackJSON);
-					$prop_i++;
+					$quizprops["partiallycorrectfeedback"] = json_decode($feedbackJSON);
 				}
 				if($q->options->incorrectfeedback != ""){
 					$feedbackJSON = extractLangs($q->options->incorrectfeedback, true);
-					$props[$prop_i] = array('name' => "incorrectfeedback", 'value' => $feedbackJSON);
-					$prop_i++;
+					$quizprops["incorrectfeedback"] = json_decode($feedbackJSON);
 				}
 			}
-			
+			$questionJson["type"] = $q->qtype;
 			// find if the question text has any images in it
 			$question_image = extractImageFile($q->questiontext,
 									'question',
@@ -451,31 +441,20 @@ class mobile_activity_quiz extends mobile_activity {
 									$cm->id); 
 		
 			if($question_image){
-				array_push($props, array('name' => "image", 'value' => $question_image));
+				$quizprops["image"] = $question_image;
 			}
 			
 			// find if any videos embedded in question text
 			$q->questiontext = $this->extractMedia($q->id, $q->questiontext);
-			
 			if (array_key_exists($q->id,$this->quiz_media)){
 				foreach($this->quiz_media[$q->id] as $media){
-					array_push($props, array('name' => "media", 'value' => $media->filename));
+					$quizprops["media"] = $media->filename;
 				}
 			}
 			
-			$questionJSON = extractLangs($q->questiontext, true);
-			
-			// create question
-			$post = array('title' => $questionJSON,
-					'type' => $q->qtype,
-					'responses' => array(),
-					'props' => $props);
-			$resp = $mQH->exec('question', $post);
-
-			$question_uri = $resp->resource_uri;
-			
 			$j = 1;
-			
+			$responses = array();
+
 			// if matching question then concat the options with |
 			if(isset($q->options->subquestions)){
 				// Find out how many subquestions
@@ -488,17 +467,12 @@ class mobile_activity_quiz extends mobile_activity {
 				foreach($q->options->subquestions as $sq){
 					$titleJSON = extractLangs($sq->questiontext.$this->MATCHING_SEPERATOR.$sq->answertext, true);
 					// add response
-					
 					$props = array();
-					
-					$post = array('question' => $question_uri,
-							'order' => $j,
-							'title' => $titleJSON,
-							'score' => ($q->maxmark / $subqs),
-							'props' => $props);
-					$resp = $mQH->exec('response', $post);
-					$response_uri = $resp->resource_uri;
-					
+					array_push($responses, array(
+						'order' => $j,
+						'title' => json_decode($titleJSON),
+						'score' => ($q->maxmark / $subqs)
+					));
 					$j++;
 				}
 			}
@@ -506,41 +480,40 @@ class mobile_activity_quiz extends mobile_activity {
 			// for multichoice/multiselect/shortanswer/numerical questions
 			if(isset($q->options->answers)){
 				foreach($q->options->answers as $r){
-					
-					$props = array();
+
+					$responseprops = array();
 					if(strip_tags($r->feedback) != ""){
 						$feedbackJSON = extractLangs($r->feedback, true);
-						$props[0] = array('name' => 'feedback', 'value' => $feedbackJSON);
+						$responseprops['feedback'] = json_decode($feedbackJSON);
 					}
-					
 					// if numerical also add a tolerance
 					if($q->qtype == 'numerical'){
-						$props[1] = array('name' => 'tolerance', 'value' => $r->tolerance);
+						$responseprops['tolerance'] = $r->tolerance;
 					}
-					
-					$responseJSON = extractLangs($r->answer, true);
-					// add response
-					$post = array('question' => $question_uri,
-							'order' => $j,
-							'title' => $responseJSON,
-							'score' => ($r->fraction * $q->maxmark),
-							'props' => $props);
-					$resp = $mQH->exec('response', $post);
 
+					array_push($responses, array(
+						'order' => $j,
+						'title' => json_decode(extractLangs($r->answer, true)),
+						'props' => $responseprops,
+						'score' => ($r->fraction * $q->maxmark)
+					));
 					$j++;
 				}
 			}
-			
-			// add question to quiz
-			$post = array('quiz' => $quiz_uri,
-					'question' => $question_uri,
-					'order' => $i);
-			$resp = $mQH->exec('quizquestion', $post);
+
+			$questionJson["props"] = $quizprops;
+			$questionJson["responses"] = $responses;
+
+			array_push($quizJsonQuestions, array(
+				'order' => $i,
+				'question' => $questionJson));
 			$i++;
 		}
 		
+		$quizJson['questions'] = $quizJsonQuestions;
+		echo '<pre>'.json_encode($quizJson, JSON_PRETTY_PRINT).'</pre>';
 		// get the final quiz object
-		$quiz = $mQH->exec('quiz/'.$quiz_id, array(),'get');
+		//$quiz = $mQH->exec('quiz/'.$quiz_id, array(),'get');
 		$this->content = json_encode($quiz);
 	}
 	
