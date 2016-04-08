@@ -119,6 +119,7 @@ function cleanTagList($tags){
 function cleanShortname($shortname){
 	$shortname = trim($shortname);
 	$shortname = preg_replace(regex_forbidden_dir_chars, "-", $shortname);
+	$shortname = preg_replace('(\-+)', "-", $shortname); //clean duplicated hyphens
 	return $shortname;
 }
 
