@@ -30,6 +30,8 @@ $tags = cleanTagList($tags);
 $server = required_param('server',PARAM_TEXT);
 
 $course = $DB->get_record('course', array('id'=>$id));
+//we clean the shortname of the course (the change doesn't get saved in Moodle)
+$course->shortname = cleanShortname($course->shortname);
 
 $PAGE->set_url('/blocks/oppia_mobile_export/export2.php', array('id' => $id));
 context_helper::preload_course($id);
@@ -152,7 +154,6 @@ if(is_array($summary) && count($summary)>0){
 	$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
 	$meta->appendChild($temp);
 }
-
 
 
 /*-------Get course info pages/about etc----------------------*/
