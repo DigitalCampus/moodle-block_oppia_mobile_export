@@ -1,5 +1,7 @@
 <?php 
 
+const regex_forbidden_dir_chars = '([\\/?%*:|"<>\.[:space:]]+)';
+const regex_forbidden_tag_chars = '([^a-zA-z0-9,\_]+)';
 
 function deleteDir($dirPath) {
 	if (! is_dir($dirPath)) {
@@ -104,7 +106,7 @@ function extractLangs($content, $asJSON = false){
 function cleanTagList($tags){
 	$cleantags = trim($tags);
 	$cleantags = preg_replace('([[:space:]]*\,[[:space:]])', ',', $tags);
-	$cleantags = preg_replace('([^a-zA-z0-9,\_]+)', "-", $cleantags);
+	$cleantags = preg_replace(regex_forbidden_tag_chars, "-", $cleantags);
 	
 	if (strlen($cleantags) == 0) return $cleantags;
 	$strStart = ($cleantags[0] == ',') ? 1 : 0; //avoid first colon
@@ -112,6 +114,13 @@ function cleanTagList($tags){
 	$cleantags = substr($cleantags, $strStart, strlen($cleantags) - $strEnd);
 	
 	return $cleantags;
+}
+
+function cleanShortname($shortname){
+	$shortname = trim($shortname);
+	$shortname = preg_replace(regex_forbidden_dir_chars, "-", $shortname);
+	$shortname = preg_replace('(\-+)', "-", $shortname); //clean duplicated hyphens
+	return $shortname;
 }
 
 
