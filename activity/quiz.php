@@ -55,25 +55,40 @@ class mobile_activity_quiz extends mobile_activity {
 	
 	function process(){
 		global $DB,$CFG,$USER,$QUIZ_CACHE;
-		$cm = get_coursemodule_from_id('quiz', $this->id);
-		$context = context_module::instance($cm->id);
-		$quiz = $DB->get_record('quiz', array('id'=>$cm->instance), '*', MUST_EXIST);
-	
-		$quizobj = quiz::create($cm->instance, $USER->id);
+		$push_to_server = ($CFG->block_oppia_mobile_export_push_quizzes == 0);
+		if ($push_to_server)
+			$this->process_pushing_to_server();
+		else
+			$this->process_locally();
+		return;
+	}
+
+	function generate_md5($quiz_questions){
+		$md5postfix = "";
+		foreach($this->configArray as $key => $value){
+			$md5postfix .= $key[0].((string) $value);
+		}
+		// generate the md5 of the quiz
+		$this->md5 = md5(serialize($quiz_questions)).$this->id."c".$md5postfix;
+	}
+
+	function process_pushing_to_server(){
+		global $DB,$CFG,$USER,$QUIZ_CACHE;
+
 		$mQH = new QuizHelper();
 		$mQH->init($this->server_connection);
 
+		$cm = get_coursemodule_from_id('quiz', $this->id);
+		$context = context_module::instance($cm->id);
+		$quiz = $DB->get_record('quiz', array('id'=>$cm->instance), '*', MUST_EXIST);
+
 		try {
+			$quizobj = quiz::create($cm->instance, $USER->id);
 			$quizobj->preload_questions();
 			$quizobj->load_questions();
 			$qs = $quizobj->get_questions();
-			
-			$md5postfix = "";
-			foreach($this->configArray as $key => $value){
-				$md5postfix .= $key[0].((string) $value);
-			}
-			// generate the md5 of the quiz
-			$this->md5 = md5(serialize($qs)).$this->id."c".$md5postfix;
+		
+			$this->generate_md5($qs);	
 			// find if this quiz already exists
 			$resp = $mQH->exec('quizprops/digest/'.$this->md5, array(),'get');
 			if(!isset($resp->quizzes)){
@@ -109,7 +124,6 @@ class mobile_activity_quiz extends mobile_activity {
 						'name' => "courseversion",
 						'value' => $this->courseversion);
 				$resp = $mQH->exec('quizprops',$post);
-				
 				$this->exportQuestionImages();
 				$this->exportQuestionMedia();
 				return;
@@ -133,9 +147,11 @@ class mobile_activity_quiz extends mobile_activity {
 					'questions' => array(),
 					'props' => $props);
 			$resp = $mQH->exec('quiz', $post);
+
 			$quiz_uri = $resp->resource_uri;
 			$quiz_id = $resp->id;
-			
+		
+
 			$i = 1;
 			foreach($qs as $q){
 				// skip any essay questions
@@ -222,6 +238,7 @@ class mobile_activity_quiz extends mobile_activity {
 						'responses' => array(),
 						'props' => $props);
 				$resp = $mQH->exec('question', $post);
+
 				$question_uri = $resp->resource_uri;
 				
 				$j = 1;
@@ -286,7 +303,6 @@ class mobile_activity_quiz extends mobile_activity {
 						'question' => $question_uri,
 						'order' => $i);
 				$resp = $mQH->exec('quizquestion', $post);
-				
 				$i++;
 			}
 			
@@ -295,10 +311,196 @@ class mobile_activity_quiz extends mobile_activity {
 			$this->content = json_encode($quiz);
 			
 		} catch (moodle_exception $me){
+			echo $me;
 			echo get_string('export_quiz_skip','block_oppia_mobile_export')."<br/>";
 			$this->is_valid = false;
 			return;
 		}
+	}
+
+	function process_locally(){
+		global $DB,$CFG,$USER,$QUIZ_CACHE;
+
+		$cm = get_coursemodule_from_id('quiz', $this->id);
+		$context = context_module::instance($cm->id);
+		$quiz = $DB->get_record('quiz', array('id'=>$cm->instance), '*', MUST_EXIST);
+		$quizobj = quiz::create($cm->instance, $USER->id);
+		$quizobj->preload_questions();
+		$quizobj->load_questions();
+		$qs = $quizobj->get_questions();
+
+		$this->generate_md5($qs);
+		$filename = extractImageFile($quiz->intro,'mod_quiz','intro','0',
+									$context->id,$this->courseroot,$cm->id); 		
+		
+		if($filename){
+			$this->quiz_image = "/images/".resizeImage($this->courseroot."/".$filename,
+						$this->courseroot."/images/".$cm->id,
+						$CFG->block_oppia_mobile_export_thumb_width,
+						$CFG->block_oppia_mobile_export_thumb_height);
+			//delete original image
+			unlink($this->courseroot."/".$filename) or die(get_string('error_file_delete','block_oppia_mobile_export'));
+		}
+		
+		$quizprops = array(
+			"digest" => $this->md5,
+			"courseversion" => $this->courseversion);
+		foreach($this->configArray as $k=>$v){
+			if ($k != 'randomselect' || $v != 0){
+				$quizprops[$k] = $v;
+			}
+		}
+		
+		$nameJSON = extractLangs($cm->name,true);
+		$descJSON = extractLangs($this->summary,true);
+		
+		$quizJsonQuestions = array();
+		$quizMaxScore = 0;
+
+		$i = 1;
+		foreach($qs as $q){
+			// skip any essay questions
+			if($q->qtype == 'essay'){
+				echo get_string('export_quiz_skip_essay','block_oppia_mobile_export')."<br/>";
+				continue;
+			}
+			
+			// skip any random questions
+			if($q->qtype == 'random'){
+				echo get_string('export_quiz_skip_random','block_oppia_mobile_export')."<br/>";
+				continue;
+			}
+			
+			//check to see if a multichoice is actually a multiselect
+			if($q->qtype == 'multichoice'){
+				$counter = 0;
+				foreach($q->options->answers as $r){
+					if($r->fraction > 0){
+						$counter++;
+					}
+				}
+				if($counter > 1){
+					$q->qtype = 'multiselect';
+				}
+			}
+			if($q->qtype == 'truefalse'){
+				$q->qtype = 'multichoice';
+			}
+
+			$questionTitle = extractLangs($q->questiontext, true);
+			$questionMaxScore = intval($q->maxmark);
+			$quizMaxScore += $questionMaxScore;
+
+			$questionprops = array("maxscore" => $questionMaxScore);
+			//add feedback for matching questions
+			if($q->qtype == 'match'){
+				$q->qtype = 'matching';
+				if($q->options->correctfeedback != ""){
+					$feedbackJSON = extractLangs($q->options->correctfeedback, true);
+					$questionprops["correctfeedback"] = json_decode($feedbackJSON);
+				}
+				if($q->options->partiallycorrectfeedback != ""){
+					$feedbackJSON = extractLangs($q->options->partiallycorrectfeedback, true);
+					$questionprops["partiallycorrectfeedback"] = json_decode($feedbackJSON);
+				}
+				if($q->options->incorrectfeedback != ""){
+					$feedbackJSON = extractLangs($q->options->incorrectfeedback, true);
+					$questionprops["incorrectfeedback"] = json_decode($feedbackJSON);
+				}
+			}
+			// find if the question text has any images in it
+			$question_image = extractImageFile($q->questiontext,'question','questiontext',
+									$q->id,$q->contextid,$this->courseroot,$cm->id); 
+		
+			if($question_image){
+				$questionprops["image"] = $question_image;
+			}
+			
+			// find if any videos embedded in question text
+			$q->questiontext = $this->extractMedia($q->id, $q->questiontext);
+			if (array_key_exists($q->id,$this->quiz_media)){
+				foreach($this->quiz_media[$q->id] as $media){
+					$questionprops["media"] = $media->filename;
+				}
+			}
+			
+			$j = 1;
+			$responses = array();
+
+			// if matching question then concat the options with |
+			if(isset($q->options->subquestions)){
+				// Find out how many subquestions
+				$subqs = 0;
+				foreach($q->options->subquestions as $sq){
+					if(trim($sq->questiontext) != ""){
+						$subqs++;
+					}	
+				}
+				foreach($q->options->subquestions as $sq){
+					$titleJSON = extractLangs($sq->questiontext.$this->MATCHING_SEPERATOR.$sq->answertext, true);
+					// add response
+					$score = ($q->maxmark / $subqs);
+
+					array_push($responses, array(
+						'order' => $j,
+						'id' 	=> rand(1,1000),
+						'props' => json_decode ("{}"),
+						'title' => json_decode($titleJSON),
+						'score' => sprintf("%.4f", $score)
+					));
+					$j++;
+				}
+			}
+			
+			// for multichoice/multiselect/shortanswer/numerical questions
+			if(isset($q->options->answers)){
+				foreach($q->options->answers as $r){
+
+					$responseprops = array('id' => rand(1,1000));
+					if(strip_tags($r->feedback) != ""){
+						$feedbackJSON = extractLangs($r->feedback, true);
+						$responseprops['feedback'] = json_decode($feedbackJSON);
+					}
+					// if numerical also add a tolerance
+					if($q->qtype == 'numerical'){
+						$responseprops['tolerance'] = $r->tolerance;
+					}
+					$score = ($r->fraction * $q->maxmark);
+					array_push($responses, array(
+						'order' => $j,
+						'id' 	=> rand(1,1000),
+						'props' => $responseprops,
+						'title' => json_decode(extractLangs($r->answer, true)),
+						'score' => sprintf("%.4f", $score)
+					));
+					$j++;
+				}
+			}
+
+			$questionJson = array(
+				"id" 	=> rand(1,1000),
+				"type" 	=> $q->qtype,
+				"title" => json_decode($questionTitle),
+				"props" => $questionprops,
+				"responses" => $responses);
+
+			array_push($quizJsonQuestions, array(
+				'order'    => $i,
+				'id'	   => rand(1,1000),
+				'question' => $questionJson));
+			$i++;
+		}
+		
+		$quizprops["maxscore"] = $quizMaxScore;
+
+		$quizJson = array(
+			'id' 		 => rand(1,1000),
+			'title' 	 => json_decode($nameJSON),
+			'description'=> json_decode($descJSON),
+			'props' 	 => $quizprops,
+			'questions'  => $quizJsonQuestions);
+
+		$this->content = json_encode($quizJson);
 	}
 	
 	function export2print(){

@@ -170,3 +170,7 @@ $string['publish_message_401'] = 'Unauthorized. Either you entered an incorrect 
 $string['publish_message_405'] = 'Invalid HTTP request type - this probably needs a programmer to look into. Your course has not been published.';
 $string['publish_message_500'] = 'A server error occured during publishing. This could be a permissions issue, please refer to you OppiaMobile server administrator. Your course has not been published.';
 $string['publish_text'] = 'To publish your course directly on OppiaMobile ({$a}), please complete your OppiaMobile server login details below.<br/>Check with your OppiaMobile administrator if you are unsure whether you have permissions to publish on the server';
+
+$string['settings_avoid_push_quizzes'] = 'Don\'t push quizzes info to the Oppia server in the export process';
+$string['settings_avoid_push_quizzes_info'] = 'Avoid pushing quizzes info to the Oppia server in the export process. If enabled, be sure that the Oppia server is capable of processing the full course including quizzes.';
+
