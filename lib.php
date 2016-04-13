@@ -67,7 +67,7 @@ function get_oppiaservers(){
 	return $servers;
 }
 
-function extractLangs($content, $asJSON = false){
+function extractLangs($content, $asJSON = false, $strip_tags = false){
 	global $MOBILE_LANGS, $CURRENT_LANG, $DEFAULT_LANG;
 	preg_match_all('((lang=[\'|\"](?P<langs>[\w\-]*)[\'|\"]))',$content,$langs_tmp, PREG_OFFSET_CAPTURE);
 	$tempLangs = array();
@@ -88,7 +88,11 @@ function extractLangs($content, $asJSON = false){
 	$filter = new tomobile_langfilter();
 	foreach($tempLangs as $k=>$v){
 		$CURRENT_LANG = $k;
-		$tempLangs[$k] = trim($filter->filter($content));
+		if ($strip_tags){
+			$tempLangs[$k] = trim(strip_tags($filter->filter($content)));
+		} else {
+			$tempLangs[$k] = trim($filter->filter($content));
+		}
 	}
 	
 	//reverse array
