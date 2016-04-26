@@ -23,8 +23,5 @@ if ($ADMIN->fulltree) {
 	
 	$settings->add(new admin_setting_configcheckbox('block_oppia_mobile_export_debug', get_string('debug', 'block_oppia_mobile_export'),
 			get_string('debug_info', 'block_oppia_mobile_export'), 1));
-
-	$settings->add(new admin_setting_configcheckbox('block_oppia_mobile_export_push_quizzes', get_string('settings_avoid_push_quizzes', 'block_oppia_mobile_export'),
-			get_string('settings_avoid_push_quizzes_info', 'block_oppia_mobile_export'), 0));
 }
 ?>
