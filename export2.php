@@ -47,7 +47,21 @@ $PAGE->set_title(get_string('course') . ': ' . $course->fullname);
 $PAGE->set_heading($course->fullname);
 echo $OUTPUT->header();
 
-// Check specified server belongs to current user
+global $QUIZ_CACHE;
+$QUIZ_CACHE = array();
+
+global $MOBILE_LANGS;
+$MOBILE_LANGS = array();
+
+global $MEDIA;
+$MEDIA = array();
+
+$DEFAULT_LANG = "en";
+$advice = array();
+
+$QUIZ_EXPORT_MINVERSION = 9;
+$QUIZ_EXPORT_METHOD = 'server';
+
 $server_connection = $DB->get_record('block_oppia_mobile_server', array('moodleuserid'=>$USER->id,'id'=>$server));
 if(!$server_connection && $server != "default"){
 	echo "<p>".get_string('server_not_owner','block_oppia_mobile_export')."</p>";
@@ -61,21 +75,20 @@ if ($server == "default"){
 	$server_connection->apikey = $CFG->block_oppia_mobile_export_default_api_key;
 }
 
-global $QUIZ_CACHE;
-$QUIZ_CACHE = array();
-
-$DEFAULT_LANG = "en";
-
-global $MOBILE_LANGS;
-$MOBILE_LANGS = array();
-
-global $MEDIA;
-$MEDIA = array();
-
-$advice = array();
+$apiHelper = new QuizHelper();
+$apiHelper->init($server_connection);
+$server_info = $apiHelper->exec('server', array(),'get', false, false);
+if ($server_info && $server_info->version ){
+	$v_regex = '/^v([0-9])+\.([0-9]+)\.([0-9]+)$/';
+	preg_match($v_regex, $server_info->version, $version_nums);
+	if (count($version_nums)>0 && (
+		($version_nums[1] > 0) || //major version check (>0.x.x)
+		($version_nums[2] >= $QUIZ_EXPORT_MINVERSION) //minor version check (>=0.10.x)
+	))
+		$QUIZ_EXPORT_METHOD = 'local';
+}
 
 //make course dir etc for output
-
 deleteDir("output/".$USER->id."/temp");
 deleteDir("output/".$USER->id);
 if(!is_dir("output")){
