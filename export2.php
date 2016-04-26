@@ -217,7 +217,7 @@ foreach ($sectionmods as $modnumber) {
 								'passthreshold'=>$passthreshold,
 								'availability'=>$availability,
 								'maxattempts'=>$maxattempts);
-		$quiz->init($server_connection, $course->shortname,"Pre-test",$configArray,$versionid);
+		$quiz->init($server_connection,$course->shortname,"Pre-test",$configArray,$versionid,$QUIZ_EXPORT_METHOD);
 		$quiz->courseroot = $course_root;
 		$quiz->id = $mod->id;
 		$quiz->section = 0;

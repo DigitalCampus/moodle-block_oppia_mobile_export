@@ -14,13 +14,16 @@ class mobile_activity_quiz extends mobile_activity {
 	private $configArray = array(); // config (quiz props) array
 	private $server_connection;
 	private $quiz_media = array();
+
+	private $export_method;
 	
-	function init($server_connection, $shortname, $summary, $configArray, $courseversion){
+	function init($server_connection, $shortname, $summary, $configArray, $courseversion, $export_method){
 		$this->shortname = strip_tags($shortname);
 		$this->summary = $summary;
 		$this->configArray = $configArray;
 		$this->courseversion = $courseversion;
 		$this->server_connection = $server_connection;
+		$this->export_method = $export_method;
 	}
 	
 	function preprocess(){
@@ -56,7 +59,7 @@ class mobile_activity_quiz extends mobile_activity {
 	function process(){
 		global $DB,$CFG,$USER,$QUIZ_CACHE;
 		$push_to_server = ($CFG->block_oppia_mobile_export_push_quizzes == 0);
-		if ($push_to_server)
+		if ($this->export_method === 'server')
 			$this->process_pushing_to_server();
 		else
 			$this->process_locally();
