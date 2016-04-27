@@ -390,7 +390,7 @@ class mobile_activity_quiz extends mobile_activity {
 				$q->qtype = 'multichoice';
 			}
 
-			$questionTitle = extractLangs($q->questiontext, true);
+			
 			$questionMaxScore = intval($q->maxmark);
 			$quizMaxScore += $questionMaxScore;
 
@@ -429,6 +429,7 @@ class mobile_activity_quiz extends mobile_activity {
 			
 			$j = 1;
 			$responses = array();
+			$questionTitle = extractLangs($q->questiontext, true);
 
 			// if matching question then concat the options with |
 			if(isset($q->options->subquestions)){
