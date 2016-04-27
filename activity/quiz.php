@@ -231,7 +231,7 @@ class mobile_activity_quiz extends mobile_activity {
 					}
 				}
 				
-				$questionJSON = extractLangs($q->questiontext, true, true);
+				$questionJSON = extractLangs($q->questiontext, true, true, true);
 				
 				// create question
 				$post = array('title' => $questionJSON,
@@ -427,7 +427,7 @@ class mobile_activity_quiz extends mobile_activity {
 			
 			$j = 1;
 			$responses = array();
-			$questionTitle = extractLangs($q->questiontext, true);
+			$questionTitle = extractLangs($q->questiontext, true, true, true);
 
 			// if matching question then concat the options with |
 			if(isset($q->options->subquestions)){
