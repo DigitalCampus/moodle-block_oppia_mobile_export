@@ -77,19 +77,6 @@ if ($server == "default"){
 	$server_connection->apikey = $CFG->block_oppia_mobile_export_default_api_key;
 }
 
-$apiHelper = new QuizHelper();
-$apiHelper->init($server_connection);
-$server_info = $apiHelper->exec('server', array(),'get', false, false);
-if ($server_info && $server_info->version ){
-	$v_regex = '/^v([0-9])+\.([0-9]+)\.([0-9]+)$/';
-	preg_match($v_regex, $server_info->version, $version_nums);
-	if (count($version_nums)>0 && (
-		($version_nums[1] > 0) || //major version check (>0.x.x)
-		($version_nums[2] >= $QUIZ_EXPORT_MINVERSION) //minor version check (>=0.10.x)
-	))
-		$QUIZ_EXPORT_METHOD = 'local';
-}
-
 //make course dir etc for output
 deleteDir("output/".$USER->id."/temp");
 deleteDir("output/".$USER->id);
@@ -168,6 +155,24 @@ if(is_array($summary) && count($summary)>0){
 	$meta->appendChild($temp);
 }
 
+$apiHelper = new QuizHelper();
+$apiHelper->init($server_connection);
+$server_info = $apiHelper->exec('server', array(),'get', false, false);
+echo '<p>';
+if ($server_info && $server_info->version ){
+	echo '<strong>Current server version:</strong> '.$server_info->version.'<br/>';
+	$v_regex = '/^v([0-9])+\.([0-9]+)\.([0-9]+)$/';
+	preg_match($v_regex, $server_info->version, $version_nums);
+	if (count($version_nums)>0 && (
+		($version_nums[1] > 0) || //major version check (>0.x.x)
+		($version_nums[2] >= $QUIZ_EXPORT_MINVERSION) //minor version check (>=0.10.x)
+	))
+		$QUIZ_EXPORT_METHOD = 'local';
+}
+else{
+	echo '<span style="color:red;">Unable to get server info (is it correctly configured and running?)</span><br/>';
+}
+echo '<strong>Quiz export method:</strong> '.$QUIZ_EXPORT_METHOD.'</p>';
 
 /*-------Get course info pages/about etc----------------------*/
 $thissection = $sections[0];

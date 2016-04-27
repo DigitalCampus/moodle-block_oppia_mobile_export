@@ -17,7 +17,7 @@ class mobile_activity_quiz extends mobile_activity {
 
 	private $export_method;
 	
-	function init($server_connection, $shortname, $summary, $configArray, $courseversion, $export_method){
+	function init($server_connection, $shortname, $summary, $configArray, $courseversion, $export_method='server'){
 		$this->shortname = strip_tags($shortname);
 		$this->summary = $summary;
 		$this->configArray = $configArray;
