@@ -119,7 +119,7 @@ $meta->appendChild($xmlDoc->createElement("tags",$tags));
 add_or_update_oppiaconfig($id, 'coursepriority', $priority, $server);
 add_or_update_oppiaconfig($id, 'coursetags', $tags, $server);
 add_or_update_oppiaconfig($id, 'coursesequencing', $sequencing, $server);
-if ($keeptags) add_or_update_oppiaconfig($id, 'keeptags', true, $server);
+add_or_update_oppiaconfig($id, 'keeptags', $keeptags?'enabled':'disabled', $server);
 
 $a = new stdClass();
 $a->stepno = 2;
@@ -225,7 +225,7 @@ foreach ($sectionmods as $modnumber) {
 								'passthreshold'=>$passthreshold,
 								'availability'=>$availability,
 								'maxattempts'=>$maxattempts);
-		$quiz->init($server_connection,$course->shortname,"Pre-test",$configArray,$versionid,$QUIZ_EXPORT_METHO,$keeptags);
+		$quiz->init($server_connection,$course->shortname,"Pre-test",$configArray,$versionid,$QUIZ_EXPORT_METHOD,$keeptags);
 		$quiz->courseroot = $course_root;
 		$quiz->id = $mod->id;
 		$quiz->section = 0;

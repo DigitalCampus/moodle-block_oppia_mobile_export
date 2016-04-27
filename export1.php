@@ -296,8 +296,8 @@ echo "</div></div>";
 
 $keeptags = get_oppiaconfig($id,'keeptags','',$server);
 echo "<div class='export-section-icon'><img src='".$OUTPUT->pix_url('ic_tags', 'block_oppia_mobile_export')."'/></div>";
-echo "<p><b>".get_string('export_course_tags_title','block_oppia_mobile_export')."</b>";
-echo "<br/><input type=\"checkbox\" name='keeptags' id='keeptags' value='true' ".(($keeptags != null && $keeptags!=='')?'checked':'')." size='100'/>".get_string('export_course_tags_desc','block_oppia_mobile_export')."<br/>";
+echo "<p><b>".get_string('export_keep_tags_title','block_oppia_mobile_export')."</b>";
+echo "<br/><input type=\"checkbox\" name='keeptags' id='keeptags' value='true' ".(($keeptags != null && $keeptags==='enabled')?'checked':'')." />".get_string('export_keep_tags_desc','block_oppia_mobile_export')."<br/>";
 
 echo "<br/></p>";
 
