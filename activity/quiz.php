@@ -233,7 +233,7 @@ class mobile_activity_quiz extends mobile_activity {
 					}
 				}
 				
-				$questionJSON = extractLangs($q->questiontext, true);
+				$questionJSON = extractLangs($q->questiontext, true, true);
 				
 				// create question
 				$post = array('title' => $questionJSON,
@@ -256,7 +256,7 @@ class mobile_activity_quiz extends mobile_activity {
 						}	
 					}
 					foreach($q->options->subquestions as $sq){
-						$titleJSON = extractLangs($sq->questiontext.$this->MATCHING_SEPERATOR.$sq->answertext, true);
+						$titleJSON = extractLangs($sq->questiontext.$this->MATCHING_SEPERATOR.$sq->answertext, true, true);
 						// add response
 						
 						$props = array();
@@ -279,7 +279,7 @@ class mobile_activity_quiz extends mobile_activity {
 						
 						$props = array();
 						if(strip_tags($r->feedback) != ""){
-							$feedbackJSON = extractLangs($r->feedback, true);
+							$feedbackJSON = extractLangs($r->feedback, true, true);
 							$props[0] = array('name' => 'feedback', 'value' => $feedbackJSON);
 						}
 						
@@ -288,7 +288,7 @@ class mobile_activity_quiz extends mobile_activity {
 							$props[1] = array('name' => 'tolerance', 'value' => $r->tolerance);
 						}
 						
-						$responseJSON = extractLangs($r->answer, true);
+						$responseJSON = extractLangs($r->answer, true, true);
 						// add response
 						$post = array('question' => $question_uri,
 								'order' => $j,

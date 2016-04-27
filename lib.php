@@ -1,5 +1,7 @@
 <?php 
 
+const regex_forbidden_dir_chars = '([\\/?%*:|"<>\.[:space:]]+)';
+const regex_forbidden_tag_chars = '([^a-zA-z0-9,\_]+)';
 
 function deleteDir($dirPath) {
 	if (! is_dir($dirPath)) {
@@ -65,7 +67,7 @@ function get_oppiaservers(){
 	return $servers;
 }
 
-function extractLangs($content, $asJSON = false){
+function extractLangs($content, $asJSON = false, $strip_tags = false){
 	global $MOBILE_LANGS, $CURRENT_LANG, $DEFAULT_LANG;
 	preg_match_all('((lang=[\'|\"](?P<langs>[\w\-]*)[\'|\"]))',$content,$langs_tmp, PREG_OFFSET_CAPTURE);
 	$tempLangs = array();
@@ -86,7 +88,11 @@ function extractLangs($content, $asJSON = false){
 	$filter = new tomobile_langfilter();
 	foreach($tempLangs as $k=>$v){
 		$CURRENT_LANG = $k;
-		$tempLangs[$k] = trim($filter->filter($content));
+		if ($strip_tags){
+			$tempLangs[$k] = trim(strip_tags($filter->filter($content)));
+		} else {
+			$tempLangs[$k] = trim($filter->filter($content));
+		}
 	}
 	
 	//reverse array
@@ -104,7 +110,7 @@ function extractLangs($content, $asJSON = false){
 function cleanTagList($tags){
 	$cleantags = trim($tags);
 	$cleantags = preg_replace('([[:space:]]*\,[[:space:]])', ',', $tags);
-	$cleantags = preg_replace('([^a-zA-z0-9,\_]+)', "-", $cleantags);
+	$cleantags = preg_replace(regex_forbidden_tag_chars, "-", $cleantags);
 	
 	if (strlen($cleantags) == 0) return $cleantags;
 	$strStart = ($cleantags[0] == ',') ? 1 : 0; //avoid first colon
@@ -112,6 +118,13 @@ function cleanTagList($tags){
 	$cleantags = substr($cleantags, $strStart, strlen($cleantags) - $strEnd);
 	
 	return $cleantags;
+}
+
+function cleanShortname($shortname){
+	$shortname = trim($shortname);
+	$shortname = preg_replace(regex_forbidden_dir_chars, "-", $shortname);
+	$shortname = preg_replace('(\-+)', "-", $shortname); //clean duplicated hyphens
+	return $shortname;
 }
 
 

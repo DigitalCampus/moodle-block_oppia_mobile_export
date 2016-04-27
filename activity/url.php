@@ -70,10 +70,13 @@ class mobile_activity_url extends mobile_activity {
 				$struct->appendChild($temp);
 			}
 		} else {
-			$temp = $xmlDoc->createElement("description");
-			$temp->appendChild($xmlDoc->createTextNode(strip_tags($this->url->intro)));
-			$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
-			$struct->appendChild($temp);
+			$description = strip_tags($this->resource->intro);
+			if ($description != ""){
+				$temp = $xmlDoc->createElement("description");
+				$temp->appendChild($xmlDoc->createTextNode($description));
+				$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
+				$struct->appendChild($temp);
+			}
 		}
 		$temp = $xmlDoc->createElement("location",$this->url->externalurl);
 		$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));

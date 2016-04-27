@@ -425,7 +425,6 @@ class mobile_activity_page extends mobile_activity {
 		
 		preg_match_all($regex,$content,$files_tmp, PREG_OFFSET_CAPTURE);
 		if(!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0){
-			echo "noooo";
 			return false;
 		}
 		$filename = $files_tmp['filenames'][0][0];
