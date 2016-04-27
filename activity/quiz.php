@@ -14,13 +14,16 @@ class mobile_activity_quiz extends mobile_activity {
 	private $configArray = array(); // config (quiz props) array
 	private $server_connection;
 	private $quiz_media = array();
+
+	private $export_method;
 	
-	function init($server_connection, $shortname, $summary, $configArray, $courseversion){
+	function init($server_connection, $shortname, $summary, $configArray, $courseversion, $export_method='server'){
 		$this->shortname = strip_tags($shortname);
 		$this->summary = $summary;
 		$this->configArray = $configArray;
 		$this->courseversion = $courseversion;
 		$this->server_connection = $server_connection;
+		$this->export_method = $export_method;
 	}
 	
 	function preprocess(){
@@ -54,9 +57,7 @@ class mobile_activity_quiz extends mobile_activity {
 	}
 	
 	function process(){
-		global $DB,$CFG,$USER,$QUIZ_CACHE;
-		$push_to_server = ($CFG->block_oppia_mobile_export_push_quizzes == 0);
-		if ($push_to_server)
+		if ($this->export_method === 'server')
 			$this->process_pushing_to_server();
 		else
 			$this->process_locally();
@@ -230,7 +231,7 @@ class mobile_activity_quiz extends mobile_activity {
 					}
 				}
 				
-				$questionJSON = extractLangs($q->questiontext, true);
+				$questionJSON = extractLangs($q->questiontext, true, true);
 				
 				// create question
 				$post = array('title' => $questionJSON,
@@ -253,7 +254,7 @@ class mobile_activity_quiz extends mobile_activity {
 						}	
 					}
 					foreach($q->options->subquestions as $sq){
-						$titleJSON = extractLangs($sq->questiontext.$this->MATCHING_SEPERATOR.$sq->answertext, true);
+						$titleJSON = extractLangs($sq->questiontext.$this->MATCHING_SEPERATOR.$sq->answertext, true, true);
 						// add response
 						
 						$props = array();
@@ -276,7 +277,7 @@ class mobile_activity_quiz extends mobile_activity {
 						
 						$props = array();
 						if(strip_tags($r->feedback) != ""){
-							$feedbackJSON = extractLangs($r->feedback, true);
+							$feedbackJSON = extractLangs($r->feedback, true, true);
 							$props[0] = array('name' => 'feedback', 'value' => $feedbackJSON);
 						}
 						
@@ -285,7 +286,7 @@ class mobile_activity_quiz extends mobile_activity {
 							$props[1] = array('name' => 'tolerance', 'value' => $r->tolerance);
 						}
 						
-						$responseJSON = extractLangs($r->answer, true);
+						$responseJSON = extractLangs($r->answer, true, true);
 						// add response
 						$post = array('question' => $question_uri,
 								'order' => $j,
@@ -387,7 +388,7 @@ class mobile_activity_quiz extends mobile_activity {
 				$q->qtype = 'multichoice';
 			}
 
-			$questionTitle = extractLangs($q->questiontext, true);
+			
 			$questionMaxScore = intval($q->maxmark);
 			$quizMaxScore += $questionMaxScore;
 
@@ -426,6 +427,7 @@ class mobile_activity_quiz extends mobile_activity {
 			
 			$j = 1;
 			$responses = array();
+			$questionTitle = extractLangs($q->questiontext, true);
 
 			// if matching question then concat the options with |
 			if(isset($q->options->subquestions)){

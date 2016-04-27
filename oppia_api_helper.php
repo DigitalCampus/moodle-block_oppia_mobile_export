@@ -10,14 +10,14 @@ class QuizHelper{
 		curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, 1 );
 	}
 	
-	function exec($object, $data_array, $type='post'){
+	function exec($object, $data_array, $type='post', $api_path=true, $print_error_msg=true){
 		
 		$json = json_encode($data_array);
 		// Check if the url already has trailing '/' or not
 		if (substr($this->connection->url, -strlen('/'))==='/'){ 
-			$temp_url = $this->connection->url."api/v1/".$object."/";
+			$temp_url = $this->connection->url.($api_path ? "api/v1/" : "").$object."/";
 		} else {
-			$temp_url = $this->connection->url."/api/v1/".$object."/";
+			$temp_url = $this->connection->url."/".($api_path ? "api/v1/" : "").$object."/";
 		}
 		$temp_url .= "?format=json";
 		$temp_url .= "&username=".$this->connection->username;
@@ -33,7 +33,7 @@ class QuizHelper{
 		$data = curl_exec($this->curl);
 		$json = json_decode($data);
 		$http_status = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
-		if ($http_status != 200 && $http_status != 201){
+		if ($http_status != 200 && $http_status != 201 && $print_error_msg){
 			echo "<p style='color:red'>".get_string('error_creating_quiz','block_oppia_mobile_export')." ( status code: " . $http_status . ")</p>";
 		}
 		return $json;

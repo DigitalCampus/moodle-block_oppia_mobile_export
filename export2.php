@@ -30,6 +30,8 @@ $tags = cleanTagList($tags);
 $server = required_param('server',PARAM_TEXT);
 
 $course = $DB->get_record('course', array('id'=>$id));
+//we clean the shortname of the course (the change doesn't get saved in Moodle)
+$course->shortname = cleanShortname($course->shortname);
 
 $PAGE->set_url('/blocks/oppia_mobile_export/export2.php', array('id' => $id));
 context_helper::preload_course($id);
@@ -47,7 +49,21 @@ $PAGE->set_title(get_string('course') . ': ' . $course->fullname);
 $PAGE->set_heading($course->fullname);
 echo $OUTPUT->header();
 
-// Check specified server belongs to current user
+global $QUIZ_CACHE;
+$QUIZ_CACHE = array();
+
+global $MOBILE_LANGS;
+$MOBILE_LANGS = array();
+
+global $MEDIA;
+$MEDIA = array();
+
+$DEFAULT_LANG = "en";
+$advice = array();
+
+$QUIZ_EXPORT_MINVERSION = 10;
+$QUIZ_EXPORT_METHOD = 'server';
+
 $server_connection = $DB->get_record('block_oppia_mobile_server', array('moodleuserid'=>$USER->id,'id'=>$server));
 if(!$server_connection && $server != "default"){
 	echo "<p>".get_string('server_not_owner','block_oppia_mobile_export')."</p>";
@@ -61,21 +77,7 @@ if ($server == "default"){
 	$server_connection->apikey = $CFG->block_oppia_mobile_export_default_api_key;
 }
 
-global $QUIZ_CACHE;
-$QUIZ_CACHE = array();
-
-$DEFAULT_LANG = "en";
-
-global $MOBILE_LANGS;
-$MOBILE_LANGS = array();
-
-global $MEDIA;
-$MEDIA = array();
-
-$advice = array();
-
 //make course dir etc for output
-
 deleteDir("output/".$USER->id."/temp");
 deleteDir("output/".$USER->id);
 if(!is_dir("output")){
@@ -153,7 +155,24 @@ if(is_array($summary) && count($summary)>0){
 	$meta->appendChild($temp);
 }
 
-
+$apiHelper = new QuizHelper();
+$apiHelper->init($server_connection);
+$server_info = $apiHelper->exec('server', array(),'get', false, false);
+echo '<p>';
+if ($server_info && $server_info->version ){
+	echo '<strong>Current server version:</strong> '.$server_info->version.'<br/>';
+	$v_regex = '/^v([0-9])+\.([0-9]+)\.([0-9]+)$/';
+	preg_match($v_regex, $server_info->version, $version_nums);
+	if (count($version_nums)>0 && (
+		($version_nums[1] > 0) || //major version check (>0.x.x)
+		($version_nums[2] >= $QUIZ_EXPORT_MINVERSION) //minor version check (>=0.10.x)
+	))
+		$QUIZ_EXPORT_METHOD = 'local';
+}
+else{
+	echo '<span style="color:red;">Unable to get server info (is it correctly configured and running?)</span><br/>';
+}
+echo '<strong>Quiz export method:</strong> '.$QUIZ_EXPORT_METHOD.'</p>';
 
 /*-------Get course info pages/about etc----------------------*/
 $thissection = $sections[0];
@@ -204,7 +223,7 @@ foreach ($sectionmods as $modnumber) {
 								'passthreshold'=>$passthreshold,
 								'availability'=>$availability,
 								'maxattempts'=>$maxattempts);
-		$quiz->init($server_connection, $course->shortname,"Pre-test",$configArray,$versionid);
+		$quiz->init($server_connection,$course->shortname,"Pre-test",$configArray,$versionid,$QUIZ_EXPORT_METHOD);
 		$quiz->courseroot = $course_root;
 		$quiz->id = $mod->id;
 		$quiz->section = 0;
@@ -355,7 +374,7 @@ foreach($sections as $sect) {
 									'availability'=>$availability,
 									'maxattempts'=>$maxattempts);
 				
-				$quiz->init($server_connection, $course->shortname,$sect->summary,$configArray,$versionid);
+				$quiz->init($server_connection, $course->shortname,$sect->summary,$configArray,$versionid,$QUIZ_EXPORT_METHOD);
 				$quiz->courseroot = $course_root;
 				$quiz->id = $mod->id;
 				$quiz->section = $sect_orderno;

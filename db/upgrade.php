@@ -65,17 +65,17 @@ function xmldb_block_oppia_mobile_export_upgrade($oldversion) {
 		// Blocks savepoint reached.
 		upgrade_plugin_savepoint(true, 2016021500, 'error', 'blocks');
 	}
-	if ($oldversion < 2016030800){
+	if ($oldversion < 2016041301){
 
 		//Update the size for field value to support longer tag values
 		$table = new xmldb_table('block_oppia_mobile_config');
-		$field = new xmldb_field('value', XMLDB_TYPE_CHAR, 70, null, null, null, null, 'name');
+		$field = new xmldb_field('value', XMLDB_TYPE_TEXT, null, null, null, null, null, 'name');
 	
 		// Launch change of type for field value.
-		$dbman->change_field_precision($table, $field);
+		$dbman->change_field_type($table, $field);
 	
 		// Blocks savepoint reached.
-		upgrade_plugin_savepoint(true, 2016030800, 'error', 'blocks');
+		upgrade_plugin_savepoint(true, 2016041301, 'error', 'blocks');
 	}
 	
 	 
