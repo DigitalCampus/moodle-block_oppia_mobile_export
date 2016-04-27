@@ -234,7 +234,7 @@ class mobile_activity_quiz extends mobile_activity {
 					}
 				}
 				
-				$questionJSON = extractLangs($q->questiontext, true, true, true);
+				$questionJSON = extractLangs($q->questiontext, true, true, $this->keep_tags);
 				
 				// create question
 				$post = array('title' => $questionJSON,
@@ -289,7 +289,7 @@ class mobile_activity_quiz extends mobile_activity {
 							$props[1] = array('name' => 'tolerance', 'value' => $r->tolerance);
 						}
 						
-						$responseJSON = extractLangs($r->answer, true, true);
+						$responseJSON = extractLangs($r->answer, true, true, $this->keep_tags);
 						// add response
 						$post = array('question' => $question_uri,
 								'order' => $j,
@@ -430,7 +430,7 @@ class mobile_activity_quiz extends mobile_activity {
 			
 			$j = 1;
 			$responses = array();
-			$questionTitle = extractLangs($q->questiontext, true, true, true);
+			$questionTitle = extractLangs($q->questiontext, true, true, $this->keep_tags);
 
 			// if matching question then concat the options with |
 			if(isset($q->options->subquestions)){
@@ -475,7 +475,7 @@ class mobile_activity_quiz extends mobile_activity {
 						'order' => $j,
 						'id' 	=> rand(1,1000),
 						'props' => $responseprops,
-						'title' => json_decode(extractLangs($r->answer, true)),
+						'title' => json_decode(extractLangs($r->answer, true, true, $this->keep_tags)),
 						'score' => sprintf("%.4f", $score)
 					));
 					$j++;
