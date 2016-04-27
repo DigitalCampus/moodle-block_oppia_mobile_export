@@ -57,8 +57,6 @@ class mobile_activity_quiz extends mobile_activity {
 	}
 	
 	function process(){
-		global $DB,$CFG,$USER,$QUIZ_CACHE;
-		$push_to_server = ($CFG->block_oppia_mobile_export_push_quizzes == 0);
 		if ($this->export_method === 'server')
 			$this->process_pushing_to_server();
 		else

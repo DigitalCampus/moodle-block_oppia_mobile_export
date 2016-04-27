@@ -61,7 +61,7 @@ $MEDIA = array();
 $DEFAULT_LANG = "en";
 $advice = array();
 
-$QUIZ_EXPORT_MINVERSION = 9;
+$QUIZ_EXPORT_MINVERSION = 10;
 $QUIZ_EXPORT_METHOD = 'server';
 
 $server_connection = $DB->get_record('block_oppia_mobile_server', array('moodleuserid'=>$USER->id,'id'=>$server));
@@ -374,7 +374,7 @@ foreach($sections as $sect) {
 									'availability'=>$availability,
 									'maxattempts'=>$maxattempts);
 				
-				$quiz->init($server_connection, $course->shortname,$sect->summary,$configArray,$versionid);
+				$quiz->init($server_connection, $course->shortname,$sect->summary,$configArray,$versionid,$QUIZ_EXPORT_METHOD);
 				$quiz->courseroot = $course_root;
 				$quiz->id = $mod->id;
 				$quiz->section = $sect_orderno;
