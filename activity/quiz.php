@@ -14,16 +14,19 @@ class mobile_activity_quiz extends mobile_activity {
 	private $configArray = array(); // config (quiz props) array
 	private $server_connection;
 	private $quiz_media = array();
+	private $keep_tags = false; //keep some tags (<i>,<b>,etc) in question text
 
 	private $export_method;
 	
-	function init($server_connection, $shortname, $summary, $configArray, $courseversion, $export_method='server'){
+	function init($server_connection, $shortname, $summary, 
+		$configArray, $courseversion, $export_method='server', $keep_tags=false){
 		$this->shortname = strip_tags($shortname);
 		$this->summary = $summary;
 		$this->configArray = $configArray;
 		$this->courseversion = $courseversion;
 		$this->server_connection = $server_connection;
 		$this->export_method = $export_method;
+		$this->keep_tags = $keep_tags;
 	}
 	
 	function preprocess(){
