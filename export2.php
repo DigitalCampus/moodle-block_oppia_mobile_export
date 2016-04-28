@@ -28,6 +28,7 @@ $sequencing = required_param('coursesequencing', PARAM_TEXT);
 $tags = required_param('coursetags',PARAM_TEXT);
 $tags = cleanTagList($tags);
 $server = required_param('server',PARAM_TEXT);
+$keeptags =  optional_param('keeptags', false, PARAM_BOOL);
 
 $course = $DB->get_record('course', array('id'=>$id));
 //we clean the shortname of the course (the change doesn't get saved in Moodle)
@@ -118,6 +119,7 @@ $meta->appendChild($xmlDoc->createElement("tags",$tags));
 add_or_update_oppiaconfig($id, 'coursepriority', $priority, $server);
 add_or_update_oppiaconfig($id, 'coursetags', $tags, $server);
 add_or_update_oppiaconfig($id, 'coursesequencing', $sequencing, $server);
+add_or_update_oppiaconfig($id, 'keeptags', $keeptags?'enabled':'disabled', $server);
 
 $a = new stdClass();
 $a->stepno = 2;
@@ -223,7 +225,7 @@ foreach ($sectionmods as $modnumber) {
 								'passthreshold'=>$passthreshold,
 								'availability'=>$availability,
 								'maxattempts'=>$maxattempts);
-		$quiz->init($server_connection,$course->shortname,"Pre-test",$configArray,$versionid,$QUIZ_EXPORT_METHOD);
+		$quiz->init($server_connection,$course->shortname,"Pre-test",$configArray,$versionid,$QUIZ_EXPORT_METHOD,$keeptags);
 		$quiz->courseroot = $course_root;
 		$quiz->id = $mod->id;
 		$quiz->section = 0;
@@ -374,7 +376,7 @@ foreach($sections as $sect) {
 									'availability'=>$availability,
 									'maxattempts'=>$maxattempts);
 				
-				$quiz->init($server_connection, $course->shortname,$sect->summary,$configArray,$versionid,$QUIZ_EXPORT_METHOD);
+				$quiz->init($server_connection, $course->shortname,$sect->summary,$configArray,$versionid,$QUIZ_EXPORT_METHOD,$keeptags);
 				$quiz->courseroot = $course_root;
 				$quiz->id = $mod->id;
 				$quiz->section = $sect_orderno;
