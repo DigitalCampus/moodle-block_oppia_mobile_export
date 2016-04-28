@@ -81,7 +81,17 @@ function extractLangs($content, $asJSON = false, $strip_tags = false){
 		return $content;
 	} else {
 		$json = new stdClass;
-		$json->{$DEFAULT_LANG} = trim(strip_tags($content));
+		if ($strip_tags){
+				$tempContent = trim(strip_tags($content));
+				$tempContent = str_replace("\n"," ", $tempContent);
+				$tempContent = str_replace("&nbsp;"," ", $tempContent);
+				$tempContent = str_replace("&amp;","&", $tempContent);
+				$tempContent = str_replace("&lt;","<", $tempContent);
+				$tempContent = str_replace("&gt;","<", $tempContent);
+				$json->{$DEFAULT_LANG} = $tempContent;
+			} else {
+				$json->{$DEFAULT_LANG} = trim($content);
+			}	
 		return json_encode($json);
 	}
 
@@ -89,7 +99,13 @@ function extractLangs($content, $asJSON = false, $strip_tags = false){
 	foreach($tempLangs as $k=>$v){
 		$CURRENT_LANG = $k;
 		if ($strip_tags){
-			$tempLangs[$k] = trim(strip_tags($filter->filter($content)));
+			$tempContent = trim(strip_tags($filter->filter($content)));
+			$tempContent = str_replace("\n"," ", $tempContent);
+			$tempContent = str_replace("&nbsp;"," ", $tempContent);
+			$tempContent = str_replace("&amp;","&", $tempContent);
+			$tempContent = str_replace("&lt;","<", $tempContent);
+			$tempContent = str_replace("&gt;","<", $tempContent);
+			$tempLangs[$k] = $tempContent;
 		} else {
 			$tempLangs[$k] = trim($filter->filter($content));
 		}
