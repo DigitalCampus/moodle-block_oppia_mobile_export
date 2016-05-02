@@ -83,7 +83,8 @@ function extractLangs($content, $asJSON = false, $strip_tags = false){
 		$json = new stdClass;
 		if ($strip_tags){
 				$tempContent = trim(strip_tags($content));
-				$tempContent = str_replace("\n"," ", $tempContent);
+				$tempContent = str_replace("\n"," ", $tempContent );
+				$tempContent = str_replace("\r"," ", $tempContent );
 				$tempContent = str_replace("&nbsp;"," ", $tempContent);
 				$tempContent = str_replace("&amp;","&", $tempContent);
 				$tempContent = str_replace("&lt;","<", $tempContent);
@@ -101,6 +102,7 @@ function extractLangs($content, $asJSON = false, $strip_tags = false){
 		if ($strip_tags){
 			$tempContent = trim(strip_tags($filter->filter($content)));
 			$tempContent = str_replace("\n"," ", $tempContent);
+			$tempContent = str_replace("\r"," ", $tempContent);
 			$tempContent = str_replace("&nbsp;"," ", $tempContent);
 			$tempContent = str_replace("&amp;","&", $tempContent);
 			$tempContent = str_replace("&lt;","<", $tempContent);
