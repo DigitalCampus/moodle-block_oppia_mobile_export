@@ -54,44 +54,23 @@ if(!$server_connection && $server != "default"){
 
 
 $quizzes = array();
-/*-------Get course info pages/about etc----------------------*/
-$thissection = $sections[0];
-$sectionmods = explode(",", $thissection->sequence);
-foreach ($sectionmods as $modnumber) {
-		
-	if (empty($modinfo->sections[0])) {
-		continue;
-	}
-	$mod = $mods[$modnumber];
-		
-	if($mod->modname == 'quiz' && $mod->visible == 1){
-
-		$quiz = new mobile_activity_quiz();
-		$quiz->init($server_connection,$course->shortname,"Pre-test",0,0);
-		$quiz->id = $mod->id;
-		$quiz->section = 0;
-		$quiz->preprocess();
-		if ($quiz->get_is_valid() && $quiz->get_no_questions()> 0){
-			$temp = new stdClass;
-			$temp->section = "Topic 0";
-			$temp->name = $mod->name;
-			$temp->noquestions = $quiz->get_no_questions();
-			$temp->id = $mod->id;
-			array_push($quizzes, $temp);
-		}
-	}
-}
-
 $orderno = 1;
 foreach($sections as $sect) {
 	$sectionmods = explode(",", $sect->sequence);
-	if($sect->summary && count($sectionmods)>0){
+	
+	$defaultSectionTitle = false;
+	$sectionTitle = strip_tags($sect->summary);
+	if ($sectionTitle == "") {
+		$sectionTitle = get_string('sectionname', 'format_topics') . ' ' . $sect->section;
+		$defaultSectionTitle = true;
+	}
+	
+	if(count($sectionmods)>0){
 		foreach ($sectionmods as $modnumber) {
-				
-			if (empty($modinfo->sections[$orderno])) {
+
+			if(!$modnumber){
 				continue;
 			}
-			
 			$mod = $mods[$modnumber];
 			
 			if($mod->modname == 'quiz' && $mod->visible == 1){
@@ -103,7 +82,7 @@ foreach($sections as $sect) {
 				$quiz->preprocess();
 				if ($quiz->get_is_valid() && $quiz->get_no_questions()> 0){
 					$temp = new stdClass;
-					$temp->section = strip_tags($sect->summary);
+					$temp->section = $sectionTitle;
 					$temp->name = $mod->name;
 					$temp->noquestions = $quiz->get_no_questions();
 					$temp->id = $mod->id;
