@@ -105,7 +105,7 @@ curl_setopt($curl, CURLOPT_POSTFIELDS, $post);
 $result = curl_exec($curl);
 $http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
-echo $result;
+
 switch ($http_status){
 	case "405":
 		echo "<p>".get_string('publish_message_405','block_oppia_mobile_export')."</p>";
@@ -124,6 +124,24 @@ switch ($http_status){
 		break;
 	default:
 		
+}
+$json_response = json_decode($result, true);
+
+if (is_null($json_response)){
+	echo $result;
+}
+else{
+
+	if (array_key_exists('message', $json_response)){
+		echo "<p>".$json_response['message'].'</p>';
+	}
+	if (array_key_exists('messages', $json_response)){
+		$messages = $json_response['messages'];
+		foreach($messages as $msg){
+			echo '<div class="box generalbox adminwarning '.$msg['tags'].'">'.$msg['message'].'</div>';
+		}
+	}
+	
 }
 
 curl_close ($curl);
