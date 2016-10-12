@@ -138,7 +138,7 @@ else{
 	if (array_key_exists('messages', $json_response)){
 		$messages = $json_response['messages'];
 		foreach($messages as $msg){
-			echo '<div class="box generalbox adminwarning '.$msg['tags'].'">'.$msg['message'].'</div>';
+			echo '<div class="export-results '.$msg['tags'].'">'.$msg['message'].'</div>';
 		}
 	}
 	

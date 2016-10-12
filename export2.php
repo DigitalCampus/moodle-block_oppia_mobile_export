@@ -61,7 +61,7 @@ $MEDIA = array();
 $DEFAULT_LANG = "en";
 $advice = array();
 
-$QUIZ_EXPORT_MINVERSION = 9;
+$QUIZ_EXPORT_MINVERSION = 10;
 $QUIZ_EXPORT_METHOD = 'server';
 
 $server_connection = $DB->get_record('block_oppia_mobile_server', array('moodleuserid'=>$USER->id,'id'=>$server));
