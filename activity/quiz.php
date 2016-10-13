@@ -495,6 +495,26 @@ class mobile_activity_quiz extends mobile_activity {
 		
 		$quizprops["maxscore"] = $quizMaxScore;
 
+		// We get the overall feedbacks for the course
+		$overall_feedback = array();
+		$feedbacks = $DB->get_records('quiz_feedback',
+                    array('quizid' => $cm->instance), 'mingrade DESC');
+		
+		foreach ($feedbacks as $fb) {
+			//By default, the course has one feedback object with empty text
+			if (strlen($fb->feedbacktext) > 0){
+				array_push($overall_feedback, array(
+					'mingrade' => $fb->mingrade,
+					'maxgrade' => $fb->maxgrade,
+					'feedbacktext' => $fb->feedbacktext
+				));
+			}
+		}
+		if (count($overall_feedback) > 0){
+			$quizprops["feedback"] = $overall_feedback;
+			echo "This quiz has overall feedbacks!<br/>";
+		}
+
 		$quizJson = array(
 			'id' 		 => rand(1,1000),
 			'title' 	 => json_decode($nameJSON),
