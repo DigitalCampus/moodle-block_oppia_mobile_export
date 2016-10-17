@@ -139,22 +139,6 @@ class mobile_activity_quiz extends mobile_activity {
 				}
 			}
 			
-			// We get the overall feedbacks for the course
-			$overall_feedback = array();
-			$feedbacks = $DB->get_records('quiz_feedback',
-	                    array('quizid' => $cm->instance), 'mingrade DESC');
-			
-			foreach ($feedbacks as $fb) {
-				//By default, the course has one feedback object with empty text
-				if (strlen($fb->feedbacktext) > 0){
-					array_push($overall_feedback, array(
-						'mingrade' => $fb->mingrade,
-						'maxgrade' => $fb->maxgrade,
-						'feedbacktext' => $fb->feedbacktext
-					));
-				}
-			}
-			
 			$nameJSON = extractLangs($cm->name,true);
 			$descJSON = extractLangs($this->summary,true);
 			
@@ -163,12 +147,6 @@ class mobile_activity_quiz extends mobile_activity {
 					'description' => $descJSON,
 					'questions' => array(),
 					'props' => $props);
-
-			if (count($overall_feedback) > 0){
-				array_push($post,array('name' => "feedback", 'value' => $overall_feedback)); 
-				echo "This quiz has overall feedbacks!<br/>";
-			}
-
 			$resp = $mQH->exec('quiz', $post);
 
 			$quiz_uri = $resp->resource_uri;
@@ -529,7 +507,7 @@ class mobile_activity_quiz extends mobile_activity {
 				array_push($overall_feedback, array(
 					'mingrade' => $fb->mingrade,
 					'maxgrade' => $fb->maxgrade,
-					'feedbacktext' => json_decode($feedbackJSON)
+					'feedbacktext' => json_decode($feedbackJSON),
 				));
 			}
 		}
@@ -541,8 +519,7 @@ class mobile_activity_quiz extends mobile_activity {
 			'description'=> json_decode($descJSON),
 			'props' 	 => $quizprops,
 			'questions'  => $quizJsonQuestions);
-		i
-		f (count($overall_feedback) > 0){
+		if (count($overall_feedback) > 0){
 			$quizJson["feedback"] = $overall_feedback;
 			echo "This quiz has overall feedbacks!<br/>";
 		}
