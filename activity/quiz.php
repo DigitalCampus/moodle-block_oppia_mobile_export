@@ -366,7 +366,7 @@ class mobile_activity_quiz extends mobile_activity {
 	private function extractMedia($question_id, $content){
 		global $MEDIA;
 	
-		$regex = '((\[\[[[:space:]]?media[[:space:]]?object=[\"|\'](?P<mediaobject>[\{\}\'\"\:a-zA-Z0-9\._\-/,[:space:]]*)[[:space:]]?[\"|\']\]\]))';
+		$regex = '((\[\[[[:space:]]?media[[:space:]]?object=[\"|\'](?P<mediaobject>([\{\}\'\"\:a-zA-Z0-9\._\-/,[:space:]]|[^\x00-\x7F])*)[[:space:]]?[\"|\']\]\]))';
 	
 		preg_match_all($regex,$content,$media_tmp, PREG_OFFSET_CAPTURE);
 	

@@ -361,7 +361,7 @@ class mobile_activity_page extends mobile_activity {
 		//$regex = '((\[\[[[:space:]]?media[[:space:]]?object=[\"|\'](?P<mediaobject>[\{\}\'\"\:0-9\._\-/,[:space:]\w\W]*)[[:space:]]?[\"|\']\]\]))';
 		//$regex = '((\[\[[[:space:]]?media[[:space:]]?object=[\"|\'](?P<mediaobject>[\{\}\'\"\:a-zA-Z0-9\._\-/,[:space:]]*)[[:space:]]?[\"|\']\]\]))';
 		
-		$regex = '((\[\[' . spaces_regex . 'media' . spaces_regex . 'object=[\"|\'](?P<mediaobject>([\{\}\'\"\:a-zA-Z0-9\x00-\x7F\._\-\/,[:space:]]|[^\x00-\x7F])*)([[:space:]]|\<br\/?[[:space:]]*\>)*[\"|\']' . spaces_regex . '\]\]))';
+		$regex = '((\[\[' . spaces_regex . 'media' . spaces_regex . 'object=[\"|\'](?P<mediaobject>([\{\}\'\"\:a-zA-Z0-9\._\-\/,[:space:]]|[^\x00-\x7F])*)([[:space:]]|\<br\/?[[:space:]]*\>)*[\"|\']' . spaces_regex . '\]\]))';
 
 		preg_match_all($regex,$content,$media_tmp, PREG_OFFSET_CAPTURE);
 		
@@ -421,7 +421,7 @@ class mobile_activity_page extends mobile_activity {
 	
 	private function extractMediaImage($content,$component, $filearea, $itemid, $contextid){
 		global $CFG;
-		$regex = '(\]\]'.spaces_regex.'\<img[[:space:]]src=[\"|\\\']images/(?P<filenames>[\w\W]*?)[\"|\\\'])';
+		$regex = '(\]\]'.spaces_regex.'\<img[[:space:]]src=[\"|\\\']images/(?P<filenames>([\w\W]|[^\x00-\x7F])*?)[\"|\\\'])';
 		
 		preg_match_all($regex,$content,$files_tmp, PREG_OFFSET_CAPTURE);
 		if(!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0){
