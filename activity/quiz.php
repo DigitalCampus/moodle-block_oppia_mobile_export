@@ -2,7 +2,7 @@
 
 class mobile_activity_quiz extends mobile_activity {
 
-	private $supported_types = array('multichoice', 'match', 'truefalse', 'description', 'shortanswer', 'numerical');
+	private $supported_types = array('multichoice', 'match', 'truefalse', 'description', 'shortanswer', 'numerical', 'ddimageortext');
 	private $courseversion;
 	private $summary;
 	private $shortname;
@@ -44,7 +44,7 @@ class mobile_activity_quiz extends mobile_activity {
 		
 		// check has at least one non-essay and non-random question
 		$count_omitted = 0;
-		foreach($qs as $q){
+		foreach($qs as $q){			
 			if(in_array($q->qtype,$this->supported_types)){
 				$this->no_questions++;
 			} else {
@@ -97,6 +97,7 @@ class mobile_activity_quiz extends mobile_activity {
 				die;
 			}
 			
+			// extract quiz image logo
 			$filename = extractImageFile($quiz->intro,
 										'mod_quiz',
 										'intro',
@@ -297,7 +298,7 @@ class mobile_activity_quiz extends mobile_activity {
 
 						$j++;
 					}
-				}
+				}				
 				
 				// add question to quiz
 				$post = array('quiz' => $quiz_uri,
@@ -479,6 +480,11 @@ class mobile_activity_quiz extends mobile_activity {
 				}
 			}
 
+			// for ddimageortext questions
+			if($q->qtype == 'ddimageortext'){
+	
+			}
+			
 			$questionJson = array(
 				"id" 	=> rand(1,1000),
 				"type" 	=> $q->qtype,
