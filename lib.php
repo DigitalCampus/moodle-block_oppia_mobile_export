@@ -310,11 +310,13 @@ function resizeImageCrop($image,$image_new_name, $image_width, $image_height, $t
 
 function Zip($source, $destination){
 	if (!extension_loaded('zip') || !file_exists($source)) {
+		echo '<span style="color:red;">Unable to load Zip extension (is it correctly installed and configured in the Moodle server?)</span><br/>';
 		return false;
 	}
 
 	$zip = new ZipArchive();
 	if (!$zip->open($destination, ZIPARCHIVE::CREATE)) {
+		echo '<span style="color:red;">Couldn\'t create Zip archive</span><br/>';
 		return false;
 	}
 
