@@ -319,7 +319,7 @@ foreach($sections as $sect) {
 			$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
 			$section->appendChild($temp);
 		}
-		// get image for this section
+		/* currently in the schema there is no support for images at this level
 		$filename = extractImageFile($sect->summary,
 										'course',
 										'section',
@@ -332,7 +332,7 @@ foreach($sections as $sect) {
 			$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode($filename));
 			$section->appendChild($temp);
 		}
-		
+		*/
 		$act_orderno = 1;
 		$activities = $xmlDoc->createElement("activities");
 		foreach ($sectionmods as $modnumber) {
