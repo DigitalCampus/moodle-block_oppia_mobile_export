@@ -285,12 +285,17 @@ $structure = $xmlDoc->createElement("structure");
 $sect_orderno = 1;
 foreach($sections as $sect) {
 	flush_buffers();
-	//We avoid the topic0 as is not a section as the rest
+	// We avoid the topic0 as is not a section as the rest
 	if ($sect->section == 0) continue;
 	$sectionmods = explode(",", $sect->sequence);
 
 	$defaultSectionTitle = false;
 	$sectionTitle = strip_tags($sect->summary);
+	// If the course has no summary, we try to use the section name
+	if ($sectionTitle == "") {
+		$sectionTitle = strip_tags($sect->name);
+	}
+	// If the course has neither summary nor name, use the default topic title
 	if ($sectionTitle == "") {
 		$sectionTitle = get_string('sectionname', 'format_topics') . ' ' . $sect->section;
 		$defaultSectionTitle = true;
@@ -316,7 +321,7 @@ foreach($sections as $sect) {
 			$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
 			$section->appendChild($temp);
 		}
-		// get image for this section
+		/* currently in the schema there is no support for images at this level
 		$filename = extractImageFile($sect->summary,
 										'course',
 										'section',
@@ -329,7 +334,7 @@ foreach($sections as $sect) {
 			$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode($filename));
 			$section->appendChild($temp);
 		}
-		
+		*/
 		$act_orderno = 1;
 		$activities = $xmlDoc->createElement("activities");
 		foreach ($sectionmods as $modnumber) {
