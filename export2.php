@@ -62,7 +62,8 @@ $MEDIA = array();
 $DEFAULT_LANG = "en";
 $advice = array();
 
-$QUIZ_EXPORT_MINVERSION = 10;
+$QUIZ_EXPORT_MINVERSION_MINOR = 9;
+$QUIZ_EXPORT_MINVERSION_SUB = 8;
 $QUIZ_EXPORT_METHOD = 'server';
 
 $server_connection = $DB->get_record('block_oppia_mobile_server', array('moodleuserid'=>$USER->id,'id'=>$server));
@@ -106,6 +107,7 @@ $modinfo = get_fast_modinfo($course);
 $sections = $modinfo->get_section_info_all();
 $mods = $modinfo->get_cms();
 
+$plugin_version = get_config('block_oppia_mobile_export', 'version');
 $versionid = date("YmdHis");
 $xmlDoc = new DOMDocument( "1.0", "UTF-8" );
 $root = $xmlDoc->appendChild($xmlDoc->createElement("module"));
@@ -115,6 +117,7 @@ $meta->appendChild($xmlDoc->createElement("priority",$priority));
 $meta->appendChild($xmlDoc->createElement("server",$server_connection->url));
 $meta->appendChild($xmlDoc->createElement("sequencing", $sequencing));
 $meta->appendChild($xmlDoc->createElement("tags",$tags));
+$meta->appendChild($xmlDoc->createElement("exportversion", $plugin_version));
 
 add_or_update_oppiaconfig($id, 'coursepriority', $priority, $server);
 add_or_update_oppiaconfig($id, 'coursetags', $tags, $server);
@@ -166,10 +169,12 @@ if ($server_info && $server_info->version ){
 	$v_regex = '/^v([0-9])+\.([0-9]+)\.([0-9]+)$/';
 	preg_match($v_regex, $server_info->version, $version_nums);
 	if (count($version_nums)>0 && (
-		($version_nums[1] > 0) || //major version check (>0.x.x)
-		($version_nums[2] >= $QUIZ_EXPORT_MINVERSION) //minor version check (>=0.10.x)
-	))
+		( (int) $version_nums[1] >= 0) || //major version check (>0.x.x)
+		( (int) $version_nums[2] >= $QUIZ_EXPORT_MINVERSION_MINOR) || //minor version check (>=0.9.x)
+		( (int) $version_nums[3] >= $QUIZ_EXPORT_MINVERSION_SUB) //sub version check (>=0.9.8)
+	)){
 		$QUIZ_EXPORT_METHOD = 'local';
+	}
 }
 else{
 	echo '<span style="color:red;">Unable to get server info (is it correctly configured and running?)</span><br/>';
