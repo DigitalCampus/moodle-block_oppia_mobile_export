@@ -116,6 +116,9 @@ $string['export_course_tags_desc'] = 'Tags that will be used to classify the cou
 $string['export_keep_tags_title'] = 'Quiz Question Formatting';
 $string['export_keep_tags_desc'] = 'support use of HTML tags (&lt;em&gt;, &lt;b&gt;, &lt;strong&gt;, etc) in quiz question/response options. <br/><strong>Important</strong>:This is only supported for users with v6.0.0 or higher of the Oppia app';
 
+$string['export_lang_title'] = 'Course default language';
+$string['export_lang_desc'] = 'The default language for this course, using the ISO 639 code';
+
 $string['export_sequencing_title'] = 'Course Sequencing';
 $string['export_sequencing_desc'] = 'Set the sequencing mode of the course. Here you can specify that the course activities must be attempted sequentially, section or course-wise.';
 $string['export_sequencing_none'] = 'None';
