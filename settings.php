@@ -8,6 +8,8 @@ if ($ADMIN->fulltree) {
 	$settings->add(new admin_setting_configtext('block_oppia_mobile_export_default_username', get_string('default_username', 'block_oppia_mobile_export'),'', '', PARAM_TEXT));
 	$settings->add(new admin_setting_configtext('block_oppia_mobile_export_default_api_key', get_string('default_api_key', 'block_oppia_mobile_export'),'', '', PARAM_TEXT));
 	
+	$settings->add(new admin_setting_configtext('block_oppia_mobile_export_default_lang', get_string('default_lang', 'block_oppia_mobile_export'),get_string('default_lang_info', 'block_oppia_mobile_export'), 'en', PARAM_TEXT));
+	
 	$settings->add(new admin_setting_configtext('block_oppia_mobile_export_thumb_height', get_string('thumbheight', 'block_oppia_mobile_export'),'', 90, PARAM_INT));
 	 
 	$settings->add(new admin_setting_configtext('block_oppia_mobile_export_thumb_width', get_string('thumbwidth', 'block_oppia_mobile_export'),'', 135, PARAM_INT));

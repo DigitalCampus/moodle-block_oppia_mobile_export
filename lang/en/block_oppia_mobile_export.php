@@ -41,6 +41,9 @@ $string['default_server'] = 'Default server';
 $string['default_username'] = 'Default username';
 $string['default_api_key'] = 'Default api_key';
 
+$string['default_lang'] = 'Default language';
+$string['default_lang_info'] = 'Language code in ISO-639 format';
+
 $string['thumbheight'] = 'Icon height';
 $string['thumbwidth'] = 'Icon width';
 $string['thumbcrop'] = 'Crop Icon';
