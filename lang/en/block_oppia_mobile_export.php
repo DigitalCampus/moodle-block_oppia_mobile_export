@@ -110,6 +110,8 @@ $string['export_priority_desc'] = 'This is the relative weight given to a course
 
 $string['export_course_tags_title'] = 'Course Tags';
 $string['export_course_tags_desc'] = 'Tags that will be used to classify the course on the OppiaMobile server, separate each tag by a comma';
+$string['export_keep_tags_title'] = 'Quiz Question Formatting';
+$string['export_keep_tags_desc'] = 'support use of HTML tags (&lt;em&gt;, &lt;b&gt;, &lt;strong&gt;, etc) in quiz question/response options. <br/><strong>Important</strong>:This is only supported for users with v6.0.0 or higher of the Oppia app';
 
 $string['export_sequencing_title'] = 'Course Sequencing';
 $string['export_sequencing_desc'] = 'Set the sequencing mode of the course. Here you can specify that the course activities must be attempted sequentially, section or course-wise.';

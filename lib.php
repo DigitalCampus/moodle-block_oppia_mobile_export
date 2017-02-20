@@ -2,6 +2,7 @@
 
 const regex_forbidden_dir_chars = '([\\/?%*:|"<>\.[:space:]]+)';
 const regex_forbidden_tag_chars = '([^a-zA-z0-9,\_]+)';
+const basic_html_tags = '<strong><b><i><em>';
 
 function deleteDir($dirPath) {
 	if (! is_dir($dirPath)) {
@@ -67,7 +68,7 @@ function get_oppiaservers(){
 	return $servers;
 }
 
-function extractLangs($content, $asJSON = false, $strip_tags = false){
+function extractLangs($content, $asJSON = false, $strip_tags = false, $keep_basic_tags = false){
 	global $MOBILE_LANGS, $CURRENT_LANG, $DEFAULT_LANG;
 	preg_match_all('((lang=[\'|\"](?P<langs>[\w\-]*)[\'|\"]))',$content,$langs_tmp, PREG_OFFSET_CAPTURE);
 	$tempLangs = array();
@@ -81,18 +82,10 @@ function extractLangs($content, $asJSON = false, $strip_tags = false){
 		return $content;
 	} else {
 		$json = new stdClass;
-		if ($strip_tags){
-				$tempContent = trim(strip_tags($content));
-				$tempContent = str_replace("\n"," ", $tempContent );
-				$tempContent = str_replace("\r"," ", $tempContent );
-				$tempContent = str_replace("&nbsp;"," ", $tempContent);
-				$tempContent = str_replace("&amp;","&", $tempContent);
-				$tempContent = str_replace("&lt;","<", $tempContent);
-				$tempContent = str_replace("&gt;","<", $tempContent);
-				$json->{$DEFAULT_LANG} = $tempContent;
-			} else {
-				$json->{$DEFAULT_LANG} = trim($content);
-			}	
+		if ($keep_basic_tags)
+			$json->{$DEFAULT_LANG} = trim(strip_tags($content, basic_html_tags));
+		else
+			$json->{$DEFAULT_LANG} = trim(strip_tags($content));
 		return json_encode($json);
 	}
 
@@ -100,14 +93,10 @@ function extractLangs($content, $asJSON = false, $strip_tags = false){
 	foreach($tempLangs as $k=>$v){
 		$CURRENT_LANG = $k;
 		if ($strip_tags){
-			$tempContent = trim(strip_tags($filter->filter($content)));
-			$tempContent = str_replace("\n"," ", $tempContent);
-			$tempContent = str_replace("\r"," ", $tempContent);
-			$tempContent = str_replace("&nbsp;"," ", $tempContent);
-			$tempContent = str_replace("&amp;","&", $tempContent);
-			$tempContent = str_replace("&lt;","<", $tempContent);
-			$tempContent = str_replace("&gt;","<", $tempContent);
-			$tempLangs[$k] = $tempContent;
+			if ($keep_basic_tags)
+				$tempLangs[$k] = trim(strip_tags($filter->filter($content), basic_html_tags));
+			else
+				$tempLangs[$k] = trim(strip_tags($filter->filter($content)));
 		} else {
 			$tempLangs[$k] = trim($filter->filter($content));
 		}
@@ -118,6 +107,7 @@ function extractLangs($content, $asJSON = false, $strip_tags = false){
 	foreach($tempLangsRev as $k=>$v){
 		$MOBILE_LANGS[$k] = true;
 	}
+
 	if ($asJSON){
 		return json_encode($tempLangsRev);
 	} else {
