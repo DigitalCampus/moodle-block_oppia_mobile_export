@@ -110,7 +110,6 @@ if (count($quizzes)> 0){
 	
 	echo "<p>".get_string('export_contains_quizzes','block_oppia_mobile_export')."</p>";
 	
-	// using table not ideal but works for now
 	echo "<div class=\"quizzes-table\">";
 	echo "<div class=\"pure-g titles pure-hidden-sm pure-hidden-xs pure-hidden-md\">";
 	echo "<div class=\"pure-u-4-24\">".get_string('export_quiz_sectionname','block_oppia_mobile_export')."</div>";
@@ -260,6 +259,12 @@ echo "<p><b>".get_string('export_course_tags_title','block_oppia_mobile_export')
 echo "<br/>".get_string('export_course_tags_desc','block_oppia_mobile_export')."<br/>";
 $tags = get_oppiaconfig($id,'coursetags','',$server);
 echo "<div class='pure-g'><input name='coursetags' id='coursetags' value='".$tags."' size='100'/></div><br/></p>";
+
+echo "<div class='export-section-icon'><img src='".$OUTPUT->pix_url('ic_language', 'block_oppia_mobile_export')."'/></div>";
+echo "<p><b>".get_string('export_lang_title','block_oppia_mobile_export')."</b>";
+echo "<br/>".get_string('export_lang_desc','block_oppia_mobile_export')."<br/>";
+$default_lang = get_oppiaconfig($id,'default_lang',$CFG->block_oppia_mobile_export_default_lang, $server);
+echo "<div class='pure-g'><input name='default_lang' id='default_lang' value='".$default_lang."' size='10'/></div><br/></p>";
 
 echo "<div class='export-section-icon'><img src='".$OUTPUT->pix_url('ic_sequencing', 'block_oppia_mobile_export')."'/></div>";
 echo "<p><b>".get_string('export_sequencing_title','block_oppia_mobile_export')."</b>";
