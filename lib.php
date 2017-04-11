@@ -147,6 +147,7 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
 		return false;
 	}	
 
+	$lastimg = false;
 	$toreplace = array();
 	for($i=0;$i<count($files_tmp['filenames']);$i++){
 		$filename = $files_tmp['filenames'][$i][0];
@@ -154,8 +155,6 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
 			echo "Attempting to export file: ".urldecode($filename)."<br/>";
 		}
 		
-		
-		$fullpath = "/$contextid/$component/$filearea/$itemid/$filename";
 		$fs = get_file_storage();
 		$fileinfo = array(
 				'component' => $component,   
@@ -167,24 +166,50 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
 		$file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
 				$fileinfo['itemid'], $fileinfo['filepath'], urldecode($fileinfo['filename']));
 		
-		if ($file) {
-			$imgfile = $course_root."/images/".sha1($fullpath);
-			$file->copy_content_to($imgfile);
-		} else {
-			$link = $CFG->wwwroot."/course/modedit.php?return=0&sr=0&update=".$cmid;
-			echo "<span style='color:red'>".get_string('error_edit_page','block_oppia_mobile_export',$link)."</span><br/>";
-			return false;
+		$result = copyFile($file, $component, $filearea, $itemid, $contextid, $course_root, $cmid);
+		if ($result != false){
+			$lastimg = $result;
 		}
 		
-		$tr = new StdClass;
-		$tr->originalfilename = $filename;
-		$tr->filename = sha1($fullpath);
-		if($CFG->block_oppia_mobile_export_debug){
-			echo get_string('export_image_success','block_oppia_mobile_export',urldecode($filename))."<br/>";
-		}
 	}
-	return "images/".sha1($fullpath);
+	return $lastimg;
 }
+
+function copyFile($file, $component, $filearea, $itemid, $contextid, $course_root, $cmid){
+	global $CFG;
+
+	$is_image = true;
+	if ($file) {
+
+			$filename = $file->get_filename();
+			$fullpath = "/$contextid/$component/$filearea/$itemid/$filename";
+			$sha1 = sha1($fullpath);
+			if (preg_match('/.mp3$/', $filename) > 0){
+				$is_image = false;
+				$filedest = "/resources/".$filename;
+			}
+			else{
+				$filedest = "/images/".$sha1;
+			}
+			
+			$result = $file->copy_content_to($course_root.$filedest);
+			var_dump($result);
+
+	} else {
+		$link = $CFG->wwwroot."/course/modedit.php?return=0&sr=0&update=".$cmid;
+		echo "<span style='color:red'>".get_string('error_edit_page','block_oppia_mobile_export',$link)."</span><br/>";
+		return false;
+	}
+	
+	$tr = new StdClass;
+	$tr->originalfilename = $filename;
+	$tr->filename = sha1($fullpath);
+	if($CFG->block_oppia_mobile_export_debug){
+		echo get_string('export_image_success','block_oppia_mobile_export',urldecode($filename))."<br/>";
+	}
+	return ($is_image ? $filedest : false);
+}
+
 
 function resizeImage($image,$image_new_name, $image_width, $image_height, $transparent=false){
 	global $CFG;
