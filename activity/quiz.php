@@ -363,6 +363,7 @@ class mobile_activity_quiz extends mobile_activity {
 
 		$i = 1;
 		foreach($qs as $q){
+
 			// skip any essay questions
 			if($q->qtype == 'essay'){
 				echo get_string('export_quiz_skip_essay','block_oppia_mobile_export')."<br/>";
@@ -396,6 +397,8 @@ class mobile_activity_quiz extends mobile_activity {
 			$quizMaxScore += $questionMaxScore;
 
 			$questionprops = array("maxscore" => $questionMaxScore);
+			$responses = array();
+
 			//add feedback for matching questions
 			if($q->qtype == 'match'){
 				$q->qtype = 'matching';
@@ -412,6 +415,63 @@ class mobile_activity_quiz extends mobile_activity {
 					$questionprops["incorrectfeedback"] = json_decode($feedbackJSON);
 				}
 			}
+
+			if ($q->qtype == 'ddimageortext'){
+				$q->qtype = 'draganddrop';
+				$fs = get_file_storage();
+				$ddoptions = $q->options;
+				$drags = array();
+				foreach($ddoptions->drags as $drag){
+					$responseprops = array(
+						'id' 		=> rand(1,1000),
+						'draggroup'	=> $drag->draggroup,
+						'infinite'	=> $drag->infinite,
+						'dropzone' 	=> $drag->no,
+						'label'		=> $drag->label);
+
+					// find the corresponding drop zone
+					foreach ($ddoptions->drops as $drop){
+						if ($drop->no == $responseprops['dropzone']){
+							$responseprops['xleft'] = $drop->xleft;
+							$responseprops['ytop'] = $drop->ytop;
+							$responseprops['droplabel'] = $drop->label;
+						}
+					}
+
+					$dragimage = $fs->get_area_files($q->contextid, 'qtype_ddimageortext', 'dragimage', $drag->id, 'itemid');
+					foreach ($dragimage as $file){
+						if ($file->is_directory()) {
+		                    continue;
+		                }
+		                if ($dragimage = copyFile($file, 'qtype_ddimageortext', 'dragimage', $drag->id, $q->contextid,$this->courseroot,$cm->id)){
+		                	$responseprops['dragimage'] = $dragimage;
+		                }
+					}
+
+					array_push($responses, array(
+						'order' => $j,
+						'id' 	=> rand(1,1000),
+						'props' => $responseprops,
+						'title' => $drag->label,
+						'score' => sprintf("%.4f", 0)
+					));
+				}
+				
+				$bgfiles = $fs->get_area_files($q->contextid, 'qtype_ddimageortext', 'bgimage', $q->id, 'itemid');
+				if ($bgfiles) {
+            		foreach ($bgfiles as $file) {
+		                if ($file->is_directory()) {
+		                    continue;
+		                }
+
+		                $bgimage = copyFile($file, 'qtype_ddimageortext', 'bgimage', $q->id, $q->contextid,$this->courseroot,$cm->id);
+		                if ($bgimage){
+		                	$questionprops["bgimage"] = $bgimage;
+		                }
+		            }
+		        }
+			}
+
 			// find if the question text has any images in it
 			$question_image = extractImageFile($q->questiontext,'question','questiontext',
 									$q->id,$q->contextid,$this->courseroot,$cm->id); 
@@ -428,10 +488,9 @@ class mobile_activity_quiz extends mobile_activity {
 				}
 			}
 			
-			$j = 1;
-			$responses = array();
 			$questionTitle = extractLangs($q->questiontext, true, true, $this->keep_tags);
 
+			$j = 1;
 			// if matching question then concat the options with |
 			if(isset($q->options->subquestions)){
 				// Find out how many subquestions

@@ -479,7 +479,8 @@ if(count($MEDIA) > 0){
 	}
 	$root->appendChild($media);
 }
-
+$xmlDoc->preserveWhiteSpace = false;
+$xmlDoc->formatOutput = true;
 $xmlDoc->save($course_root."/module.xml");
 
 echo "<p>".get_string('export_xml_valid_start','block_oppia_mobile_export');
