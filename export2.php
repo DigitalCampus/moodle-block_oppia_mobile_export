@@ -25,6 +25,7 @@ $id = required_param('id',PARAM_INT);
 $stylesheet = required_param('stylesheet',PARAM_TEXT);
 $priority = required_param('coursepriority',PARAM_INT);
 $sequencing = required_param('coursesequencing', PARAM_TEXT);
+$DEFAULT_LANG = required_param('default_lang', PARAM_TEXT);
 $tags = required_param('coursetags',PARAM_TEXT);
 $tags = cleanTagList($tags);
 $server = required_param('server',PARAM_TEXT);
@@ -59,7 +60,6 @@ $MOBILE_LANGS = array();
 global $MEDIA;
 $MEDIA = array();
 
-$DEFAULT_LANG = "en";
 $advice = array();
 
 $QUIZ_EXPORT_MINVERSION_MINOR = 9;
@@ -123,6 +123,7 @@ add_or_update_oppiaconfig($id, 'coursepriority', $priority, $server);
 add_or_update_oppiaconfig($id, 'coursetags', $tags, $server);
 add_or_update_oppiaconfig($id, 'coursesequencing', $sequencing, $server);
 add_or_update_oppiaconfig($id, 'keeptags', $keeptags?'enabled':'disabled', $server);
+add_or_update_oppiaconfig($id, 'default_lang', $DEFAULT_LANG, $server);
 
 $a = new stdClass();
 $a->stepno = 2;
@@ -478,7 +479,8 @@ if(count($MEDIA) > 0){
 	}
 	$root->appendChild($media);
 }
-
+$xmlDoc->preserveWhiteSpace = false;
+$xmlDoc->formatOutput = true;
 $xmlDoc->save($course_root."/module.xml");
 
 echo "<p>".get_string('export_xml_valid_start','block_oppia_mobile_export');
