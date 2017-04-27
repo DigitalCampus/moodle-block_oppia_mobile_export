@@ -365,6 +365,10 @@ class mobile_activity_quiz extends mobile_activity {
 		$i = 1;
 		foreach($qs as $q){
 
+			$questionMaxScore = intval($q->maxmark);
+			$quizMaxScore += $questionMaxScore;
+			$questionprops = array("maxscore" => $questionMaxScore);
+
 			// skip any essay questions
 			if($q->qtype == 'essay'){
 				echo get_string('export_quiz_skip_essay','block_oppia_mobile_export')."<br/>";
@@ -388,16 +392,14 @@ class mobile_activity_quiz extends mobile_activity {
 				if($counter > 1){
 					$q->qtype = 'multiselect';
 				}
+				$questionprops['shuffleanswers'] = $q->options->shuffleanswers;
 			}
 			if($q->qtype == 'truefalse'){
 				$q->qtype = 'multichoice';
 			}
 
-			
-			$questionMaxScore = intval($q->maxmark);
-			$quizMaxScore += $questionMaxScore;
 
-			$questionprops = array("maxscore" => $questionMaxScore);
+
 			$responses = array();
 
 			//add feedback for matching questions
@@ -520,8 +522,8 @@ class mobile_activity_quiz extends mobile_activity {
 			// for multichoice/multiselect/shortanswer/numerical questions
 			if(isset($q->options->answers)){
 				foreach($q->options->answers as $r){
-
 					$responseprops = array('id' => rand(1,1000));
+					
 					if(strip_tags($r->feedback) != ""){
 						$feedbackJSON = extractLangs($r->feedback, true);
 						$responseprops['feedback'] = json_decode($feedbackJSON);
