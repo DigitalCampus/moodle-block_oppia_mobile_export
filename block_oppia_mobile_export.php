@@ -45,7 +45,7 @@ class block_oppia_mobile_export extends block_base {
         // show the OppiaServer options
         $servers = get_oppiaservers();
        	$this->content->text .= "<br/><p>".get_string('servers_block_select_connection','block_oppia_mobile_export')."<br/>";
-        $this->content->text .= "<select name=\"server\" class=\"custom-select\">";
+        $this->content->text .= "<select name=\"server\" class=\"custom-select\" style=\"width:100%;\">";
         foreach ($servers as $s){
         	$this->content->text .= "<option value='$s->id' ";
         	if ($s->defaultserver != 0){
@@ -63,7 +63,7 @@ class block_oppia_mobile_export extends block_base {
         // Show the style options
         if ($handle = opendir(dirname(__FILE__).'/styles/')) {
 	        $this->content->text .= "<p>".get_string('oppia_block_style','block_oppia_mobile_export')."<br/>";
-	        $this->content->text .= "<select name=\"stylesheet\" class=\"custom-select\">";
+	        $this->content->text .= "<select name=\"stylesheet\" class=\"custom-select\" style=\"width:100%;\">";
 	        while (false !== ($file = readdir($handle))) {
 	        	if($file!="." && $file!=".." && !is_dir(dirname(__FILE__).'/styles/'.$file)){
 	        		$this->content->text .= "<option value='".$file."'>".$file."</option>";
@@ -81,8 +81,8 @@ class block_oppia_mobile_export extends block_base {
         $this->content->text .= "<input type='hidden' name='courseid' value='".$COURSE->id."'>";
         $this->content->text .= "<input type='hidden' name='sesskey' value='".sesskey()."'>";
         if ($handle = opendir(dirname(__FILE__).'/styles/')) {
-        	$this->content->text .= "<p>".get_string('oppia_block_style','block_oppia_mobile_export')."<br/>";
-        	$this->content->text .= "<select name='stylesheet' class=\"custom-select\">";
+        	$this->content->text .= "<br/><p>".get_string('oppia_block_style','block_oppia_mobile_export')."<br/>";
+        	$this->content->text .= "<select name='stylesheet' class=\"custom-select\" style=\"width:100%;\">";
         	while (false !== ($file = readdir($handle))) {
         		if($file!="." && $file!=".." && !is_dir(dirname(__FILE__).'/styles/'.$file)){
         			$this->content->text .= "<option value='".$file."'>".$file."</option>";

@@ -2,7 +2,9 @@
 
 const regex_forbidden_dir_chars = '([\\/?%*:|"<>\.[:space:]]+)';
 const regex_forbidden_tag_chars = '([^a-zA-z0-9,\_]+)';
+const regex_resource_extensions = '/\.(mp3|mp4|avi)/';
 const basic_html_tags = '<strong><b><i><em>';
+
 
 function deleteDir($dirPath) {
 	if (! is_dir($dirPath)) {
@@ -150,11 +152,11 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
 	$lastimg = false;
 	$toreplace = array();
 	for($i=0;$i<count($files_tmp['filenames']);$i++){
-		$filename = $files_tmp['filenames'][$i][0];
+
+		$filename = trim($files_tmp['filenames'][$i][0]);
 		if($CFG->block_oppia_mobile_export_debug){
 			echo "Attempting to export file: ".urldecode($filename)."<br/>";
 		}
-		
 		$fs = get_file_storage();
 		$fileinfo = array(
 				'component' => $component,   
@@ -165,7 +167,6 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
 				'filename' => $filename);
 		$file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
 				$fileinfo['itemid'], $fileinfo['filepath'], urldecode($fileinfo['filename']));
-		
 		$result = copyFile($file, $component, $filearea, $itemid, $contextid, $course_root, $cmid);
 		if ($result != false){
 			$lastimg = $result;
@@ -184,7 +185,7 @@ function copyFile($file, $component, $filearea, $itemid, $contextid, $course_roo
 			$filename = $file->get_filename();
 			$fullpath = "/$contextid/$component/$filearea/$itemid/$filename";
 			$sha1 = sha1($fullpath);
-			if (preg_match('/.mp3$/', $filename) > 0){
+			if (preg_match(regex_resource_extensions, $filename) > 0){
 				$is_image = false;
 				$filedest = "/resources/".$filename;
 			}
@@ -193,11 +194,11 @@ function copyFile($file, $component, $filearea, $itemid, $contextid, $course_roo
 			}
 			
 			$result = $file->copy_content_to($course_root.$filedest);
-			var_dump($result);
 
 	} else {
 		$link = $CFG->wwwroot."/course/modedit.php?return=0&sr=0&update=".$cmid;
-		echo "<span style='color:red'>".get_string('error_edit_page','block_oppia_mobile_export',$link)."</span><br/>";
+		$message = 'error_'.($is_image?'image':'file').'_edit_page';
+		echo "<span style='color:red'>".get_string($message,'block_oppia_mobile_export',$link)."</span><br/>";
 		return false;
 	}
 	
@@ -205,7 +206,9 @@ function copyFile($file, $component, $filearea, $itemid, $contextid, $course_roo
 	$tr->originalfilename = $filename;
 	$tr->filename = sha1($fullpath);
 	if($CFG->block_oppia_mobile_export_debug){
-		echo get_string('export_image_success','block_oppia_mobile_export',urldecode($filename))."<br/>";
+		$message = 'export_'.($is_image?'image':'file').'_success';
+		echo get_string($message,'block_oppia_mobile_export',urldecode($filename))."<br/>";
+
 	}
 	return ($is_image ? $filedest : false);
 }
