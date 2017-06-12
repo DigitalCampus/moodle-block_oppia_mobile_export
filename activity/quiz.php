@@ -461,7 +461,15 @@ class mobile_activity_quiz extends mobile_activity {
 		                if ($dragimage = copyFile($file, 'qtype_ddimageortext', 'dragimage', $drag->id, $q->contextid,$this->courseroot,$cm->id)){
 		                	$responseprops['dragimage'] = $dragimage;
 		                }
-					}				
+					}
+
+					array_push($responses, array(
+						'order' => 1,
+						'id' 	=> rand(1,1000),
+						'props' => $responseprops,
+						'title' => $drag->label,
+						'score' => sprintf("%.4f", 0)
+					));			
 				}
 				
 				$bgfiles = $fs->get_area_files($q->contextid, 'qtype_ddimageortext', 'bgimage', $q->id, 'itemid');
