@@ -429,7 +429,7 @@ class mobile_activity_quiz extends mobile_activity {
 					$responseprops = array(
 						'id' 		=> rand(1,1000),
 						'type'		=> 'dropzone',
-						'no' 		=> $drop->no,
+						'choice' 	=> $drop->choice,
 						'xleft'		=> $drop->xleft,
 						'ytop'		=> $drop->ytop,
 						'droplabel'	=> $drop->label);
