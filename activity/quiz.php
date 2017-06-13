@@ -423,23 +423,36 @@ class mobile_activity_quiz extends mobile_activity {
 				$q->qtype = 'draganddrop';
 				$fs = get_file_storage();
 				$ddoptions = $q->options;
-				$drags = array();
+
+				// find the dropzones
+				$responseprops;
+				foreach ($ddoptions->drops as $drop){
+					$responseprops = array(
+						'id' 		=> rand(1,1000),
+						'type'		=> 'dropzone',
+						'choice' 	=> $drop->choice,
+						'xleft'		=> $drop->xleft,
+						'ytop'		=> $drop->ytop,
+						'droplabel'	=> $drop->label);
+
+					array_push($responses, array(
+						'order' => 1,
+						'id' 	=> rand(1,1000),
+						'props' => $responseprops,
+						'title' => $drop->label,
+						'score' => sprintf("%.4f", 0)
+					));
+				}
+
+				// find the draggables
 				foreach($ddoptions->drags as $drag){
 					$responseprops = array(
 						'id' 		=> rand(1,1000),
+						'type'		=> 'drag',
 						'draggroup'	=> $drag->draggroup,
 						'infinite'	=> $drag->infinite,
-						'dropzone' 	=> $drag->no,
+						'no' 		=> $drag->no,
 						'label'		=> $drag->label);
-
-					// find the corresponding drop zone
-					foreach ($ddoptions->drops as $drop){
-						if ($drop->no == $responseprops['dropzone']){
-							$responseprops['xleft'] = $drop->xleft;
-							$responseprops['ytop'] = $drop->ytop;
-							$responseprops['droplabel'] = $drop->label;
-						}
-					}
 
 					$dragimage = $fs->get_area_files($q->contextid, 'qtype_ddimageortext', 'dragimage', $drag->id, 'itemid');
 					foreach ($dragimage as $file){
@@ -452,12 +465,12 @@ class mobile_activity_quiz extends mobile_activity {
 					}
 
 					array_push($responses, array(
-						'order' => $j,
+						'order' => 1,
 						'id' 	=> rand(1,1000),
 						'props' => $responseprops,
 						'title' => $drag->label,
 						'score' => sprintf("%.4f", 0)
-					));
+					));			
 				}
 				
 				$bgfiles = $fs->get_area_files($q->contextid, 'qtype_ddimageortext', 'bgimage', $q->id, 'itemid');
