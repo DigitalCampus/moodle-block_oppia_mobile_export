@@ -2,6 +2,7 @@
 
 const regex_forbidden_dir_chars = '([\\/?%*:|"<>\.[:space:]]+)';
 const regex_forbidden_tag_chars = '([^a-zA-z0-9,\_]+)';
+const regex_html_entities = '(&nbsp;|&amp;|&quot;)';
 const regex_resource_extensions = '/\.(mp3|mp4|avi)/';
 const basic_html_tags = '<strong><b><i><em>';
 
@@ -115,6 +116,15 @@ function extractLangs($content, $asJSON = false, $strip_tags = false, $keep_basi
 	} else {
 		return $tempLangsRev;
 	}
+}
+
+function cleanHTMLEntities($text, $replace_br=false){
+	$cleantext = trim($text);
+	if ($replace_br){
+		$cleantext = preg_replace("(<br[[:space:]]*/?>)", "\n", $cleantext);
+	}
+	$cleantext = preg_replace(regex_html_entities, " ", $cleantext);
+	return $cleantext;
 }
 
 function cleanTagList($tags){
