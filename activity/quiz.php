@@ -504,7 +504,7 @@ class mobile_activity_quiz extends mobile_activity {
 				}
 			}
 			
-			$questionTitle = extractLangs($q->questiontext, true, true, $this->keep_tags);
+			$questionTitle = extractLangs(cleanHTMLEntities($q->questiontext, true), true, true, $this->keep_tags);
 
 			$j = 1;
 			// if matching question then concat the options with |
