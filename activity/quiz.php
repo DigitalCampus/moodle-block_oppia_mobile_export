@@ -736,19 +736,19 @@ class mobile_activity_quiz extends mobile_activity {
 		if(is_array($title) && count($title)>0){
 			foreach($title as $l=>$t){
 				$temp = $xmlDoc->createElement("title");
-				$temp->appendChild($xmlDoc->createTextNode(strip_tags($t)));
+				$temp->appendChild($xmlDoc->createCDATASection(strip_tags($t)));
 				$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($l));
 				$act->appendChild($temp);
 			}
 		} else {
 			$temp = $xmlDoc->createElement("title");
-			$temp->appendChild($xmlDoc->createTextNode(strip_tags($mod->name)));
+			$temp->appendChild($xmlDoc->createCDATASection(strip_tags($mod->name)));
 			$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
 			$act->appendChild($temp);
 		}
 		
 		$temp = $xmlDoc->createElement("content");
-		$temp->appendChild($xmlDoc->createTextNode($this->content));
+		$temp->appendChild($xmlDoc->createCDATASection($this->content));
 		$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode("en"));
 		$act->appendChild($temp);
 		

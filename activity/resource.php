@@ -62,13 +62,13 @@ class mobile_activity_resource extends mobile_activity {
 		if(is_array($title) && count($title)>0){
 			foreach($title as $l=>$t){
 				$temp = $xmlDoc->createElement("title");
-				$temp->appendChild($xmlDoc->createTextNode(strip_tags($t)));
+				$temp->appendChild($xmlDoc->createCDATASection(strip_tags($t)));
 				$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($l));
 				$struct->appendChild($temp);
 			}
 		} else {
 			$temp = $xmlDoc->createElement("title");
-			$temp->appendChild($xmlDoc->createTextNode(strip_tags($mod->name)));
+			$temp->appendChild($xmlDoc->createCDATASection(strip_tags($mod->name)));
 			$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
 			$struct->appendChild($temp);
 		}
@@ -76,7 +76,7 @@ class mobile_activity_resource extends mobile_activity {
 		if(is_array($description) && count($description)>0){
 			foreach($description as $l=>$d){
 				$temp = $xmlDoc->createElement("description");
-				$temp->appendChild($xmlDoc->createTextNode(strip_tags($d)));
+				$temp->appendChild($xmlDoc->createCDATASection(strip_tags($d)));
 				$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($l));
 				$struct->appendChild($temp);
 			}
@@ -84,7 +84,7 @@ class mobile_activity_resource extends mobile_activity {
 			$description = strip_tags($this->resource->intro);
 			if ($description != ""){
 				$temp = $xmlDoc->createElement("description");
-				$temp->appendChild($xmlDoc->createTextNode($description));
+				$temp->appendChild($xmlDoc->createCDATASection($description));
 				$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
 				$struct->appendChild($temp);
 			} 

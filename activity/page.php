@@ -250,13 +250,13 @@ class mobile_activity_page extends mobile_activity {
 		if(is_array($title) && count($title)>0){
 			foreach($title as $l=>$t){
 				$temp = $xmlDoc->createElement("title");
-				$temp->appendChild($xmlDoc->createTextNode(strip_tags($t)));
+				$temp->appendChild($xmlDoc->createCDATASection(strip_tags($t)));
 				$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($l));
 				$struct->appendChild($temp);
 			}
 		} else {
 			$temp = $xmlDoc->createElement("title");
-			$temp->appendChild($xmlDoc->createTextNode(strip_tags($mod->name)));
+			$temp->appendChild($xmlDoc->createCDATASection(strip_tags($mod->name)));
 			$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
 			$struct->appendChild($temp);
 		}
