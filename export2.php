@@ -114,6 +114,7 @@ $root = $xmlDoc->appendChild($xmlDoc->createElement("module"));
 $meta = $root->appendChild($xmlDoc->createElement("meta"));
 $meta->appendChild($xmlDoc->createElement("versionid",$versionid));
 $meta->appendChild($xmlDoc->createElement("priority",$priority));
+
 $meta->appendChild($xmlDoc->createElement("server",$server_connection->url));
 $meta->appendChild($xmlDoc->createElement("sequencing", $sequencing));
 $meta->appendChild($xmlDoc->createElement("tags",$tags));
@@ -466,6 +467,12 @@ if(count($MOBILE_LANGS) == 0){
 	$langs->appendChild($temp);
 }
 $meta->appendChild($langs);
+
+// add the gamification default values
+$gamification = $xmlDoc->createElement("gamification");
+$gameNode = create_default_course_gamification($xmlDoc,$gamification);
+$meta->appendChild($gamification);
+
 
 // add media includes
 if(count($MEDIA) > 0){
