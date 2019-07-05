@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="blocks/oppia_mobile_export" VERSION="2013111401" COMMENT="XMLDB file for Moodle block/oppia_mobile_export">
+<XMLDB PATH="blocks/oppia_mobile_export/db" VERSION="2013111401" COMMENT="XMLDB file for Moodle block/oppia_mobile_export/db">
   <TABLES>
     <TABLE NAME="block_oppia_mobile_config" COMMENT="">
       <FIELDS>
