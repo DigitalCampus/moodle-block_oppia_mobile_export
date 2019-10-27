@@ -126,6 +126,8 @@ add_or_update_oppiaconfig($id, 'coursesequencing', $sequencing, $server);
 add_or_update_oppiaconfig($id, 'keeptags', $keeptags?'enabled':'disabled', $server);
 add_or_update_oppiaconfig($id, 'default_lang', $DEFAULT_LANG, $server);
 
+add_publishing_log($server_connection->url, $USER->id, $id, "export_start", "Export process starting");
+
 $a = new stdClass();
 $a->stepno = 2;
 $a->coursename = strip_tags($course->fullname);
@@ -180,6 +182,8 @@ if ($server_info && $server_info->version ){
 }
 else{
 	echo '<span style="color:red;">Unable to get server info (is it correctly configured and running?)</span><br/>';
+	add_publishing_log($server_connection->url, $USER->id, $id, "server_unavailable", "Unable to get server info");
+	
 }
 echo '<strong>Quiz export method:</strong> '.$QUIZ_EXPORT_METHOD.'</p>';
 
@@ -506,6 +510,7 @@ $xml->load($course_root."/module.xml");
 if (!$xml->schemaValidate('./oppia-schema.xsd')) {
 	print '<p><b>'.get_string('error_xml_invalid','block_oppia_mobile_export').'</b></p>';
 	libxml_display_errors();
+	add_publishing_log($server_connection->url, $USER->id, $id, "error_xml_invalid", "Invalid course XML");
 } else {
 	echo get_string('export_xml_validated','block_oppia_mobile_export')."<p/>";
 	
@@ -576,6 +581,7 @@ if (!$xml->schemaValidate('./oppia-schema.xsd')) {
 	
 		echo "</ol>";
 	}
+	add_publishing_log($server_connection->url, $USER->id, $id,  "export_end", "Export process completed");
 }
 
 echo $OUTPUT->footer();

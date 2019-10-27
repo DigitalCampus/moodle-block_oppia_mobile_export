@@ -67,8 +67,21 @@ function get_oppiaconfig($modid, $name, $default, $servid="default"){
 
 function get_oppiaservers(){
 	global $DB, $USER;
-	$servers = $DB->get_records('block_oppia_mobile_server', array('moodleuserid'=>$USER->id));
-	return $servers;
+	return $DB->get_records('block_oppia_mobile_server', array('moodleuserid'=>$USER->id));
+}
+
+function add_publishing_log($server, $userid, $courseid, $action, $data){
+    global $DB;
+    $date = new DateTime();
+    $timestamp = $date->getTimestamp();
+    $DB->insert_record("block_oppia_publish_log",
+        array('server'=>$server,
+                'logdatetime'=>$timestamp,
+                'moodleuserid'=>$userid,
+                'courseid'=>$courseid,
+                'action'=>$action,
+                'data'=>$data)
+        );
 }
 
 function extractLangs($content, $asJSON = false, $strip_tags = false, $keep_basic_tags = false){
