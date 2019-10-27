@@ -78,7 +78,7 @@ function xmldb_block_oppia_mobile_export_upgrade($oldversion) {
 		upgrade_plugin_savepoint(true, 2016041301, 'error', 'blocks');
 	}
 	
-	if ($oldversion < 2019102701) {
+	if ($oldversion < 2019102702) {
 	    
 	    // Define table block_oppia_publish_log to be created.
 	    $table = new xmldb_table('block_oppia_publish_log');
@@ -101,7 +101,7 @@ function xmldb_block_oppia_mobile_export_upgrade($oldversion) {
 	    }
 	    
 	    // Blocks savepoint reached.
-	    upgrade_plugin_savepoint(true, 2019102701, 'error', 'blocks');
+	    upgrade_plugin_savepoint(true, 2019102702, 'error', 'blocks');
 	}
 	
 	 

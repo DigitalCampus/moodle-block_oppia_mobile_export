@@ -4,7 +4,7 @@
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
   <TABLES>
-    <TABLE NAME="block_oppia_mobile_config">
+    <TABLE NAME="block_oppia_mobile_config" COMMENT="block_oppia_mobile_config table retrofitted from MySQL">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="modid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
@@ -16,12 +16,10 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for oppia_mobile_export"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="block_oppia_mobile_server">
+    <TABLE NAME="block_oppia_mobile_server" COMMENT="block_oppia_mobile_server table retrofitted from MySQL">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        
         <FIELD NAME="servername" TYPE="char" LENGTH="50" NOTNULL="false" DEFAULT="" SEQUENCE="false"/>
-        <FIELD NAME="moodleuserid" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="url" TYPE="char" LENGTH="50" NOTNULL="false" DEFAULT="" SEQUENCE="false"/>
         <FIELD NAME="moodleuserid" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="username" TYPE="char" LENGTH="50" NOTNULL="false" DEFAULT="" SEQUENCE="false"/>
@@ -42,7 +40,7 @@
         <FIELD NAME="action" TYPE="char" LENGTH="50" NOTNULL="false" DEFAULT="" SEQUENCE="false"/>
         <FIELD NAME="data" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
       </FIELDS>
-      <KEYS>
+       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for block_oppia_publish_log"/>
       </KEYS>
     </TABLE>
