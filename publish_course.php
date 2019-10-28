@@ -106,6 +106,7 @@ $result = curl_exec($curl);
 $http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
 add_publishing_log($server_connection->url, $USER->id, $id,  "api_publishing_user", $username);
+add_publishing_log($server_connection->url, $USER->id, $id,  "api_file_posted", $file);
 
 switch ($http_status){
 	case "405":

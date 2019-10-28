@@ -581,6 +581,8 @@ if (!$xml->schemaValidate('./oppia-schema.xsd')) {
 	
 		echo "</ol>";
 	}
+	
+	add_publishing_log($server_connection->url, $USER->id, $id,  "export_file_created", strtolower($course->shortname)."-".$versionid.".zip");
 	add_publishing_log($server_connection->url, $USER->id, $id,  "export_end", "Export process completed");
 }
 
