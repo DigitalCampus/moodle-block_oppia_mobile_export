@@ -327,20 +327,6 @@ foreach($sections as $sect) {
 			$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
 			$section->appendChild($temp);
 		}
-		/* currently in the schema there is no support for images at this level
-		$filename = extractImageFile($sect->summary,
-										'course',
-										'section',
-										$sect->id,
-										$context->id,
-										$course_root,0); 
-		
-		if($filename){
-			$temp = $xmlDoc->createElement("image");
-			$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode($filename));
-			$section->appendChild($temp);
-		}
-		*/
 		$act_orderno = 1;
 		$activities = $xmlDoc->createElement("activities");
 		foreach ($sectionmods as $modnumber) {
@@ -538,7 +524,6 @@ if (!$xml->schemaValidate('./oppia-schema.xsd')) {
 	$a = new stdClass();
 	$a->zip = $outputzip;
 	$a->coursename = strip_tags($course->fullname);
-	echo "<div style='font-weight:bold; font-size:150%; display:block; border: 1px solid #000; padding:20px'>".get_string('export_download','block_oppia_mobile_export', $a )."</div>";
 	
 	// form to publish to OppiaMobile server
 	echo "<form style='display:block; border: 1px solid #000; padding:20px; margin:20px 0;' action='".$CFG->wwwroot."/blocks/oppia_mobile_export/publish_course.php' method='POST'>";
@@ -569,6 +554,12 @@ if (!$xml->schemaValidate('./oppia-schema.xsd')) {
 	echo get_string('publish_field_draft_info','block_oppia_mobile_export')."</p>";
 	echo "<p><input type='submit' name='submit' value='Publish'></p>";
 	echo "</form>";
+	
+	echo "<div style='display:block; border: 1px solid #000; padding:20px'>";
+	echo get_string('export_download_intro','block_oppia_mobile_export');
+	echo "<br/>";
+	echo get_string('export_download','block_oppia_mobile_export', $a );
+	echo "</div>";
 	
 	// link to cleanup files
 	echo "<p><a href='cleanup.php?id=".$id."'>".get_string('export_cleanup','block_oppia_mobile_export')."</a></p>";

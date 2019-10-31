@@ -134,6 +134,7 @@ $string['export_style_start'] = 'Adding style sheet';
 $string['export_style_resources'] = 'Copying style resources';
 $string['export_export_complete'] = 'Course export complete';
 $string['export_export_compressed'] = 'Compressed file';
+$string['export_download_intro'] = 'You can also download the course zip file here, but this should only be used for testing/development purposes. For live deployment, publish the file to the Oppia server first and download the course zip from there.';
 $string['export_download'] = 'Download exported course: <a href="{$a->zip}">{$a->coursename}</a>';
 
 $string['export_cleanup'] = 'Cleanup files';
