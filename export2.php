@@ -198,7 +198,7 @@ foreach ($sectionmods as $modnumber) {
 	}
 	$mod = $mods[$modnumber];
 		
-	if($mod->modname == 'page' && $mod->visible == 1){
+	if($mod->modname == 'page' && $mod->uservisible == 1){
 		echo "<p>".$mod->name."</p>";
 		$page = new mobile_activity_page();
 		$page->courseroot = $course_root;
@@ -207,7 +207,7 @@ foreach ($sectionmods as $modnumber) {
 		$page->process();
 		$page->getXML($mod,$i,false,$meta,$xmlDoc);
 	}
-	if($mod->modname == 'quiz' && $mod->visible == 1){
+	if($mod->modname == 'quiz' && $mod->uservisible == 1){
 		echo "<p>".$mod->name."</p>";
 
 		$quiz = new mobile_activity_quiz();
@@ -246,7 +246,7 @@ foreach ($sectionmods as $modnumber) {
 			$quiz->getXML($mod,$i,true,$meta,$xmlDoc);
 		}
 	}
-	if($mod->modname == 'feedback' && $mod->visible == 1){
+	if($mod->modname == 'feedback' && $mod->uservisible == 1){
 		echo $mod->name."<br/>";
 		$feedback = new mobile_activity_feedback();
 		$feedback->init($server_connection, $course->shortname,$mod->name,$versionid);
@@ -292,7 +292,9 @@ $sect_orderno = 1;
 foreach($sections as $sect) {
 	flush_buffers();
 	// We avoid the topic0 as is not a section as the rest
-	if ($sect->section == 0) continue;
+	if ($sect->section == 0) {
+	    continue;
+	}
 	$sectionmods = explode(",", $sect->sequence);
 
 	$defaultSectionTitle = false;
@@ -337,9 +339,8 @@ foreach($sections as $sect) {
 			
 			$mod = $mods[$modnumber];
 			
-			if($mod->modname == 'page' && $mod->visible == 1){
+			if($mod->modname == 'page' && $mod->uservisible == 1){
 				echo $mod->name."<br/>";
-				
 				$page = new mobile_activity_page();
 				$page->courseroot = $course_root;
 				$page->id = $mod->id;
@@ -349,7 +350,7 @@ foreach($sections as $sect) {
 				$act_orderno++;
 			}
 			
-			if($mod->modname == 'quiz' && $mod->visible == 1){
+			if($mod->modname == 'quiz' && $mod->uservisible == 1){
 				echo $mod->name."<br/>";
 				
 				$quiz = new mobile_activity_quiz();
@@ -392,7 +393,7 @@ foreach($sections as $sect) {
 				}
 			}
 			
-			if($mod->modname == 'resource' && $mod->visible == 1){
+			if($mod->modname == 'resource' && $mod->uservisible == 1){
 				echo $mod->name."<br/>";
 				$resource = new mobile_activity_resource();
 				$resource->courseroot = $course_root;
@@ -403,7 +404,7 @@ foreach($sections as $sect) {
 				$act_orderno++;
 			}
 			
-			if($mod->modname == 'url' && $mod->visible == 1){
+			if($mod->modname == 'url' && $mod->uservisible == 1){
 				echo $mod->name."<br/>";
 				$url = new mobile_activity_url();
 				$url->courseroot = $course_root;
@@ -414,7 +415,7 @@ foreach($sections as $sect) {
 				$act_orderno++;
 			}
 			
-			if($mod->modname == 'feedback' && $mod->visible == 1){
+			if($mod->modname == 'feedback' && $mod->uservisible == 1){
 				echo $mod->name."<br/>";
 				$feedback = new mobile_activity_feedback();
 				$feedback->init($server_connection, $course->shortname,$sect->summary,$versionid);
