@@ -278,13 +278,6 @@ echo "<input type='radio' name='coursesequencing' value='course' ".(($sequencing
 echo "<br></p>";
 echo "</div></div>";
 
-$keeptags = get_oppiaconfig($id,'keeptags','',$server);
-echo "<div class='export-section-icon'><img src='".$OUTPUT->pix_url('ic_keeptags', 'block_oppia_mobile_export')."'/></div>";
-echo "<p><b>".get_string('export_keep_tags_title','block_oppia_mobile_export')."</b>";
-echo "<br/><input type=\"checkbox\" name='keeptags' id='keeptags' value='true' ".(($keeptags != null && $keeptags==='enabled')?'checked':'')." />".get_string('export_keep_tags_desc','block_oppia_mobile_export')."<br/>";
-
-echo "<br/></p>";
-
 echo "<p><input type='submit' name='submit' value='".get_string('continue','block_oppia_mobile_export')."'></p>";
 echo "</form>";
 echo $OUTPUT->footer();

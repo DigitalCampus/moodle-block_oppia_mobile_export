@@ -84,7 +84,7 @@ function add_publishing_log($server, $userid, $courseid, $action, $data){
         );
 }
 
-function extractLangs($content, $asJSON = false, $strip_tags = false, $keep_basic_tags = false){
+function extractLangs($content, $asJSON = false, $strip_tags = false){
 	global $MOBILE_LANGS, $CURRENT_LANG, $DEFAULT_LANG;
 	preg_match_all('((lang=[\'|\"](?P<langs>[\w\-]*)[\'|\"]))',$content,$langs_tmp, PREG_OFFSET_CAPTURE);
 	$tempLangs = array();
@@ -98,10 +98,7 @@ function extractLangs($content, $asJSON = false, $strip_tags = false, $keep_basi
 		return $content;
 	} else {
 		$json = new stdClass;
-		if ($keep_basic_tags)
-			$json->{$DEFAULT_LANG} = trim(strip_tags($content, basic_html_tags));
-		else
-			$json->{$DEFAULT_LANG} = trim(strip_tags($content));
+		$json->{$DEFAULT_LANG} = trim(strip_tags($content, basic_html_tags));
 		return json_encode($json);
 	}
 
@@ -109,10 +106,7 @@ function extractLangs($content, $asJSON = false, $strip_tags = false, $keep_basi
 	foreach($tempLangs as $k=>$v){
 		$CURRENT_LANG = $k;
 		if ($strip_tags){
-			if ($keep_basic_tags)
-				$tempLangs[$k] = trim(strip_tags($filter->filter($content), basic_html_tags));
-			else
-				$tempLangs[$k] = trim(strip_tags($filter->filter($content)));
+			$tempLangs[$k] = trim(strip_tags($filter->filter($content), basic_html_tags));
 		} else {
 			$tempLangs[$k] = trim($filter->filter($content));
 		}

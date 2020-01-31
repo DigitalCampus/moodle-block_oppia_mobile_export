@@ -14,19 +14,17 @@ class mobile_activity_quiz extends mobile_activity {
 	private $configArray = array(); // config (quiz props) array
 	private $server_connection;
 	private $quiz_media = array();
-	private $keep_tags = false; //keep some tags (<i>,<b>,etc) in question text
 
 	private $export_method;
 	
 	function init($server_connection, $shortname, $summary, 
-		$configArray, $courseversion, $export_method='server', $keep_tags=false){
+		$configArray, $courseversion, $export_method='server'){
 		$this->shortname = strip_tags($shortname);
 		$this->summary = $summary;
 		$this->configArray = $configArray;
 		$this->courseversion = $courseversion;
 		$this->server_connection = $server_connection;
 		$this->export_method = $export_method;
-		$this->keep_tags = $keep_tags;
 	}
 	
 	function preprocess(){
@@ -235,7 +233,7 @@ class mobile_activity_quiz extends mobile_activity {
 					}
 				}
 				
-				$questionJSON = extractLangs($q->questiontext, true, true, $this->keep_tags);
+				$questionJSON = extractLangs($q->questiontext, true, true);
 				
 				// create question
 				$post = array('title' => $questionJSON,
@@ -290,7 +288,7 @@ class mobile_activity_quiz extends mobile_activity {
 							$props[1] = array('name' => 'tolerance', 'value' => $r->tolerance);
 						}
 						
-						$responseJSON = extractLangs($r->answer, true, true, $this->keep_tags);
+						$responseJSON = extractLangs($r->answer, true, true);
 						// add response
 						$post = array('question' => $question_uri,
 								'order' => $j,
@@ -504,7 +502,7 @@ class mobile_activity_quiz extends mobile_activity {
 				}
 			}
 			
-			$questionTitle = extractLangs(cleanHTMLEntities($q->questiontext, true), true, true, $this->keep_tags);
+			$questionTitle = extractLangs(cleanHTMLEntities($q->questiontext, true), true, true);
 
 			$j = 1;
 			// if matching question then concat the options with |
@@ -550,7 +548,7 @@ class mobile_activity_quiz extends mobile_activity {
 						'order' => $j,
 						'id' 	=> rand(1,1000),
 						'props' => $responseprops,
-						'title' => json_decode(extractLangs($r->answer, true, true, $this->keep_tags)),
+						'title' => json_decode(extractLangs($r->answer, true, true)),
 						'score' => sprintf("%.4f", $score)
 					));
 					$j++;
