@@ -94,13 +94,11 @@ $string['export_title'] = 'Export - step {$a->stepno}: {$a->coursename}';
 $string['export2print_title'] = 'Export to Print - step {$a->stepno}: {$a->coursename}';
 $string['export_contains_quizzes'] = 'Since this course contains quizzes, please select which quizzes (if any) should be a random selection of the questions available';
 
-$string['export_quiz_availability'] = 'Availability';
 $string['export_quiz_sectionname'] = 'Section Name';
 $string['export_quiz_title'] = 'Quiz Title';
 $string['export_quiz_norandom'] = 'No random questions';
 $string['export_quiz_feedback'] = 'Show feedback';
 $string['export_quiz_passthreshold'] = 'Pass Threshold (%)';
-$string['export_quiz_tryagain'] = 'Allow try-again?';
 $string['export_quiz_max_attempts'] = 'Max number of attempts';
 
 $string['export_quiz_norandom_all'] = 'Use all questions (don\'t randomise)';
@@ -157,10 +155,6 @@ $string['continue'] = 'Continue';
 $string['feedback_always'] = 'After question and end of quiz';
 $string['feedback_never'] = 'Never show feedback';
 $string['feedback_endonly'] = 'At end of quiz only';
-
-$string['availability_always'] = 'Always';
-$string['availability_section'] = 'Only after previous section activities completed';
-$string['availability_course'] = 'Only after all previous course activities completed';
 
 $string['publish_error_password'] = 'No password entered, please go back and enter your password';
 $string['publish_error_tags'] = 'No tags have been given, please go back and enter at least one tag';

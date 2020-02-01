@@ -216,23 +216,15 @@ foreach ($sectionmods as $modnumber) {
 		$showfeedback = optional_param('quiz_'.$mod->id.'_showfeedback',2,PARAM_INT);
 		add_or_update_oppiaconfig($mod->id, 'showfeedback', $showfeedback);
 		
-		$allowtryagain = optional_param('quiz_'.$mod->id.'_allowtryagain',1,PARAM_BOOL);
-		add_or_update_oppiaconfig($mod->id, 'allowtryagain', $allowtryagain);
-		
 		$passthreshold = optional_param('quiz_'.$mod->id.'_passthreshold',0,PARAM_INT);
 		add_or_update_oppiaconfig($mod->id, 'passthreshold', $passthreshold);
-		
-		$availability = optional_param('quiz_'.$mod->id.'_availability',0,PARAM_INT);
-		add_or_update_oppiaconfig($mod->id, 'availability', $availability);
 
 		$maxattempts = optional_param('quiz_'.$mod->id.'_maxattempts','unlimited',PARAM_INT);
 		add_or_update_oppiaconfig($mod->id, 'maxattempts', $maxattempts);
 		
 		$configArray = Array('randomselect'=>$random, 
 								'showfeedback'=>$showfeedback,
-								'allowtryagain'=>$allowtryagain, 
 								'passthreshold'=>$passthreshold,
-								'availability'=>$availability,
 								'maxattempts'=>$maxattempts);
 		$quiz->init($server_connection,$course->shortname,"Pre-test",$configArray,$versionid,$QUIZ_EXPORT_METHOD);
 		$quiz->courseroot = $course_root;
@@ -358,23 +350,15 @@ foreach($sections as $sect) {
 				$showfeedback = optional_param('quiz_'.$mod->id.'_showfeedback',1,PARAM_INT);
 				add_or_update_oppiaconfig($mod->id, 'showfeedback', $showfeedback);
 				
-				$allowtryagain = optional_param('quiz_'.$mod->id.'_allowtryagain',1,PARAM_INT);
-				add_or_update_oppiaconfig($mod->id, 'allowtryagain', $allowtryagain);
-				
 				$passthreshold = optional_param('quiz_'.$mod->id.'_passthreshold',0,PARAM_INT);
 				add_or_update_oppiaconfig($mod->id, 'passthreshold', $passthreshold);
-		
-				$availability = optional_param('quiz_'.$mod->id.'_availability',0,PARAM_INT);
-				add_or_update_oppiaconfig($mod->id, 'availability', $availability);
 
 				$maxattempts = optional_param('quiz_'.$mod->id.'_maxattempts','unlimited',PARAM_INT);
 				add_or_update_oppiaconfig($mod->id, 'maxattempts', $maxattempts);
 				
 				$configArray = Array('randomselect'=>$random, 
-									'showfeedback'=>$showfeedback,
-									'allowtryagain'=>$allowtryagain, 
+									'showfeedback'=>$showfeedback, 
 									'passthreshold'=>$passthreshold,
-									'availability'=>$availability,
 									'maxattempts'=>$maxattempts);
 				
 				$quiz->init($server_connection, $course->shortname,$sect->summary,$configArray,$versionid,$QUIZ_EXPORT_METHOD);
