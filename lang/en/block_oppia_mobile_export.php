@@ -28,7 +28,7 @@ $string['pluginname'] = 'Oppia Mobile Export';
 $string['oppia_mobile_export:addinstance'] = 'Add a new Oppia export block';
 
 $string['oppia_block_api'] = 'Current OppiaMobile API:';
-$string['oppia_block_style'] = 'Stylesheet to use:';
+$string['oppia_block_style'] = 'Course design:';
 $string['oppia_block_export_button'] = 'Export to Oppia Package';
 $string['oppia_block_export2print_button'] = 'Export to print';
 
