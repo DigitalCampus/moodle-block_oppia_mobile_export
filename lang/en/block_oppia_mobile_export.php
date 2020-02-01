@@ -109,8 +109,8 @@ $string['export_priority_title'] = 'Course Priority';
 $string['export_priority_label'] = 'Priority';
 $string['export_priority_desc'] = 'This is the relative weight given to a course to help determine the ordering in which it will appear on the mobile (10 = highest priority)';
 
-$string['export_course_tags_title'] = 'Course Tags';
-$string['export_course_tags_desc'] = 'Tags that will be used to classify the course on the OppiaMobile server, separate each tag by a comma';
+$string['export_course_tags_title'] = 'Course Categories';
+$string['export_course_tags_desc'] = 'Categories that will be used to classify the course on the OppiaMobile server, separate each category by a comma';
 
 $string['export_lang_title'] = 'Course default language';
 $string['export_lang_desc'] = 'The default language for this course, using the ISO 639 code';
@@ -157,12 +157,12 @@ $string['feedback_never'] = 'Never show feedback';
 $string['feedback_endonly'] = 'At end of quiz only';
 
 $string['publish_error_password'] = 'No password entered, please go back and enter your password';
-$string['publish_error_tags'] = 'No tags have been given, please go back and enter at least one tag';
+$string['publish_error_tags'] = 'No categories have been entered, please go back and enter at least one category';
 $string['publish_error_username'] = 'No username entered, please go back and enter your username';
 $string['publish_field_draft'] = 'Is draft';
 $string['publish_field_draft_info'] = 'Tick the box if the course is to be a \'draft\' (only availble to selected groups), or untick the box if it should be published publically';
 $string['publish_field_password'] = 'Password';
-$string['publish_field_tags'] = 'Tags (for classifying course)';
+$string['publish_field_tags'] = 'Categories (for classifying course)';
 $string['publish_field_username'] = 'Username';
 $string['publish_heading'] = 'Publish to OppiaMobile server';
 $string['publish_message_201'] = 'Your course has now been published on the OppiaMobile server';
