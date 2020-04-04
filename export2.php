@@ -239,7 +239,12 @@ foreach ($sectionmods as $modnumber) {
 	if($mod->modname == 'feedback' && $mod->uservisible == 1){
 		echo $mod->name."<br/>";
 		$feedback = new mobile_activity_feedback();
-		$feedback->init($server_connection, $course->shortname,$mod->name,$versionid);
+		$configArray = Array(
+		    'showfeedback'=>false,
+		    'passthreshold'=>0,
+		    'maxattempts'=>0);
+		
+		$feedback->init($server_connection, $course->shortname,$mod->name,$versionid, $configArray);
 		$feedback->courseroot = $course_root;
 		$feedback->id = $mod->id;
 		$feedback->section = 0;
@@ -400,7 +405,11 @@ foreach($sections as $sect) {
 			if($mod->modname == 'feedback' && $mod->uservisible == 1){
 				echo $mod->name."<br/>";
 				$feedback = new mobile_activity_feedback();
-				$feedback->init($server_connection, $course->shortname,$sect->summary,$versionid);
+				$configArray = Array(
+				    'showfeedback'=>false,
+				    'passthreshold'=>0,
+				    'maxattempts'=>0);
+				$feedback->init($server_connection, $course->shortname,$sect->summary,$versionid, $configArray);
 				$feedback->courseroot = $course_root;
 				$feedback->id = $mod->id;
 				$feedback->section = $sect_orderno;
