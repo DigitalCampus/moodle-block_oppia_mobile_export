@@ -104,23 +104,9 @@ class mobile_activity_feedback extends mobile_activity {
             $type = null;
             
             // multichoice multi
-            if($q->typ == "multichoice" && substr($q->presentation,0,1)==='c'){
-                $type = "multiselect";
-                $respstr = substr($q->presentation, 6);
-                $resps = explode('|', $respstr);
-                $j = 1;
-                foreach($resps as $resp){
-                    array_push($responses, array(
-                        'order' => $j,
-                        'id' 	=> rand(1,1000),
-                        'props' => json_decode ("{}"),
-                        'title' => trim($resp),
-                        'score' => "0"
-                    ));
-                    $j++;
-                }
-            } elseif ($q->typ == "multichoice" && substr($q->presentation,0,1)==='d'){
-                // multichoice single allowed
+            if($q->typ == "multichoice" 
+                && (substr($q->presentation,0,1)==='c'
+                    || substr($q->presentation,0,1)==='d')){
                 $type = "multiselect";
                 $respstr = substr($q->presentation, 6);
                 $resps = explode('|', $respstr);
@@ -217,7 +203,7 @@ class mobile_activity_feedback extends mobile_activity {
 		$cm = get_coursemodule_from_id('feedback', $this->id);
 	}
 	
-	function getXML($mod,$counter,$activity=true,&$node,&$xmlDoc){
+	function getXML($mod, $counter, $activity=true, &$node, &$xmlDoc){
 		global $DEFAULT_LANG;
 		$act = $xmlDoc->createElement("activity");
 		$act->appendChild($xmlDoc->createAttribute("type"))->appendChild($xmlDoc->createTextNode($mod->modname));
