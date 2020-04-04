@@ -99,10 +99,7 @@ class mobile_activity_feedback extends mobile_activity {
         foreach($feedbackitems as $q){            
        
             $responses = array();
-            
-            print "<pre>";
-            print_r($q);
-            print "</pre>";
+
             $questionTitle = extractLangs(cleanHTMLEntities($q->label, true), true, true);
             $type = null;
             
