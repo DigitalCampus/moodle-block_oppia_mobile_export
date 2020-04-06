@@ -73,7 +73,7 @@ foreach($sections as $sect) {
 			}
 			$mod = $mods[$modnumber];
 			
-			if($mod->modname == 'quiz' && $mod->visible == 1){
+			if($mod->modname == 'quiz' && $mod->uservisible == 1){
 			
 				$quiz = new mobile_activity_quiz();
 				$quiz->init($server_connection,$course->shortname,$sect->summary,0,0);
@@ -116,9 +116,7 @@ if (count($quizzes)> 0){
 	echo "<div class=\"pure-u-2-24\">".get_string('export_quiz_title','block_oppia_mobile_export')."</div>";
 	echo "<div class=\"pure-u-4-24\">".get_string('export_quiz_norandom','block_oppia_mobile_export')."</div>";
 	echo "<div class=\"pure-u-4-24\">".get_string('export_quiz_feedback','block_oppia_mobile_export')."</div>";
-	echo "<div class=\"pure-u-3-24\">".get_string('export_quiz_tryagain','block_oppia_mobile_export')."</div>";
 	echo "<div class=\"pure-u-2-24\">".get_string('export_quiz_passthreshold','block_oppia_mobile_export')."</div>";
-	echo "<div class=\"pure-u-2-24\">".get_string('export_quiz_availability','block_oppia_mobile_export')."</div>";
 	echo "<div class=\"pure-u-3-24\">".get_string('export_quiz_max_attempts','block_oppia_mobile_export')."</div>";
 	echo "</div>";
 	foreach ($quizzes as $quiz){
@@ -169,22 +167,6 @@ if (count($quizzes)> 0){
 			echo ">".get_string('feedback_endonly','block_oppia_mobile_export')."</option>";
 			echo "</select></div>";
 			
-			$allowtryagain = get_oppiaconfig($quiz->id,'allowtryagain',1);
-			echo "<div class=\"pure-u-lg-3-24 pure-u-sm-1-2 pure-u-1\">";
-			echo "<span class=\"pure-hidden-lg pure-hidden-xl\">".get_string('export_quiz_tryagain','block_oppia_mobile_export')."</span>";
-			echo "<select name='quiz_".$quiz->id."_allowtryagain' id='id_allowtryagain_quiz_".$quiz->id."'>";
-			echo "<option value='1'";
-				if ($allowtryagain == 1){
-					echo " selected='selected'";
-				}
-			echo ">".get_string('true','block_oppia_mobile_export')."</option>";
-			echo "<option value='0'";
-			if ($allowtryagain == 0){
-				echo " selected='selected'";
-			}
-			echo ">".get_string('false','block_oppia_mobile_export')."</option>";
-			echo "</select></div>";
-			
 			$passthreshold = get_oppiaconfig($quiz->id,'passthreshold',80);
 			echo "<div class=\"pure-u-lg-2-24 pure-u-sm-1-2 pure-u-1\">";
 			echo "<span class=\"pure-hidden-lg pure-hidden-xl\">".get_string('export_quiz_passthreshold','block_oppia_mobile_export')."</span>";
@@ -196,29 +178,6 @@ if (count($quizzes)> 0){
 				}
 				echo ">".$i."</option>";
 			}
-			echo "</select></div>";
-			
-			$availability = get_oppiaconfig($quiz->id,'availability','0');
-			echo "<div class=\"pure-u-lg-2-24 pure-u-md-1-2 pure-u-1\">";
-			echo "<span class=\"pure-hidden-lg pure-hidden-xl\">".get_string('export_quiz_availability','block_oppia_mobile_export')."</span>";
-			echo "<select name='quiz_".$quiz->id."_availability' id='id_availability_quiz_".$quiz->id."'>";
-			echo "<option value='0'";
-				if ($availability == 0){
-					echo " selected='selected'";
-				}
-			echo ">".get_string('availability_always','block_oppia_mobile_export')."</option>";
-			
-			echo "<option value='1'";
-			if ($availability == 1){
-				echo " selected='selected'";
-			}
-			echo ">".get_string('availability_section','block_oppia_mobile_export')."</option>";
-			
-			echo "<option value='2'";
-			if ($availability == 2){
-				echo " selected='selected'";
-			}
-			echo ">".get_string('availability_course','block_oppia_mobile_export')."</option>";
 			echo "</select></div>";
 
 			$maxattempts = get_oppiaconfig($quiz->id, 'maxattempts', 'unlimited');
@@ -277,13 +236,6 @@ echo "<input type='radio' name='coursesequencing' value='section' ".(($sequencin
 echo "<input type='radio' name='coursesequencing' value='course' ".(($sequencing == 'course' )?"checked":"")."> ".get_string('export_sequencing_course','block_oppia_mobile_export')."<br>";
 echo "<br></p>";
 echo "</div></div>";
-
-$keeptags = get_oppiaconfig($id,'keeptags','',$server);
-echo "<div class='export-section-icon'><img src='".$OUTPUT->pix_url('ic_keeptags', 'block_oppia_mobile_export')."'/></div>";
-echo "<p><b>".get_string('export_keep_tags_title','block_oppia_mobile_export')."</b>";
-echo "<br/><input type=\"checkbox\" name='keeptags' id='keeptags' value='true' ".(($keeptags != null && $keeptags==='enabled')?'checked':'')." />".get_string('export_keep_tags_desc','block_oppia_mobile_export')."<br/>";
-
-echo "<br/></p>";
 
 echo "<p><input type='submit' name='submit' value='".get_string('continue','block_oppia_mobile_export')."'></p>";
 echo "</form>";

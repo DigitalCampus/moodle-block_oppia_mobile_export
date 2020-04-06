@@ -1,4 +1,5 @@
 <?php 
+
 require_once(dirname(__FILE__) . '/../../config.php');
 
 require_once($CFG->dirroot . '/course/lib.php');
@@ -47,8 +48,10 @@ $modinfo = get_fast_modinfo($course);
 $sections = $modinfo->get_section_info_all();
 $mods = $modinfo->get_cms();
 
+$server_connection = $DB->get_record('block_oppia_mobile_server', array('moodleuserid'=>$USER->id,'id'=>$server));
 
 add_or_update_oppiaconfig($id, 'is_draft', $is_draft);
+add_publishing_log($server_connection->url, $USER->id, $id,  "api_publish_start", "API publish process started");
 
 echo $OUTPUT->header();
 
@@ -72,9 +75,6 @@ if (trim($tags) == ''){
 	die();
 }
 
-
-
-$server_connection = $DB->get_record('block_oppia_mobile_server', array('moodleuserid'=>$USER->id,'id'=>$server));
 if(!$server_connection && $server != "default"){
 	echo "<p>".get_string('server_not_owner','block_oppia_mobile_export')."</p>";
 	echo $OUTPUT->footer();
@@ -105,22 +105,34 @@ curl_setopt($curl, CURLOPT_POSTFIELDS, $post);
 $result = curl_exec($curl);
 $http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
+add_publishing_log($server_connection->url, $USER->id, $id,  "api_publishing_user", $username);
+add_publishing_log($server_connection->url, $USER->id, $id,  "api_file_posted", $file);
 
 switch ($http_status){
 	case "405":
-		echo "<p>".get_string('publish_message_405','block_oppia_mobile_export')."</p>";
+		$msgtext = get_string('publish_message_405','block_oppia_mobile_export');
+		echo "<p>".$msgtext."</p>";
+		add_publishing_log($server_connection->url, $USER->id, $id,  "api_publish_invalid_request", $msgtext);
 		break;
 	case "400":
-		echo "<p>".get_string('publish_message_400','block_oppia_mobile_export')."</p>";
+		$msgtext = get_string('publish_message_400','block_oppia_mobile_export');
+		echo "<p>".$msgtext."</p>";
+		add_publishing_log($server_connection->url, $USER->id, $id,  "api_publish_bad_request", $msgtext);
 		break;
 	case "401":
-		echo "<p>".get_string('publish_message_401','block_oppia_mobile_export')."</p>";
+		$msgtext = get_string('publish_message_401','block_oppia_mobile_export');
+		echo "<p>".$msgtext."</p>";
+		add_publishing_log($server_connection->url, $USER->id, $id,  "api_publish_unauthorised", $msgtext);
 		break;
 	case "500":
-		echo "<p>".get_string('publish_message_500','block_oppia_mobile_export')."</p>";
+		$msgtext = get_string('publish_message_500','block_oppia_mobile_export');
+		echo "<p>".$msgtext."</p>";
+		add_publishing_log($server_connection->url, $USER->id, $id,  "api_publish_server_error", $msgtext);
 		break;
 	case "201":
-		echo "<p>".get_string('publish_message_201','block_oppia_mobile_export')."</p>";
+		$msgtext = get_string('publish_message_201','block_oppia_mobile_export');
+		echo "<p>".$msgtext."</p>";
+		add_publishing_log($server_connection->url, $USER->id, $id,  "api_publish_success", $msgtext);
 		break;
 	default:
 		
@@ -134,11 +146,13 @@ else{
 
 	if (array_key_exists('message', $json_response)){
 		echo "<p>".$json_response['message'].'</p>';
+		add_publishing_log($server_connection->url, $USER->id, $id,  "api_publish_response", $json_response['message']);
 	}
 	if (array_key_exists('messages', $json_response)){
 		$messages = $json_response['messages'];
 		foreach($messages as $msg){
 			echo '<div class="export-results '.$msg['tags'].'">'.$msg['message'].'</div>';
+			add_publishing_log($server_connection->url, $USER->id, $id,  "api_publish_response_message", $msg['tags'].": ".$msg['message']);
 		}
 	}
 	
@@ -146,6 +160,7 @@ else{
 
 curl_close ($curl);
 
+add_publishing_log($server_connection->url, $USER->id, $id,  "api_publish_end", "API publish process ended");
 
 echo $OUTPUT->footer();
 

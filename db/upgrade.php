@@ -78,6 +78,32 @@ function xmldb_block_oppia_mobile_export_upgrade($oldversion) {
 		upgrade_plugin_savepoint(true, 2016041301, 'error', 'blocks');
 	}
 	
+	if ($oldversion < 2019102702) {
+	    
+	    // Define table block_oppia_publish_log to be created.
+	    $table = new xmldb_table('block_oppia_publish_log');
+	    
+	    // Adding fields to table block_oppia_mobile_server.
+	    $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+	    $table->add_field('logdatetime', XMLDB_TYPE_INTEGER, '18', null, null, null, '0');
+	    $table->add_field('server', XMLDB_TYPE_CHAR, '200', null, null, null, '');
+	    $table->add_field('moodleuserid', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+	    $table->add_field('courseid', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+	    $table->add_field('action', XMLDB_TYPE_CHAR, '50', null, null, null, '');
+	    $table->add_field('data', XMLDB_TYPE_TEXT, null, null, null, null, null, 'name');
+	    
+	    // Adding keys to table block_oppia_publish_log.
+	    $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+	    
+	    // Conditionally launch create table for block_oppia_publish_log.
+	    if (!$dbman->table_exists($table)) {
+	        $dbman->create_table($table);
+	    }
+	    
+	    // Blocks savepoint reached.
+	    upgrade_plugin_savepoint(true, 2019102702, 'error', 'blocks');
+	}
+	
 	 
 	return true;
 }

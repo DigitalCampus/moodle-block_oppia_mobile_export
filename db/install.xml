@@ -1,30 +1,47 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="blocks/oppia_mobile_export/db" VERSION="2013111401" COMMENT="XMLDB file for Moodle block/oppia_mobile_export/db">
+<XMLDB PATH="blocks/oppia_mobile_export/db" VERSION="20191027" COMMENT="XMLDB file for Moodle block/oppia_mobile_export/db"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+>
   <TABLES>
-    <TABLE NAME="block_oppia_mobile_config" COMMENT="">
+    <TABLE NAME="block_oppia_mobile_config" COMMENT="block_oppia_mobile_config table retrofitted from MySQL">
       <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="userid"/>
-        <FIELD NAME="modid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="id" NEXT="name"/>
-      	<FIELD NAME="name" TYPE="char" LENGTH="20" NOTNULL="false" DEFAULT="" PREVIOUS="modid" SEQUENCE="false" NEXT="value"/>
-      	<FIELD NAME="value" TYPE="char" LENGTH="70" NOTNULL="false" DEFAULT="" PREVIOUS="name" SEQUENCE="false"/>
-        <FIELD NAME="serverid" TYPE="char" LENGTH="20" NOTNULL="false" DEFAULT="" PREVIOUS="value" SEQUENCE="false"/>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="modid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="20" NOTNULL="false" DEFAULT="" SEQUENCE="false"/>
+        <FIELD NAME="value" TYPE="char" LENGTH="70" NOTNULL="false" DEFAULT="" SEQUENCE="false"/>
+        <FIELD NAME="serverid" TYPE="char" LENGTH="20" NOTNULL="false" DEFAULT="" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for oppia_mobile_export"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="block_oppia_mobile_server" COMMENT="">
+    <TABLE NAME="block_oppia_mobile_server" COMMENT="block_oppia_mobile_server table retrofitted from MySQL">
       <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="userid"/>
-      	<FIELD NAME="servername" TYPE="char" LENGTH="50" NOTNULL="false" DEFAULT="" PREVIOUS="id" SEQUENCE="false" NEXT="url"/>
-      	<FIELD NAME="url" TYPE="char" LENGTH="50" NOTNULL="false" DEFAULT="" PREVIOUS="name" SEQUENCE="false"/>
-      	<FIELD NAME="moodleuserid" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" PREVIOUS="url" SEQUENCE="false"/>
-      	<FIELD NAME="username" TYPE="char" LENGTH="50" NOTNULL="false" DEFAULT="" PREVIOUS="moodleuser" SEQUENCE="false"/>
-      	<FIELD NAME="apikey" TYPE="char" LENGTH="50" NOTNULL="false" DEFAULT="" PREVIOUS="username" SEQUENCE="false"/>
-      	<FIELD NAME="defaultserver" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" PREVIOUS="apikey" SEQUENCE="false"/>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="servername" TYPE="char" LENGTH="50" NOTNULL="false" DEFAULT="" SEQUENCE="false"/>
+        <FIELD NAME="url" TYPE="char" LENGTH="50" NOTNULL="false" DEFAULT="" SEQUENCE="false"/>
+        <FIELD NAME="moodleuserid" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="username" TYPE="char" LENGTH="50" NOTNULL="false" DEFAULT="" SEQUENCE="false"/>
+        <FIELD NAME="apikey" TYPE="char" LENGTH="50" NOTNULL="false" DEFAULT="" SEQUENCE="false"/>
+        <FIELD NAME="defaultserver" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for block_oppia_mobile_server"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="block_oppia_publish_log" COMMENT="block_oppia_publish_log table retrofitted from MySQL">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="18" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="logdatetime" TYPE="int" LENGTH="18" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="server" TYPE="char" LENGTH="200" NOTNULL="false" DEFAULT="" SEQUENCE="false"/>
+        <FIELD NAME="moodleuserid" TYPE="int" LENGTH="18" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="18" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="action" TYPE="char" LENGTH="50" NOTNULL="false" DEFAULT="" SEQUENCE="false"/>
+        <FIELD NAME="data" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+      </FIELDS>
+       <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for block_oppia_publish_log"/>
       </KEYS>
     </TABLE>
   </TABLES>

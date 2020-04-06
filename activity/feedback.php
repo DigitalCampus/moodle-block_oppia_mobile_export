@@ -2,7 +2,7 @@
 
 class mobile_activity_feedback extends mobile_activity {
 	
-	private $supported_types = array('multichoicerated', 'textarea', 'multichoice','numeric','textfield');
+	private $supported_types = array('multichoicerated', 'textarea', 'multichoice', 'numeric', 'textfield');
 	private $courseversion;
 	private $summary;
 	private $shortname;
@@ -10,13 +10,15 @@ class mobile_activity_feedback extends mobile_activity {
 	private $feedback_image = null;
 	private $is_valid = true; //i.e. doesn't only contain essay or random questions.
 	private $no_questions = 0; // total no of valid questions
+	private $configArray = array(); // config (quiz props) array
 	private $server_connection;
 	
-	function init($server_connection, $shortname, $summary, $courseversion){
+	function init($server_connection, $shortname, $summary, $courseversion, $configArray){
 		$this->shortname = strip_tags($shortname);
 		$this->summary = $summary;
 		$this->courseversion = $courseversion;
 		$this->server_connection = $server_connection;
+		$this->configArray = $configArray;
 	}
 	
 	
@@ -42,181 +44,157 @@ class mobile_activity_feedback extends mobile_activity {
 			$this->is_valid = false;
 		}
 	}
+	
 	function process(){
-		global $DB,$CFG,$USER;
-		$cm = get_coursemodule_from_id('feedback', $this->id);
-		$context = context_module::instance($cm->id);
-		$feedback = $DB->get_record('feedback', array('id'=>$cm->instance), '*', MUST_EXIST);
-		
-		$select = 'feedback = ?';
-		$params = array($feedback->id);
-		$feedbackitems = $DB->get_records_select('feedback_item', $select, $params, 'position');
-		
-		
-		$mQH = new QuizHelper();
-		$mQH->init($this->server_connection);
-		
-		$this->md5 = md5(serialize($feedbackitems)).$this->id;
-		
-		// find if this quiz already exists
-		$resp = $mQH->exec('quizprops/digest/'.$this->md5, array(),'get');
-		if(!isset($resp->quizzes)){
-			echo get_string('error_connection','block_oppia_mobile_export');
-			die;
-		}
-		
-		$filename = extractImageFile($feedback->intro,
-				'mod_feedback',
-				'intro',
-				'0',
-				$context->id,
-				$this->courseroot,
-				$cm->id);
-			
-		if($filename){
-			$this->feedback_image = "/images/".resizeImage($this->courseroot."/".$filename,
-					$this->courseroot."/images/".$cm->id,
-					$CFG->block_oppia_mobile_export_thumb_width,
-					$CFG->block_oppia_mobile_export_thumb_height);
-			//delete original image
-			unlink($this->courseroot."/".$filename) or die(get_string('error_file_delete','block_oppia_mobile_export'));
-		}
-		
-		
-		if(count($resp->quizzes) > 0){
-			$quiz_id = $resp->quizzes[0]->quiz_id;
-			$quiz = $mQH->exec('quiz/'.$quiz_id, array(),'get');
-			$this->content = json_encode($quiz);
-			return;
-		}
-		
-		$props = array();
-		$props[0] = array('name' => "digest", 'value' => $this->md5);
-		$props[1] = array('name' => "courseversion", 'value' => $this->courseversion);
-		
-		$nameJSON = extractLangs($cm->name,true);
-		$descJSON = extractLangs($this->summary,true);
-		
-		//create the quiz
-		$post = array('title' => $nameJSON,
-				'description' => $descJSON,
-				'questions' => array(),
-				'props' => $props);
-		$resp = $mQH->exec('quiz', $post);
-		$quiz_uri = $resp->resource_uri;
-		$quiz_id = $resp->id;
-		
-		$i = 1;
-		foreach($feedbackitems as $fi){
+	    $this->process_locally();
+	}
+	
+	function generate_md5($quiz_questions){
+	    $md5postfix = "";
+	    foreach($this->configArray as $key => $value){
+	        $md5postfix .= $key[0].((string) $value);
+	    }
+	    // generate the md5 of the quiz
+	    $this->md5 = md5(serialize($quiz_questions)).$this->id."c".$md5postfix;
+	}
+	
+    function process_locally(){
+        global $DB,$CFG,$USER,$QUIZ_CACHE;
+        
+        $cm = get_coursemodule_from_id('feedback', $this->id);
+        $context = context_module::instance($cm->id);
+        $feedback = $DB->get_record('feedback', array('id'=>$cm->instance), '*', MUST_EXIST);
+        $feedbackitems = $DB->get_records_select('feedback_item', $select, $params, 'position');
+        
+        $this->generate_md5($feedbackitems);
+        $filename = extractImageFile($quiz->intro,'mod_feedback','intro','0',
+            $context->id,$this->courseroot,$cm->id);
+        
+        if($filename){
+            $this->quiz_image = "/images/".resizeImage($this->courseroot."/".$filename,
+                $this->courseroot."/images/".$cm->id,
+                $CFG->block_oppia_mobile_export_thumb_width,
+                $CFG->block_oppia_mobile_export_thumb_height);
+            //delete original image
+            unlink($this->courseroot."/".$filename) or die(get_string('error_file_delete','block_oppia_mobile_export'));
+        }
+        
+        $quizprops = array(
+            "digest" => $this->md5,
+            "courseversion" => $this->courseversion);
+        
+        foreach($this->configArray as $k=>$v){
+            if ($k != 'randomselect' || $v != 0){
+                $quizprops[$k] = $v;
+            }
+        }
+        
+        $nameJSON = extractLangs($cm->name,true);
+        $descJSON = extractLangs($this->summary,true);
+        
+        $quizJsonQuestions = array();
+        $quizMaxScore = 0;
+        
+        $i = 1;
+        foreach($feedbackitems as $q){            
+       
+            $responses = array();
 
-			if(!in_array($fi->typ,$this->supported_types)){
-				continue;
-			}
-			
-			if($fi->required){
-				$value = "true";
-			} else {
-				$value = "false";
-			}
-			$props = array();
-			$props[0] = array('name' => "required", 'value' => $value);
-
-			$qtitle = extractLangs($fi->name, true);
-			
-			// create the question
-			if(strpos($fi->presentation, 'r') === 0 && ($fi->typ == "multichoice" || $fi->typ == "multichoicerated")){
-				$post = array('title' => $qtitle,
-						'type' => "multichoice",
-						'responses' => array(),
-						'props' => $props);
-				$resp = $mQH->exec('question', $post);
-				$question_uri = $resp->resource_uri;
-			}
-			
-			if(strpos($fi->presentation, 'c') === 0 && $fi->typ == "multichoice"){
-				$post = array('title' => $qtitle,
-						'type' => "multiselect",
-						'responses' => array(),
-						'props' => $props);
-				$resp = $mQH->exec('question', $post);
-				$question_uri = $resp->resource_uri;
-			}
-			
-			if($fi->typ == "textarea"){
-				$post = array('title' => $qtitle,
-						'type' => "essay",
-						'responses' => array(),
-						'props' => $props);
-				$resp = $mQH->exec('question', $post);
-				$question_uri = $resp->resource_uri;
-			}
-			
-			if($fi->typ == "numeric"){
-				$post = array('title' => $qtitle,
-						'type' => "numerical",
-						'responses' => array(),
-						'props' => $props);
-				$resp = $mQH->exec('question', $post);
-				$question_uri = $resp->resource_uri;
-			}
-			
-			if($fi->typ == "textfield"){
-				$post = array('title' => $qtitle,
-						'type' => "shortanswer",
-						'responses' => array(),
-						'props' => $props);
-				$resp = $mQH->exec('question', $post);
-				$question_uri = $resp->resource_uri;
-			}
-			
-			// add the response options
-			if($fi->typ == "multichoice"){
-				$j = 1;
-				$presentation = preg_replace("(r[>]+)",'',$fi->presentation);	
-				$presentation = preg_replace("(c[>]+)",'',$presentation);
-				$response_options = explode("|",$presentation);
-				foreach($response_options as $ro){
-					$responseopt = extractLangs($ro,true);
-					$post = array('question' => $question_uri,
-							'order' => $j,
-							'title' => $responseopt,
-							'score' => 0,
-							'props' => array());
-					$resp = $mQH->exec('response', $post);
-					$j++;
-				}
-				
-			}
-
-			if($fi->typ == "multichoicerated"){
-				$j = 1;
-				$presentation = preg_replace("(r[>>]+)",'',$fi->presentation);				
-				$response_options = explode("|",$presentation);
-				foreach($response_options as $ro){
-					$new_ro = preg_replace("([0-9]+[#]+)",'',$ro);
-					$responseopt = extractLangs($new_ro,true);
-					$post = array('question' => $question_uri,
-							'order' => $j,
-							'title' => $responseopt,
-							'score' => 0,
-							'props' => array());
-					$resp = $mQH->exec('response', $post);
-					$j++;
-				}
-			}
-			
-			// add question to quiz
-			$post = array('quiz' => $quiz_uri,
-					'question' => $question_uri,
-					'order' => $i);
-			$resp = $mQH->exec('quizquestion', $post);
-			
-			$i++;
-		}
-		
-		// get the final quiz object
-		$feedback = $mQH->exec('quiz/'.$quiz_id, array(),'get');
-		$this->content = json_encode($feedback);
+            $questionTitle = extractLangs(cleanHTMLEntities($q->label, true), true, true);
+            $type = null;
+            
+            // multichoice multi
+            if($q->typ == "multichoice" 
+                && (substr($q->presentation,0,1)==='c'
+                    || substr($q->presentation,0,1)==='d')){
+                $type = "multiselect";
+                $respstr = substr($q->presentation, 6);
+                $resps = explode('|', $respstr);
+                $j = 1;
+                foreach($resps as $resp){
+                    array_push($responses, array(
+                        'order' => $j,
+                        'id' 	=> rand(1,1000),
+                        'props' => json_decode ("{}"),
+                        'title' => trim($resp),
+                        'score' => "0"
+                    ));
+                    $j++;
+                }
+            } elseif ($q->typ == "info"){
+                // info
+                $type = "description";
+            } elseif($q->typ == "label"){
+                // label
+                $type = "description";
+                $questionTitle = extractLangs(cleanHTMLEntities($q->presentation, true), true, true);
+            } elseif($q->typ == "textarea"){
+                // long answer
+                $type = "essay";
+            } elseif($q->typ == "multichoicerated" && substr($q->presentation,0,1)==='r'){
+                // multi - rated
+                $type = "multiselect";
+                $respstr = substr($q->presentation, 6);
+                $resps = explode('|', $respstr);
+                $j = 1;
+                foreach($resps as $resp){
+                    array_push($responses, array(
+                        'order' => $j,
+                        'id' 	=> rand(1,1000),
+                        'props' => json_decode ("{}"),
+                        'title' => substr(trim($resp),5),
+                        'score' => "0"
+                    ));
+                    $j++;
+                }
+            } elseif($q->typ == "numeric"){
+                // numeric
+                $type = "numeric";
+            } elseif($q->typ == "textfield"){
+                // short answer
+                $type = "shortanswer";
+            } elseif($q->typ == "multichoice"){
+                // multichoice 1
+                $type = "multichoice";
+                $respstr = substr($q->presentation, 6);
+                $resps = explode('|', $respstr);
+                $j = 1;
+                foreach($resps as $resp){
+                    array_push($responses, array(
+                        'order' => $j,
+                        'id' 	=> rand(1,1000),
+                        'props' => json_decode ("{}"),
+                        'title' => trim($resp),
+                        'score' => "0"
+                    ));
+                    $j++;
+                }
+            }
+            $questionprops = array("maxscore" => 0);
+            $questionJson = array(
+                "id" 	=> rand(1,1000),
+                "type" 	=> $type,
+                "title" => json_decode($questionTitle),
+                "props" => $questionprops,
+                "responses" => $responses);
+            
+            array_push($quizJsonQuestions, array(
+                'order'    => $i,
+                'id'	   => rand(1,1000),
+                'question' => $questionJson));
+            $i++;
+        }
+        
+        $quizprops["maxscore"] = $quizMaxScore;
+        
+        $quizJson = array(
+            'id' 		 => rand(1,1000),
+            'title' 	 => json_decode($nameJSON),
+            'description'=> json_decode($descJSON),
+            'props' 	 => $quizprops,
+            'questions'  => $quizJsonQuestions);
+        
+        $this->content = json_encode($quizJson);
 	}
 	
 	
@@ -225,7 +203,7 @@ class mobile_activity_feedback extends mobile_activity {
 		$cm = get_coursemodule_from_id('feedback', $this->id);
 	}
 	
-	function getXML($mod,$counter,$activity=true,&$node,&$xmlDoc){
+	function getXML($mod, $counter, $activity=true, &$node, &$xmlDoc){
 		global $DEFAULT_LANG;
 		$act = $xmlDoc->createElement("activity");
 		$act->appendChild($xmlDoc->createAttribute("type"))->appendChild($xmlDoc->createTextNode($mod->modname));

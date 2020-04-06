@@ -29,7 +29,6 @@ $DEFAULT_LANG = required_param('default_lang', PARAM_TEXT);
 $tags = required_param('coursetags',PARAM_TEXT);
 $tags = cleanTagList($tags);
 $server = required_param('server',PARAM_TEXT);
-$keeptags =  optional_param('keeptags', false, PARAM_BOOL);
 
 $course = $DB->get_record('course', array('id'=>$id));
 //we clean the shortname of the course (the change doesn't get saved in Moodle)
@@ -123,8 +122,9 @@ $meta->appendChild($xmlDoc->createElement("exportversion", $plugin_version));
 add_or_update_oppiaconfig($id, 'coursepriority', $priority, $server);
 add_or_update_oppiaconfig($id, 'coursetags', $tags, $server);
 add_or_update_oppiaconfig($id, 'coursesequencing', $sequencing, $server);
-add_or_update_oppiaconfig($id, 'keeptags', $keeptags?'enabled':'disabled', $server);
 add_or_update_oppiaconfig($id, 'default_lang', $DEFAULT_LANG, $server);
+
+add_publishing_log($server_connection->url, $USER->id, $id, "export_start", "Export process starting");
 
 $a = new stdClass();
 $a->stepno = 2;
@@ -180,6 +180,8 @@ if ($server_info && $server_info->version ){
 }
 else{
 	echo '<span style="color:red;">Unable to get server info (is it correctly configured and running?)</span><br/>';
+	add_publishing_log($server_connection->url, $USER->id, $id, "server_unavailable", "Unable to get server info");
+	
 }
 echo '<strong>Quiz export method:</strong> '.$QUIZ_EXPORT_METHOD.'</p>';
 
@@ -194,7 +196,7 @@ foreach ($sectionmods as $modnumber) {
 	}
 	$mod = $mods[$modnumber];
 		
-	if($mod->modname == 'page' && $mod->visible == 1){
+	if($mod->modname == 'page' && $mod->uservisible == 1){
 		echo "<p>".$mod->name."</p>";
 		$page = new mobile_activity_page();
 		$page->courseroot = $course_root;
@@ -203,7 +205,7 @@ foreach ($sectionmods as $modnumber) {
 		$page->process();
 		$page->getXML($mod,$i,false,$meta,$xmlDoc);
 	}
-	if($mod->modname == 'quiz' && $mod->visible == 1){
+	if($mod->modname == 'quiz' && $mod->uservisible == 1){
 		echo "<p>".$mod->name."</p>";
 
 		$quiz = new mobile_activity_quiz();
@@ -214,25 +216,17 @@ foreach ($sectionmods as $modnumber) {
 		$showfeedback = optional_param('quiz_'.$mod->id.'_showfeedback',2,PARAM_INT);
 		add_or_update_oppiaconfig($mod->id, 'showfeedback', $showfeedback);
 		
-		$allowtryagain = optional_param('quiz_'.$mod->id.'_allowtryagain',1,PARAM_BOOL);
-		add_or_update_oppiaconfig($mod->id, 'allowtryagain', $allowtryagain);
-		
 		$passthreshold = optional_param('quiz_'.$mod->id.'_passthreshold',0,PARAM_INT);
 		add_or_update_oppiaconfig($mod->id, 'passthreshold', $passthreshold);
-		
-		$availability = optional_param('quiz_'.$mod->id.'_availability',0,PARAM_INT);
-		add_or_update_oppiaconfig($mod->id, 'availability', $availability);
 
 		$maxattempts = optional_param('quiz_'.$mod->id.'_maxattempts','unlimited',PARAM_INT);
 		add_or_update_oppiaconfig($mod->id, 'maxattempts', $maxattempts);
 		
 		$configArray = Array('randomselect'=>$random, 
 								'showfeedback'=>$showfeedback,
-								'allowtryagain'=>$allowtryagain, 
 								'passthreshold'=>$passthreshold,
-								'availability'=>$availability,
 								'maxattempts'=>$maxattempts);
-		$quiz->init($server_connection,$course->shortname,"Pre-test",$configArray,$versionid,$QUIZ_EXPORT_METHOD,$keeptags);
+		$quiz->init($server_connection,$course->shortname,"Pre-test",$configArray,$versionid,$QUIZ_EXPORT_METHOD);
 		$quiz->courseroot = $course_root;
 		$quiz->id = $mod->id;
 		$quiz->section = 0;
@@ -242,10 +236,15 @@ foreach ($sectionmods as $modnumber) {
 			$quiz->getXML($mod,$i,true,$meta,$xmlDoc);
 		}
 	}
-	if($mod->modname == 'feedback' && $mod->visible == 1){
+	if($mod->modname == 'feedback' && $mod->uservisible == 1){
 		echo $mod->name."<br/>";
 		$feedback = new mobile_activity_feedback();
-		$feedback->init($server_connection, $course->shortname,$mod->name,$versionid);
+		$configArray = Array(
+		    'showfeedback'=>false,
+		    'passthreshold'=>0,
+		    'maxattempts'=>0);
+		
+		$feedback->init($server_connection, $course->shortname,$mod->name,$versionid, $configArray);
 		$feedback->courseroot = $course_root;
 		$feedback->id = $mod->id;
 		$feedback->section = 0;
@@ -288,7 +287,9 @@ $sect_orderno = 1;
 foreach($sections as $sect) {
 	flush_buffers();
 	// We avoid the topic0 as is not a section as the rest
-	if ($sect->section == 0) continue;
+	if ($sect->section == 0) {
+	    continue;
+	}
 	$sectionmods = explode(",", $sect->sequence);
 
 	$defaultSectionTitle = false;
@@ -323,20 +324,6 @@ foreach($sections as $sect) {
 			$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
 			$section->appendChild($temp);
 		}
-		/* currently in the schema there is no support for images at this level
-		$filename = extractImageFile($sect->summary,
-										'course',
-										'section',
-										$sect->id,
-										$context->id,
-										$course_root,0); 
-		
-		if($filename){
-			$temp = $xmlDoc->createElement("image");
-			$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode($filename));
-			$section->appendChild($temp);
-		}
-		*/
 		$act_orderno = 1;
 		$activities = $xmlDoc->createElement("activities");
 		foreach ($sectionmods as $modnumber) {
@@ -347,9 +334,8 @@ foreach($sections as $sect) {
 			
 			$mod = $mods[$modnumber];
 			
-			if($mod->modname == 'page' && $mod->visible == 1){
+			if($mod->modname == 'page' && $mod->uservisible == 1){
 				echo $mod->name."<br/>";
-				
 				$page = new mobile_activity_page();
 				$page->courseroot = $course_root;
 				$page->id = $mod->id;
@@ -359,7 +345,7 @@ foreach($sections as $sect) {
 				$act_orderno++;
 			}
 			
-			if($mod->modname == 'quiz' && $mod->visible == 1){
+			if($mod->modname == 'quiz' && $mod->uservisible == 1){
 				echo $mod->name."<br/>";
 				
 				$quiz = new mobile_activity_quiz();
@@ -369,26 +355,18 @@ foreach($sections as $sect) {
 				$showfeedback = optional_param('quiz_'.$mod->id.'_showfeedback',1,PARAM_INT);
 				add_or_update_oppiaconfig($mod->id, 'showfeedback', $showfeedback);
 				
-				$allowtryagain = optional_param('quiz_'.$mod->id.'_allowtryagain',1,PARAM_INT);
-				add_or_update_oppiaconfig($mod->id, 'allowtryagain', $allowtryagain);
-				
 				$passthreshold = optional_param('quiz_'.$mod->id.'_passthreshold',0,PARAM_INT);
 				add_or_update_oppiaconfig($mod->id, 'passthreshold', $passthreshold);
-		
-				$availability = optional_param('quiz_'.$mod->id.'_availability',0,PARAM_INT);
-				add_or_update_oppiaconfig($mod->id, 'availability', $availability);
 
 				$maxattempts = optional_param('quiz_'.$mod->id.'_maxattempts','unlimited',PARAM_INT);
 				add_or_update_oppiaconfig($mod->id, 'maxattempts', $maxattempts);
 				
 				$configArray = Array('randomselect'=>$random, 
-									'showfeedback'=>$showfeedback,
-									'allowtryagain'=>$allowtryagain, 
+									'showfeedback'=>$showfeedback, 
 									'passthreshold'=>$passthreshold,
-									'availability'=>$availability,
 									'maxattempts'=>$maxattempts);
 				
-				$quiz->init($server_connection, $course->shortname,$sect->summary,$configArray,$versionid,$QUIZ_EXPORT_METHOD,$keeptags);
+				$quiz->init($server_connection, $course->shortname,$sect->summary,$configArray,$versionid,$QUIZ_EXPORT_METHOD);
 				$quiz->courseroot = $course_root;
 				$quiz->id = $mod->id;
 				$quiz->section = $sect_orderno;
@@ -402,7 +380,7 @@ foreach($sections as $sect) {
 				}
 			}
 			
-			if($mod->modname == 'resource' && $mod->visible == 1){
+			if($mod->modname == 'resource' && $mod->uservisible == 1){
 				echo $mod->name."<br/>";
 				$resource = new mobile_activity_resource();
 				$resource->courseroot = $course_root;
@@ -413,7 +391,7 @@ foreach($sections as $sect) {
 				$act_orderno++;
 			}
 			
-			if($mod->modname == 'url' && $mod->visible == 1){
+			if($mod->modname == 'url' && $mod->uservisible == 1){
 				echo $mod->name."<br/>";
 				$url = new mobile_activity_url();
 				$url->courseroot = $course_root;
@@ -424,10 +402,14 @@ foreach($sections as $sect) {
 				$act_orderno++;
 			}
 			
-			if($mod->modname == 'feedback' && $mod->visible == 1){
+			if($mod->modname == 'feedback' && $mod->uservisible == 1){
 				echo $mod->name."<br/>";
 				$feedback = new mobile_activity_feedback();
-				$feedback->init($server_connection, $course->shortname,$sect->summary,$versionid);
+				$configArray = Array(
+				    'showfeedback'=>false,
+				    'passthreshold'=>0,
+				    'maxattempts'=>0);
+				$feedback->init($server_connection, $course->shortname,$sect->summary,$versionid, $configArray);
 				$feedback->courseroot = $course_root;
 				$feedback->id = $mod->id;
 				$feedback->section = $sect_orderno;
@@ -506,6 +488,7 @@ $xml->load($course_root."/module.xml");
 if (!$xml->schemaValidate('./oppia-schema.xsd')) {
 	print '<p><b>'.get_string('error_xml_invalid','block_oppia_mobile_export').'</b></p>';
 	libxml_display_errors();
+	add_publishing_log($server_connection->url, $USER->id, $id, "error_xml_invalid", "Invalid course XML");
 } else {
 	echo get_string('export_xml_validated','block_oppia_mobile_export')."<p/>";
 	
@@ -533,7 +516,6 @@ if (!$xml->schemaValidate('./oppia-schema.xsd')) {
 	$a = new stdClass();
 	$a->zip = $outputzip;
 	$a->coursename = strip_tags($course->fullname);
-	echo "<div style='font-weight:bold; font-size:150%; display:block; border: 1px solid #000; padding:20px'>".get_string('export_download','block_oppia_mobile_export', $a )."</div>";
 	
 	// form to publish to OppiaMobile server
 	echo "<form style='display:block; border: 1px solid #000; padding:20px; margin:20px 0;' action='".$CFG->wwwroot."/blocks/oppia_mobile_export/publish_course.php' method='POST'>";
@@ -565,6 +547,12 @@ if (!$xml->schemaValidate('./oppia-schema.xsd')) {
 	echo "<p><input type='submit' name='submit' value='Publish'></p>";
 	echo "</form>";
 	
+	echo "<div style='display:block; border: 1px solid #000; padding:20px'>";
+	echo get_string('export_download_intro','block_oppia_mobile_export');
+	echo "<br/>";
+	echo get_string('export_download','block_oppia_mobile_export', $a );
+	echo "</div>";
+	
 	// link to cleanup files
 	echo "<p><a href='cleanup.php?id=".$id."'>".get_string('export_cleanup','block_oppia_mobile_export')."</a></p>";
 	
@@ -576,6 +564,9 @@ if (!$xml->schemaValidate('./oppia-schema.xsd')) {
 	
 		echo "</ol>";
 	}
+	
+	add_publishing_log($server_connection->url, $USER->id, $id,  "export_file_created", strtolower($course->shortname)."-".$versionid.".zip");
+	add_publishing_log($server_connection->url, $USER->id, $id,  "export_end", "Export process completed");
 }
 
 echo $OUTPUT->footer();

@@ -14,19 +14,17 @@ class mobile_activity_quiz extends mobile_activity {
 	private $configArray = array(); // config (quiz props) array
 	private $server_connection;
 	private $quiz_media = array();
-	private $keep_tags = false; //keep some tags (<i>,<b>,etc) in question text
 
 	private $export_method;
 	
 	function init($server_connection, $shortname, $summary, 
-		$configArray, $courseversion, $export_method='server', $keep_tags=false){
+		$configArray, $courseversion, $export_method='server'){
 		$this->shortname = strip_tags($shortname);
 		$this->summary = $summary;
 		$this->configArray = $configArray;
 		$this->courseversion = $courseversion;
 		$this->server_connection = $server_connection;
 		$this->export_method = $export_method;
-		$this->keep_tags = $keep_tags;
 	}
 	
 	function preprocess(){
@@ -60,11 +58,7 @@ class mobile_activity_quiz extends mobile_activity {
 	}
 	
 	function process(){
-		if ($this->export_method === 'server')
-			$this->process_pushing_to_server();
-		else
-			$this->process_locally();
-		return;
+		$this->process_locally();
 	}
 
 	function generate_md5($quiz_questions){
@@ -76,252 +70,6 @@ class mobile_activity_quiz extends mobile_activity {
 		$this->md5 = md5(serialize($quiz_questions)).$this->id."c".$md5postfix;
 	}
 
-	function process_pushing_to_server(){
-		global $DB,$CFG,$USER,$QUIZ_CACHE;
-
-		$mQH = new QuizHelper();
-		$mQH->init($this->server_connection);
-
-		$cm = get_coursemodule_from_id('quiz', $this->id);
-		$context = context_module::instance($cm->id);
-		$quiz = $DB->get_record('quiz', array('id'=>$cm->instance), '*', MUST_EXIST);
-
-		try {
-			$quizobj = quiz::create($cm->instance, $USER->id);
-			$quizobj->preload_questions();
-			$quizobj->load_questions();
-			$qs = $quizobj->get_questions();
-		
-			$this->generate_md5($qs);	
-			// find if this quiz already exists
-			$resp = $mQH->exec('quizprops/digest/'.$this->md5, array(),'get');
-			if(!isset($resp->quizzes)){
-				echo get_string('error_connection','block_oppia_mobile_export');
-				die;
-			}
-			
-			// extract quiz image logo
-			$filename = extractImageFile($quiz->intro,
-										'mod_quiz',
-										'intro',
-										'0',
-										$context->id,
-										$this->courseroot,
-										$cm->id); 		
-			
-			if($filename){
-				$this->quiz_image = "/images/".resizeImage($this->courseroot."/".$filename,
-							$this->courseroot."/images/".$cm->id,
-							$CFG->block_oppia_mobile_export_thumb_width,
-							$CFG->block_oppia_mobile_export_thumb_height);
-				//delete original image
-				unlink($this->courseroot."/".$filename) or die(get_string('error_file_delete','block_oppia_mobile_export'));
-			}
-			
-			// Don't export the full quiz if it already exists on the server
-			// instead just add the course version
-			if(count($resp->quizzes) > 0){
-				$quiz_id = $resp->quizzes[0]->quiz_id;	
-				$quiz = $mQH->exec('quiz/'.$quiz_id, array(),'get');
-				$this->content = json_encode($quiz);
-				
-				$post = array('quiz_id' => $quiz_id,
-						'name' => "courseversion",
-						'value' => $this->courseversion);
-				$resp = $mQH->exec('quizprops',$post);
-				$this->exportQuestionImages();
-				$this->exportQuestionMedia();
-				return;
-			}
-			
-			$props = array();
-			array_push($props,array('name' => "digest", 'value' => $this->md5));
-			array_push($props,array('name' => "courseversion", 'value' => $this->courseversion));
-			foreach($this->configArray as $k=>$v){
-				if ($k != 'randomselect' || $v != 0){
-					array_push($props,array('name' => $k, 'value' => $v));
-				}
-			}
-			
-			$nameJSON = extractLangs($cm->name,true);
-			$descJSON = extractLangs($this->summary,true);
-			
-			//create the quiz
-			$post = array('title' => $nameJSON,
-					'description' => $descJSON,
-					'questions' => array(),
-					'props' => $props);
-			$resp = $mQH->exec('quiz', $post);
-
-			$quiz_uri = $resp->resource_uri;
-			$quiz_id = $resp->id;
-		
-
-			$i = 1;
-			foreach($qs as $q){
-				// skip any essay questions
-				if($q->qtype == 'essay'){
-					echo get_string('export_quiz_skip_essay','block_oppia_mobile_export')."<br/>";
-					continue;
-				}
-				
-				// skip any random questions
-				if($q->qtype == 'random'){
-					echo get_string('export_quiz_skip_random','block_oppia_mobile_export')."<br/>";
-					continue;
-				}
-				
-				
-				//check to see if a multichoice is actually a multiselect
-				if($q->qtype == 'multichoice'){
-					$counter = 0;
-					foreach($q->options->answers as $r){
-						if($r->fraction > 0){
-							$counter++;
-						}
-					}
-					if($counter > 1){
-						$q->qtype = 'multiselect';
-					}
-				}
-				if($q->qtype == 'truefalse'){
-					$q->qtype = 'multichoice';
-				}
-				
-				// add max score property
-				$props = array();
-				$props[0] = array('name' => "maxscore", 'value' => $q->maxmark);
-				
-				//add feedback for matching questions
-				if($q->qtype == 'match'){
-					$q->qtype = 'matching';
-					$prop_i = 1;
-					if($q->options->correctfeedback != ""){
-						$feedbackJSON = extractLangs($q->options->correctfeedback, true);
-						$props[$prop_i] = array('name' => "correctfeedback", 'value' => $feedbackJSON);
-						$prop_i++;
-					}
-					if($q->options->partiallycorrectfeedback != ""){
-						$feedbackJSON = extractLangs($q->options->partiallycorrectfeedback, true);
-						$props[$prop_i] = array('name' => "partiallycorrectfeedback", 'value' => $feedbackJSON);
-						$prop_i++;
-					}
-					if($q->options->incorrectfeedback != ""){
-						$feedbackJSON = extractLangs($q->options->incorrectfeedback, true);
-						$props[$prop_i] = array('name' => "incorrectfeedback", 'value' => $feedbackJSON);
-						$prop_i++;
-					}
-				}
-				
-				// find if the question text has any images in it
-				$question_image = extractImageFile($q->questiontext,
-										'question',
-										'questiontext',
-										$q->id,
-										$q->contextid,
-										$this->courseroot,
-										$cm->id); 
-			
-				if($question_image){
-					array_push($props, array('name' => "image", 'value' => $question_image));
-				}
-				
-				// find if any videos embedded in question text
-				$q->questiontext = $this->extractMedia($q->id, $q->questiontext);
-				
-				if (array_key_exists($q->id,$this->quiz_media)){
-					foreach($this->quiz_media[$q->id] as $media){
-						array_push($props, array('name' => "media", 'value' => $media->filename));
-					}
-				}
-				
-				$questionJSON = extractLangs($q->questiontext, true, true, $this->keep_tags);
-				
-				// create question
-				$post = array('title' => $questionJSON,
-						'type' => $q->qtype,
-						'responses' => array(),
-						'props' => $props);
-				$resp = $mQH->exec('question', $post);
-
-				$question_uri = $resp->resource_uri;
-				
-				$j = 1;
-				
-				// if matching question then concat the options with |
-				if(isset($q->options->subquestions)){
-					// Find out how many subquestions
-					$subqs = 0;
-					foreach($q->options->subquestions as $sq){
-						if(trim($sq->questiontext) != ""){
-							$subqs++;
-						}	
-					}
-					foreach($q->options->subquestions as $sq){
-						$titleJSON = extractLangs($sq->questiontext.$this->MATCHING_SEPERATOR.$sq->answertext, true, true);
-						// add response
-						
-						$props = array();
-						
-						$post = array('question' => $question_uri,
-								'order' => $j,
-								'title' => $titleJSON,
-								'score' => ($q->maxmark / $subqs),
-								'props' => $props);
-						$resp = $mQH->exec('response', $post);
-						$response_uri = $resp->resource_uri;
-						
-						$j++;
-					}
-				}
-				
-				// for multichoice/multiselect/shortanswer/numerical questions
-				if(isset($q->options->answers)){
-					foreach($q->options->answers as $r){
-						
-						$props = array();
-						if(strip_tags($r->feedback) != ""){
-							$feedbackJSON = extractLangs($r->feedback, true, true);
-							$props[0] = array('name' => 'feedback', 'value' => $feedbackJSON);
-						}
-						
-						// if numerical also add a tolerance
-						if($q->qtype == 'numerical'){
-							$props[1] = array('name' => 'tolerance', 'value' => $r->tolerance);
-						}
-						
-						$responseJSON = extractLangs($r->answer, true, true, $this->keep_tags);
-						// add response
-						$post = array('question' => $question_uri,
-								'order' => $j,
-								'title' => $responseJSON,
-								'score' => ($r->fraction * $q->maxmark),
-								'props' => $props);
-						$resp = $mQH->exec('response', $post);
-
-						$j++;
-					}
-				}				
-				
-				// add question to quiz
-				$post = array('quiz' => $quiz_uri,
-						'question' => $question_uri,
-						'order' => $i);
-				$resp = $mQH->exec('quizquestion', $post);
-				$i++;
-			}
-			
-			// get the final quiz object
-			$quiz = $mQH->exec('quiz/'.$quiz_id, array(),'get');
-			$this->content = json_encode($quiz);
-			
-		} catch (moodle_exception $me){
-			echo $me;
-			echo get_string('export_quiz_skip','block_oppia_mobile_export')."<br/>";
-			$this->is_valid = false;
-			return;
-		}
-	}
 
 	function process_locally(){
 		global $DB,$CFG,$USER,$QUIZ_CACHE;
@@ -350,6 +98,7 @@ class mobile_activity_quiz extends mobile_activity {
 		$quizprops = array(
 			"digest" => $this->md5,
 			"courseversion" => $this->courseversion);
+		
 		foreach($this->configArray as $k=>$v){
 			if ($k != 'randomselect' || $v != 0){
 				$quizprops[$k] = $v;
@@ -504,7 +253,7 @@ class mobile_activity_quiz extends mobile_activity {
 				}
 			}
 			
-			$questionTitle = extractLangs(cleanHTMLEntities($q->questiontext, true), true, true, $this->keep_tags);
+			$questionTitle = extractLangs(cleanHTMLEntities($q->questiontext, true), true, true);
 
 			$j = 1;
 			// if matching question then concat the options with |
@@ -550,16 +299,11 @@ class mobile_activity_quiz extends mobile_activity {
 						'order' => $j,
 						'id' 	=> rand(1,1000),
 						'props' => $responseprops,
-						'title' => json_decode(extractLangs($r->answer, true, true, $this->keep_tags)),
+						'title' => json_decode(extractLangs($r->answer, true, true)),
 						'score' => sprintf("%.4f", $score)
 					));
 					$j++;
 				}
-			}
-
-			// for ddimageortext questions
-			if($q->qtype == 'ddimageortext'){
-	
 			}
 			
 			$questionJson = array(

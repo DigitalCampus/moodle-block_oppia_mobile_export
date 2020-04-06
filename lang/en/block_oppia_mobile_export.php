@@ -28,7 +28,7 @@ $string['pluginname'] = 'Oppia Mobile Export';
 $string['oppia_mobile_export:addinstance'] = 'Add a new Oppia export block';
 
 $string['oppia_block_api'] = 'Current OppiaMobile API:';
-$string['oppia_block_style'] = 'Stylesheet to use:';
+$string['oppia_block_style'] = 'Course design:';
 $string['oppia_block_export_button'] = 'Export to Oppia Package';
 $string['oppia_block_export2print_button'] = 'Export to print';
 
@@ -94,13 +94,11 @@ $string['export_title'] = 'Export - step {$a->stepno}: {$a->coursename}';
 $string['export2print_title'] = 'Export to Print - step {$a->stepno}: {$a->coursename}';
 $string['export_contains_quizzes'] = 'Since this course contains quizzes, please select which quizzes (if any) should be a random selection of the questions available';
 
-$string['export_quiz_availability'] = 'Availability';
 $string['export_quiz_sectionname'] = 'Section Name';
 $string['export_quiz_title'] = 'Quiz Title';
 $string['export_quiz_norandom'] = 'No random questions';
 $string['export_quiz_feedback'] = 'Show feedback';
 $string['export_quiz_passthreshold'] = 'Pass Threshold (%)';
-$string['export_quiz_tryagain'] = 'Allow try-again?';
 $string['export_quiz_max_attempts'] = 'Max number of attempts';
 
 $string['export_quiz_norandom_all'] = 'Use all questions (don\'t randomise)';
@@ -111,10 +109,8 @@ $string['export_priority_title'] = 'Course Priority';
 $string['export_priority_label'] = 'Priority';
 $string['export_priority_desc'] = 'This is the relative weight given to a course to help determine the ordering in which it will appear on the mobile (10 = highest priority)';
 
-$string['export_course_tags_title'] = 'Course Tags';
-$string['export_course_tags_desc'] = 'Tags that will be used to classify the course on the OppiaMobile server, separate each tag by a comma';
-$string['export_keep_tags_title'] = 'Quiz Question Formatting';
-$string['export_keep_tags_desc'] = 'support use of HTML tags (&lt;em&gt;, &lt;b&gt;, &lt;strong&gt;, etc) in quiz question/response options. <br/><strong>Important</strong>:This is only supported for users with v6.0.0 or higher of the Oppia app';
+$string['export_course_tags_title'] = 'Course Categories';
+$string['export_course_tags_desc'] = 'Categories that will be used to classify the course on the OppiaMobile server, separate each category by a comma';
 
 $string['export_lang_title'] = 'Course default language';
 $string['export_lang_desc'] = 'The default language for this course, using the ISO 639 code';
@@ -134,6 +130,7 @@ $string['export_style_start'] = 'Adding style sheet';
 $string['export_style_resources'] = 'Copying style resources';
 $string['export_export_complete'] = 'Course export complete';
 $string['export_export_compressed'] = 'Compressed file';
+$string['export_download_intro'] = 'You can also download the course zip file here, but this should only be used for testing/development purposes. For live deployment, publish the file to the Oppia server first and download the course zip from there.';
 $string['export_download'] = 'Download exported course: <a href="{$a->zip}">{$a->coursename}</a>';
 
 $string['export_cleanup'] = 'Cleanup files';
@@ -159,17 +156,13 @@ $string['feedback_always'] = 'After question and end of quiz';
 $string['feedback_never'] = 'Never show feedback';
 $string['feedback_endonly'] = 'At end of quiz only';
 
-$string['availability_always'] = 'Always';
-$string['availability_section'] = 'Only after previous section activities completed';
-$string['availability_course'] = 'Only after all previous course activities completed';
-
 $string['publish_error_password'] = 'No password entered, please go back and enter your password';
-$string['publish_error_tags'] = 'No tags have been given, please go back and enter at least one tag';
+$string['publish_error_tags'] = 'No categories have been entered, please go back and enter at least one category';
 $string['publish_error_username'] = 'No username entered, please go back and enter your username';
 $string['publish_field_draft'] = 'Is draft';
 $string['publish_field_draft_info'] = 'Tick the box if the course is to be a \'draft\' (only availble to selected groups), or untick the box if it should be published publically';
 $string['publish_field_password'] = 'Password';
-$string['publish_field_tags'] = 'Tags (for classifying course)';
+$string['publish_field_tags'] = 'Categories (for classifying course)';
 $string['publish_field_username'] = 'Username';
 $string['publish_heading'] = 'Publish to OppiaMobile server';
 $string['publish_message_201'] = 'Your course has now been published on the OppiaMobile server';
