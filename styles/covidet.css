@@ -40,34 +40,6 @@ ul {
 	margin: 10px 0;
 }
 
-ul li {
-	margin-left:25px;
-	list-style:disc;	
-}
-
-ul li:before {
-      /* For a round bullet */
-      content:'\2022';
-      /* For a square bullet */
-      /*content:'\25A0';*/
-      display: block;
-      position: relative;
-      max-width: 0px;
-      max-height: 0px;
-      left: -20px;
-      top: -0px;
-      color: #77A240;
-      font-size: 30px;
-    }
- 
-ol {
-	margin: 10px 0;
-}
-
-ol li {
-	margin-left:25px;
-}
-
 a {
 	color: #495525;
 	text-decoration: underline;
