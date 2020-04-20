@@ -6,11 +6,6 @@
 #a5c727 - DC light green
 */
 
-* { 
-	padding:0px;
-    margin:0px;
-}
-
 body {
 	font-family: Helvetica, Verdana, sans-serif;
 	line-height: 1.5em;
@@ -34,10 +29,6 @@ h5 {
 
 p {
 	margin:10px 5px;
-}
-
-ul {
-	margin: 10px 0;
 }
 
 a {
@@ -64,20 +55,6 @@ table td {
 	border-bottom: 1px solid #000;
 	border-right: 1px solid #000;
 	vertical-align: top;
-}
-
-td > ul > li:before {
-        /* For a round bullet */
-      content:'\2022';
-      /* For a square bullet */
-      /*content:'\25A0';*/
-      display: block;
-      position: relative;
-      max-width: 0px;
-      max-height: 0px;
-      left: -20px;
-      top: -0px;
-      color: #000;
 }
 
 .box {
