@@ -49,11 +49,13 @@ ul li:before {
 }
 ul ul{
 	margin-top:0;
-	padding-left:15px;
 }
-ul ul > li:before{
+ul ul li:before{
 	color: #77A240;
 	font-size: 24px;
+}
+ul ul li{
+	line-height: 1.4em;
 }
 ol {
 	margin: 10px 0;
