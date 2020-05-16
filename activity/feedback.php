@@ -65,9 +65,9 @@ class mobile_activity_feedback extends mobile_activity {
         
         $cm = get_coursemodule_from_id('feedback', $this->id);
         $context = context_module::instance($cm->id);
+        $feedback = $DB->get_record('feedback', array('id'=>$cm->instance), '*', MUST_EXIST);
         $select = 'feedback = ?';
         $params = array($feedback->id);
-        $feedback = $DB->get_record('feedback', array('id'=>$cm->instance), '*', MUST_EXIST);
         $feedbackitems = $DB->get_records_select('feedback_item', $select, $params, 'position');
         
         $this->generate_md5($feedbackitems);
