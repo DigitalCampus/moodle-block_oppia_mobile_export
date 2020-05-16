@@ -43,8 +43,6 @@ class mobile_activity_feedback extends mobile_activity {
         if($count_omitted == count($feedbackitems)){
             $this->is_valid = false;
         }
-        echo "items:" . $this->no_questions; 
-
     }
     
     function process(){
@@ -101,10 +99,14 @@ class mobile_activity_feedback extends mobile_activity {
         
         $i = 1;
         foreach($feedbackitems as $q){            
-       
-            $responses = array();
 
-            $questionTitle = extractLangs(cleanHTMLEntities($q->label, true), true, true);
+            $responses = array();
+            $title = $q->label;
+            if ($title == "" || $title == null){
+                $title = $q->name;
+  
+            }
+            $questionTitle = extractLangs(cleanHTMLEntities($title, true), true, true);
             $type = null;
             
             // multichoice multi
@@ -137,17 +139,20 @@ class mobile_activity_feedback extends mobile_activity {
                 $type = "essay";
             } elseif($q->typ == "multichoicerated" && substr($q->presentation,0,1)==='r'){
                 // multi - rated
-                $type = "multiselect";
+                $type = "multichoice";
                 $respstr = substr($q->presentation, 6);
                 $resps = explode('|', $respstr);
                 $j = 1;
                 foreach($resps as $resp){
+                    preg_match('/([0-9]+)#### (.*)/', $resp, $matches);
+                    $score = $matches[1];
+                    $respTitle = $matches[2];
                     array_push($responses, array(
                         'order' => $j,
                         'id'    => rand(1,1000),
                         'props' => json_decode ("{}"),
-                        'title' => substr(trim($resp),5),
-                        'score' => "0"
+                        'title' => $respTitle,
+                        'score' => $score
                     ));
                     $j++;
                 }
