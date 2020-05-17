@@ -158,7 +158,7 @@ class mobile_activity_feedback extends mobile_activity {
                 }
             } elseif($q->typ == "numeric"){
                 // numeric
-                $type = "numeric";
+                $type = "numerical";
             } elseif($q->typ == "textfield"){
                 // short answer
                 $type = "shortanswer";
