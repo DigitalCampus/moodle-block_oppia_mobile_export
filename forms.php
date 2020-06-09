@@ -13,7 +13,7 @@ class oppiaserver_form extends moodleform {
 
         $mform->addElement('text', 'server_url', get_string('server_form_url','block_oppia_mobile_export'));
         $mform->setType('server_url', PARAM_NOTAGS);
-        $mform->setDefault('server_url', 'http://demo.oppia-mobile.org/');
+        $mform->setDefault('server_url', 'https://demo.oppia-mobile.org/');
         
         $mform->addElement('text', 'server_username', get_string('server_form_username','block_oppia_mobile_export'));
         $mform->setType('server_username', PARAM_NOTAGS);
