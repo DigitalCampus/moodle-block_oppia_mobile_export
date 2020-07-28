@@ -73,7 +73,7 @@ foreach($sections as $sect) {
 			}
 			$mod = $mods[$modnumber];
 			
-			if($mod->modname == 'quiz' && $mod->uservisible == 1){
+			if($mod->modname == 'quiz' && $mod->visible == 1){
 			
 				$quiz = new mobile_activity_quiz();
 				$quiz->init($server_connection,$course->shortname,$sect->summary,0,0);
