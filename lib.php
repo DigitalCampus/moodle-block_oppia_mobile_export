@@ -160,7 +160,7 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
 	//find if any images/links exist
 	//preg_match_all('((@@PLUGINFILE@@/(?P<filenames>[\w\.\-\_[:space:]]*)[\"|\']))',$content,$files_tmp, PREG_OFFSET_CAPTURE);
 		
-	preg_match_all('((@@PLUGINFILE@@/(?P<filenames>[^\"\']*)))',$content,$files_tmp, PREG_OFFSET_CAPTURE);
+	preg_match_all('((@@PLUGINFILE@@/(?P<filenames>[^\"\'\?]*)))',$content,$files_tmp, PREG_OFFSET_CAPTURE);
 	
 	if(!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0){
 		return false;
@@ -185,6 +185,7 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
 		$file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
 				$fileinfo['itemid'], $fileinfo['filepath'], urldecode($fileinfo['filename']));
 		$result = copyFile($file, $component, $filearea, $itemid, $contextid, $course_root, $cmid);
+		echo "Result: ". $result ."<br/>";
 		if ($result != false){
 			$lastimg = $result;
 		}
