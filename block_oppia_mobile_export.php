@@ -51,7 +51,7 @@ class block_oppia_mobile_export extends block_base {
         	if ($s->defaultserver != 0){
         		$this->content->text .= "selected='selected'";
         	}
-        	$this->content->text .= ">".$s->servername. " (".$s->username.")</option>";
+        	$this->content->text .= ">".$s->servername. " (".$s->url.")</option>";
         }
         if (count($servers) == 0){
         	$this->content->text .= "<option value='default' selected='selected'>". $CFG->block_oppia_mobile_export_default_server ."</option>";

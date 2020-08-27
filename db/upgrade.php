@@ -104,6 +104,23 @@ function xmldb_block_oppia_mobile_export_upgrade($oldversion) {
 	    upgrade_plugin_savepoint(true, 2019102702, 'error', 'blocks');
 	}
 	
+	if ($oldversion < 2020082701) {
+	    
+	    // Add the field serverid to table block_oppia_mobile_config
+	    $table = new xmldb_table('block_oppia_mobile_server');
+	    $field = new xmldb_field('username');
+	    if ($dbman->field_exists($table, $field)){
+	        $dbman->drop_field($table, $field);
+	    }
+	    
+	    $field = new xmldb_field('apikey');
+	    if ($dbman->field_exists($table, $field)){
+	        $dbman->drop_field($table, $field);
+	    }
+	    
+	    // Blocks savepoint reached.
+	    upgrade_plugin_savepoint(true, 2020082701, 'error', 'blocks');
+	}
 	 
 	return true;
 }

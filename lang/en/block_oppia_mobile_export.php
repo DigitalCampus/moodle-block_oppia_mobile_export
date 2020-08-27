@@ -38,8 +38,6 @@ $string['course_icon_width'] = 'Course icon width';
 $string['course_icon_height'] = 'Course icon height';
 
 $string['default_server'] = 'Default server';
-$string['default_username'] = 'Default username';
-$string['default_api_key'] = 'Default api_key';
 
 $string['default_lang'] = 'Default language';
 $string['default_lang_info'] = 'Language code in ISO-639 format';
@@ -68,10 +66,6 @@ $string['server_form_name'] = 'Server Name (your reference)';
 $string['server_form_name_error_none'] = 'Please enter a reference name for your server.';
 $string['server_form_url'] = 'URL';
 $string['server_form_url_error_none'] = 'Please enter the url to the server.';
-$string['server_form_username'] = 'Username';
-$string['server_form_username_error_none'] = 'Please enter your OppiaMobile username for the server';
-$string['server_form_apikey'] = 'API Key';
-$string['server_form_apikey_error_none'] = 'Please enter your OppiaMobile API key for the server';
 
 $string['cleanup_start'] = 'Starting cleanup now...';
 $string['cleanup_end'] = 'Cleanup completed';

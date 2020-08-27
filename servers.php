@@ -24,8 +24,6 @@ if ($serverform->is_cancelled()) {
 	$record->servername = $fromform->server_ref;
 	$record->url = $fromform->server_url;
 	$record->moodleuserid = $USER->id;
-	$record->username = $fromform->server_username;
-	$record->apikey = $fromform->server_apikey;
 	$DB->insert_record('block_oppia_mobile_server', $record, false);
 }
 
@@ -41,7 +39,7 @@ if (count($servers)== 0){
 	foreach ($servers as $s){
 		echo "<li>";
 		echo $s->servername;
-		echo " (<a href='".$s->url."' target='_blank'>".$s->url. "</a> - ".$s->username.":".$s->apikey.")";
+		echo " (<a href='".$s->url."' target='_blank'>".$s->url. "</a>)";
 		echo "</li>";
 	}	
 	echo "</ul>";
