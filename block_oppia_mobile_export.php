@@ -97,7 +97,7 @@ class block_oppia_mobile_export extends block_base {
         $this->content->text .= '</div></div>';
         
         $this->content->text .= "<hr />";
-        $this->content->footer = '<a href="https://digital-campus.org/oppiamobile/overview/">OppiaMobile</a>';
+        $this->content->footer = '<a href="https://digital-campus.org/oppiamobile/">OppiaMobile</a>';
         if (empty($this->instance)) {
             return $this->content;
         }
