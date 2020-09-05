@@ -6,6 +6,7 @@
  * @package block_oppia_mobile_export
  */
 require_once($CFG->dirroot . '/blocks/oppia_mobile_export/lib.php');
+require_once($CFG->dirroot . '/blocks/oppia_mobile_export/version.php');
 
 class block_oppia_mobile_export extends block_base {
 	
@@ -23,7 +24,7 @@ class block_oppia_mobile_export extends block_base {
     
     function get_content() {
         global $USER, $CFG, $COURSE;
-
+        
         if ($this->content !== NULL || !isset($COURSE->id) || $COURSE->id == 1) {
             return $this->content;
         }
@@ -97,11 +98,10 @@ class block_oppia_mobile_export extends block_base {
         $this->content->text .= '</div></div>';
         
         $this->content->text .= "<hr />";
-        $this->content->footer = '<a href="https://digital-campus.org/oppiamobile/">OppiaMobile</a>';
+        $this->content->footer = '<a href="https://digital-campus.org/oppiamobile/">OppiaMobile</a> '. get_string('release', 'block_oppia_mobile_export');
         if (empty($this->instance)) {
             return $this->content;
         }
-           
 
         return $this->content;
     }
