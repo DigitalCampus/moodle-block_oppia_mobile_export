@@ -100,8 +100,12 @@ $post =  array('username' => $username,
 $curl = curl_init();
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1 );
 curl_setopt($curl, CURLOPT_URL, $server_connection->url ."api/publish/" );
-curl_setopt($curl, CURLOPT_POST,1);
+curl_setopt($curl, CURLOPT_POST, true);
+curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
 curl_setopt($curl, CURLOPT_POSTFIELDS, $post);
+curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+
 $result = curl_exec($curl);
 $http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
@@ -153,6 +157,13 @@ else{
 		foreach($messages as $msg){
 			echo '<div class="export-results '.$msg['tags'].'">'.$msg['message'].'</div>';
 			add_publishing_log($server_connection->url, $USER->id, $id,  "api_publish_response_message", $msg['tags'].": ".$msg['message']);
+		}
+	}
+	if (array_key_exists('errors', $json_response)){
+		$errors = $json_response['errors'];
+		foreach($errors as $err){
+			echo '<div class="export-results warning">'.$err.'</div>';
+			add_publishing_log($server_connection->url, $USER->id, $id,  "api_publish_response_message", "error: " . $err);
 		}
 	}
 	
