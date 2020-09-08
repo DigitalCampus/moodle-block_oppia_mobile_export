@@ -18,13 +18,13 @@ require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/resource.php'
 
 require_once($CFG->libdir.'/componentlib.class.php');
 
-$id = required_param('id',PARAM_INT);
-$file = required_param('file',PARAM_TEXT);
-$tags = cleanTagList(required_param('tags',PARAM_TEXT));
-$server = required_param('server',PARAM_TEXT);
-$username = required_param('username',PARAM_TEXT);
-$password = required_param('password',PARAM_TEXT);
-$is_draft = optional_param('is_draft','False', PARAM_TEXT);
+$id = required_param('id', PARAM_INT);
+$file = required_param('file', PARAM_TEXT);
+$tags = cleanTagList(required_param('tags', PARAM_TEXT));
+$server = required_param('server', PARAM_TEXT);
+$username = required_param('username', PARAM_TEXT);
+$password = required_param('password', PARAM_TEXT);
+$course_status = required_param('course_status', PARAM_TEXT);
 
 $course = $DB->get_record('course', array('id'=>$id));
 
@@ -55,7 +55,14 @@ add_publishing_log($server_connection->url, $USER->id, $id,  "api_publish_start"
 
 echo $OUTPUT->header();
 
-echo "<h2>Publishing course</h2>";
+echo "<h2>";
+if ($course_status == 'draft'){
+    echo get_string('publishing_header_draft','block_oppia_mobile_export');
+} else {
+    echo get_string('publishing_header_live','block_oppia_mobile_export');
+}
+echo "</h2>";
+
 flush_buffers();
 
 if (trim($username) == ''){
@@ -91,6 +98,11 @@ if (substr($server_connection->url, -strlen('/'))!=='/'){
 	$server_connection->url .= '/';
 }
 
+if ($course_status == 'draft'){
+    $is_draft = "true";
+} else {
+    $is_draft = "false";
+}
 $post =  array('username' => $username,
 				'password' => $password,
 				'is_draft' => $is_draft,

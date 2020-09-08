@@ -17,9 +17,10 @@ require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/resource.php'
 
 require_once($CFG->libdir.'/componentlib.class.php');
 
-$id = required_param('id',PARAM_INT);
-$stylesheet = required_param('stylesheet',PARAM_TEXT);
-$server = required_param('server',PARAM_TEXT);
+$id = required_param('id', PARAM_INT);
+$stylesheet = required_param('stylesheet', PARAM_TEXT);
+$server = required_param('server', PARAM_TEXT);
+$course_status = required_param('course_status', PARAM_TEXT);
 $course = $DB->get_record('course', array('id'=>$id));
 
 $PAGE->set_url('/blocks/oppia_mobile_export/export1.php', array('id' => $id));
@@ -105,6 +106,7 @@ echo "<input type='hidden' name='id' value='".$COURSE->id."'>";
 echo "<input type='hidden' name='sesskey' value='".sesskey()."'>";
 echo "<input type='hidden' name='stylesheet' value='".$stylesheet."'>";
 echo "<input type='hidden' name='server' value='".$server."'>";
+echo "<input type='hidden' name='course_status' value='".$course_status."'>";
 
 if (count($quizzes)> 0){
 	
