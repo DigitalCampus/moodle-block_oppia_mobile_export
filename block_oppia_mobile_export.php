@@ -73,6 +73,14 @@ class block_oppia_mobile_export extends block_base {
 	        $this->content->text .= "</select>";
 	        $this->content->text .= "</p>";
         }
+        
+        $this->content->text .= "<p>".get_string('course_status','block_oppia_mobile_export')."<br/>";
+        $this->content->text .= "<select name=\"course_status\" class=\"custom-select\" style=\"width:100%;\">";
+        $this->content->text .= "<option value='draft'>".get_string('course_status_draft','block_oppia_mobile_export')."</option>";
+        $this->content->text .= "<option value='live'>".get_string('course_status_live','block_oppia_mobile_export')."</option>";
+        $this->content->text .= "</select>";
+        $this->content->text .= "</p>";
+        
         $this->content->text .= "<p><input type='submit' name='submit' class=\"btn btn-primary\" value='".get_string('oppia_block_export_button','block_oppia_mobile_export')."'>";
         $this->content->text .= "</form>";
 
