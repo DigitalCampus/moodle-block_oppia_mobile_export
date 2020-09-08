@@ -17,6 +17,9 @@ require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/resource.php'
 
 require_once($CFG->libdir.'/componentlib.class.php');
 
+const PRIORITY_LEVELS = 10;
+const MAX_ATTEMPTS = 10;
+
 $id = required_param('id',PARAM_INT);
 $stylesheet = required_param('stylesheet',PARAM_TEXT);
 $server = required_param('server',PARAM_TEXT);
@@ -36,7 +39,6 @@ $PAGE->set_pagetype('course-view-' . $course->format);
 $PAGE->set_other_editing_capability('moodle/course:manageactivities');
 $PAGE->set_title(get_string('course') . ': ' . $course->fullname);
 $PAGE->set_heading($course->fullname);
-
 $PAGE->set_context($context);
 $modinfo = get_fast_modinfo($course);
 $sections = $modinfo->get_section_info_all();
@@ -74,19 +76,18 @@ foreach($sections as $sect) {
 			$mod = $mods[$modnumber];
 			
 			if($mod->modname == 'quiz' && $mod->visible == 1){
-			
 				$quiz = new mobile_activity_quiz();
 				$quiz->init($server_connection,$course->shortname,$sect->summary,0,0);
 				$quiz->id = $mod->id;
 				$quiz->section = $orderno;
 				$quiz->preprocess();
 				if ($quiz->get_is_valid() && $quiz->get_no_questions()> 0){
-					$temp = new stdClass;
-					$temp->section = $sectionTitle;
-					$temp->name = $mod->name;
-					$temp->noquestions = $quiz->get_no_questions();
-					$temp->id = $mod->id;
-					array_push($quizzes, $temp);
+					array_push($quizzes, array(
+						'section' => $sectionTitle,
+						'name' => $mod->name,
+						'noquestions' => $quiz->get_no_questions(),
+						'id' => $mod->id
+					));
 				}
 			}
 		}
@@ -94,6 +95,54 @@ foreach($sections as $sect) {
 	}
 }
 
+for ($qid=0; $qid<count($quizzes); $qid++){
+	$quiz = $quizzes[$qid];
+		
+		$current_random = get_oppiaconfig($quiz['id'],'randomselect', 0);
+		$quiz['random_all'] = $current_random == 0;
+		$quiz['randomselect'] = [];
+		if ($quiz['noquestions']>1){
+			for ($i=0; $i<$quiz['noquestions']; $i++){
+				$quiz['randomselect'][$i] = array ("idx" => $i+1, "selected" => $current_random == $i+1); 
+			}
+		}
+		
+		$showfeedback = get_oppiaconfig($quiz['id'], 'showfeedback', 2);
+		$quiz['feedback_never'] = $showfeedback == 0;
+		$quiz['feedback_always'] = $showfeedback == 1;
+		$quiz['feedback_endonly'] = $showfeedback == 2;
+
+		$current_threshold = get_oppiaconfig($quiz['id'], 'passthreshold', 80);
+		$quiz['passthreshold'] = [];
+		for ($t=0; $t<20; $t++){
+			$quiz['passthreshold'][$t] = array ("threshold" => ($t+1)*5, "selected" => $current_threshold == ($t+1)*5); 
+		}
+
+		$current_maxattempts = get_oppiaconfig($quiz['id'], 'maxattempts', 'unlimited');
+		$quiz['attempts_unlimited'] = $maxattempts=='unlimited';
+		$quiz['max_attempts'] = [];
+		for ($i=0; $i<MAX_ATTEMPTS; $i++){
+			$quiz['max_attempts'][$i] = array ("num" => $i+1, "selected" => $current_maxattempts == $i+1); 
+		}
+
+	 $quizzes[$qid] = $quiz;
+}
+
+$priority = (int) get_oppiaconfig($id, 'coursepriority', '0', $server);
+$priorities = [];
+for ($i=0; $i<=PRIORITY_LEVELS; $i++){
+	$priorities[$i] = array ("idx" => $i, "selected" => $i == $priority );
+}
+$sequencing = get_oppiaconfig($id,'coursesequencing','',$server);
+
+$base_settings = array(
+	'priorities' 	=> $priorities,
+	'tags' 			=> get_oppiaconfig($id,'coursetags','', $server),
+	'default_lang' 	=> get_oppiaconfig($id,'default_lang', $CFG->block_oppia_mobile_export_default_lang, $server),
+	'sequencing_none' 	 => $sequencing == '' || $sequencing == 'none',
+	'sequencing_section' => $sequencing == 'section',
+	'sequencing_section' => $sequencing == 'course',
+);
 
 echo "<form name='courseconfig' method='post' action='".$CFG->wwwroot."/blocks/oppia_mobile_export/export2.php'>";
 
@@ -107,139 +156,14 @@ echo "<input type='hidden' name='stylesheet' value='".$stylesheet."'>";
 echo "<input type='hidden' name='server' value='".$server."'>";
 
 if (count($quizzes)> 0){
-	
 	echo "<p>".get_string('export_contains_quizzes','block_oppia_mobile_export')."</p>";
-	
-	echo "<div class=\"quizzes-table\">";
-	echo "<div class=\"pure-g titles pure-hidden-sm pure-hidden-xs pure-hidden-md\">";
-	echo "<div class=\"pure-u-4-24\">".get_string('export_quiz_sectionname','block_oppia_mobile_export')."</div>";
-	echo "<div class=\"pure-u-2-24\">".get_string('export_quiz_title','block_oppia_mobile_export')."</div>";
-	echo "<div class=\"pure-u-4-24\">".get_string('export_quiz_norandom','block_oppia_mobile_export')."</div>";
-	echo "<div class=\"pure-u-4-24\">".get_string('export_quiz_feedback','block_oppia_mobile_export')."</div>";
-	echo "<div class=\"pure-u-2-24\">".get_string('export_quiz_passthreshold','block_oppia_mobile_export')."</div>";
-	echo "<div class=\"pure-u-3-24\">".get_string('export_quiz_max_attempts','block_oppia_mobile_export')."</div>";
-	echo "</div>";
-	foreach ($quizzes as $quiz){
-		echo "<div class=\"pure-g\">";
-			echo "<div class=\"pure-u-lg-6-24 pure-u-1 quiz-title\">";
-			echo "<div class=\"pure-u-lg-2-3 quiz-section\">".$quiz->section."</div>";
-			echo "<div class=\"pure-u-lg-1-3\">".$quiz->name."</div></div>";
-			
-			echo "<div class=\"pure-u-lg-4-24 pure-u-1\">";
-			echo "<span class=\"pure-hidden-lg pure-hidden-xl\">".get_string('export_quiz_norandom','block_oppia_mobile_export')."</span>";
-			$current = get_oppiaconfig($quiz->id,'randomselect',0);
-			echo "<select name='quiz_".$quiz->id."_randomselect' id='id_s_quiz_".$quiz->id."'>";
-			echo "<option value='0'";
-				if ($current == 0){
-					echo " selected='selected'";
-				}
-			echo ">".get_string('export_quiz_norandom_all','block_oppia_mobile_export')."</option>";
-			for ($i=1; $i<$quiz->noquestions; $i++){
-				echo "<option value='".$i."'";
-				if ($current == $i){
-					echo " selected='selected'";
-				}
-				echo ">".get_string('export_quiz_norandom_selectx','block_oppia_mobile_export',$i)."</option>";
-			}
-			echo "</select></div>";
-			
-			$showfeedback = get_oppiaconfig($quiz->id,'showfeedback',2);
-			echo "<div class=\"pure-u-lg-4-24 pure-u-1\">";
-			echo "<span class=\"pure-hidden-lg pure-hidden-xl\">".get_string('export_quiz_feedback','block_oppia_mobile_export')."</span>";
-			echo "<select name='quiz_".$quiz->id."_showfeedback' id='id_showfeedback_quiz_".$quiz->id."'>";
-			
-			echo "<option value='1'";
-				if ($showfeedback == 1){
-					echo " selected='selected'";
-				}
-			echo ">".get_string('feedback_always','block_oppia_mobile_export')."</option>";
-			
-			echo "<option value='0'";
-			if ($showfeedback == 0){
-				echo " selected='selected'";
-			}
-			echo ">".get_string('feedback_never','block_oppia_mobile_export')."</option>";
-			
-			echo "<option value='2'";
-			if ($showfeedback == 2){
-				echo " selected='selected'";
-			}
-			echo ">".get_string('feedback_endonly','block_oppia_mobile_export')."</option>";
-			echo "</select></div>";
-			
-			$passthreshold = get_oppiaconfig($quiz->id,'passthreshold',80);
-			echo "<div class=\"pure-u-lg-2-24 pure-u-sm-1-2 pure-u-1\">";
-			echo "<span class=\"pure-hidden-lg pure-hidden-xl\">".get_string('export_quiz_passthreshold','block_oppia_mobile_export')."</span>";
-			echo "<select name='quiz_".$quiz->id."_passthreshold' id='id_passthreshold_quiz_".$quiz->id."'>";
-			for ($i=100; $i>0; $i = $i-5){
-				echo "<option value='".$i."'";
-				if ($passthreshold == $i){
-					echo " selected='selected'";
-				}
-				echo ">".$i."</option>";
-			}
-			echo "</select></div>";
-
-			$maxattempts = get_oppiaconfig($quiz->id, 'maxattempts', 'unlimited');
-			echo "<div class=\"pure-u-lg-3-24 pure-u-md-1-2 pure-u-1\">";
-			echo "<span class=\"pure-hidden-lg pure-hidden-xl\">".get_string('export_quiz_max_attempts','block_oppia_mobile_export')."</span>";
-			echo "<select name='quiz_".$quiz->id."_maxattempts' id='id_maxattempts_quiz_".$quiz->id."'>";
-			echo "<option value='unlimited' ".($maxattempts=='unlimited'?"selected='selected'":"").">";
-			echo get_string('export_quiz_maxattempts_unlimited','block_oppia_mobile_export')."</option>";
-			for ($i=1; $i<10; $i++){
-				echo "<option value='".$i."' ".($maxattempts==$i?"selected='selected'":"").">";
-				echo $i."</option>";
-			}
-			echo "</select></div>";
-			
-		echo "</div>";
-	}
-	echo "</div>";
+	echo $OUTPUT->render_from_template('block_oppia_mobile_export/quizzes', $quizzes);
 }
-echo "<br/>";
-echo "<div class='export-section-icon'><img src='".$OUTPUT->pix_url('ic_priority', 'block_oppia_mobile_export')."'/></div>";
-echo "<p><b>".get_string('export_priority_title','block_oppia_mobile_export')."</b>";
-echo "<br/>".get_string('export_priority_desc','block_oppia_mobile_export')."<br/>";
 
-$priority = get_oppiaconfig($id,'coursepriority','0',$server);
-echo get_string('export_priority_label','block_oppia_mobile_export').": ";
-echo "<select name='coursepriority' id='coursepriority'>";
-for ($i=0; $i<11; $i++){
-	echo "<option value='$i'";
-		if ($i == $priority){
-			echo " selected='selected'";
-		}
-	echo ">$i</option>";
-}
-echo "</select></p>";
+echo $OUTPUT->render_from_template('block_oppia_mobile_export/base_settings', $base_settings);
+echo $OUTPUT->render_from_template('block_oppia_mobile_export/submit_btn', get_string('continue','block_oppia_mobile_export'));
 
-echo "<div class='export-section-icon'><img src='".$OUTPUT->pix_url('ic_tags', 'block_oppia_mobile_export')."'/></div>";
-echo "<p><b>".get_string('export_course_tags_title','block_oppia_mobile_export')."</b>";
-echo "<br/>".get_string('export_course_tags_desc','block_oppia_mobile_export')."<br/>";
-$tags = get_oppiaconfig($id,'coursetags','',$server);
-echo "<div class='pure-g'><input name='coursetags' id='coursetags' value='".$tags."' size='100'/></div><br/></p>";
-
-echo "<div class='export-section-icon'><img src='".$OUTPUT->pix_url('ic_language', 'block_oppia_mobile_export')."'/></div>";
-echo "<p><b>".get_string('export_lang_title','block_oppia_mobile_export')."</b>";
-echo "<br/>".get_string('export_lang_desc','block_oppia_mobile_export')."<br/>";
-$default_lang = get_oppiaconfig($id,'default_lang',$CFG->block_oppia_mobile_export_default_lang, $server);
-echo "<div class='pure-g'><input name='default_lang' id='default_lang' value='".$default_lang."' size='10'/></div><br/></p>";
-
-echo "<div class='export-section-icon'><img src='".$OUTPUT->pix_url('ic_sequencing', 'block_oppia_mobile_export')."'/></div>";
-echo "<p><b>".get_string('export_sequencing_title','block_oppia_mobile_export')."</b>";
-echo "<br/>".get_string('export_sequencing_desc','block_oppia_mobile_export')."<br/>";
-
-$sequencing = get_oppiaconfig($id,'coursesequencing','',$server);
-echo "<div class=\"pure-g\"><div class='pure-u-md-7-24 pure-u-1 pure-md-right'>".get_string('export_sequencing_label','block_oppia_mobile_export').":</div><div class='pure-u-1 pure-u-md-17-24'>";
-echo "<input type='radio' name='coursesequencing' value='none' ".((($sequencing == '') || ($sequencing == 'none'))?"checked":"")."> ".get_string('export_sequencing_none','block_oppia_mobile_export')."<br>";
-echo "<input type='radio' name='coursesequencing' value='section' ".(($sequencing == 'section')?"checked":"")."> ".get_string('export_sequencing_section','block_oppia_mobile_export')."<br>";
-echo "<input type='radio' name='coursesequencing' value='course' ".(($sequencing == 'course' )?"checked":"")."> ".get_string('export_sequencing_course','block_oppia_mobile_export')."<br>";
-echo "<br></p>";
-echo "</div></div>";
-
-echo "<p><input type='submit' name='submit' value='".get_string('continue','block_oppia_mobile_export')."'></p>";
 echo "</form>";
 echo $OUTPUT->footer();
-
 
 ?>
