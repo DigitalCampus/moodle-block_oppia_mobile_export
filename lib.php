@@ -445,28 +445,4 @@ function recurse_copy($src,$dst) {
 	}
 	closedir($dir);
 }
-
-function create_default_course_gamification(&$xmlDoc,&$node){
-	$default_gamification_events = [
-			'quiz_first_attempt' => 20,                     
-			'quiz_attempt' => 10,                          
-			'quiz_first_attempt_threshold'  => 100,         
-			'quiz_first_attempt_bonus' => 50,               
-			'activity_completed' => 10,                    
-			'media_started' => 20,                         
-			'media_playing_interval' => 30,                
-			'media_playing_points_per_interval' => 5,      
-			'media_max_points' => 200,                     
-			'course_downloaded' => 50
-			
-		];
-	foreach($default_gamification_events as $event => $points){
-		$temp = $xmlDoc->createElement("event");
-		$temp->appendChild($xmlDoc->createAttribute("name"))->appendChild($xmlDoc->createTextNode($event));
-		$temp->appendChild($xmlDoc->createTextNode($points));
-		$node->appendChild($temp);
-		
-	}
-}
-
 ?>

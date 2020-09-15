@@ -460,12 +460,6 @@ if(count($MOBILE_LANGS) == 0){
 }
 $meta->appendChild($langs);
 
-// add the gamification default values
-$gamification = $xmlDoc->createElement("gamification");
-$gameNode = create_default_course_gamification($xmlDoc,$gamification);
-$meta->appendChild($gamification);
-
-
 // add media includes
 if(count($MEDIA) > 0){
 	$media = $xmlDoc->createElement("media");
