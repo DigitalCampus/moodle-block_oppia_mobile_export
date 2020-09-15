@@ -7,7 +7,7 @@
 	box-shadow: 0 3px 6px rgba(0,0,0,0.2);
 	margin-bottom: 2em;
 }
-.quizzes-table .pure-g{
+.quizzes-table > .pure-g{
 	font-size: 13px;
 	box-sizing: border-box;
 	background-color: #fefefe;
@@ -15,7 +15,7 @@
 .quiz-section{
 	text-align: left;
 }
-.quizzes-table .pure-g:nth-child(even) {background: #f3f3f3}
+.quizzes-table > .pure-g:nth-child(even) {background: #f3f3f3}
 .quizzes-table .pure-g.titles{
 	background-color: #9ACA3C;
 	text-align: center;
@@ -32,24 +32,26 @@
 	box-sizing: border-box;
 	text-align: center;
 }
-.pure-g input, .quizzes-table .pure-g select{
+.pure-g input, .pure-g select{
 	font-size: 13px;
 	max-width: 100%;
-	margin: auto;
+	width:auto;
 	vertical-align:middle;
 	box-sizing: border-box;
 }
 
 .export-section-icon{
-	float: left;
+	float: right;
 	padding:11px;
 	border-radius: 100%;
 	background-color: #9ACA3C;
-	margin-right: 10px;
+	margin-right: 20px;
 	margin-bottom: 5px;
 }
 .export-section-icon img{
-	max-width: 25px;
+	width: 25px;
+	height: 25px;
+	margin-right: 0;
 }
 
 .export-results{
@@ -93,7 +95,6 @@
 		display: inline-block;
 	}
 	.quiz-title > div{
-		display: inline-block;
 		font-size: 1.2em;
 	}
 	.quiz-title .quiz-section{

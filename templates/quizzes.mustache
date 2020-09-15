@@ -1,0 +1,75 @@
+<div class="quizzes-table">
+	<div class="pure-g titles pure-hidden-sm pure-hidden-xs pure-hidden-md">
+		<div class="pure-u-5-24">{{# str }}export_quiz_sectionname,block_oppia_mobile_export{{/ str }}</div>
+		<div class="pure-u-2-24">{{# str }}export_quiz_title,block_oppia_mobile_export{{/ str }}</div>
+		<div class="pure-u-7-24">{{# str }}export_quiz_norandom,block_oppia_mobile_export{{/ str }}</div>
+		<div class="pure-u-4-24">{{# str }}export_quiz_feedback,block_oppia_mobile_export{{/ str }}</div>
+		<div class="pure-u-3-24">{{# str }}export_quiz_passthreshold,block_oppia_mobile_export{{/ str }}</div>
+		<div class="pure-u-3-24">{{# str }}export_quiz_max_attempts,block_oppia_mobile_export{{/ str }}</div>
+	</div>
+	{{# . }}
+	<div class="pure-g">
+		<div class="pure-u-lg-7-24 pure-u-1 quiz-title">
+			<div class="pure-g pure-hidden-sm pure-hidden-xs pure-hidden-md">
+				<div class="pure-u-1-2 pure-u-lg-3-4 quiz-section">{{section}}</div>
+				<div class="pure-u-1-2 pure-u-lg-1-4">{{name}}</div>
+			</div>
+			<div class="pure-hidden-lg pure-hidden-xl">
+				<b class="quiz-section">{{section}}</b>
+				{{name}}
+			</div>
+		</div>
+		
+		<div class="pure-u-lg-7-24 pure-u-1">
+			<span class="pure-hidden-lg pure-hidden-xl">{{# str }}export_quiz_norandom,block_oppia_mobile_export{{/ str }}</span>
+			<select class="form-control" name='quiz_{{id}}_randomselect' id='id_s_quiz_{{id}}'>
+				<option value='0' {{# random_all }} selected="selected" {{/ random_all }}> 
+				{{# str }}export_quiz_norandom_all,block_oppia_mobile_export{{/ str }}
+				</option>
+				{{#randomselect}}
+					<option value="{{idx}}" {{# selected }} selected="selected" {{/ selected }}>
+						{{# str }} export_quiz_norandom_selectx,block_oppia_mobile_export, {{idx}} {{/ str }}
+					</option>
+				{{/randomselect}}
+			</select>
+		</div>
+		
+		<div class="pure-u-lg-4-24 pure-u-1">
+			<span class="pure-hidden-lg pure-hidden-xl">{{# str }}export_quiz_feedback,block_oppia_mobile_export{{/ str }}</span>
+			<select class="form-control" name="quiz_{{id}}_showfeedback" id="id_showfeedback_quiz_{{id}}">
+				<option value='1' {{# feedback_always }} selected="selected" {{/ feedback_always }}>
+					{{# str }} feedback_always, block_oppia_mobile_export {{/ str }}
+				</option>
+				<option value='0' {{# feedback_never }} selected="selected" {{/ feedback_never }}>
+					{{# str }} feedback_never, block_oppia_mobile_export {{/ str }}
+				</option>
+				<option value='2' {{# feedback_endonly }} selected="selected" {{/ feedback_endonly }}>
+					{{# str }} feedback_endonly, block_oppia_mobile_export {{/ str }}
+				</option>
+			</select>
+		</div>
+		
+		<div class="pure-u-lg-3-24 pure-u-sm-1-2 pure-u-1">
+			<span class="pure-hidden-lg pure-hidden-xl">{{# str }}export_quiz_passthreshold,block_oppia_mobile_export{{/ str }}</span>
+			<select class="form-control" name="quiz_{{id}}_passthreshold" id="id_passthreshold_quiz_{{id}}">
+			{{#passthreshold}}
+				<option value="{{threshold}}" {{# selected }} selected="selected" {{/ selected }}> {{threshold}}%</option>
+			{{/passthreshold}}
+			</select>
+		</div>
+
+		<div class="pure-u-lg-3-24 pure-u-md-1-2 pure-u-1">
+			<span class="pure-hidden-lg pure-hidden-xl">{{# str }}export_quiz_max_attempts,block_oppia_mobile_export{{/ str }}</span>
+			<select class="form-control" name='quiz_".$quiz->id."_maxattempts' id='id_maxattempts_quiz_".$quiz->id."'>
+				<option value='unlimited' {{# attempts_unlimited }} selected="selected" {{/ attempts_unlimited }}>
+					{{# str }}export_quiz_maxattempts_unlimited,block_oppia_mobile_export{{/ str }}
+				</option>
+				{{#max_attempts}}
+					<option value="{{num}}" {{# selected }} selected="selected" {{/ selected }}> {{num}} </option>
+				{{/max_attempts}}
+			</select>
+		</div>
+		
+	</div>
+	{{/ . }}
+</div>

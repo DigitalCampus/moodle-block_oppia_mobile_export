@@ -1,0 +1,87 @@
+
+
+<div class='pure-g'>
+	<div class="pure-u-1-5 pure-u-md-1-8">
+		<div class='export-section-icon'>
+			{{# pix }} ic_priority, block_oppia_mobile_export {{/ pix }}
+		</div>
+	</div>
+	<div class="pure-u-4-5 pure-u-md-7-8">
+		<p>
+		<b>{{# str }}export_priority_title,block_oppia_mobile_export{{/ str }}</b><br/>
+		{{# str }}export_priority_desc,block_oppia_mobile_export{{/ str }}<br/>
+
+		<select class="form-control" name="coursepriority" id="coursepriority">
+		{{#priorities}}
+			<option value="{{idx}}" {{# selected }} selected="selected" {{/ selected }}> {{idx}} </option>
+		{{/priorities}}
+		</select>
+		</p>
+	</div>
+</div>
+<br/>
+
+
+<div class='pure-g'>
+	<div class="pure-u-1-5 pure-u-md-1-8">
+		<div class='export-section-icon'>
+			{{# pix }} ic_tags, block_oppia_mobile_export {{/ pix }}
+		</div>
+	</div>
+	<div class="pure-u-4-5 pure-u-md-7-8">
+		<p>
+		<b>{{# str }}export_course_tags_title,block_oppia_mobile_export{{/ str }}</b><br/>
+		{{# str }}export_course_tags_desc,block_oppia_mobile_export{{/ str }}<br/>
+		<input class="form-control" name="coursetags" id="coursetags" value="{{tags}}" size="50" />
+		</p>
+	</div>
+</div>
+<br/>
+
+<div class='pure-g'>
+	<div class="pure-u-1-5 pure-u-md-1-8">
+		<div class='export-section-icon'>
+			{{# pix }} ic_language, block_oppia_mobile_export {{/ pix }}
+		</div>
+	</div>
+	<div class="pure-u-4-5 pure-u-md-7-8">
+		<p>
+		<b>{{# str }}export_lang_title,block_oppia_mobile_export{{/ str }}</b><br/>
+		{{# str }}export_lang_desc,block_oppia_mobile_export{{/ str }}<br/>
+		<input class="form-control" name="default_lang" id="default_lang" value="{{default_lang}}" size="10" />
+		</p>
+	</div>
+</div>
+<br/>
+
+<div class='pure-g'>
+	<div class="pure-u-1-5 pure-u-md-1-8">
+		<div class='export-section-icon'>
+			{{# pix }} ic_sequencing, block_oppia_mobile_export {{/ pix }}
+		</div>
+	</div>
+	<div class="pure-u-4-5 pure-u-md-7-8">
+		<p>
+		<b>{{# str }}export_sequencing_title,block_oppia_mobile_export{{/ str }}</b><br/>
+		{{# str }}export_sequencing_desc,block_oppia_mobile_export{{/ str }}<br/>
+		
+		<div class="pure-g">
+			<div class="pure-u-md-7-24 pure-u-1 pure-md-right">
+				{{# str }} export_sequencing_label,block_oppia_mobile_export{{/ str }}:
+			</div>
+			<div class="pure-u-1 pure-u-md-17-24">
+				<input type="radio" name="coursesequencing" value="none" {{#sequencing_none}} checked {{/sequencing_none}}> 
+				{{# str }} export_sequencing_none, block_oppia_mobile_export {{/ str }} <br>
+
+				<input type="radio" name="coursesequencing" value="section" {{#sequencing_section}} checked {{/sequencing_section}}> 
+				{{# str }} export_sequencing_section, block_oppia_mobile_export {{/ str }} <br>
+
+				<input type="radio" name="coursesequencing" value="course" {{#sequencing_course}} checked {{/sequencing_course}}> 
+				{{# str }} export_sequencing_course, block_oppia_mobile_export {{/ str }} <br>
+			</div>
+		</div>
+
+		</p>
+	</div>
+</div>
+<br/>
