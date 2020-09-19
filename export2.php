@@ -287,8 +287,10 @@ if($filename){
 	$meta->appendChild($temp);
 }
 $index = Array();
-
 $structure = $xmlDoc->createElement("structure");
+
+echo "<h3>".get_string('export_sections_start','block_oppia_mobile_export')."</h3>";
+
 $sect_orderno = 1;
 foreach($sections as $sect) {
 	flush_buffers();
@@ -311,7 +313,9 @@ foreach($sections as $sect) {
 	}
 
 	if(count($sectionmods)>0){
-		echo "<h3>".get_string('export_section_title','block_oppia_mobile_export', $sectionTitle)."</h3>";
+		echo '<hr>';
+		echo '<div class="oppia_export_section">';
+		echo "<h4>".get_string('export_section_title','block_oppia_mobile_export', $sectionTitle)."</h4>";
 		
 		$section = $xmlDoc->createElement("section");
 		$section->appendChild($xmlDoc->createAttribute("order"))->appendChild($xmlDoc->createTextNode($sect_orderno));
@@ -337,15 +341,20 @@ foreach($sections as $sect) {
 			if ($modnumber == "" || $modnumber === false){
 				continue;
 			}
-			
 			$mod = $mods[$modnumber];
 			
-			echo("<pre>");
+			if($mod->visible != 1){
+				continue;
+			}
+
+			//echo("<pre>");
 			// print_r($mod);
-			echo("</pre>");
+			//echo("</pre>");
+
 			
+			echo '<div class="activity"><strong>' . $mod->name . '</strong><br>';
+
 			if($mod->modname == 'page' && $mod->visible == 1){
-				echo $mod->name."<br/>";
 				$page = new mobile_activity_page();
 				$page->courseroot = $course_root;
 				$page->id = $mod->id;
@@ -354,10 +363,7 @@ foreach($sections as $sect) {
 				$page->getXML($mod,$act_orderno,true,$activities,$xmlDoc);
 				$act_orderno++;
 			}
-			
-			if($mod->modname == 'quiz' && $mod->visible == 1){
-				echo $mod->name."<br/>";
-				
+			else if($mod->modname == 'quiz' && $mod->visible == 1){
 				$quiz = new mobile_activity_quiz();
 				$random = optional_param('quiz_'.$mod->id.'_randomselect',0,PARAM_INT);
 				add_or_update_oppiaconfig($mod->id, 'randomselect', $random);
@@ -389,9 +395,7 @@ foreach($sections as $sect) {
 					echo get_string('error_quiz_no_questions','block_oppia_mobile_export')."<br/>";
 				}
 			}
-			
-			if($mod->modname == 'resource' && $mod->visible == 1){
-				echo $mod->name."<br/>";
+			else if($mod->modname == 'resource' && $mod->visible == 1){
 				$resource = new mobile_activity_resource();
 				$resource->courseroot = $course_root;
 				$resource->id = $mod->id;
@@ -400,9 +404,7 @@ foreach($sections as $sect) {
 				$resource->getXML($mod,$act_orderno,true,$activities,$xmlDoc);
 				$act_orderno++;
 			}
-			
-			if($mod->modname == 'url' && $mod->visible == 1){
-				echo $mod->name."<br/>";
+			else if($mod->modname == 'url' && $mod->visible == 1){
 				$url = new mobile_activity_url();
 				$url->courseroot = $course_root;
 				$url->id = $mod->id;
@@ -411,9 +413,7 @@ foreach($sections as $sect) {
 				$url->getXML($mod,$act_orderno,true,$activities,$xmlDoc);
 				$act_orderno++;
 			}
-			
-			if($mod->modname == 'feedback' && $mod->visible == 1){
-				echo $mod->name."<br/>";
+			else if($mod->modname == 'feedback' && $mod->visible == 1){
 				$feedback = new mobile_activity_feedback();
 				$configArray = Array(
 				    'showfeedback'=>false,
@@ -432,9 +432,14 @@ foreach($sections as $sect) {
 					echo get_string('error_feedback_no_questions','block_oppia_mobile_export')."<br/>";
 				}
 			}
-			
+			else {
+				echo get_string('error_not_supported','block_oppia_mobile_export');
+			}
+			echo '</div>';
+
 			flush_buffers();
 		}
+
 		if ($act_orderno>1){
 			$section->appendChild($activities);
 			$structure->appendChild($section);
@@ -442,6 +447,8 @@ foreach($sections as $sect) {
 		} else {
 			echo get_string('error_section_no_activities','block_oppia_mobile_export')."<br/>";
 		}
+
+		echo '</div>';
 		flush_buffers();
 	}
 }

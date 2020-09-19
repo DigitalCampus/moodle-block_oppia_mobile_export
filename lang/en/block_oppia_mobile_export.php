@@ -89,6 +89,7 @@ $string['error_section_no_activities'] = 'Not exporting section as doesn\'t cont
 $string['error_xml_invalid'] = 'Errors in course XML Found!';
 $string['error_style_copy'] = 'Failed to copy stylesheet.';
 $string['error_exporting'] = 'Error exporting course';
+$string['error_not_supported'] = 'Activity not supported';
 $string['error_exporting_no_sections'] = 'The course cannot be exported as there are no sections. This can happen if the section has the summary field empty or if none of the sections contain any supported activities, that is usually because of them not having the summary field completed too. Please check your activities\' summaries and try again.';
 
 $string['export_title'] = 'Export - step {$a->stepno}: {$a->coursename}';
@@ -123,6 +124,7 @@ $string['export_sequencing_course'] = 'Sequencing through whole course';
 $string['export_sequencing_section'] = 'Sequencing within a section';
 $string['export_sequencing_label'] = 'Sequencing mode';
 
+$string['export_sections_start'] = 'Exporting course Sections...';
 $string['export_section_title'] = 'Exporting Section: {$a}';
 $string['export_xml_valid_start'] = 'Validating course XML file...';
 $string['export_xml_validated'] = 'validated';
