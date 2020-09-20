@@ -119,3 +119,10 @@
   border-bottom: 5px solid transparent;
   border-left: 10px solid #9ACA3C;
 }
+@media screen and (min-width:48em){
+	.oppia_export .input-label{
+		text-align:right !important;
+		padding-top:0.5rem !important;
+		padding-right:1.5rem !important;
+	}
+}

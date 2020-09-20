@@ -354,7 +354,7 @@ foreach($sections as $sect) {
 			
 			echo '<div class="activity"><strong>' . $mod->name . '</strong><br>';
 
-			if($mod->modname == 'page' && $mod->visible == 1){
+			if($mod->modname == 'page'){
 				$page = new mobile_activity_page();
 				$page->courseroot = $course_root;
 				$page->id = $mod->id;
@@ -363,7 +363,7 @@ foreach($sections as $sect) {
 				$page->getXML($mod,$act_orderno,true,$activities,$xmlDoc);
 				$act_orderno++;
 			}
-			else if($mod->modname == 'quiz' && $mod->visible == 1){
+			else if($mod->modname == 'quiz'){
 				$quiz = new mobile_activity_quiz();
 				$random = optional_param('quiz_'.$mod->id.'_randomselect',0,PARAM_INT);
 				add_or_update_oppiaconfig($mod->id, 'randomselect', $random);
@@ -395,7 +395,7 @@ foreach($sections as $sect) {
 					echo get_string('error_quiz_no_questions','block_oppia_mobile_export')."<br/>";
 				}
 			}
-			else if($mod->modname == 'resource' && $mod->visible == 1){
+			else if($mod->modname == 'resource'){
 				$resource = new mobile_activity_resource();
 				$resource->courseroot = $course_root;
 				$resource->id = $mod->id;
@@ -404,7 +404,7 @@ foreach($sections as $sect) {
 				$resource->getXML($mod,$act_orderno,true,$activities,$xmlDoc);
 				$act_orderno++;
 			}
-			else if($mod->modname == 'url' && $mod->visible == 1){
+			else if($mod->modname == 'url'){
 				$url = new mobile_activity_url();
 				$url->courseroot = $course_root;
 				$url->id = $mod->id;
@@ -413,7 +413,7 @@ foreach($sections as $sect) {
 				$url->getXML($mod,$act_orderno,true,$activities,$xmlDoc);
 				$act_orderno++;
 			}
-			else if($mod->modname == 'feedback' && $mod->visible == 1){
+			else if($mod->modname == 'feedback'){
 				$feedback = new mobile_activity_feedback();
 				$configArray = Array(
 				    'showfeedback'=>false,
@@ -452,7 +452,8 @@ foreach($sections as $sect) {
 		flush_buffers();
 	}
 }
-echo "Finished exporting activities and sections";
+echo '<hr><br>';
+echo "Finished exporting activities and sections. <br>";
 $root->appendChild($structure);
 
 // add in the langs available here
@@ -483,8 +484,6 @@ $xmlDoc->preserveWhiteSpace = false;
 $xmlDoc->formatOutput = true;
 $xmlDoc->save($course_root."/module.xml");
 
-echo "<p>".get_string('export_xml_valid_start','block_oppia_mobile_export');
-libxml_use_internal_errors(true);
 
 if ($sect_orderno <= 1){
 	echo '<h3>'.get_string('error_exporting','block_oppia_mobile_export').'</h3>';
@@ -493,6 +492,9 @@ if ($sect_orderno <= 1){
 	die();
 }
 
+echo get_string('export_xml_valid_start','block_oppia_mobile_export');
+
+libxml_use_internal_errors(true);
 $xml = new DOMDocument();
 $xml->load($course_root."/module.xml");
 
@@ -501,62 +503,45 @@ if (!$xml->schemaValidate('./oppia-schema.xsd')) {
 	libxml_display_errors();
 	add_publishing_log($server_connection->url, $USER->id, $id, "error_xml_invalid", "Invalid course XML");
 } else {
-	echo get_string('export_xml_validated','block_oppia_mobile_export')."<p/>";
-	
-	echo "<p>".get_string('export_course_xml_created','block_oppia_mobile_export')."</p>";
-	
-	echo "<p>".get_string('export_style_start','block_oppia_mobile_export')."</p>";
+	echo get_string('export_xml_validated','block_oppia_mobile_export') . '<br/>';
+	echo get_string('export_course_xml_created','block_oppia_mobile_export') . '<br/>';
+	echo get_string('export_style_start','block_oppia_mobile_export') . '<br/>';
 	
 	if (!copy("styles/".$stylesheet, $course_root."/style.css")) {
 		echo "<p>".get_string('error_style_copy','block_oppia_mobile_export')."</p>";
 	}
 	
-	echo "<p>".get_string('export_style_resources','block_oppia_mobile_export')."</p>";
+	echo get_string('export_style_resources','block_oppia_mobile_export') . '<br/>';
 	list($filename, $extn) = explode('.', $stylesheet);
 	recurse_copy("styles/".$filename."-style-resources/", $course_root."/style_resources/");
 	
 	recurse_copy("js/", $course_root."/js/");
 	
-	echo "<p>".get_string('export_export_complete','block_oppia_mobile_export')."</p>";
+	echo get_string('export_export_complete','block_oppia_mobile_export') . '<br/>';
 	$dir2zip = "output/".$USER->id."/temp";
 	$outputzip = "output/".$USER->id."/".strtolower($course->shortname)."-".$versionid.".zip";
 	Zip($dir2zip,$outputzip);
-	echo "<p>".get_string('export_export_compressed','block_oppia_mobile_export')."</p>";
+	echo get_string('export_export_compressed','block_oppia_mobile_export') . '<br/>';
 	deleteDir("output/".$USER->id."/temp");
 	
 	$a = new stdClass();
 	$a->zip = $outputzip;
 	$a->coursename = strip_tags($course->fullname);
 	
-	// form to publish to OppiaMobile server
-	echo "<form style='display:block; border: 1px solid #000; padding:20px; margin:20px 0;' action='".$CFG->wwwroot."/blocks/oppia_mobile_export/publish_course.php' method='POST'>";
-	echo "<input type='hidden' name='id' value='".$COURSE->id."'>";
-	echo "<input type='hidden' name='sesskey' value='".sesskey()."'>";
-	echo "<input type='hidden' name='server' value='".$server."'>";
-	echo "<input type='hidden' name='file' value='".$a->zip."'>";
-	
-	if ($course_status == 'draft'){
-    	echo "<h2>".get_string('publish_heading_draft','block_oppia_mobile_export')."</h2>";
-    	echo "<p>".get_string('publish_text_draft','block_oppia_mobile_export',$server_connection->url)."</p>";
-	} else {
-	    echo "<h2>".get_string('publish_heading','block_oppia_mobile_export')."</h2>";
-	    echo "<p>".get_string('publish_text','block_oppia_mobile_export',$server_connection->url)."</p>";
-	}
-	
-	echo "<p>".get_string('publish_field_username','block_oppia_mobile_export')."<br/>";
-	echo "<input type='text' name='username' value=''></p>";
-	echo "<p>".get_string('publish_field_password','block_oppia_mobile_export')."<br/>";
-	echo "<input type='password' name='password' value=''></p>";
-	
-	echo "<p>".get_string('publish_field_tags','block_oppia_mobile_export')."<br/>";
-	echo "<input type='text' name='tags' value='".$tags."' size='100'></p>";
-	
-	echo "<input type='hidden' name='course_status' value='".$course_status."'>";
-	
-	echo "<p><input type='submit' name='submit' value='Publish'></p>";
-	echo "</form>";
-	
-	echo "<div style='display:block; border: 1px solid #000; padding:20px'>";
+	$form_values = array(
+		'server_connection' =>$server_connection->url,
+		'wwwroot' => $CFG->wwwroot,
+		'server' => $server,
+		'sesskey' => sesskey(),
+		'course_id' => $COURSE->id,
+		'file' => $outputzip,
+		'is_draft' => $course_status == 'draft',
+		'tags' => $tags,
+		'course_status' => $course_status );
+
+	echo $OUTPUT->render_from_template('block_oppia_mobile_export/publish_form', $form_values);
+
+	echo '<div class="export-results warning" style="display:block;padding:20px">';
 	echo get_string('export_download_intro','block_oppia_mobile_export');
 	echo "<br/>";
 	echo get_string('export_download','block_oppia_mobile_export', $a );
