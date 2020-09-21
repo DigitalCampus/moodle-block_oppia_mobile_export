@@ -35,54 +35,22 @@ class mobile_activity_resource extends mobile_activity {
 	
 	function getXML($mod,$counter,$activity=true,&$node,&$xmlDoc){
 		global $DEFAULT_LANG;
-		if($activity){
-			$struct = $xmlDoc->createElement("activity");
-			$struct->appendChild($xmlDoc->createAttribute("type"))->appendChild($xmlDoc->createTextNode($mod->modname));
-			$struct->appendChild($xmlDoc->createAttribute("order"))->appendChild($xmlDoc->createTextNode($counter));
-			$struct->appendChild($xmlDoc->createAttribute("digest"))->appendChild($xmlDoc->createTextNode($this->md5));
-			$node->appendChild($struct);
+		
+		if(!$activity){
+			return;
 		}
-		$title = extractLangs($mod->name);
-		if(is_array($title) && count($title)>0){
-			foreach($title as $l=>$t){
-				$temp = $xmlDoc->createElement("title");
-				$temp->appendChild($xmlDoc->createCDATASection(strip_tags($t)));
-				$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($l));
-				$struct->appendChild($temp);
-			}
-		} else {
-			$temp = $xmlDoc->createElement("title");
-			$temp->appendChild($xmlDoc->createCDATASection(strip_tags($mod->name)));
-			$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
-			$struct->appendChild($temp);
-		}
-		$description = extractLangs($this->resource->intro);
-		if(is_array($description) && count($description)>0){
-			foreach($description as $l=>$d){
-				$temp = $xmlDoc->createElement("description");
-				$temp->appendChild($xmlDoc->createCDATASection(strip_tags($d)));
-				$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($l));
-				$struct->appendChild($temp);
-			}
-		} else {
-			$description = strip_tags($this->resource->intro);
-			if ($description != ""){
-				$temp = $xmlDoc->createElement("description");
-				$temp->appendChild($xmlDoc->createCDATASection($description));
-				$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
-				$struct->appendChild($temp);
-			} 
-			
-		}
+
+		$act = $this->getActivityNode($xmlDoc, $mod, $counter);
+		$this->addLangXMLNodes($xmlDoc, $act, $mod->name, "title");
+		$this->addLangXMLNodes($xmlDoc, $act, $this->resource->intro, "description");
+		$this->addThumbnailXMLNode($xmlDoc, $act);
+
 		$temp = $xmlDoc->createElement("location",$this->resource_filename);
 		$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
 		$temp->appendChild($xmlDoc->createAttribute("type"))->appendChild($xmlDoc->createTextNode($this->resource_type));
-		$struct->appendChild($temp);
-		if($this->thumbnail_image){
-			$temp = $xmlDoc->createElement("image");
-			$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode($this->thumbnail_image));
-			$struct->appendChild($temp);
-		}	
+		$act->appendChild($temp);
+
+		$node->appendChild($act);
 	}
 	
 	private function extractResource($contextid,$revision){

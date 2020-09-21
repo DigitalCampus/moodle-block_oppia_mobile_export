@@ -32,8 +32,7 @@ class mobile_activity_page extends mobile_activity {
 		
 		// get the image from the intro section
 		$this->extractThumbnailFromIntro($page->intro, $cm->id);
-		
-		// find all the langs on this page
+	
 		$langs = extractLangs($content);
 		if(is_array($langs) && count($langs)>0){
 			foreach($langs as $lang=>$text){
@@ -96,24 +95,8 @@ class mobile_activity_page extends mobile_activity {
 		$langs = extractLangs($content);
 		
 		// get the image from the intro section
-		$eiffilename = extractImageFile($page->intro,
-				'mod_page',
-				'intro',
-				0,
-				$context->id,
-				$this->courseroot,
-				$cm->id);
-		
-		if($eiffilename){
-			$this->thumbnail_image = $eiffilename;
-			$this->thumbnail_image = "/images/".resizeImage($this->courseroot."/".$this->thumbnail_image,
-				$this->courseroot."/images/".$cm->id,
-				$CFG->block_oppia_mobile_export_thumb_width,
-				$CFG->block_oppia_mobile_export_thumb_height);
-			//delete original image
-			unlink($this->courseroot."/".$eiffilename) or die(get_string('error_file_delete','block_oppia_mobile_export'));
-		}
-		unset($eiffilename);
+		$this->extractThumbnailFromIntro($page->intro, $cm->id);
+
 		$return_content = "";
 		if(is_array($langs) && count($langs)>0){
 			foreach($langs as $l=>$t){
@@ -123,14 +106,9 @@ class mobile_activity_page extends mobile_activity {
 				// if page has media and no special icon for page, extract the image for first video
 				if (count($this->page_media) > 0 && $this->thumbnail_image == null){
 					if($this->extractMediaImage($pre_content,'mod_page','content',0, $context->id)){
-						$this->thumbnail_image = "/images/".resizeImage($this->courseroot."/".$this->thumbnail_image,
-									$this->courseroot."/images/".$cm->id,
-									$CFG->block_oppia_mobile_export_thumb_width,
-									$CFG->block_oppia_mobile_export_thumb_height);
-
+						$this->saveResizedThumbnail($this->thumbnail_image, $cm->id);
 					}
 				}
-	
 				$return_content .= $t;
 					
 			}
@@ -140,28 +118,10 @@ class mobile_activity_page extends mobile_activity {
 			// if page has media and no special icon for page, extract the image for first video
 			if (count($this->page_media) > 0 && $this->thumbnail_image == null){
 				if($this->extractMediaImage($pre_content,'mod_page','content',0, $context->id)){
-					$this->thumbnail_image = "/images/".resizeImage($this->courseroot."/".$this->thumbnail_image,
-							$this->courseroot."/images/".$cm->id,
-							$CFG->block_oppia_mobile_export_thumb_width,
-							$CFG->block_oppia_mobile_export_thumb_height);
+						$this->saveResizedThumbnail($this->thumbnail_image, $cm->id);
 				}
 			} else if ($this->thumbnail_image == null){
-				$piffilename = extractImageFile($page->content,
-						'mod_page',
-						'content',
-						0,
-						$context->id,
-						$this->courseroot,
-						$cm->id);
-		
-				if($piffilename){
-					$this->thumbnail_image = $piffilename;
-					$this->thumbnail_image = "/images/".resizeImage($this->courseroot."/".$this->thumbnail_image,
-							$this->courseroot."/images/".$cm->id,
-							$CFG->block_oppia_mobile_export_thumb_width,
-							$CFG->block_oppia_mobile_export_thumb_height);
-					unlink($this->courseroot."/".$piffilename) or die(get_string('error_file_delete','block_oppia_mobile_export'));
-				}
+				$this->extractThumbnailFromContents($pre_content, $cm->id);
 			}
 			$return_content = $content;
 				
@@ -173,30 +133,17 @@ class mobile_activity_page extends mobile_activity {
 	function getXML($mod,$counter,$activity=true,&$node,&$xmlDoc){
 		global $DEFAULT_LANG;
 		if($activity){
-			$struct = $xmlDoc->createElement("activity");
-			$struct->appendChild($xmlDoc->createAttribute("type"))->appendChild($xmlDoc->createTextNode($mod->modname));
-			$struct->appendChild($xmlDoc->createAttribute("order"))->appendChild($xmlDoc->createTextNode($counter));
-			$struct->appendChild($xmlDoc->createAttribute("digest"))->appendChild($xmlDoc->createTextNode($this->md5));
+			$struct = $this->getActivityNode($xmlDoc, $mod, $counter);
 			$node->appendChild($struct);
 		} else {
 			$struct = $xmlDoc->createElement("page");
 			$struct->appendChild($xmlDoc->createAttribute("id"))->appendChild($xmlDoc->createTextNode($this->id));
 			$node->appendChild($struct);
 		}
-		$title = extractLangs($mod->name);
-		if(is_array($title) && count($title)>0){
-			foreach($title as $l=>$t){
-				$temp = $xmlDoc->createElement("title");
-				$temp->appendChild($xmlDoc->createCDATASection(strip_tags($t)));
-				$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($l));
-				$struct->appendChild($temp);
-			}
-		} else {
-			$temp = $xmlDoc->createElement("title");
-			$temp->appendChild($xmlDoc->createCDATASection(strip_tags($mod->name)));
-			$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
-			$struct->appendChild($temp);
-		}
+
+		$this->addLangXMLNodes($xmlDoc, $struct, $mod->name, "title");
+		$this->addThumbnailXMLNode($xmlDoc, $struct);
+
 		// add in page media
 		if(count($this->page_media) > 0){
 			$media = $xmlDoc->createElement("media");
@@ -225,12 +172,7 @@ class mobile_activity_page extends mobile_activity {
 			}
 			$struct->appendChild($related);
 		}
-		
-		if($this->thumbnail_image){
-			$temp = $xmlDoc->createElement("image");
-			$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode($this->thumbnail_image));
-			$struct->appendChild($temp);
-		}
+
 		foreach($this->act as $act){
 			$temp = $xmlDoc->createElement("location",$act->filename);
 			$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($act->lang));

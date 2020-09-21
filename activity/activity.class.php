@@ -54,5 +54,54 @@ abstract class mobile_activity {
 			echo "<span style='color:red'>".get_string('error_edit_page','block_oppia_mobile_export', $link)."</span><br/>";
 		}
 	}
+
+
+	protected function getActivityNode($xmlDoc, $module, $counter){
+		$act = $xmlDoc->createElement("activity");
+		$act->appendChild($xmlDoc->createAttribute("type"))->appendChild($xmlDoc->createTextNode($module->modname));
+		$act->appendChild($xmlDoc->createAttribute("order"))->appendChild($xmlDoc->createTextNode($counter));
+		$act->appendChild($xmlDoc->createAttribute("digest"))->appendChild($xmlDoc->createTextNode($this->md5));
+
+		return $act;
+	}
+
+	protected function addTitleXMLNodes($xmlDoc, $module, $activity_node){
+		$this->addLangXMLNodes($xmlDoc, $activity_node, $module->name, "title");
+	}
+
+	protected function addDescriptionXMLNodes($xmlDoc, $module, $activity_node){
+		$this->addLangXMLNodes($xmlDoc, $activity_node, $module->intro, "description");
+	}
+
+	protected function addLangXMLNodes($xmlDoc, $activity_node, $content, $property_name){
+		global $DEFAULT_LANG;
+
+		$title = extractLangs($content);
+		if(is_array($title) && count($title)>0){
+			foreach($title as $l=>$t){
+				$temp = $xmlDoc->createElement($property_name);
+				$temp->appendChild($xmlDoc->createCDATASection(strip_tags($t)));
+				$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($l));
+				$activity_node->appendChild($temp);
+			}
+		} else {
+			$title = strip_tags($content);
+			if ($title != ""){
+				$temp = $xmlDoc->createElement($property_name);
+				$temp->appendChild($xmlDoc->createCDATASection(strip_tags($title)));
+				$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
+				$activity_node->appendChild($temp);
+			}
+		}
+	}
+
+	protected function addThumbnailXMLNode($xmlDoc, $activity_node){
+
+		if($this->thumbnail_image){
+			$temp = $xmlDoc->createElement("image");
+			$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode($this->thumbnail_image));
+			$activity_node->appendChild($temp);
+		}
+	}
 }
 
