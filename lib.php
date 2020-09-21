@@ -4,6 +4,7 @@ const regex_forbidden_dir_chars = '([\\/?%*:|"<>\.[:space:]]+)';
 const regex_forbidden_tag_chars = '([^a-zA-z0-9,\_]+)';
 const regex_html_entities = '(&nbsp;|&amp;|&quot;)';
 const regex_resource_extensions = '/\.(mp3|mp4|avi)/';
+const regex_image_extensions = '/\.(png|jpg|jpeg|gif)/';
 const basic_html_tags = '<strong><b><i><em>';
 
 
@@ -160,7 +161,7 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
 	//find if any images/links exist
 	//preg_match_all('((@@PLUGINFILE@@/(?P<filenames>[\w\.\-\_[:space:]]*)[\"|\']))',$content,$files_tmp, PREG_OFFSET_CAPTURE);
 		
-	preg_match_all('((@@PLUGINFILE@@/(?P<filenames>[^\"\'\?]*)))',$content,$files_tmp, PREG_OFFSET_CAPTURE);
+	preg_match_all('((@@PLUGINFILE@@/(?P<filenames>[^\"\'\?<>]*)))',$content,$files_tmp, PREG_OFFSET_CAPTURE);
 	
 	if(!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0){
 		return false;
@@ -171,6 +172,12 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
 	for($i=0;$i<count($files_tmp['filenames']);$i++){
 
 		$filename = trim($files_tmp['filenames'][$i][0]);
+
+		if (!IsFileAnImage($course_root . "/" . $filename)){
+			// If the file is not an image, we pass on it
+			continue;
+		}
+		
 		if($CFG->block_oppia_mobile_export_debug){
 			echo "Attempting to export file: ".urldecode($filename)."<br/>";
 		}
@@ -216,7 +223,7 @@ function copyFile($file, $component, $filearea, $itemid, $contextid, $course_roo
 	} else {
 		$link = $CFG->wwwroot."/course/modedit.php?return=0&sr=0&update=".$cmid;
 		$message = 'error_'.($is_image?'image':'file').'_edit_page';
-		echo "<span style='color:red'>".get_string($message,'block_oppia_mobile_export',$link)."</span><br/>";
+		echo '<span class="export-error">'.get_string($message,'block_oppia_mobile_export',$link).'</span><br/>';
 		return false;
 	}
 	
@@ -268,7 +275,6 @@ function resizeImageScale($image,$image_new_name, $image_width, $image_height, $
 		imagealphablending( $image_new, false );
 		imagesavealpha($image_new, true);
 	}
-
 	
 	switch($size['mime']){
 		case 'image/jpeg':
@@ -296,6 +302,12 @@ function resizeImageScale($image,$image_new_name, $image_width, $image_height, $
 	imagedestroy($image_src);
 	return $image_new_name;
 	
+}
+
+
+function IsFileAnImage($filepath){ 
+	//TODO: Check based in mimetype information instead of extension
+	return (preg_match(regex_image_extensions, $filepath) > 0); 
 }
 
 function resizeImageCrop($image,$image_new_name, $image_width, $image_height, $transparent=false){
@@ -356,13 +368,13 @@ function resizeImageCrop($image,$image_new_name, $image_width, $image_height, $t
 
 function Zip($source, $destination){
 	if (!extension_loaded('zip') || !file_exists($source)) {
-		echo '<span style="color:red;">Unable to load Zip extension (is it correctly installed and configured in the Moodle server?)</span><br/>';
+		echo '<span class="export-error">Unable to load Zip extension (is it correctly installed and configured in the Moodle server?)</span><br/>';
 		return false;
 	}
 
 	$zip = new ZipArchive();
 	if (!$zip->open($destination, ZIPARCHIVE::CREATE)) {
-		echo '<span style="color:red;">Couldn\'t create Zip archive</span><br/>';
+		echo '<span class="export-error">Couldn\'t create Zip archive</span><br/>';
 		return false;
 	}
 

@@ -51,7 +51,7 @@ abstract class mobile_activity {
 			}
 		} else{
 			$link = $CFG->wwwroot."/course/modedit.php?return=0&sr=0&update=".$module_id;
-			echo "<span style='color:red'>".get_string('error_edit_page','block_oppia_mobile_export', $link)."</span><br/>";
+			echo '<span class="export-error">'.get_string('error_edit_page','block_oppia_mobile_export', $link).'</span><br/>';
 		}
 	}
 

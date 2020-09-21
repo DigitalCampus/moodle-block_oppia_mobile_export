@@ -184,7 +184,7 @@ if ($server_info && $server_info->version ){
 	}
 }
 else{
-	echo '<span style="color:red;">Unable to get server info (is it correctly configured and running?)</span><br/>';
+	echo '<span class="export-error">Unable to get server info (is it correctly configured and running?)</span><br/>';
 	add_publishing_log($server_connection->url, $USER->id, $id, "server_unavailable", "Unable to get server info");
 	
 }

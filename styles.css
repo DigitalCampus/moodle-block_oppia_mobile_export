@@ -53,7 +53,10 @@
 	height: 25px;
 	margin-right: 0;
 }
-
+.export-error{
+	color:#dd2222;
+	font-weight: bold;
+}
 .export-results{
 	padding: 5px 10px;
 	background-color: #ccc;
