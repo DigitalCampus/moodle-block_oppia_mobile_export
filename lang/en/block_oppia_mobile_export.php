@@ -184,3 +184,4 @@ $string['publishing_header_draft'] = "Pushing Draft Course";
 $string['settings_avoid_push_quizzes'] = 'Don\'t push quizzes info to the Oppia server in the export process';
 $string['settings_avoid_push_quizzes_info'] = 'Avoid pushing quizzes info to the Oppia server in the export process. If enabled, be sure that the Oppia server is capable of processing the full course including quizzes.';
 
+$string['missing_video_poster'] = 'Warning: Missing "poster" image for media element.';

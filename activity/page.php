@@ -21,7 +21,7 @@ class mobile_activity_page extends mobile_activity {
 		$page = $DB->get_record('page', array('id'=>$cm->instance), '*', MUST_EXIST);
 		$context = context_module::instance($cm->id);
 		$this->md5 = md5($page->content).$this->id;
-
+		
 		$this->fetchLocalMedia($page->content);
 
 		$content = $this->extractAndReplaceFiles($page->content, 'mod_page', 'content',
@@ -279,14 +279,16 @@ class mobile_activity_page extends mobile_activity {
 
 		$videos = $html->getElementsByTagName('video');
 		foreach ($videos as $video) {
-
 			foreach ($video->childNodes as $source){
 				if (($source->nodeName == 'source') && ($source->hasAttribute('src'))){
 					$filename = $source->getAttribute('src');
 					array_push($this->page_local_media, $filename);
 					echo 'Video included: <code>' . $filename . '</code><br/>';
 				}
-				
+			}
+
+			if (!$video->hasAttribute('poster')){
+				echo '<span class="export-error">'.get_string('missing_video_poster','block_oppia_mobile_export').'</span><br/>';
 			}
         } 
 	}
