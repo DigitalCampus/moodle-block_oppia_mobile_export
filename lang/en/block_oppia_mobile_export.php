@@ -82,7 +82,7 @@ $string['error_creating_quiz'] = 'There was an error creating the quiz, please t
 $string['error_edit_page'] = 'Image not found, <a target="_blank" href="{$a}">please edit the activity</a>';
 $string['error_feedback_no_questions'] = 'Not exporting feedback as doesn\'t contain any supported questions.';
 $string['error_file_delete'] = 'Unable to delete the file';
-$string['error_file_not_found'] = 'File not found: {$a}';
+$string['error_file_not_found'] = 'File not found: <code>{$a}</code>';
 $string['error_media_attributes'] = 'You must supply digest, download_url and filename for every media object';
 $string['error_quiz_no_questions'] = 'Not exporting quiz as doesn\'t contain any supported questions.';
 $string['error_section_no_activities'] = 'Not exporting section as doesn\'t contain any supported activities.';
@@ -144,9 +144,9 @@ $string['export_advice_desc'] = 'Although your course has been exported you may 
 $string['export_preview_download'] = 'Download exported course preview at <a href="{$a->zip}">{$a->coursename}</a>';
 $string['export_preview_quiz'] = '<a href="{$a->link}" target="_blank">View all quiz questions</a>';
 
-$string['export_file_trying'] = 'Trying file: {$a}';
-$string['export_file_success'] = 'File: {$a} successfully exported';
-$string['export_image_success'] = 'Image: {$a} successfully exported';
+$string['export_file_trying'] = 'Trying file: <code>{$a}</code>';
+$string['export_file_success'] = 'File: <code>{$a}</code> successfully exported';
+$string['export_image_success'] = 'Image: <code>{$a}</code> successfully exported';
 
 $string['export_quiz_skip'] = 'Skipping quiz since contains no questions';
 $string['export_quiz_skip_essay'] = 'Skipping essay question';

@@ -179,7 +179,7 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
 		}
 		
 		if($CFG->block_oppia_mobile_export_debug){
-			echo "Attempting to export file: ".urldecode($filename)."<br/>";
+			echo "Attempting to export thumbnail image: <code>".urldecode($filename)."</code><br/>";
 		}
 		$fs = get_file_storage();
 		$fileinfo = array(
@@ -192,7 +192,7 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
 		$file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
 				$fileinfo['itemid'], $fileinfo['filepath'], urldecode($fileinfo['filename']));
 		$result = copyFile($file, $component, $filearea, $itemid, $contextid, $course_root, $cmid);
-		echo "Result: ". $result ."<br/>";
+
 		if ($result != false){
 			$lastimg = $result;
 		}

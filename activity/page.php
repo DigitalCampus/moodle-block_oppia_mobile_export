@@ -284,7 +284,7 @@ class mobile_activity_page extends mobile_activity {
 				if (($source->nodeName == 'source') && ($source->hasAttribute('src'))){
 					$filename = $source->getAttribute('src');
 					array_push($this->page_local_media, $filename);
-					echo 'Video included:' . $filename . '<br/>';
+					echo 'Video included: <code>' . $filename . '</code><br/>';
 				}
 				
 			}
