@@ -8,17 +8,20 @@ class mobile_activity_page extends mobile_activity {
 
 	private $act = array();
 	private $page_media = array();
-	private $page_image = null;
 	private $page_related = array();
+
+	public function __construct(){ 
+		$this->component_name = 'mod_page';
+    } 
 	
 	function process(){
 		global $DB, $CFG, $MOBILE_LANGS, $DEFAULT_LANG, $MEDIA;
 		$cm = get_coursemodule_from_id('page', $this->id);
 		$page = $DB->get_record('page', array('id'=>$cm->instance), '*', MUST_EXIST);
 		$context = context_module::instance($cm->id);
-		$this->md5 =  md5($page->content).$this->id;
+		$this->md5 = md5($page->content).$this->id;
 		
-		$content = $this->extractFiles($page->content,
+		$content = $this->extractAndReplaceFiles($page->content,
 										'mod_page',
 										'content',
 										0,
@@ -27,122 +30,56 @@ class mobile_activity_page extends mobile_activity {
 										$cm->id);
 		//$content = $this->extractRelated($content);
 		
+		// get the image from the intro section
+		$this->extractThumbnailFromIntro($page->intro, $cm->id);
+		
 		// find all the langs on this page
 		$langs = extractLangs($content);
-		
-		// get the image from the intro section
-		$eiffilename = extractImageFile($page->intro,
-										'mod_page',
-										'intro',
-										0,
-										$context->id,
-										$this->courseroot,
-										$cm->id);
-		if($eiffilename){
-			$this->page_image = $eiffilename;
-			$this->page_image = "/images/".resizeImage($this->courseroot."/".$this->page_image,
-						$this->courseroot."/images/".$cm->id,
-						$CFG->block_oppia_mobile_export_thumb_width,
-						$CFG->block_oppia_mobile_export_thumb_height);
-			//delete original image
-			unlink($this->courseroot."/".$eiffilename) or die(get_string('error_file_delete','block_oppia_mobile_export'));
-		} 
-		unset($eiffilename);
-		
 		if(is_array($langs) && count($langs)>0){
-			foreach($langs as $l=>$t){
-				
-				$pre_content = $t;
-				$t = $this->extractMedia($t);
-				// if page has media and no special icon for page, extract the image for first video
-				if (count($this->page_media) > 0 && $this->page_image == null){
-					if($this->extractMediaImage($pre_content,'mod_page','content',0, $context->id)){
-						$this->page_image = "/images/".resizeImage($this->courseroot."/".$this->page_image,
-									$this->courseroot."/images/".$cm->id,
-									$CFG->block_oppia_mobile_export_thumb_width,
-									$CFG->block_oppia_mobile_export_thumb_height);
-					}
-				}
-				
-				// add html header tags etc
-				// need to do this to ensure it all has the right encoding when loaded in android webview
-				$webpage =  "<html><head>";
-				$webpage .= "<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>";
-				$webpage .= "<link href='style.css' rel='stylesheet' type='text/css'/>";
-				$webpage .= "<script src='js/jquery-1.11.0.min.js'></script>";
-				$webpage .= "<script src='js/jquery-ui-1.10.3.custom.min.js'></script>";
-				$webpage .= "<script src='js/oppia.js'></script>";
-				$webpage .= "</head>";
-				$webpage .= '<body>'.$t.'</body></html>';
-					
-				$mpffilename = $this->makePageFilename($this->section,$cm->id,$l);
-				$index = $this->courseroot."/".$mpffilename;
-				$fh = fopen($index, 'w');
-				fwrite($fh, $webpage);
-				fclose($fh);
-				$o = new stdClass();
-				$o->lang = $l;
-				$o->filename = $mpffilename;
-				array_push($this->act,$o);
-				unset($mpffilename);
+			foreach($langs as $lang=>$text){
+				//Process individually each language
+				$this->process_content($context, $cm->id, $text, $lang);
 			}
 		} else {
-			$pre_content = $content;
-			$content = $this->extractMedia($content);
-			// if page has media and no special icon for page, extract the image for first video
-			if (count($this->page_media) > 0 && $this->page_image == null){
-				if($this->extractMediaImage($pre_content,'mod_page','content',0, $context->id)){
-					$this->page_image = "/images/".resizeImage($this->courseroot."/".$this->page_image,
-								$this->courseroot."/images/".$cm->id,
-								$CFG->block_oppia_mobile_export_thumb_width,
-								$CFG->block_oppia_mobile_export_thumb_height);
-				}
-			} else if ($this->page_image == null){
-				$piffilename = extractImageFile($page->content,
-										'mod_page',
-										'content',
-										0,
-										$context->id,
-										$this->courseroot,
-										$cm->id);
-	
-				if($piffilename){
-					$this->page_image = $piffilename;
-					$imageResized = resizeImage($this->courseroot."/".$this->page_image,
-								$this->courseroot."/images/".$cm->id,
-								$CFG->block_oppia_mobile_export_thumb_width,
-								$CFG->block_oppia_mobile_export_thumb_height);
-					if ($imageResized){
-						$this->page_image = "/images/".$imageResized;
-						unlink($this->courseroot."/".$piffilename) or die(get_string('error_file_delete','block_oppia_mobile_export'));
-					} else {
-						$link = $CFG->wwwroot."/course/modedit.php?return=0&sr=0&update=".$cm->id;
-						echo "<span style='color:red'>".get_string('error_edit_page','block_oppia_mobile_export',$link)."</span><br/>";
-					}
-				} 
-			}
-			
-			// add html header tags etc
-			// need to do this to ensure it all has the right encoding when loaded in android webview
-			$webpage =  "<html><head>";
-			$webpage .= "<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>";
-			$webpage .= "<link href='style.css' rel='stylesheet' type='text/css'/>";
-			$webpage .= "<script src='js/jquery-1.11.0.min.js'></script>";
-			$webpage .= "<script src='js/jquery-ui-1.10.3.custom.min.js'></script>";
-			$webpage .= "<script src='js/oppia.js'></script>";
-			$webpage .= "</head>";
-			$webpage .= '<body>'.$content.'</body></html>';
-		
-			$mpf2filename = $this->makePageFilename($this->section,$cm->id,$DEFAULT_LANG);
-			$index = $this->courseroot."/".$mpf2filename;
-			$fh = fopen($index, 'w');
-			fwrite($fh, $webpage);
-			fclose($fh);
-			$o = new stdClass();
-			$o->lang = $DEFAULT_LANG;
-			$o->filename = $mpf2filename;
-			array_push($this->act,$o);
+			$this->process_content($context, $cm->id, $content, $DEFAULT_LANG);
 		}
+	}
+
+	function process_content($context, $mod_id, $content, $lang){
+		$pre_content = $content;
+		$content = $this->extractAndReplaceMedia($content);
+		// if page has media and no special icon for page, extract the image for first video
+		if (count($this->page_media) > 0 && $this->thumbnail_image == null){
+			if($this->extractMediaImage($pre_content,'mod_page','content',0, $context->id)){
+				$this->saveResizedThumbnail($this->thumbnail_image, $mod_id);
+			}
+		} else if ($this->thumbnail_image == null){
+			// If it does not have an image, we try to extract it from the contents
+			$this->extractThumbnailFromContents($pre_content, $mod_id);
+		}
+		
+		// add html header tags etc
+		// need to do this to ensure it all has the right encoding when loaded in android webview
+		$webpage =  "<html><head>";
+		$webpage .= "<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>";
+		$webpage .= "<link href='style.css' rel='stylesheet' type='text/css'/>";
+		$webpage .= "<script src='js/jquery-1.11.0.min.js'></script>";
+		$webpage .= "<script src='js/jquery-ui-1.10.3.custom.min.js'></script>";
+		$webpage .= "<script src='js/oppia.js'></script>";
+		$webpage .= "</head>";
+		$webpage .= '<body>'.$content.'</body></html>';
+	
+		$mpf2filename = $this->makePageFilename($this->section, $mod_id, $lang);
+		$index = $this->courseroot."/".$mpf2filename;
+		$fh = fopen($index, 'w');
+		fwrite($fh, $webpage);
+		fclose($fh);
+
+		$o = new stdClass();
+		$o->lang = $lang;
+		$o->filename = $mpf2filename;
+		array_push($this->act,$o);
+		unset($mpffilename);
 	}
 	
 	function export2print(){
@@ -150,7 +87,7 @@ class mobile_activity_page extends mobile_activity {
 		$cm= get_coursemodule_from_id('page', $this->id);
 		$page = $DB->get_record('page', array('id'=>$cm->instance), '*', MUST_EXIST);
 		$context = context_module::instance($cm->id);
-		$content = $this->extractFiles($page->content,
+		$content = $this->extractAndReplaceFiles($page->content,
 				'mod_page',
 				'content',
 				0,
@@ -168,8 +105,8 @@ class mobile_activity_page extends mobile_activity {
 				$cm->id);
 		
 		if($eiffilename){
-			$this->page_image = $eiffilename;
-			$this->page_image = "/images/".resizeImage($this->courseroot."/".$this->page_image,
+			$this->thumbnail_image = $eiffilename;
+			$this->thumbnail_image = "/images/".resizeImage($this->courseroot."/".$this->thumbnail_image,
 				$this->courseroot."/images/".$cm->id,
 				$CFG->block_oppia_mobile_export_thumb_width,
 				$CFG->block_oppia_mobile_export_thumb_height);
@@ -182,11 +119,11 @@ class mobile_activity_page extends mobile_activity {
 			foreach($langs as $l=>$t){
 		
 				$pre_content = $t;
-				$t = $this->extractMedia($t);
+				$t = $this->extractAndReplaceMedia($t);
 				// if page has media and no special icon for page, extract the image for first video
-				if (count($this->page_media) > 0 && $this->page_image == null){
+				if (count($this->page_media) > 0 && $this->thumbnail_image == null){
 					if($this->extractMediaImage($pre_content,'mod_page','content',0, $context->id)){
-						$this->page_image = "/images/".resizeImage($this->courseroot."/".$this->page_image,
+						$this->thumbnail_image = "/images/".resizeImage($this->courseroot."/".$this->thumbnail_image,
 									$this->courseroot."/images/".$cm->id,
 									$CFG->block_oppia_mobile_export_thumb_width,
 									$CFG->block_oppia_mobile_export_thumb_height);
@@ -199,16 +136,16 @@ class mobile_activity_page extends mobile_activity {
 			}
 		} else {
 			$pre_content = $content;
-			$content = $this->extractMedia($content);
+			$content = $this->extractAndReplaceMedia($content);
 			// if page has media and no special icon for page, extract the image for first video
-			if (count($this->page_media) > 0 && $this->page_image == null){
+			if (count($this->page_media) > 0 && $this->thumbnail_image == null){
 				if($this->extractMediaImage($pre_content,'mod_page','content',0, $context->id)){
-					$this->page_image = "/images/".resizeImage($this->courseroot."/".$this->page_image,
+					$this->thumbnail_image = "/images/".resizeImage($this->courseroot."/".$this->thumbnail_image,
 							$this->courseroot."/images/".$cm->id,
 							$CFG->block_oppia_mobile_export_thumb_width,
 							$CFG->block_oppia_mobile_export_thumb_height);
 				}
-			} else if ($this->page_image == null){
+			} else if ($this->thumbnail_image == null){
 				$piffilename = extractImageFile($page->content,
 						'mod_page',
 						'content',
@@ -218,8 +155,8 @@ class mobile_activity_page extends mobile_activity {
 						$cm->id);
 		
 				if($piffilename){
-					$this->page_image = $piffilename;
-					$this->page_image = "/images/".resizeImage($this->courseroot."/".$this->page_image,
+					$this->thumbnail_image = $piffilename;
+					$this->thumbnail_image = "/images/".resizeImage($this->courseroot."/".$this->thumbnail_image,
 							$this->courseroot."/images/".$cm->id,
 							$CFG->block_oppia_mobile_export_thumb_width,
 							$CFG->block_oppia_mobile_export_thumb_height);
@@ -289,9 +226,9 @@ class mobile_activity_page extends mobile_activity {
 			$struct->appendChild($related);
 		}
 		
-		if($this->page_image){
+		if($this->thumbnail_image){
 			$temp = $xmlDoc->createElement("image");
-			$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode($this->page_image));
+			$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode($this->thumbnail_image));
 			$struct->appendChild($temp);
 		}
 		foreach($this->act as $act){
@@ -300,8 +237,10 @@ class mobile_activity_page extends mobile_activity {
 			$struct->appendChild($temp);
 		}
 	}
-	
-	private function extractFiles($content, $component, $filearea, $itemid, $contextid){
+
+
+
+	private function extractAndReplaceFiles($content, $component, $filearea, $itemid, $contextid){
 		global $CFG;
 		
 		preg_match_all('((@@PLUGINFILE@@/(?P<filenames>[^\"\'\?]*)))',$content,$files_tmp, PREG_OFFSET_CAPTURE);
@@ -355,7 +294,7 @@ class mobile_activity_page extends mobile_activity {
 		return $content;
 	}
 	
-	private function extractMedia($content){
+	private function extractAndReplaceMedia($content){
 		global $MEDIA;
 		
 		//$regex = '((\[\[[[:space:]]?media[[:space:]]?object=[\"|\'](?P<mediaobject>[\{\}\'\"\:0-9\._\-/,[:space:]\w\W]*)[[:space:]]?[\"|\']\]\]))';
@@ -389,7 +328,7 @@ class mobile_activity_page extends mobile_activity {
 		return $content;
 	}
 	
-	private function extractRelated($content){
+	private function extractAndReplaceRelated($content){
 		global $DB, $RELATED;
 		$regex = '((\[\[[[:space:]]?related=[\"|\'](?P<relatedobject>[\{\}\'\"\:0-9[:space:]]*)[[:space:]]?[\"|\']\]\]))';
 		preg_match_all($regex,$content,$related_tmp, PREG_OFFSET_CAPTURE);
@@ -430,7 +369,7 @@ class mobile_activity_page extends mobile_activity {
 		$filename = $files_tmp['filenames'][0][0];
 			
 		if($CFG->block_oppia_mobile_export_debug){
-			echo get_string('export_file_trying','block_oppia_mobile_export',$filename)."<br/>";
+			echo '<span>' . get_string('export_file_trying','block_oppia_mobile_export',$filename).'</span><br/>';
 		}
 		
 		$fullpath = "/$contextid/$component/$filearea/$itemid/$filename";
@@ -450,14 +389,14 @@ class mobile_activity_page extends mobile_activity {
 			$file->copy_content_to($imgfile);
 		} else {
 			if($CFG->block_oppia_mobile_export_debug){
-				echo "<span style='color:red'>".get_string('error_file_not_found','block_oppia_mobile_export',$filename)."</span><br/>";
+				echo '<span style="color:red">'.get_string('error_file_not_found','block_oppia_mobile_export',$filename).'</span><br/>';
 			}
 		}
 		
 		if($CFG->block_oppia_mobile_export_debug){
 			echo get_string('export_file_success','block_oppia_mobile_export',$filename)."<br/>";
 		}
-		$this->page_image = "images/".$filename;
+		$this->thumbnail_image = "images/".$filename;
 		return true;
 	}
 	

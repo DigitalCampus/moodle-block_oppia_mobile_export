@@ -7,12 +7,15 @@ class mobile_activity_feedback extends mobile_activity {
     private $summary;
     private $shortname;
     private $content = "";
-    private $feedback_image = null;
     private $is_valid = true; //i.e. doesn't only contain essay or random questions.
     private $no_questions = 0; // total no of valid questions
     private $configArray = array(); // config (quiz props) array
     private $server_connection;
     
+    public function __construct(){ 
+        $this->component_name = 'mod_feedback';
+    } 
+
     function init($server_connection, $shortname, $summary, $courseversion, $configArray){
         $this->shortname = strip_tags($shortname);
         $this->summary = $summary;
@@ -69,17 +72,9 @@ class mobile_activity_feedback extends mobile_activity {
         $feedbackitems = $DB->get_records_select('feedback_item', $select, $params, 'position');
         
         $this->generate_md5($feedbackitems);
-        $filename = extractImageFile($quiz->intro,'mod_feedback','intro','0',
-            $context->id,$this->courseroot,$cm->id);
-        
-        if($filename){
-            $this->quiz_image = "/images/".resizeImage($this->courseroot."/".$filename,
-                $this->courseroot."/images/".$cm->id,
-                $CFG->block_oppia_mobile_export_thumb_width,
-                $CFG->block_oppia_mobile_export_thumb_height);
-            //delete original image
-            unlink($this->courseroot."/".$filename) or die(get_string('error_file_delete','block_oppia_mobile_export'));
-        }
+
+        // get the image from the intro section
+        $this->extractThumbnailFromIntro($feedback->intro, $cm->id);
         
         $quizprops = array(
             "digest" => $this->md5,
@@ -239,9 +234,9 @@ class mobile_activity_feedback extends mobile_activity {
         $temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode("en"));
         $act->appendChild($temp);
         
-        if($this->feedback_image){
+        if($this->thumbnail_image){
             $temp = $xmlDoc->createElement("image");
-            $temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode($this->feedback_image));
+            $temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode($this->thumbnail_image));
             $act->appendChild($temp);
         }
         $node->appendChild($act);

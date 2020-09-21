@@ -8,7 +8,6 @@ class mobile_activity_quiz extends mobile_activity {
 	private $shortname;
 	private $content = "";
 	private $MATCHING_SEPERATOR = "|";
-	private $quiz_image = null;
 	private $is_valid = true; //i.e. doesn't only contain essay or random questions.
 	private $no_questions = 0; // total no of valid questions
 	private $configArray = array(); // config (quiz props) array
@@ -16,6 +15,10 @@ class mobile_activity_quiz extends mobile_activity {
 	private $quiz_media = array();
 
 	private $export_method;
+
+	public function __construct(){ 
+		$this->component_name = 'mod_quiz';
+    } 
 	
 	function init($server_connection, $shortname, $summary, 
 		$configArray, $courseversion, $export_method='server'){
@@ -83,17 +86,9 @@ class mobile_activity_quiz extends mobile_activity {
 		$qs = $quizobj->get_questions();
 
 		$this->generate_md5($qs);
-		$filename = extractImageFile($quiz->intro,'mod_quiz','intro','0',
-									$context->id,$this->courseroot,$cm->id); 		
-		
-		if($filename){
-			$this->quiz_image = "/images/".resizeImage($this->courseroot."/".$filename,
-						$this->courseroot."/images/".$cm->id,
-						$CFG->block_oppia_mobile_export_thumb_width,
-						$CFG->block_oppia_mobile_export_thumb_height);
-			//delete original image
-			unlink($this->courseroot."/".$filename) or die(get_string('error_file_delete','block_oppia_mobile_export'));
-		}
+
+		// get the image from the intro section
+		$this->extractThumbnailFromIntro($quiz->intro, $cm->id);
 		
 		$quizprops = array(
 			"digest" => $this->md5,
@@ -496,9 +491,9 @@ class mobile_activity_quiz extends mobile_activity {
 		$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode("en"));
 		$act->appendChild($temp);
 		
-		if($this->quiz_image){
+		if($this->thumbnail_image){
 			$temp = $xmlDoc->createElement("image");
-			$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode($this->quiz_image));
+			$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode($this->thumbnail_image));
 			$act->appendChild($temp);
 		}
 		$node->appendChild($act);

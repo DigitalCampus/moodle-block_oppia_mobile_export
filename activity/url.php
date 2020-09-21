@@ -4,7 +4,10 @@ class mobile_activity_url extends mobile_activity {
 	
 	private $act = array();
 	private $url;
-	private $url_image = null;
+
+	public function __construct(){ 
+		$this->component_name = 'mod_url';
+    }
 	
 	function process(){
 		global $DB, $CFG, $MOBILE_LANGS, $DEFAULT_LANG, $MEDIA;
@@ -12,23 +15,9 @@ class mobile_activity_url extends mobile_activity {
 		$this->url = $DB->get_record('url', array('id'=>$cm->instance), '*', MUST_EXIST);
 		$context = context_module::instance($cm->id);
 		$this->md5 = md5($this->url->externalurl).$this->id;
-		$eiffilename = extractImageFile($this->url->intro,
-										'mod_url',
-										'intro',
-										'0',
-										$context->id,
-										$this->courseroot,
-										$cm->id); 
-	
-		if($eiffilename){
-			$this->resource_image = "/images/".resizeImage($this->courseroot."/".$eiffilename,
-						$this->courseroot."/images/".$cm->id,
-						$CFG->block_oppia_mobile_export_thumb_width,
-						$CFG->block_oppia_mobile_export_thumb_height);
-			//delete original image
-			unlink($this->courseroot."/".$eiffilename) or die(get_string('error_file_delete','block_oppia_mobile_export'));
-		}
-		unset($eiffilename);
+
+		// get the image from the intro section
+        $this->extractThumbnailFromIntro($this->url->intro, $cm->id);
 	}
 	
 	function export2print(){
@@ -81,9 +70,9 @@ class mobile_activity_url extends mobile_activity {
 		$temp = $xmlDoc->createElement("location",$this->url->externalurl);
 		$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
 		$struct->appendChild($temp);
-		if($this->url_image){
+		if($this->thumbnail_image){
 			$temp = $xmlDoc->createElement("image");
-			$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode($this->url_image));
+			$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode($this->thumbnail_image));
 			$struct->appendChild($temp);
 		}	
 	}

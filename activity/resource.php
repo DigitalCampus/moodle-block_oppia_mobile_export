@@ -5,40 +5,24 @@ class mobile_activity_resource extends mobile_activity {
 	private $act = array();
 	private $resource;
 	private $resource_filename = null;
-	private $resource_image = null;
 	private $resource_type = null;
 	
+	public function __construct(){ 
+		$this->component_name = 'mod_resource';
+    } 
+
 	function process(){
 		global $DB, $CFG, $MOBILE_LANGS, $DEFAULT_LANG, $MEDIA;
-		$cm= get_coursemodule_from_id('resource', $this->id);
+		$cm = get_coursemodule_from_id('resource', $this->id);
 		$this->resource = $DB->get_record('resource', array('id'=>$cm->instance), '*', MUST_EXIST);
 		$context = context_module::instance($cm->id);
 		$this->extractResource($context->id, $this->resource->revision);
-		
-		$eiffilename = extractImageFile($this->resource->intro,
-										'mod_resource',
-										'intro',
-										'0',
-										$context->id,
-										$this->courseroot,
-										$cm->id); 
 	
-		if($eiffilename){
-			$this->resource_image = "/images/".resizeImage($this->courseroot."/".$eiffilename,
-						$this->courseroot."/images/".$cm->id,
-						$CFG->block_oppia_mobile_export_thumb_width,
-						$CFG->block_oppia_mobile_export_thumb_height);
-			//delete original image
-			unlink($this->courseroot."/".$eiffilename) or die(get_string('error_file_delete','block_oppia_mobile_export'));
-		}
-		unset($eiffilename);
+		// get the image from the intro section
+        $this->extractThumbnailFromIntro($this->resource->intro, $cm->id);
 		
-		if ($this->resource_type == "image/jpeg" && $this->resource_image == null){
-			$this->resource_image = "/images/".resizeImage($this->courseroot."/".$this->resource_filename,
-						$this->courseroot."/images/".$cm->id,
-						$CFG->block_oppia_mobile_export_thumb_width,
-						$CFG->block_oppia_mobile_export_thumb_height);
-			//DON'T delete original image!
+		if ($this->resource_type == "image/jpeg" && $this->thumbnail_image == null){
+			$this->saveResizedThumbnail($this->resource_filename, $cm->id, true);
 		}
 	}
 	
@@ -94,9 +78,9 @@ class mobile_activity_resource extends mobile_activity {
 		$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
 		$temp->appendChild($xmlDoc->createAttribute("type"))->appendChild($xmlDoc->createTextNode($this->resource_type));
 		$struct->appendChild($temp);
-		if($this->resource_image){
+		if($this->thumbnail_image){
 			$temp = $xmlDoc->createElement("image");
-			$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode($this->resource_image));
+			$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode($this->thumbnail_image));
 			$struct->appendChild($temp);
 		}	
 	}
