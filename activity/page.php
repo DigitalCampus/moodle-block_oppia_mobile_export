@@ -21,11 +21,12 @@ class mobile_activity_page extends mobile_activity {
 		$page = $DB->get_record('page', array('id'=>$cm->instance), '*', MUST_EXIST);
 		$context = context_module::instance($cm->id);
 		$this->md5 = md5($page->content).$this->id;
-		
-		$this->fetchLocalMedia($page->content);
 
-		$content = $this->extractAndReplaceFiles($page->content, 'mod_page', 'content',
+		$content = $this->extractAndReplaceLocalMedia($page->content, 'mod_page', 'content',
 										0, $context->id, $this->courseroot, $cm->id);
+		$content = $this->extractAndReplaceFiles($content, 'mod_page', 'content',
+										0, $context->id, $this->courseroot, $cm->id);
+
 		//$content = $this->extractRelated($content);
 
 		// get the image from the intro section
@@ -125,6 +126,10 @@ class mobile_activity_page extends mobile_activity {
 		return $return_content;
 		
 	}
+
+	function getLocalMedia(){
+		return $this->page_local_media;
+	}
 	
 	function getXML($mod,$counter,$activity=true,&$node,&$xmlDoc){
 		global $DEFAULT_LANG;
@@ -141,9 +146,17 @@ class mobile_activity_page extends mobile_activity {
 		$this->addThumbnailXMLNode($xmlDoc, $struct);
 
 		// add in page media
-		if(count($this->page_media) > 0){
+		if(count($this->page_media) > 0 || count($this->page_local_media) > 0){
 			$media = $xmlDoc->createElement("media");
 			foreach ($this->page_media as $m){
+				$temp = $xmlDoc->createElement("file");
+				foreach($m as $var => $value) {
+					$temp->appendChild($xmlDoc->createAttribute($var))->appendChild($xmlDoc->createTextNode($value));
+				}
+				$media->appendChild($temp);
+			}
+
+			foreach ($this->page_local_media as $m){
 				$temp = $xmlDoc->createElement("file");
 				foreach($m as $var => $value) {
 					$temp->appendChild($xmlDoc->createAttribute($var))->appendChild($xmlDoc->createTextNode($value));
@@ -192,40 +205,34 @@ class mobile_activity_page extends mobile_activity {
 
 			$orig_filename = $files_tmp['filenames'][$i][0];
 			$filename = urldecode($orig_filename);
-			if ( $this->isLocalMedia($orig_filename) ){
-				continue;
-			}
-			
-			$fullpath = "/$contextid/$component/$filearea/$itemid/$filename";
-			$fs = get_file_storage();
-			$fileinfo = array(
-					'component' => $component,
-					'filearea' => $filearea,
-					'itemid' => $itemid,
-					'contextid' => $contextid,
-					'filepath' => '/',
-					'filename' => $filename);
-			$file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
-					$fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
-			
-			if ($file) {
-				$imgfile = $this->courseroot."/images/".urldecode($orig_filename);
-				$file->copy_content_to($imgfile);
-			} else {
+			if ( !$this->isLocalMedia($orig_filename) ){
+				
+				$fullpath = "/$contextid/$component/$filearea/$itemid/$filename";
+				$filepath = '/';
+				$fs = get_file_storage();
+				$file = $fs->get_file($contextid, $component, $filearea, $itemid, $filepath, $filename);
+				
+				if ($file) {
+					$imgfile = $this->courseroot."/images/".urldecode($orig_filename);
+					$file->copy_content_to($imgfile);
+				} else {
+					if($CFG->block_oppia_mobile_export_debug){
+						echo '<span class="export-error">'.get_string('error_file_not_found','block_oppia_mobile_export',$filename).'</span><br/>';
+						return;
+					}
+				}
+
 				if($CFG->block_oppia_mobile_export_debug){
-					echo '<span class="export-error">'.get_string('error_file_not_found','block_oppia_mobile_export',$filename).'</span><br/>';
-					return;
+					echo get_string('export_file_success','block_oppia_mobile_export',$filename)."<br/>";
 				}
 			}
 			
-			$tr = new StdClass;
-			$tr->filename = $filename;
-			$tr->orig_filename = $orig_filename;
-			array_push($toreplace, $tr);
-			if($CFG->block_oppia_mobile_export_debug){
-				echo get_string('export_file_success','block_oppia_mobile_export',$filename)."<br/>";
-			}
+			$filenameReplace = new StdClass;
+			$filenameReplace->filename = $filename;
+			$filenameReplace->orig_filename = $orig_filename;
+			array_push($toreplace, $filenameReplace);
 		}
+
 		foreach($toreplace as $tr){
 			$content = str_replace('src="@@PLUGINFILE@@/'.$tr->orig_filename, 'src="images/'.urldecode($tr->orig_filename), $content);
 			$content = str_replace('src="@@PLUGINFILE@@/'.urlencode($tr->filename), 'src="images/'.urldecode($tr->orig_filename), $content);
@@ -236,10 +243,7 @@ class mobile_activity_page extends mobile_activity {
 	
 	private function extractAndReplaceMedia($content){
 		global $MEDIA;
-		
-		//$regex = '((\[\[[[:space:]]?media[[:space:]]?object=[\"|\'](?P<mediaobject>[\{\}\'\"\:0-9\._\-/,[:space:]\w\W]*)[[:space:]]?[\"|\']\]\]))';
-		//$regex = '((\[\[[[:space:]]?media[[:space:]]?object=[\"|\'](?P<mediaobject>[\{\}\'\"\:a-zA-Z0-9\._\-/,[:space:]]*)[[:space:]]?[\"|\']\]\]))';
-		
+
 		$regex = '((\[\[' . spaces_regex . 'media' . spaces_regex . 'object=[\"|\'](?P<mediaobject>[\{\}\'\"\:a-zA-Z0-9\._\-\/,[:space:]]*)([[:space:]]|\<br\/?[[:space:]]*\>)*[\"|\']' . spaces_regex . '\]\]))';
 
 		preg_match_all($regex,$content,$media_tmp, PREG_OFFSET_CAPTURE);
@@ -268,21 +272,31 @@ class mobile_activity_page extends mobile_activity {
 		return $content;
 	}
 
-	private function fetchLocalMedia($content){
+	private function extractAndReplaceLocalMedia($content, $component, $filearea, $itemid, $contextid){
 
 		$html = new DOMDocument();
-		$parsed = $html->loadHTML($content);
+		$parsed = $html->loadHTML($content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
 		if ($parsed == false){
 			echo '<span class="export-error">'.get_string('error_parsing_html','block_oppia_mobile_export').'</span><br/>';
 			return;
 		}
 
 		$videos = $html->getElementsByTagName('video');
+
 		foreach ($videos as $video) {
+			$video_params = array();
 			foreach ($video->childNodes as $source){
 				if (($source->nodeName == 'source') && ($source->hasAttribute('src'))){
 					$filename = $source->getAttribute('src');
-					array_push($this->page_local_media, $filename);
+					$filename =  str_replace('@@PLUGINFILE@@/', '', $filename);
+
+					if (!$this->isLocalMedia($filename)){
+						//If it hasn't been added yet, we include it
+						$fileinfo = getFileInfo(urldecode($filename), $component, $filearea, $itemid, $contextid);
+						array_push($this->page_local_media, $fileinfo);
+					}
+					
+					$video_params['filename'] = $filename;
 					echo 'Video included: <code>' . $filename . '</code><br/>';
 				}
 			}
@@ -290,20 +304,32 @@ class mobile_activity_page extends mobile_activity {
 			if (!$video->hasAttribute('poster')){
 				echo '<span class="export-error">'.get_string('missing_video_poster','block_oppia_mobile_export').'</span><br/>';
 			}
+			else{
+				$video_params['poster'] = $video->getAttribute('poster');
+			}
+
+			$embed = createDOMElemFromTemplate($html, 'block_oppia_mobile_export/video_embed', $video_params);
+			$video->parentNode->replaceChild($embed, $video);
         } 
+
+        if (count($this->page_local_media) > 0){
+			$content = $html->saveHTML();		
+		}
+		return $content;
+        
 	}
 
 	private function isLocalMedia($filename){
-		$is_video = false;
+		$exists = false;
 		foreach ($this->page_local_media as $localMedia){
-			if (strpos($localMedia, $filename) !== false){
-				$is_video = true;
+			if (strpos($localMedia['filename'], $filename) !== false){
+				$exists = true;
 			}
-			if (strpos($localMedia, urldecode($filename)) !== false){
-				$is_video = true;
+			if (strpos($localMedia['filename'], urldecode($filename)) !== false){
+				$exists = true;
 			}
 		}
-		return $is_video;
+		return $exists;
 	}
 	
 	private function extractAndReplaceRelated($content){

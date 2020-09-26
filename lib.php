@@ -201,6 +201,23 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
 	return $lastimg;
 }
 
+function getFileInfo($filename, $component, $filearea, $itemid, $contextid){
+	global $CFG;
+
+	$fs = get_file_storage();
+	$file = $fs->get_file($contextid, $component, $filearea, $itemid, '/', $filename);
+
+	if ($file) {
+		return array(
+			'filename' => $file->get_filename(),
+			'digest' => md5($file->get_content()),
+			'filesize' => $file->get_filesize()
+		);
+	}
+	return false;
+
+}
+
 function copyFile($file, $component, $filearea, $itemid, $contextid, $course_root, $cmid){
 	global $CFG;
 
@@ -457,4 +474,14 @@ function recurse_copy($src,$dst) {
 	}
 	closedir($dir);
 }
+
+function createDOMElemFromTemplate($doc, $template_name, $params){
+	global $OUTPUT;
+
+	$elemHTML = $OUTPUT->render_from_template($template_name, $params);
+	$dom = new DOMDocument();
+	$dom->loadHTML($elemHTML, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+	return $doc->importNode($dom->documentElement, true);
+}
+
 ?>
