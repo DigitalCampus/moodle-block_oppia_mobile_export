@@ -87,6 +87,7 @@ $string['error_media_attributes'] = 'You must supply digest, download_url and fi
 $string['error_quiz_no_questions'] = 'Not exporting quiz as doesn\'t contain any supported questions.';
 $string['error_section_no_activities'] = 'Not exporting section as doesn\'t contain any supported activities.';
 $string['error_xml_invalid'] = 'Errors in course XML Found!';
+$string['error_xml_notfound'] = 'XML module for the course not found.';
 $string['error_style_copy'] = 'Failed to copy stylesheet.';
 $string['error_exporting'] = 'Error exporting course';
 $string['error_not_supported'] = 'Activity not supported';

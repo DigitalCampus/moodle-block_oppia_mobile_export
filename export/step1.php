@@ -1,5 +1,5 @@
 <?php 
-require_once(dirname(__FILE__) . '/../../config.php');
+require_once(dirname(__FILE__) . '/../../../config.php');
 
 require_once($CFG->dirroot . '/course/lib.php');
 require_once($CFG->dirroot . '/lib/filestorage/file_storage.php');
@@ -7,15 +7,20 @@ require_once($CFG->dirroot . '/lib/filestorage/file_storage.php');
 require_once($CFG->dirroot . '/question/format.php');
 require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 require_once($CFG->dirroot . '/question/format/gift/format.php');
-require_once($CFG->dirroot . '/blocks/oppia_mobile_export/lib.php');
-require_once($CFG->dirroot . '/blocks/oppia_mobile_export/langfilter.php');
 
-require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/activity.class.php');
-require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/page.php');
-require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/quiz.php');
-require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/resource.php');
+$pluginroot = $CFG->dirroot . '/blocks/oppia_mobile_export/';
+
+require_once($pluginroot . 'lib.php');
+require_once($pluginroot . 'langfilter.php');
+require_once($pluginroot . 'activity/activity.class.php');
+require_once($pluginroot . 'activity/page.php');
+require_once($pluginroot . 'activity/quiz.php');
+require_once($pluginroot . 'activity/resource.php');
+require_once($pluginroot . 'activity/feedback.php');
+require_once($pluginroot . 'activity/url.php');
 
 require_once($CFG->libdir.'/componentlib.class.php');
+
 
 const PRIORITY_LEVELS = 10;
 const MAX_ATTEMPTS = 10;
@@ -25,7 +30,7 @@ $server = required_param('server', PARAM_TEXT);
 $course_status = required_param('course_status', PARAM_TEXT);
 $course = $DB->get_record('course', array('id'=>$id));
 
-$PAGE->set_url('/blocks/oppia_mobile_export/export1.php', array('id' => $id));
+$PAGE->set_url('/blocks/oppia_mobile_export/export/step1.php', array('id' => $id));
 context_helper::preload_course($id);
 $context = context_course::instance($course->id);
 if (!$context) {
@@ -144,7 +149,7 @@ $base_settings = array(
 	'sequencing_section' => $sequencing == 'course',
 );
 
-echo "<form name='courseconfig' method='post' action='".$CFG->wwwroot."/blocks/oppia_mobile_export/export2.php'>";
+echo "<form name='courseconfig' method='post' action='".$CFG->wwwroot."/blocks/oppia_mobile_export/export/step2.php'>";
 
 $a = new stdClass();
 $a->stepno = 1;

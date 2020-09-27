@@ -129,3 +129,37 @@
 		padding-right:1.5rem !important;
 	}
 }
+
+.status{
+	display: inline-block;
+	width: 30px;
+	height: 30px;
+	position: absolute;
+    margin-top: -5px;
+    margin-left: 10px;
+}
+
+.status.loading {
+
+  border: 3px solid #dadada;
+  border-radius: 50%;
+  border-top-color: #9ACA3C;
+  animation: spin 1s ease-in-out infinite;
+  -webkit-animation: spin 1s ease-in-out infinite;
+}
+.status.completed{
+	margin-top: -9px;
+}
+.status.completed:after{
+	content:"\2713";
+	color: #9ACA3C;
+	font-size: 23px;
+    font-weight: bold;
+}
+
+@keyframes spin {
+  to { -webkit-transform: rotate(360deg); }
+}
+@-webkit-keyframes spin {
+  to { -webkit-transform: rotate(360deg); }
+}

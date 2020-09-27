@@ -1,5 +1,5 @@
 <?php 
-require_once(dirname(__FILE__) . '/../../config.php');
+require_once(dirname(__FILE__) . '/../../../config.php');
 
 require_once($CFG->dirroot . '/course/lib.php');
 require_once($CFG->dirroot . '/lib/filestorage/file_storage.php');
@@ -8,28 +8,31 @@ require_once($CFG->dirroot . '/question/format.php');
 require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 require_once($CFG->dirroot . '/mod/feedback/lib.php');
 require_once($CFG->dirroot . '/question/format/gift/format.php');
-require_once($CFG->dirroot . '/blocks/oppia_mobile_export/lib.php');
-require_once($CFG->dirroot . '/blocks/oppia_mobile_export/langfilter.php');
-require_once($CFG->dirroot . '/blocks/oppia_mobile_export/oppia_api_helper.php');
 
-require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/activity.class.php');
-require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/page.php');
-require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/quiz.php');
-require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/resource.php');
-require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/feedback.php');
-require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/url.php');
+$pluginroot = $CFG->dirroot . '/blocks/oppia_mobile_export/';
+
+require_once($pluginroot . 'lib.php');
+require_once($pluginroot . 'langfilter.php');
+require_once($pluginroot . 'oppia_api_helper.php');
+require_once($pluginroot . 'activity/activity.class.php');
+require_once($pluginroot . 'activity/page.php');
+require_once($pluginroot . 'activity/quiz.php');
+require_once($pluginroot . 'activity/resource.php');
+require_once($pluginroot . 'activity/feedback.php');
+require_once($pluginroot . 'activity/url.php');
 
 require_once($CFG->libdir.'/componentlib.class.php');
+
 
 $id = required_param('id',PARAM_INT);
 $stylesheet = required_param('stylesheet',PARAM_TEXT);
 $priority = required_param('coursepriority',PARAM_INT);
 $sequencing = required_param('coursesequencing', PARAM_TEXT);
 $DEFAULT_LANG = required_param('default_lang', PARAM_TEXT);
-$tags = required_param('coursetags',PARAM_TEXT);
-$tags = cleanTagList($tags);
 $server = required_param('server',PARAM_TEXT);
 $course_status = required_param('course_status', PARAM_TEXT);
+$tags = required_param('coursetags',PARAM_TEXT);
+$tags = cleanTagList($tags);
 
 $course = $DB->get_record('course', array('id'=>$id));
 //we clean the shortname of the course (the change doesn't get saved in Moodle)
@@ -39,7 +42,7 @@ if ($course_status == 'draft'){
     $course->shortname = $course->shortname."-draft";
 }
 
-$PAGE->set_url('/blocks/oppia_mobile_export/export2.php', array('id' => $id));
+$PAGE->set_url('/blocks/oppia_mobile_export/export/step2.php', array('id' => $id));
 context_helper::preload_course($id);
 $context = context_course::instance($course->id);
 if (!$context) {
@@ -48,12 +51,17 @@ if (!$context) {
 
 require_login($course);
 
+$CFG->cachejs = false;
+
+$PAGE->requires->jquery();
 $PAGE->set_pagelayout('course');
 $PAGE->set_pagetype('course-view-' . $course->format);
 $PAGE->set_other_editing_capability('moodle/course:manageactivities');
 $PAGE->set_title(get_string('course') . ': ' . $course->fullname);
 $PAGE->set_heading($course->fullname);
 echo $OUTPUT->header();
+
+$PAGE->requires->js('/blocks/oppia_mobile_export/publish_media.js');
 
 global $QUIZ_CACHE;
 $QUIZ_CACHE = array();
@@ -84,16 +92,16 @@ if ($server == "default"){
 }
 
 //make course dir etc for output
-deleteDir("output/".$USER->id."/temp");
-deleteDir("output/".$USER->id);
-if(!is_dir("output")){
-	if (!mkdir("output",0777)){
+deleteDir($pluginroot."output/".$USER->id."/temp");
+deleteDir($pluginroot."output/".$USER->id);
+if(!is_dir($pluginroot."output")){
+	if (!mkdir($pluginroot."output",0777)){
 		echo "<h3>Failed to create the output directory, please check your server permissions to allow the webserver user to create the output directory under " . __DIR__ . "</h3>";
 		die;
 	}
 }
-mkdir("output/".$USER->id."/temp/",0777, true);
-$course_root = "output/".$USER->id."/temp/".strtolower($course->shortname);
+mkdir($pluginroot."output/".$USER->id."/temp/",0777, true);
+$course_root = $pluginroot."output/".$USER->id."/temp/".strtolower($course->shortname);
 mkdir($course_root,0777);
 mkdir($course_root."/images",0777);
 $fh = fopen($course_root."/images/.nomedia", 'w');
@@ -288,6 +296,7 @@ if($filename){
 }
 $index = Array();
 $structure = $xmlDoc->createElement("structure");
+$local_media_files = array();
 
 echo "<h3>".get_string('export_sections_start','block_oppia_mobile_export')."</h3>";
 
@@ -346,11 +355,6 @@ foreach($sections as $sect) {
 			if($mod->visible != 1){
 				continue;
 			}
-
-			//echo("<pre>");
-			// print_r($mod);
-			//echo("</pre>");
-
 			
 			echo '<div class="activity"><strong>' . $mod->name . '</strong><br>';
 
@@ -361,6 +365,8 @@ foreach($sections as $sect) {
 				$page->section = $sect_orderno;
 				$page->process();
 				$page->getXML($mod,$act_orderno,true,$activities,$xmlDoc);
+				$local_media_files = array_merge($local_media_files, $page->getLocalMedia());
+
 				$act_orderno++;
 			}
 			else if($mod->modname == 'quiz'){
@@ -469,7 +475,7 @@ if(count($MOBILE_LANGS) == 0){
 $meta->appendChild($langs);
 
 // add media includes
-if(count($MEDIA) > 0){
+if(count($MEDIA) > 0 || count($local_media_files) > 0){
 	$media = $xmlDoc->createElement("media");
 	foreach ($MEDIA as $m){
 		$temp = $xmlDoc->createElement("file");
@@ -478,6 +484,14 @@ if(count($MEDIA) > 0){
 		}
 		$media->appendChild($temp);
 	}
+	foreach ($local_media_files as $m){
+		$temp = $xmlDoc->createElement("file");
+		foreach($m as $var => $value) {
+			$temp->appendChild($xmlDoc->createAttribute($var))->appendChild($xmlDoc->createTextNode($value));
+		}
+		$media->appendChild($temp);
+	}
+
 	$root->appendChild($media);
 }
 $xmlDoc->preserveWhiteSpace = false;
@@ -492,79 +506,18 @@ if ($sect_orderno <= 1){
 	die();
 }
 
-echo get_string('export_xml_valid_start','block_oppia_mobile_export');
-
-libxml_use_internal_errors(true);
-$xml = new DOMDocument();
-$xml->load($course_root."/module.xml");
-
-if (!$xml->schemaValidate('./oppia-schema.xsd')) {
-	print '<p><b>'.get_string('error_xml_invalid','block_oppia_mobile_export').'</b></p>';
-	libxml_display_errors();
-	add_publishing_log($server_connection->url, $USER->id, $id, "error_xml_invalid", "Invalid course XML");
-} else {
-	echo get_string('export_xml_validated','block_oppia_mobile_export') . '<br/>';
-	echo get_string('export_course_xml_created','block_oppia_mobile_export') . '<br/>';
-	echo get_string('export_style_start','block_oppia_mobile_export') . '<br/>';
-	
-	if (!copy("styles/".$stylesheet, $course_root."/style.css")) {
-		echo "<p>".get_string('error_style_copy','block_oppia_mobile_export')."</p>";
-	}
-	
-	echo get_string('export_style_resources','block_oppia_mobile_export') . '<br/>';
-	list($filename, $extn) = explode('.', $stylesheet);
-	recurse_copy("styles/".$filename."-style-resources/", $course_root."/style_resources/");
-	
-	recurse_copy("js/", $course_root."/js/");
-	
-	echo get_string('export_export_complete','block_oppia_mobile_export') . '<br/>';
-	$dir2zip = "output/".$USER->id."/temp";
-	$outputzip = "output/".$USER->id."/".strtolower($course->shortname)."-".$versionid.".zip";
-	Zip($dir2zip,$outputzip);
-	echo get_string('export_export_compressed','block_oppia_mobile_export') . '<br/>';
-	deleteDir("output/".$USER->id."/temp");
-	
-	$a = new stdClass();
-	$a->zip = $outputzip;
-	$a->coursename = strip_tags($course->fullname);
-	
-	$form_values = array(
-		'server_connection' =>$server_connection->url,
-		'wwwroot' => $CFG->wwwroot,
+echo $OUTPUT->render_from_template(
+	'block_oppia_mobile_export/export_step2_form', 
+	array(
+		'media_files' => $local_media_files,
 		'server' => $server,
-		'sesskey' => sesskey(),
-		'course_id' => $COURSE->id,
-		'file' => $outputzip,
-		'is_draft' => $course_status == 'draft',
-		'tags' => $tags,
-		'course_status' => $course_status );
-
-	echo $OUTPUT->render_from_template('block_oppia_mobile_export/publish_form', $form_values);
-
-	echo '<div class="export-results warning" style="display:block;padding:20px">';
-	echo get_string('export_download_intro','block_oppia_mobile_export');
-	echo "<br/>";
-	echo get_string('export_download','block_oppia_mobile_export', $a );
-	echo "</div>";
-	
-	// link to cleanup files
-	echo "<p><a href='cleanup.php?id=".$id."'>".get_string('export_cleanup','block_oppia_mobile_export')."</a></p>";
-	
-	if(count($advice)> 0){
-		echo "<p>".get_string('export_advice_desc','block_oppia_mobile_export')."</p><ol>";
-		foreach($advice as $a){
-			echo "<li>".$a."</li>";
-		}
-	
-		echo "</ol>";
-	}
-	
-	add_publishing_log($server_connection->url, $USER->id, $id,  "export_file_created", strtolower($course->shortname)."-".$versionid.".zip");
-	add_publishing_log($server_connection->url, $USER->id, $id,  "export_end", "Export process completed");
-}
+		'stylesheet' => $stylesheet,
+		'coursetags' => $tags,
+		'course_status' => $course_status,
+		'course_root' => $course_root,
+		'wwwroot' => $CFG->wwwroot));
 
 echo $OUTPUT->footer();
-
 
 
 ?>

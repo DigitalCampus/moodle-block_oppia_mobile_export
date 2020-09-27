@@ -40,7 +40,7 @@ class block_oppia_mobile_export extends block_base {
         $this->content->text .= '</ul>';
 
         $this->content->text .= '<div class="tab-content"><div class="tab-pane active" id="topackage" role="tabpanel" aria-expanded="true">';
-        $this->content->text .= "<form action='".$CFG->wwwroot."/blocks/oppia_mobile_export/export1.php' method='post'>";
+        $this->content->text .= "<form action='".$CFG->wwwroot."/blocks/oppia_mobile_export/export/step1.php' method='post'>";
         $this->content->text .= "<input type='hidden' name='id' value='".$COURSE->id."'>";
         $this->content->text .= "<input type='hidden' name='sesskey' value='".sesskey()."'>";
         // show the OppiaServer options
