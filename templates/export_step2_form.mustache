@@ -1,0 +1,32 @@
+<br>
+
+
+<div>
+{{# media_files.0 }}<h3> Pushing local media files </h3>{{/ media_files.0 }}
+
+<div class="media_files" data-publish="{{wwwroot}}/blocks/oppia_mobile_export/publish_media.php" data-server="{{server}}">
+{{# media_files }}
+	<div class="media_file">
+		<span class="filename">{{filename}}</span> <span class="status loading"></span>
+		<div class="info">
+			<strong>Size:</strong> <span class="filesize">{{filesize}}</span><br>
+			<strong>Digest:</strong> <span class="digest">{{digest}}</span><br>
+			<strong>Download URL:</strong> <span class="download_url">...</span><br>
+			<strong>Length:</strong> <span class="length">...</span><br>
+		</div>
+	</div>
+	<hr>
+{{/ media_files }}
+</div>
+
+<form id="step2_form" method="POST" action="{{wwwroot}}/blocks/oppia_mobile_export/export/step3.php">
+	
+	<input type="hidden" name="media_files" value="{{media_files}}">
+	<input type="hidden" name="stylesheet" value="{{stylesheet}}">
+	<input type="hidden" name="course_status" value="{{course_status}}">
+	<input type="hidden" name="server" value="{{server}}">
+	<input type="hidden" name="course_root" value="{{course_root}}">
+	<input type="hidden" name="coursetags" value="{{coursetags}}">
+
+	<button type="submit" class="btn btn-primary" {{# media_files.0 }}disabled{{/ media_files.0 }}>Continue</button>
+</div>
