@@ -149,6 +149,8 @@ $string['export_file_trying'] = 'Trying file: <code>{$a}</code>';
 $string['export_file_success'] = 'File: <code>{$a}</code> successfully exported';
 $string['export_image_success'] = 'Image: <code>{$a}</code> successfully exported';
 
+$string['export_media_missing'] = 'Some media files included in your course have not been uploaded to the OppiaMobile server yet. To be able to upload the contents on OppiaMobile ({$a}), please complete your OppiaMobile server login details below:';
+
 $string['export_quiz_skip'] = 'Skipping quiz since contains no questions';
 $string['export_quiz_skip_essay'] = 'Skipping essay question';
 $string['export_quiz_skip_random'] = 'Skipping random question';

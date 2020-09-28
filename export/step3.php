@@ -82,6 +82,12 @@ foreach ($xml->getElementsByTagName('file') as $mediafile) {
 		continue;
 	}
 
+	if ($mediafile->hasAttribute('moodlefile')){
+		// We remove the moodlefile attribute (it's only a helper to publish media)
+		$mediafile->removeAttribute('moodlefile');
+	}
+
+
 	$digest = $mediafile->getAttribute('digest');
 	$url = optional_param($digest, null, PARAM_TEXT);
 	if ($url !== null){

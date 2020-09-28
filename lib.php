@@ -205,13 +205,15 @@ function getFileInfo($filename, $component, $filearea, $itemid, $contextid){
 	global $CFG;
 
 	$fs = get_file_storage();
-	$file = $fs->get_file($contextid, $component, $filearea, $itemid, '/', $filename);
+	$path = '/';
+	$file = $fs->get_file($contextid, $component, $filearea, $itemid, $path, $filename);
 
 	if ($file) {
 		return array(
 			'filename' => $file->get_filename(),
 			'digest' => md5($file->get_content()),
-			'filesize' => $file->get_filesize()
+			'filesize' => $file->get_filesize(),
+			'moodlefile' => $contextid.';'.$component.';'.$filearea.';'.$itemid.';'.$path.';'.$filename
 		);
 	}
 	return false;

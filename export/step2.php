@@ -509,6 +509,7 @@ if ($sect_orderno <= 1){
 echo $OUTPUT->render_from_template(
 	'block_oppia_mobile_export/export_step2_form', 
 	array(
+		'server_connection' =>$server_connection->url,
 		'media_files' => $local_media_files,
 		'server' => $server,
 		'stylesheet' => $stylesheet,

@@ -129,6 +129,8 @@
 		padding-right:1.5rem !important;
 	}
 }
+.text-left { text-align:left !important; }
+.text-center { text-align:center !important; }
 
 .status{
 	display: inline-block;
@@ -156,7 +158,18 @@
 	font-size: 23px;
     font-weight: bold;
 }
-
+.status.pending:after{
+	content: "\21BA";
+	color: #888;
+	font-size: 23px;
+    font-weight: bold;
+}
+.status.error:after{
+	content: "\292C";
+	color: #dd2222;
+	font-size: 23px;
+    font-weight: bold;
+}
 @keyframes spin {
   to { -webkit-transform: rotate(360deg); }
 }
