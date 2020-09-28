@@ -1,5 +1,6 @@
 <?php 
 require_once(dirname(__FILE__) . '/../../../config.php');
+require_once(dirname(__FILE__) . '/../constants.php');
 
 require_once($CFG->dirroot . '/course/lib.php');
 require_once($CFG->dirroot . '/lib/filestorage/file_storage.php');
@@ -9,7 +10,7 @@ require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 require_once($CFG->dirroot . '/mod/feedback/lib.php');
 require_once($CFG->dirroot . '/question/format/gift/format.php');
 
-$pluginroot = $CFG->dirroot . '/blocks/oppia_mobile_export/';
+$pluginroot = $CFG->dirroot . PLUGINPATH;
 
 require_once($pluginroot . 'lib.php');
 require_once($pluginroot . 'langfilter.php');
@@ -42,7 +43,7 @@ if ($course_status == 'draft'){
     $course->shortname = $course->shortname."-draft";
 }
 
-$PAGE->set_url('/blocks/oppia_mobile_export/export/step2.php', array('id' => $id));
+$PAGE->set_url(PLUGINPATH.'export/step2.php', array('id' => $id));
 context_helper::preload_course($id);
 $context = context_course::instance($course->id);
 if (!$context) {
@@ -61,7 +62,7 @@ $PAGE->set_title(get_string('course') . ': ' . $course->fullname);
 $PAGE->set_heading($course->fullname);
 echo $OUTPUT->header();
 
-$PAGE->requires->js('/blocks/oppia_mobile_export/publish_media.js');
+$PAGE->requires->js(PLUGINPATH.'publish_media.js');
 
 global $QUIZ_CACHE;
 $QUIZ_CACHE = array();
@@ -80,7 +81,7 @@ $QUIZ_EXPORT_METHOD = 'server';
 
 $server_connection = $DB->get_record('block_oppia_mobile_server', array('moodleuserid'=>$USER->id,'id'=>$server));
 if(!$server_connection && $server != "default"){
-	echo "<p>".get_string('server_not_owner','block_oppia_mobile_export')."</p>";
+	echo "<p>".get_string('server_not_owner', PLUGINNAME)."</p>";
 	echo $OUTPUT->footer();
 	die();
 }
@@ -119,17 +120,17 @@ $modinfo = get_fast_modinfo($course);
 $sections = $modinfo->get_section_info_all();
 $mods = $modinfo->get_cms();
 
-$plugin_version = get_config('block_oppia_mobile_export', 'version');
+$plugin_version = get_config(PLUGINNAME, 'version');
 $versionid = date("YmdHis");
 $xmlDoc = new DOMDocument( "1.0", "UTF-8" );
 $root = $xmlDoc->appendChild($xmlDoc->createElement("module"));
 $meta = $root->appendChild($xmlDoc->createElement("meta"));
-$meta->appendChild($xmlDoc->createElement("versionid",$versionid));
-$meta->appendChild($xmlDoc->createElement("priority",$priority));
+$meta->appendChild($xmlDoc->createElement("versionid", $versionid));
+$meta->appendChild($xmlDoc->createElement("priority", $priority));
 
-$meta->appendChild($xmlDoc->createElement("server",$server_connection->url));
+$meta->appendChild($xmlDoc->createElement("server", $server_connection->url));
 $meta->appendChild($xmlDoc->createElement("sequencing", $sequencing));
-$meta->appendChild($xmlDoc->createElement("tags",$tags));
+$meta->appendChild($xmlDoc->createElement("tags", $tags));
 $meta->appendChild($xmlDoc->createElement("exportversion", $plugin_version));
 
 add_or_update_oppiaconfig($id, 'coursepriority', $priority, $server);
@@ -142,7 +143,7 @@ add_publishing_log($server_connection->url, $USER->id, $id, "export_start", "Exp
 $a = new stdClass();
 $a->stepno = 2;
 $a->coursename = strip_tags($course->fullname);
-echo "<h2>".get_string('export_title','block_oppia_mobile_export', $a)."</h2>";
+echo "<h2>".get_string('export_title', PLUGINNAME, $a)."</h2>";
 $title = extractLangs($course->fullname);
 if(is_array($title) && count($title)>0){
 	foreach($title as $l=>$t){
@@ -194,7 +195,6 @@ if ($server_info && $server_info->version ){
 else{
 	echo '<span class="export-error">Unable to get server info (is it correctly configured and running?)</span><br/>';
 	add_publishing_log($server_connection->url, $USER->id, $id, "server_unavailable", "Unable to get server info");
-	
 }
 echo '<strong>Quiz export method:</strong> '.$QUIZ_EXPORT_METHOD.'</p>';
 
@@ -267,7 +267,7 @@ foreach ($sectionmods as $modnumber) {
 			$feedback->process();
 			$feedback->getXML($mod,$i,true,$meta,$xmlDoc);
 		} else {
-			echo get_string('error_feedback_no_questions','block_oppia_mobile_export')."<br/>";
+			echo get_string('error_feedback_no_questions', PLUGINNAME)."<br/>";
 		}
 	}
 	$i++;
@@ -298,7 +298,7 @@ $index = Array();
 $structure = $xmlDoc->createElement("structure");
 $local_media_files = array();
 
-echo "<h3>".get_string('export_sections_start','block_oppia_mobile_export')."</h3>";
+echo "<h3>".get_string('export_sections_start', PLUGINNAME)."</h3>";
 
 $sect_orderno = 1;
 foreach($sections as $sect) {
@@ -324,7 +324,7 @@ foreach($sections as $sect) {
 	if(count($sectionmods)>0){
 		echo '<hr>';
 		echo '<div class="oppia_export_section">';
-		echo "<h4>".get_string('export_section_title','block_oppia_mobile_export', $sectionTitle)."</h4>";
+		echo "<h4>".get_string('export_section_title', PLUGINNAME, $sectionTitle)."</h4>";
 		
 		$section = $xmlDoc->createElement("section");
 		$section->appendChild($xmlDoc->createAttribute("order"))->appendChild($xmlDoc->createTextNode($sect_orderno));
@@ -356,7 +356,7 @@ foreach($sections as $sect) {
 				continue;
 			}
 			
-			echo '<div class="activity"><strong>' . $mod->name . '</strong><br>';
+			echo '<div class="step"><strong>' . $mod->name . '</strong><br>';
 
 			if($mod->modname == 'page'){
 				$page = new mobile_activity_page();
@@ -398,7 +398,7 @@ foreach($sections as $sect) {
 					$quiz->getXML($mod,$act_orderno,true,$activities,$xmlDoc);
 					$act_orderno++;
 				} else {
-					echo get_string('error_quiz_no_questions','block_oppia_mobile_export')."<br/>";
+					echo get_string('error_quiz_no_questions', PLUGINNAME)."<br/>";
 				}
 			}
 			else if($mod->modname == 'resource'){
@@ -435,11 +435,11 @@ foreach($sections as $sect) {
 					$feedback->getXML($mod,$act_orderno,true,$activities,$xmlDoc);
 					$act_orderno++;
 				} else {
-					echo get_string('error_feedback_no_questions','block_oppia_mobile_export')."<br/>";
+					echo get_string('error_feedback_no_questions', PLUGINNAME)."<br/>";
 				}
 			}
 			else {
-				echo get_string('error_not_supported','block_oppia_mobile_export');
+				echo get_string('error_not_supported', PLUGINNAME);
 			}
 			echo '</div>';
 
@@ -451,7 +451,7 @@ foreach($sections as $sect) {
 			$structure->appendChild($section);
 			$sect_orderno++;
 		} else {
-			echo get_string('error_section_no_activities','block_oppia_mobile_export')."<br/>";
+			echo get_string('error_section_no_activities', PLUGINNAME)."<br/>";
 		}
 
 		echo '</div>';
@@ -500,14 +500,14 @@ $xmlDoc->save($course_root."/module.xml");
 
 
 if ($sect_orderno <= 1){
-	echo '<h3>'.get_string('error_exporting','block_oppia_mobile_export').'</h3>';
-	echo '<p>'.get_string('error_exporting_no_sections','block_oppia_mobile_export').'</p>';
+	echo '<h3>'.get_string('error_exporting', PLUGINNAME).'</h3>';
+	echo '<p>'.get_string('error_exporting_no_sections', PLUGINNAME).'</p>';
 	echo $OUTPUT->footer();
 	die();
 }
 
 echo $OUTPUT->render_from_template(
-	'block_oppia_mobile_export/export_step2_form', 
+	PLUGINNAME.'/export_step2_form', 
 	array(
 		'server_connection' =>$server_connection->url,
 		'media_files' => $local_media_files,

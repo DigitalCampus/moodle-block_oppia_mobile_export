@@ -1,5 +1,6 @@
 <?php 
 require_once(dirname(__FILE__) . '/../../../config.php');
+require_once(dirname(__FILE__) . '/../constants.php');
 
 require_once($CFG->dirroot . '/course/lib.php');
 require_once($CFG->dirroot . '/lib/filestorage/file_storage.php');
@@ -8,7 +9,7 @@ require_once($CFG->dirroot . '/question/format.php');
 require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 require_once($CFG->dirroot . '/question/format/gift/format.php');
 
-$pluginroot = $CFG->dirroot . '/blocks/oppia_mobile_export/';
+$pluginroot = $CFG->dirroot . PLUGINPATH;
 
 require_once($pluginroot . 'lib.php');
 require_once($pluginroot . 'langfilter.php');
@@ -30,7 +31,7 @@ $server = required_param('server', PARAM_TEXT);
 $course_status = required_param('course_status', PARAM_TEXT);
 $course = $DB->get_record('course', array('id'=>$id));
 
-$PAGE->set_url('/blocks/oppia_mobile_export/export/step1.php', array('id' => $id));
+$PAGE->set_url(PLUGINPATH.'export/step1.php', array('id' => $id));
 context_helper::preload_course($id);
 $context = context_course::instance($course->id);
 if (!$context) {
@@ -54,7 +55,7 @@ echo $OUTPUT->header();
 // Check specified server belongs to current user
 $server_connection = $DB->get_record('block_oppia_mobile_server', array('moodleuserid'=>$USER->id,'id'=>$server));
 if(!$server_connection && $server != "default"){
-	echo "<p>".get_string('server_not_owner','block_oppia_mobile_export')."</p>";
+	echo "<p>".get_string('server_not_owner', PLUGINNAME)."</p>";
 	echo $OUTPUT->footer();
 	die();
 }
@@ -149,12 +150,12 @@ $base_settings = array(
 	'sequencing_section' => $sequencing == 'course',
 );
 
-echo "<form name='courseconfig' method='post' action='".$CFG->wwwroot."/blocks/oppia_mobile_export/export/step2.php'>";
+echo "<form name='courseconfig' method='post' action='".$CFG->wwwroot.PLUGINPATH."export/step2.php'>";
 
 $a = new stdClass();
 $a->stepno = 1;
 $a->coursename = strip_tags($course->fullname);
-echo "<h2>".get_string('export_title','block_oppia_mobile_export', $a)."</h2>";
+echo "<h2>".get_string('export_title', PLUGINNAME, $a)."</h2>";
 echo "<input type='hidden' name='id' value='".$COURSE->id."'>";
 echo "<input type='hidden' name='sesskey' value='".sesskey()."'>";
 echo "<input type='hidden' name='stylesheet' value='".$stylesheet."'>";
@@ -162,12 +163,12 @@ echo "<input type='hidden' name='server' value='".$server."'>";
 echo "<input type='hidden' name='course_status' value='".$course_status."'>";
 
 if (count($quizzes)> 0){
-	echo "<p>".get_string('export_contains_quizzes','block_oppia_mobile_export')."</p>";
-	echo $OUTPUT->render_from_template('block_oppia_mobile_export/quizzes', $quizzes);
+	echo "<p>".get_string('export_contains_quizzes', PLUGINNAME)."</p>";
+	echo $OUTPUT->render_from_template(PLUGINNAME.'/quizzes', $quizzes);
 }
 
-echo $OUTPUT->render_from_template('block_oppia_mobile_export/base_settings', $base_settings);
-echo $OUTPUT->render_from_template('block_oppia_mobile_export/submit_btn', get_string('continue','block_oppia_mobile_export'));
+echo $OUTPUT->render_from_template(PLUGINNAME.'/base_settings', $base_settings);
+echo $OUTPUT->render_from_template(PLUGINNAME.'/submit_btn', get_string('continue', PLUGINNAME));
 
 echo "</form>";
 echo $OUTPUT->footer();

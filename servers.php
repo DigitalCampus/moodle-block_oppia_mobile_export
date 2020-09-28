@@ -1,17 +1,18 @@
 <?php 
-require_once(dirname(__FILE__) . '/../../config.php');
-require_once($CFG->libdir.'/componentlib.class.php');
-require_once($CFG->dirroot . '/blocks/oppia_mobile_export/lib.php');
-require_once($CFG->dirroot . '/blocks/oppia_mobile_export/forms.php');
 
+require_once(dirname(__FILE__) . '/../../config.php');
+require_once(dirname(__FILE__) . '/constants.php');
+require_once($CFG->libdir.'/componentlib.class.php');
+require_once($CFG->dirroot . PLUGINPATH . 'lib.php');
+require_once($CFG->dirroot . PLUGINPATH . 'forms.php');
 
 require_login();
 $PAGE->set_context(context_system::instance());
-$PAGE->set_url('/blocks/oppia_mobile_export/servers.php');
+$PAGE->set_url(PLUGINPATH.'servers.php');
 $PAGE->set_pagelayout('frontpage');
 $PAGE->set_other_editing_capability('moodle/course:manageactivities');
-$PAGE->set_title(get_string('pluginname','block_oppia_mobile_export'));
-$PAGE->set_heading(get_string('oppia_block_export_servers','block_oppia_mobile_export'));
+$PAGE->set_title(get_string('pluginname', PLUGINNAME));
+$PAGE->set_heading(get_string('oppia_block_export_servers', PLUGINNAME));
 
 echo $OUTPUT->header();
 
@@ -30,10 +31,10 @@ if ($serverform->is_cancelled()) {
 // get users current servers
 $servers = get_oppiaservers();
 
-echo "<h2>".get_string('servers_current','block_oppia_mobile_export')."</h2>";
+echo "<h2>".get_string('servers_current', PLUGINNAME)."</h2>";
 
 if (count($servers)== 0){
-	echo "<p>".get_string('servers_none','block_oppia_mobile_export')."</p>";
+	echo "<p>".get_string('servers_none', PLUGINNAME)."</p>";
 } else {
 	echo "<ul>";
 	foreach ($servers as $s){
@@ -45,6 +46,6 @@ if (count($servers)== 0){
 	echo "</ul>";
 }
 
-echo "<h2>".get_string('servers_add','block_oppia_mobile_export')."</h2>";
+echo "<h2>".get_string('servers_add', PLUGINNAME)."</h2>";
 $serverform->display();
 echo $OUTPUT->footer();

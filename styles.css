@@ -106,11 +106,11 @@
 	}
 }
 
-.oppia_export_section .activity{
+.oppia_export_section .step{
 	padding-left:20px;
 	position: relative;
 }
-.oppia_export_section .activity:before{
+.oppia_export_section .step:before{
   display:block;
   position:absolute;
   content:'';
