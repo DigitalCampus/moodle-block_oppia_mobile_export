@@ -57,7 +57,17 @@ $a->coursename = strip_tags($course->fullname);
 echo "<h2>".get_string('export_title', PLUGINNAME, $a)."</h2>";
 
 $server_connection = $DB->get_record('block_oppia_mobile_server', array('moodleuserid'=>$USER->id,'id'=>$server));
-$versionid = date("YmdHis");
+if(!$server_connection && $server != "default"){
+	echo "<p>".get_string('server_not_owner', PLUGINNAME)."</p>";
+	echo $OUTPUT->footer();
+	die();
+}
+if ($server == "default"){
+	$server_connection = new stdClass();
+	$server_connection->url = $CFG->block_oppia_mobile_export_default_server;
+	$server_connection->username = $CFG->block_oppia_mobile_export_default_username;
+	$server_connection->apikey = $CFG->block_oppia_mobile_export_default_api_key;
+}
 
 echo '<div class="oppia_export_section">';
 
@@ -92,6 +102,8 @@ foreach ($xml->getElementsByTagName('file') as $mediafile) {
 	}
 }
 
+$versionid = $xml->getElementsByTagName('versionid')->item(0)->textContent;
+
 if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
 	print '<p><b>'.get_string('error_xml_invalid', PLUGINNAME).'</b></p>';
 	libxml_display_errors();
@@ -123,7 +135,7 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
 	$outputzip = $pluginroot.$ziprelativepath;
 	Zip($dir2zip, $outputzip);
 
-	$outputpath =  $CFG->wwwroot.$pluginpath.$ziprelativepath;
+	$outputpath =  $CFG->wwwroot.PLUGINPATH.$ziprelativepath;
 	
 	echo '<p class="step">'. get_string('export_export_compressed', PLUGINNAME) . '</p>';
 	deleteDir($pluginroot."output/".$USER->id."/temp");
