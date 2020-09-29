@@ -79,7 +79,7 @@ $QUIZ_EXPORT_MINVERSION_MINOR = 9;
 $QUIZ_EXPORT_MINVERSION_SUB = 8;
 $QUIZ_EXPORT_METHOD = 'server';
 
-$server_connection = $DB->get_record('block_oppia_mobile_server', array('moodleuserid'=>$USER->id,'id'=>$server));
+$server_connection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid'=>$USER->id,'id'=>$server));
 if(!$server_connection && $server != "default"){
 	echo "<p>".get_string('server_not_owner', PLUGINNAME)."</p>";
 	echo $OUTPUT->footer();

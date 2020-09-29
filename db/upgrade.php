@@ -1,5 +1,7 @@
 <?php 
 
+require_once(dirname(__FILE__) . '/constants.php');
+
 // This file keeps track of upgrades to
 // the oppia_mobile_export block
 
@@ -17,7 +19,7 @@ function xmldb_block_oppia_mobile_export_upgrade($oldversion) {
 	if ($oldversion < 2014032100) {
 	
 		// Define table block_oppia_mobile_server to be created.
-		$table = new xmldb_table('block_oppia_mobile_server');
+		$table = new xmldb_table(OPPIA_SERVER_TABLE);
 	
 		// Adding fields to table block_oppia_mobile_server.
 		$table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
@@ -43,7 +45,7 @@ function xmldb_block_oppia_mobile_export_upgrade($oldversion) {
 	if ($oldversion < 2015021802) {
 	
 		// Changing type of field value on table block_oppia_mobile_config to text.
-		$table = new xmldb_table('block_oppia_mobile_config');
+		$table = new xmldb_table(OPPIA_CONFIG_TABLE);
 		$field = new xmldb_field('value', XMLDB_TYPE_TEXT, null, null, null, null, null, 'name');
 	
 		// Launch change of type for field value.
@@ -56,7 +58,7 @@ function xmldb_block_oppia_mobile_export_upgrade($oldversion) {
 	if ($oldversion < 2016021500) {
 		
 		// Add the field serverid to table block_oppia_mobile_config
-		$table = new xmldb_table('block_oppia_mobile_config');
+		$table = new xmldb_table(OPPIA_CONFIG_TABLE);
 		if (!$dbman->field_exists($table, 'serverid')){
 			$field = new xmldb_field('serverid', XMLDB_TYPE_TEXT, null, null, null, null, null, 'value');
 			$dbman->add_field($table, $field);
@@ -68,7 +70,7 @@ function xmldb_block_oppia_mobile_export_upgrade($oldversion) {
 	if ($oldversion < 2016041301){
 
 		//Update the size for field value to support longer tag values
-		$table = new xmldb_table('block_oppia_mobile_config');
+		$table = new xmldb_table(OPPIA_CONFIG_TABLE);
 		$field = new xmldb_field('value', XMLDB_TYPE_TEXT, null, null, null, null, null, 'name');
 	
 		// Launch change of type for field value.
@@ -81,7 +83,7 @@ function xmldb_block_oppia_mobile_export_upgrade($oldversion) {
 	if ($oldversion < 2019102702) {
 	    
 	    // Define table block_oppia_publish_log to be created.
-	    $table = new xmldb_table('block_oppia_publish_log');
+	    $table = new xmldb_table(OPPIA_PUBLISH_LOG_TABLE);
 	    
 	    // Adding fields to table block_oppia_mobile_server.
 	    $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
@@ -107,7 +109,7 @@ function xmldb_block_oppia_mobile_export_upgrade($oldversion) {
 	if ($oldversion < 2020082701) {
 	    
 	    // Add the field serverid to table block_oppia_mobile_config
-	    $table = new xmldb_table('block_oppia_mobile_server');
+	    $table = new xmldb_table(OPPIA_SERVER_TABLE);
 	    $field = new xmldb_field('username');
 	    if ($dbman->field_exists($table, $field)){
 	        $dbman->drop_field($table, $field);

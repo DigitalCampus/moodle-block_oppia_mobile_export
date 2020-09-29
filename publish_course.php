@@ -1,6 +1,7 @@
 <?php 
 
 require_once(dirname(__FILE__) . '/../../config.php');
+require_once(dirname(__FILE__) . '/constants.php');
 
 require_once($CFG->dirroot . '/course/lib.php');
 require_once($CFG->dirroot . '/lib/filestorage/file_storage.php');
@@ -8,13 +9,17 @@ require_once($CFG->dirroot . '/lib/filestorage/file_storage.php');
 require_once($CFG->dirroot . '/question/format.php');
 require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 require_once($CFG->dirroot . '/question/format/gift/format.php');
-require_once($CFG->dirroot . '/blocks/oppia_mobile_export/lib.php');
-require_once($CFG->dirroot . '/blocks/oppia_mobile_export/langfilter.php');
 
-require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/activity.class.php');
-require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/page.php');
-require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/quiz.php');
-require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/resource.php');
+$pluginroot = $CFG->dirroot . PLUGINPATH;
+
+require_once($pluginroot . 'lib.php');
+require_once($pluginroot . 'langfilter.php');
+require_once($pluginroot . 'activity/activity.class.php');
+require_once($pluginroot . 'activity/page.php');
+require_once($pluginroot . 'activity/quiz.php');
+require_once($pluginroot . 'activity/resource.php');
+require_once($pluginroot . 'activity/feedback.php');
+require_once($pluginroot . 'activity/url.php');
 
 require_once($CFG->libdir.'/componentlib.class.php');
 
@@ -28,7 +33,7 @@ $course_status = required_param('course_status', PARAM_TEXT);
 
 $course = $DB->get_record('course', array('id'=>$id));
 
-$PAGE->set_url('/blocks/oppia_mobile_export/publish_course.php', array('id' => $id));
+$PAGE->set_url(PLUGINPATH.'publish_course.php', array('id' => $id));
 context_helper::preload_course($id);
 $context = context_course::instance($course->id);
 if (!$context) {
@@ -48,7 +53,7 @@ $modinfo = get_fast_modinfo($course);
 $sections = $modinfo->get_section_info_all();
 $mods = $modinfo->get_cms();
 
-$server_connection = $DB->get_record('block_oppia_mobile_server', array('moodleuserid'=>$USER->id,'id'=>$server));
+$server_connection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid'=>$USER->id,'id'=>$server));
 
 add_or_update_oppiaconfig($id, 'is_draft', $is_draft);
 add_publishing_log($server_connection->url, $USER->id, $id,  "api_publish_start", "API publish process started");
@@ -57,33 +62,33 @@ echo $OUTPUT->header();
 
 echo "<h2>";
 if ($course_status == 'draft'){
-    echo get_string('publishing_header_draft','block_oppia_mobile_export');
+    echo get_string('publishing_header_draft', PLUGINNAME);
 } else {
-    echo get_string('publishing_header_live','block_oppia_mobile_export');
+    echo get_string('publishing_header_live', PLUGINNAME);
 }
 echo "</h2>";
 
 flush_buffers();
 
 if (trim($username) == ''){
-	echo "<p>".get_string('publish_error_username','block_oppia_mobile_export')."</p>";
+	echo "<p>".get_string('publish_error_username', PLUGINNAME)."</p>";
 	echo $OUTPUT->footer();
 	die();
 }
 
 if (trim($password) == ''){
-	echo "<p>".get_string('publish_error_password','block_oppia_mobile_export')."</p>";
+	echo "<p>".get_string('publish_error_password', PLUGINNAME)."</p>";
 	echo $OUTPUT->footer();
 	die();
 }
 if (trim($tags) == ''){
-	echo "<p>".get_string('publish_error_tags','block_oppia_mobile_export')."</p>";
+	echo "<p>".get_string('publish_error_tags', PLUGINNAME)."</p>";
 	echo $OUTPUT->footer();
 	die();
 }
 
 if(!$server_connection && $server != "default"){
-	echo "<p>".get_string('server_not_owner','block_oppia_mobile_export')."</p>";
+	echo "<p>".get_string('server_not_owner', PLUGINNAME)."</p>";
 	echo $OUTPUT->footer();
 	die();
 }
@@ -126,27 +131,27 @@ add_publishing_log($server_connection->url, $USER->id, $id,  "api_file_posted", 
 
 switch ($http_status){
 	case "405":
-		$msgtext = get_string('publish_message_405','block_oppia_mobile_export');
+		$msgtext = get_string('publish_message_405', PLUGINNAME);
 		echo "<p>".$msgtext."</p>";
 		add_publishing_log($server_connection->url, $USER->id, $id,  "api_publish_invalid_request", $msgtext);
 		break;
 	case "400":
-		$msgtext = get_string('publish_message_400','block_oppia_mobile_export');
+		$msgtext = get_string('publish_message_400', PLUGINNAME);
 		echo "<p>".$msgtext."</p>";
 		add_publishing_log($server_connection->url, $USER->id, $id,  "api_publish_bad_request", $msgtext);
 		break;
 	case "401":
-		$msgtext = get_string('publish_message_401','block_oppia_mobile_export');
+		$msgtext = get_string('publish_message_401', PLUGINNAME);
 		echo "<p>".$msgtext."</p>";
 		add_publishing_log($server_connection->url, $USER->id, $id,  "api_publish_unauthorised", $msgtext);
 		break;
 	case "500":
-		$msgtext = get_string('publish_message_500','block_oppia_mobile_export');
+		$msgtext = get_string('publish_message_500', PLUGINNAME);
 		echo "<p>".$msgtext."</p>";
 		add_publishing_log($server_connection->url, $USER->id, $id,  "api_publish_server_error", $msgtext);
 		break;
 	case "201":
-		$msgtext = get_string('publish_message_201','block_oppia_mobile_export');
+		$msgtext = get_string('publish_message_201', PLUGINNAME);
 		echo "<p>".$msgtext."</p>";
 		add_publishing_log($server_connection->url, $USER->id, $id,  "api_publish_success", $msgtext);
 		break;

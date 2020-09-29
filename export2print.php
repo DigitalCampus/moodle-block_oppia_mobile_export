@@ -1,5 +1,6 @@
 <?php 
 require_once(dirname(__FILE__) . '/../../config.php');
+require_once(dirname(__FILE__) . '/constants.php');
 
 require_once($CFG->dirroot . '/course/lib.php');
 require_once($CFG->dirroot . '/lib/filestorage/file_storage.php');
@@ -7,13 +8,15 @@ require_once($CFG->dirroot . '/lib/filestorage/file_storage.php');
 require_once($CFG->dirroot . '/question/format.php');
 require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 require_once($CFG->dirroot . '/question/format/gift/format.php');
-require_once($CFG->dirroot . '/blocks/oppia_mobile_export/lib.php');
-require_once($CFG->dirroot . '/blocks/oppia_mobile_export/langfilter.php');
 
-require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/activity.class.php');
-require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/page.php');
-require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/quiz.php');
-require_once($CFG->dirroot . '/blocks/oppia_mobile_export/activity/resource.php');
+$pluginroot = $CFG->dirroot . PLUGINPATH;
+
+require_once($pluginroot . 'lib.php');
+require_once($pluginroot . 'langfilter.php');
+require_once($pluginroot . 'activity/activity.class.php');
+require_once($pluginroot . 'activity/page.php');
+require_once($pluginroot . 'activity/quiz.php');
+require_once($pluginroot . 'activity/resource.php');
 
 require_once($CFG->libdir.'/componentlib.class.php');
 
@@ -22,7 +25,7 @@ $stylesheet = required_param('stylesheet',PARAM_TEXT);
 
 $course = $DB->get_record('course', array('id'=>$id));
 
-$PAGE->set_url('/blocks/oppia_mobile_export/export2print.php', array('id' => $id));
+$PAGE->set_url(PLUGINPATH.'export2print.php', array('id' => $id));
 context_helper::preload_course($id);
 if (!$context = context_course::instance($course->id)) {
 	print_error('nocontext');
@@ -63,13 +66,13 @@ $mods = $modinfo->get_cms();
 $a = new stdClass();
 $a->stepno = 1;
 $a->coursename = strip_tags($course->fullname);
-echo "<h2>".get_string('export2print_title','block_oppia_mobile_export', $a)."</h2>";
+echo "<h2>".get_string('export2print_title', PLUGINNAME, $a)."</h2>";
 
 if (!copy("styles/".$stylesheet, $course_root."/style.css")) {
-	echo "<p>".get_string('error_style_copy','block_oppia_mobile_export')."</p>";
+	echo "<p>".get_string('error_style_copy', PLUGINNAME)."</p>";
 }
 
-echo "<p>".get_string('export_style_resources','block_oppia_mobile_export')."</p>";
+echo "<p>".get_string('export_style_resources', PLUGINNAME)."</p>";
 list($filename, $extn) = explode('.', $stylesheet);
 recurse_copy("styles/".$filename."-style-resources/", $course_root."/style_resources/");
 
@@ -102,8 +105,6 @@ foreach ($sectionmods as $modnumber) {
 		}
 	}
 }
-
-
 
 
 foreach($sections as $sect) {
@@ -223,7 +224,7 @@ fclose($fh);
 
 $a = new stdClass();
 $a->link = $course_root."/quiz.html";
-echo "<p>".get_string('export_preview_quiz','block_oppia_mobile_export', $a )."</p>";
+echo "<p>".get_string('export_preview_quiz', PLUGINNAME, $a )."</p>";
 
 /*
  * create download package
@@ -237,7 +238,7 @@ Zip($dir2zip,$outputzip);
 $a = new stdClass();
 $a->zip = $outputzip;
 $a->coursename = strip_tags($course->fullname);
-echo "<p>".get_string('export_preview_download','block_oppia_mobile_export', $a )."</p>";
+echo "<p>".get_string('export_preview_download', PLUGINNAME, $a )."</p>";
 
 echo $OUTPUT->footer();
 ?>

@@ -1,6 +1,7 @@
 <?php 
 
 require_once(dirname(__FILE__) . '/../../config.php');
+require_once(dirname(__FILE__) . '/constants.php');
 
 require_once($CFG->dirroot . '/course/lib.php');
 require_once($CFG->dirroot . '/lib/filestorage/file_storage.php');
@@ -8,18 +9,19 @@ require_once($CFG->dirroot . '/lib/filestorage/file_storage.php');
 require_once($CFG->dirroot . '/question/format.php');
 require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 require_once($CFG->dirroot . '/question/format/gift/format.php');
-require_once($CFG->dirroot . '/blocks/oppia_mobile_export/lib.php');
+
+$pluginroot = $CFG->dirroot . PLUGINPATH;
+require_once($pluginroot . 'lib.php');
 
 require_once($CFG->libdir.'/componentlib.class.php');
 
-$pluginroot = $CFG->dirroot . '/blocks/oppia_mobile_export/';
 $temp_media = $pluginroot."output/".$USER->id."/temp_media/";
 mkdir($temp_media, 0777, true);
 
 $server = required_param('server', PARAM_TEXT);
-$server_connection = $DB->get_record('block_oppia_mobile_server', array('moodleuserid'=>$USER->id,'id'=>$server));
+$server_connection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid'=>$USER->id,'id'=>$server));
 if(!$server_connection && $server != "default"){
-	echo "<p>".get_string('server_not_owner','block_oppia_mobile_export')."</p>";
+	echo "<p>".get_string('server_not_owner', PLUGINNAME)."</p>";
 	echo $OUTPUT->footer();
 	die();
 }

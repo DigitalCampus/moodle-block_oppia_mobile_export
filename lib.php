@@ -1,5 +1,7 @@
 <?php 
 
+require_once(dirname(__FILE__) . '/constants.php');
+
 const regex_forbidden_dir_chars = '([\\/?%*:|"<>\.[:space:]]+)';
 const regex_forbidden_tag_chars = '([^a-zA-z0-9,\_]+)';
 const regex_html_entities = '(&nbsp;|&amp;|&quot;)';
@@ -36,27 +38,27 @@ function deleteDir($dirPath) {
 function add_or_update_oppiaconfig($modid, $name, $value, $servid="default"){
 	global $DB;
 	
-	$record = $DB->get_record('block_oppia_mobile_config', 
+	$record = $DB->get_record(OPPIA_CONFIG_TABLE, 
 		array('modid'=>$modid,'name'=>$name,'serverid'=>$servid));
 	
 	if ($record){
-		$DB->update_record("block_oppia_mobile_config",
+		$DB->update_record(OPPIA_CONFIG_TABLE,
 			array('id'=>$record->id,'value'=>$value));
 	} else {
-		$DB->insert_record("block_oppia_mobile_config", 
+		$DB->insert_record(OPPIA_CONFIG_TABLE, 
 			array('modid'=>$modid,'name'=>$name,'value'=>$value,'serverid'=>$servid));
 	}
 }
 
 function get_oppiaconfig($modid, $name, $default, $servid="default"){
 	global $DB;
-	$record = $DB->get_record('block_oppia_mobile_config', 
+	$record = $DB->get_record(OPPIA_CONFIG_TABLE, 
 		array('modid'=>$modid,'name'=>$name,'serverid'=>$servid));
 	if ($record){
 		return $record->value;
 	} else {
 		//Try if there is a non-server value saved
-		$record = $DB->get_record('block_oppia_mobile_config', 
+		$record = $DB->get_record(OPPIA_CONFIG_TABLE, 
 			array('modid'=>$modid,'name'=>$name));
 		if ($record){
 			return $record->value;
@@ -68,14 +70,14 @@ function get_oppiaconfig($modid, $name, $default, $servid="default"){
 
 function get_oppiaservers(){
 	global $DB, $USER;
-	return $DB->get_records('block_oppia_mobile_server', array('moodleuserid'=>$USER->id));
+	return $DB->get_records(OPPIA_SERVER_TABLE, array('moodleuserid'=>$USER->id));
 }
 
 function add_publishing_log($server, $userid, $courseid, $action, $data){
     global $DB;
     $date = new DateTime();
     $timestamp = $date->getTimestamp();
-    $DB->insert_record("block_oppia_publish_log",
+    $DB->insert_record(OPPIA_PUBLISH_LOG_TABLE,
         array('server'=>$server,
                 'logdatetime'=>$timestamp,
                 'moodleuserid'=>$userid,
@@ -242,7 +244,7 @@ function copyFile($file, $component, $filearea, $itemid, $contextid, $course_roo
 	} else {
 		$link = $CFG->wwwroot."/course/modedit.php?return=0&sr=0&update=".$cmid;
 		$message = 'error_'.($is_image?'image':'file').'_edit_page';
-		echo '<span class="export-error">'.get_string($message,'block_oppia_mobile_export',$link).'</span><br/>';
+		echo '<span class="export-error">'.get_string($message, PLUGINNAME, $link).'</span><br/>';
 		return false;
 	}
 	
@@ -251,7 +253,7 @@ function copyFile($file, $component, $filearea, $itemid, $contextid, $course_roo
 	$tr->filename = sha1($fullpath);
 	if($CFG->block_oppia_mobile_export_debug){
 		$message = 'export_'.($is_image?'image':'file').'_success';
-		echo get_string($message,'block_oppia_mobile_export',urldecode($filename))."<br/>";
+		echo get_string($message, PLUGINNAME, urldecode($filename))."<br/>";
 
 	}
 	return ($is_image ? $filedest : false);
