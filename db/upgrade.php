@@ -1,6 +1,6 @@
 <?php 
 
-require_once(dirname(__FILE__) . '/constants.php');
+require_once(dirname(__FILE__) . '/../constants.php');
 
 // This file keeps track of upgrades to
 // the oppia_mobile_export block
