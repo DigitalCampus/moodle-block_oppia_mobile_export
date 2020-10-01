@@ -131,7 +131,8 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
 	echo '<p class="step">'. get_string('export_export_complete', PLUGINNAME) . '</p>';
 	$dir2zip = $pluginroot."output/".$USER->id."/temp";
 
-	$ziprelativepath = "output/".$USER->id."/".strtolower($course->shortname)."-".$versionid.".zip";
+	$zipname = strtolower($course->shortname).'-'.$versionid.'.zip';
+	$ziprelativepath = "output/".$USER->id."/".$zipname;
 	$outputzip = $pluginroot.$ziprelativepath;
 	Zip($dir2zip, $outputzip);
 
@@ -150,7 +151,7 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
 		'server' => $server,
 		'sesskey' => sesskey(),
 		'course_id' => $COURSE->id,
-		'file' => $outputpath,
+		'file' => $zipname,
 		'is_draft' => $course_status == 'draft',
 		'tags' => $tags,
 		'course_status' => $course_status );

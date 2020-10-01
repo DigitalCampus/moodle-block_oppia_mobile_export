@@ -108,23 +108,27 @@ if ($course_status == 'draft'){
 } else {
     $is_draft = "false";
 }
-$post =  array('username' => $username,
-				'password' => $password,
-				'is_draft' => $is_draft,
-				'tags' => $tags,
-				'course_file' => new CurlFile($file, 'application/zip') 
-		);
+
+$filepath = $pluginroot."output/".$USER->id."/".$file;
+$curlfile = new CurlFile($filepath, 'application/zip', $file);
+
+$post = array(
+		'username' => $username,
+		'password' => $password,
+		'tags' 	   => $tags,
+		'is_draft' => $is_draft,
+		'course_file' => $curlfile);
+
 $curl = curl_init();
-curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1 );
-curl_setopt($curl, CURLOPT_URL, $server_connection->url ."api/publish/" );
+curl_setopt($curl, CURLOPT_URL, $server_connection->url."api/publish/" );
 curl_setopt($curl, CURLOPT_POST, true);
-curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
 curl_setopt($curl, CURLOPT_POSTFIELDS, $post);
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
+curl_setopt($curl, CURLOPT_VERBOSE, true);
 
 $result = curl_exec($curl);
 $http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+curl_close ($curl);
 
 add_publishing_log($server_connection->url, $USER->id, $id,  "api_publishing_user", $username);
 add_publishing_log($server_connection->url, $USER->id, $id,  "api_file_posted", $file);
