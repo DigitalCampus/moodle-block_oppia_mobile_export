@@ -28,7 +28,7 @@ require_once($CFG->libdir.'/componentlib.class.php');
 $id = required_param('id',PARAM_INT);
 $stylesheet = required_param('stylesheet',PARAM_TEXT);
 $tags = required_param('coursetags',PARAM_TEXT);
-$server = required_param('server',PARAM_TEXT);
+$server = required_param('server_id',PARAM_TEXT);
 $course_status = required_param('course_status', PARAM_TEXT);
 $course_root = required_param('course_root', PARAM_TEXT);
 

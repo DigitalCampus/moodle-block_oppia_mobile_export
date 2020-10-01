@@ -44,25 +44,25 @@ class block_oppia_mobile_export extends block_base {
         $this->content->text .= '</ul>';
 
         $this->content->text .= '<div class="tab-content"><div class="tab-pane active" id="topackage" role="tabpanel" aria-expanded="true">';
-        $this->content->text .= "<form action='".$CFG->wwwroot.PLUGINPATH."export/step1.php' method='post'>";
-        $this->content->text .= "<input type='hidden' name='id' value='".$COURSE->id."'>";
-        $this->content->text .= "<input type='hidden' name='sesskey' value='".sesskey()."'>";
+        $this->content->text .= '<form action="'.$CFG->wwwroot.PLUGINPATH.'export/step1.php" method="post">';
+        $this->content->text .= '<input type="hidden" name="id" value="'.$COURSE->id.'">';
+        $this->content->text .= '<input type="hidden" name="sesskey" value="'.sesskey().'">';
         // show the OppiaServer options
         $servers = get_oppiaservers();
-       	$this->content->text .= "<br/><p>".get_string('servers_block_select_connection', PLUGINNAME)."<br/>";
-        $this->content->text .= "<select name=\"server\" class=\"custom-select\" style=\"width:100%;\">";
+       	$this->content->text .= '<br/><p>'.get_string('servers_block_select_connection', PLUGINNAME).'<br/>';
+        $this->content->text .= '<select name="server" class="custom-select" style="width:100%;">';
         foreach ($servers as $s){
-        	$this->content->text .= "<option value='$s->id' ";
+        	$this->content->text .= '<option value="'.$s->id.'" ';
         	if ($s->defaultserver != 0){
-        		$this->content->text .= "selected='selected'";
+        		$this->content->text .= 'selected="selected"';
         	}
-        	$this->content->text .= ">".$s->servername. " (".$s->url.")</option>";
+        	$this->content->text .= '>'.$s->servername. ' ('.$s->url.')</option>';
         }
         if (count($servers) == 0){
-        	$this->content->text .= "<option value='default' selected='selected'>". $CFG->block_oppia_mobile_export_default_server ."</option>";
+        	$this->content->text .= '<option value="default" selected="selected">'. $CFG->block_oppia_mobile_export_default_server .'</option>';
         }
-        $this->content->text .= "</select></p>";
-        $this->content->text .= "<p>".get_string('servers_block_add', PLUGINNAME, $CFG->wwwroot.PLUGINPATH."servers.php")."</p>";
+        $this->content->text .= '</select></p>';
+        $this->content->text .= '<p>'.get_string('servers_block_add', PLUGINNAME, $CFG->wwwroot.PLUGINPATH.'servers.php').'</p>';
 
        
         // Show the style options

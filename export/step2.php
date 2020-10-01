@@ -511,7 +511,7 @@ echo $OUTPUT->render_from_template(
 	array(
 		'server_connection' =>$server_connection->url,
 		'media_files' => $local_media_files,
-		'server' => $server,
+		'server_id' => $server,
 		'stylesheet' => $stylesheet,
 		'coursetags' => $tags,
 		'course_status' => $course_status,
