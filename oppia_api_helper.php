@@ -1,5 +1,7 @@
 <?php 
 
+require_once(dirname(__FILE__) . '/constants.php');
+
 class QuizHelper{
 	private $connection;
 	private $curl;
@@ -34,7 +36,7 @@ class QuizHelper{
 		$json = json_decode($data);
 		$http_status = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
 		if ($http_status != 200 && $http_status != 201 && $print_error_msg){
-			echo "<p style='color:red'>".get_string('error_creating_quiz','block_oppia_mobile_export')." ( status code: " . $http_status . ")</p>";
+			echo '<p style="color:red">'.get_string('error_creating_quiz', PLUGINNAME).' ( status code: ' . $http_status . ')</p>';
 		}
 		return $json;
 			

@@ -25,14 +25,14 @@ require_once($pluginroot . 'activity/url.php');
 require_once($CFG->libdir.'/componentlib.class.php');
 
 
-$id = required_param('id',PARAM_INT);
-$stylesheet = required_param('stylesheet',PARAM_TEXT);
-$priority = required_param('coursepriority',PARAM_INT);
+$id = required_param('id', PARAM_INT);
+$stylesheet = required_param('stylesheet', PARAM_TEXT);
+$priority = required_param('coursepriority', PARAM_INT);
 $sequencing = required_param('coursesequencing', PARAM_TEXT);
 $DEFAULT_LANG = required_param('default_lang', PARAM_TEXT);
-$server = required_param('server',PARAM_TEXT);
+$server = required_param('server', PARAM_TEXT);
 $course_status = required_param('course_status', PARAM_TEXT);
-$tags = required_param('coursetags',PARAM_TEXT);
+$tags = required_param('coursetags', PARAM_TEXT);
 $tags = cleanTagList($tags);
 
 $course = $DB->get_record('course', array('id'=>$id));
@@ -62,7 +62,7 @@ $PAGE->set_title(get_string('course') . ': ' . $course->fullname);
 $PAGE->set_heading($course->fullname);
 echo $OUTPUT->header();
 
-$PAGE->requires->js(PLUGINPATH.'publish_media.js');
+$PAGE->requires->js(PLUGINPATH.'publish/publish_media.js');
 
 global $QUIZ_CACHE;
 $QUIZ_CACHE = array();

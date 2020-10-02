@@ -5,7 +5,7 @@
 
 	<input type="hidden" name="id" value="{{course_id}}">
 	<input type="hidden" name="sesskey" value="{{sesskey}}">
-	<input type="hidden" name="server" value="{{server}}">
+	<input type="hidden" name="server_id" value="{{server_id}}">
 	<input type="hidden" name="file" value="{{file}}">
 	<input type="hidden" name="course_status" value="{{course_status}}">
 
@@ -33,6 +33,18 @@
 			<input class="btn btn-primary" type="submit" name="submit" value="{{# str }}publish_btn, block_oppia_mobile_export{{/ str }}">
 		</div>
 	</div>
-
-
 </form>
+
+<div class="export-results warning" style="display:block;padding:20px">
+	{{# str }}export_download_intro, block_oppia_mobile_export{{/ str }}<br/><br/>
+
+	<strong>{{course_name}}</strong><br/>
+	<a class="btn" href="{{export_url}}">
+		{{# str }} export_download, block_oppia_mobile_export{{/ str }}
+	</a>
+
+	<a class="btn btn-danger" href="{{wwwroot}}/blocks/oppia_mobile_export/cleanup.php?id={{course_id}}">
+		{{# str }}export_cleanup, block_oppia_mobile_export{{/ str }}
+	</a>
+</div>
+

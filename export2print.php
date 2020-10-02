@@ -20,8 +20,8 @@ require_once($pluginroot . 'activity/resource.php');
 
 require_once($CFG->libdir.'/componentlib.class.php');
 
-$id = required_param('courseid',PARAM_INT);
-$stylesheet = required_param('stylesheet',PARAM_TEXT);
+$id = required_param('courseid', PARAM_INT);
+$stylesheet = required_param('stylesheet', PARAM_TEXT);
 
 $course = $DB->get_record('course', array('id'=>$id));
 

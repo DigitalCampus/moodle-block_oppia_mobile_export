@@ -136,7 +136,7 @@ $string['export_style_resources'] = 'Copying style resources';
 $string['export_export_complete'] = 'Course export complete';
 $string['export_export_compressed'] = 'Compressed file';
 $string['export_download_intro'] = 'You can also download the course zip file here, but this should only be used for testing/development purposes. For live deployment, publish the file to the Oppia server first and download the course zip from there.';
-$string['export_download'] = 'Download exported course: <a href="{$a->zip}">{$a->coursename}</a>';
+$string['export_download'] = 'Download exported course';
 
 $string['export_cleanup'] = 'Cleanup files';
 
@@ -181,6 +181,7 @@ $string['publish_text'] = 'To publish your course directly on OppiaMobile ({$a})
 $string['publish_heading_draft'] = 'Push draft course to OppiaMobile server';
 $string['publish_text_draft'] = 'To push your draft course directly on OppiaMobile ({$a}), please complete your OppiaMobile server login details below.<br/>Check with your OppiaMobile administrator if you are unsure whether you have permissions to publish on the server';
 
+$string['publish_btn'] = "Publish";
 $string['publishing_header_live'] = "Publishing Course";
 $string['publishing_header_draft'] = "Pushing Draft Course";
 
