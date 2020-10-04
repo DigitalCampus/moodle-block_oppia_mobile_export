@@ -1,7 +1,7 @@
 <?php 
 
-require_once(dirname(__FILE__) . '/../../config.php');
-require_once(dirname(__FILE__) . '/constants.php');
+require_once(dirname(__FILE__) . '/../../../config.php');
+require_once(dirname(__FILE__) . '/../constants.php');
 
 require_once($CFG->dirroot . '/course/lib.php');
 require_once($CFG->dirroot . '/lib/filestorage/file_storage.php');
@@ -26,14 +26,14 @@ require_once($CFG->libdir.'/componentlib.class.php');
 $id = required_param('id', PARAM_INT);
 $file = required_param('file', PARAM_TEXT);
 $tags = cleanTagList(required_param('tags', PARAM_TEXT));
-$server = required_param('server', PARAM_TEXT);
+$server = required_param('server_id', PARAM_TEXT);
 $username = required_param('username', PARAM_TEXT);
 $password = required_param('password', PARAM_TEXT);
 $course_status = required_param('course_status', PARAM_TEXT);
 
 $course = $DB->get_record('course', array('id'=>$id));
 
-$PAGE->set_url(PLUGINPATH.'publish_course.php', array('id' => $id));
+$PAGE->set_url(PLUGINPATH.'publish/course.php', array('id' => $id));
 context_helper::preload_course($id);
 $context = context_course::instance($course->id);
 if (!$context) {
@@ -59,6 +59,8 @@ add_or_update_oppiaconfig($id, 'is_draft', $is_draft);
 add_publishing_log($server_connection->url, $USER->id, $id,  "api_publish_start", "API publish process started");
 
 echo $OUTPUT->header();
+
+flush_buffers();
 
 echo "<h2>";
 if ($course_status == 'draft'){
@@ -108,52 +110,51 @@ if ($course_status == 'draft'){
 } else {
     $is_draft = "false";
 }
-$post =  array('username' => $username,
-				'password' => $password,
-				'is_draft' => $is_draft,
-				'tags' => $tags,
-				'course_file' => new CurlFile($file, 'application/zip') 
-		);
+
+$filepath = $pluginroot."output/".$USER->id."/".$file;
+$curlfile = new CurlFile($filepath, 'application/zip', $file);
+
+$post = array(
+		'username' => $username,
+		'password' => $password,
+		'tags' 	   => $tags,
+		'is_draft' => $is_draft,
+		'course_file' => $curlfile);
+
 $curl = curl_init();
-curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1 );
-curl_setopt($curl, CURLOPT_URL, $server_connection->url ."api/publish/" );
+curl_setopt($curl, CURLOPT_URL, $server_connection->url."api/publish/" );
 curl_setopt($curl, CURLOPT_POST, true);
-curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
 curl_setopt($curl, CURLOPT_POSTFIELDS, $post);
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
+curl_setopt($curl, CURLOPT_VERBOSE, true);
 
 $result = curl_exec($curl);
 $http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+curl_close ($curl);
 
-add_publishing_log($server_connection->url, $USER->id, $id,  "api_publishing_user", $username);
-add_publishing_log($server_connection->url, $USER->id, $id,  "api_file_posted", $file);
+add_publishing_log($server_connection->url, $USER->id, $id, "api_publishing_user", $username);
+add_publishing_log($server_connection->url, $USER->id, $id, "api_file_posted", $file);
 
 switch ($http_status){
 	case "405":
 		$msgtext = get_string('publish_message_405', PLUGINNAME);
-		echo "<p>".$msgtext."</p>";
-		add_publishing_log($server_connection->url, $USER->id, $id,  "api_publish_invalid_request", $msgtext);
+		show_and_log_message($msgtext, false, "api_publish_invalid_request", false);
 		break;
 	case "400":
 		$msgtext = get_string('publish_message_400', PLUGINNAME);
-		echo "<p>".$msgtext."</p>";
-		add_publishing_log($server_connection->url, $USER->id, $id,  "api_publish_bad_request", $msgtext);
+		show_and_log_message($msgtext, false, "api_publish_bad_request", false);
 		break;
 	case "401":
 		$msgtext = get_string('publish_message_401', PLUGINNAME);
-		echo "<p>".$msgtext."</p>";
-		add_publishing_log($server_connection->url, $USER->id, $id,  "api_publish_unauthorised", $msgtext);
+		show_and_log_message($msgtext, false, "api_publish_unauthorised", false);
 		break;
 	case "500":
 		$msgtext = get_string('publish_message_500', PLUGINNAME);
-		echo "<p>".$msgtext."</p>";
-		add_publishing_log($server_connection->url, $USER->id, $id,  "api_publish_server_error", $msgtext);
+		show_and_log_message($msgtext, false, "api_publish_server_error", false);
 		break;
 	case "201":
 		$msgtext = get_string('publish_message_201', PLUGINNAME);
-		echo "<p>".$msgtext."</p>";
-		add_publishing_log($server_connection->url, $USER->id, $id,  "api_publish_success", $msgtext);
+		show_and_log_message($msgtext, false, "api_publish_success", false);
 		break;
 	default:
 		
@@ -166,31 +167,34 @@ if (is_null($json_response)){
 else{
 
 	if (array_key_exists('message', $json_response)){
-		echo "<p>".$json_response['message'].'</p>';
-		add_publishing_log($server_connection->url, $USER->id, $id,  "api_publish_response", $json_response['message']);
+		show_and_log_message($json_response['message'], false, "api_publish_response", false);
 	}
 	if (array_key_exists('messages', $json_response)){
 		$messages = $json_response['messages'];
 		foreach($messages as $msg){
-			echo '<div class="export-results '.$msg['tags'].'">'.$msg['message'].'</div>';
-			add_publishing_log($server_connection->url, $USER->id, $id,  "api_publish_response_message", $msg['tags'].": ".$msg['message']);
+			show_and_log_message($msg['message'], $msg['tags'], "api_publish_bad_request", true);
 		}
 	}
 	if (array_key_exists('errors', $json_response)){
 		$errors = $json_response['errors'];
 		foreach($errors as $err){
-			echo '<div class="export-results warning">'.$err.'</div>';
-			add_publishing_log($server_connection->url, $USER->id, $id,  "api_publish_response_message", "error: " . $err);
+			show_and_log_message($err, 'warning', "api_publish_response_message", true);
 		}
 	}
 	
 }
 
-curl_close ($curl);
+
 
 add_publishing_log($server_connection->url, $USER->id, $id,  "api_publish_end", "API publish process ended");
 
 echo $OUTPUT->footer();
 
+
+// Function to show on screen the message and save it in the publishing log
+function show_and_log_message($message, $tags, $log_action, $show_dialog=false){
+	echo '<div class="' . ($show_dialog ? 'export-results' : '') . ' ' .$tags.'">'.$message.'</div>';
+	add_publishing_log($server_connection->url, $USER->id, $id, $log_action, ($tags ? $tags.':' : '').$message);
+}
 
 ?>

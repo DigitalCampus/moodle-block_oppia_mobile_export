@@ -25,10 +25,10 @@ require_once($pluginroot . 'activity/url.php');
 require_once($CFG->libdir.'/componentlib.class.php');
 
 
-$id = required_param('id',PARAM_INT);
-$stylesheet = required_param('stylesheet',PARAM_TEXT);
-$tags = required_param('coursetags',PARAM_TEXT);
-$server = required_param('server',PARAM_TEXT);
+$id = required_param('id', PARAM_INT);
+$stylesheet = required_param('stylesheet', PARAM_TEXT);
+$tags = required_param('coursetags', PARAM_TEXT);
+$server = required_param('server_id',PARAM_TEXT);
 $course_status = required_param('course_status', PARAM_TEXT);
 $course_root = required_param('course_root', PARAM_TEXT);
 
@@ -131,7 +131,8 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
 	echo '<p class="step">'. get_string('export_export_complete', PLUGINNAME) . '</p>';
 	$dir2zip = $pluginroot."output/".$USER->id."/temp";
 
-	$ziprelativepath = "output/".$USER->id."/".strtolower($course->shortname)."-".$versionid.".zip";
+	$zipname = strtolower($course->shortname).'-'.$versionid.'.zip';
+	$ziprelativepath = "output/".$USER->id."/".$zipname;
 	$outputzip = $pluginroot.$ziprelativepath;
 	Zip($dir2zip, $outputzip);
 
@@ -140,31 +141,21 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
 	echo '<p class="step">'. get_string('export_export_compressed', PLUGINNAME) . '</p>';
 	deleteDir($pluginroot."output/".$USER->id."/temp");
 	
-	$a = new stdClass();
-	$a->zip = $outputpath;
-	$a->coursename = strip_tags($course->fullname);
-	
 	$form_values = array(
 		'server_connection' =>$server_connection->url,
 		'wwwroot' => $CFG->wwwroot,
-		'server' => $server,
+		'server_id' => $server,
 		'sesskey' => sesskey(),
 		'course_id' => $COURSE->id,
-		'file' => $outputpath,
+		'file' => $zipname,
 		'is_draft' => $course_status == 'draft',
 		'tags' => $tags,
-		'course_status' => $course_status );
+		'course_status' => $course_status,
+		'export_url' => $outputpath,
+		'course_name' => strip_tags($course->fullname)
+	);
 
-	echo $OUTPUT->render_from_template(PLUGINNAME.'/publish_form', $form_values);
-
-	echo '<div class="export-results warning" style="display:block;padding:20px">';
-	echo get_string('export_download_intro', PLUGINNAME);
-	echo "<br/>";
-	echo get_string('export_download', PLUGINNAME, $a );
-	echo "</div>";
-	
-	// link to cleanup files
-	echo "<p><a href='cleanup.php?id=".$id."'>".get_string('export_cleanup', PLUGINNAME)."</a></p>";
+	echo $OUTPUT->render_from_template(PLUGINNAME.'/export_step3_form', $form_values);
 	
 	add_publishing_log($server_connection->url, $USER->id, $id,  "export_file_created", strtolower($course->shortname)."-".$versionid.".zip");
 	add_publishing_log($server_connection->url, $USER->id, $id,  "export_end", "Export process completed");

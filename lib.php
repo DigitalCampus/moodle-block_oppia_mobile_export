@@ -181,7 +181,7 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
 		}
 		
 		if($CFG->block_oppia_mobile_export_debug){
-			echo "Attempting to export thumbnail image: <code>".urldecode($filename)."</code><br/>";
+			echo 'Attempting to export thumbnail image: <code>'.urldecode($filename).'</code><br/>';
 		}
 		$fs = get_file_storage();
 		$fileinfo = array(
@@ -229,7 +229,7 @@ function copyFile($file, $component, $filearea, $itemid, $contextid, $course_roo
 	if ($file) {
 
 			$filename = $file->get_filename();
-			$fullpath = "/$contextid/$component/$filearea/$itemid/$filename";
+			$fullpath = '/$contextid/$component/$filearea/$itemid/$filename';
 			$sha1 = sha1($fullpath);
 			if (preg_match(regex_resource_extensions, $filename) > 0){
 				$is_image = false;
@@ -242,7 +242,7 @@ function copyFile($file, $component, $filearea, $itemid, $contextid, $course_roo
 			$result = $file->copy_content_to($course_root.$filedest);
 
 	} else {
-		$link = $CFG->wwwroot."/course/modedit.php?return=0&sr=0&update=".$cmid;
+		$link = $CFG->wwwroot.'/course/modedit.php?return=0&sr=0&update='.$cmid;
 		$message = 'error_'.($is_image?'image':'file').'_edit_page';
 		echo '<span class="export-error">'.get_string($message, PLUGINNAME, $link).'</span><br/>';
 		return false;
@@ -316,7 +316,7 @@ function resizeImageScale($image,$image_new_name, $image_width, $image_height, $
 		$border = floor(($image_height - ($image_width*$orig_h/$orig_w))/2);
 		imagecopyresampled($image_new, $image_src, 0, $border, 0, 0, $image_width , $image_height- ($border*2) , $orig_w, $orig_h);
 	} 
-	$image_new_name = $image_new_name.".png";
+	$image_new_name = $image_new_name.'.png';
 	imagepng($image_new,$image_new_name,9);
 
 	imagedestroy($image_new);
@@ -379,7 +379,7 @@ function resizeImageCrop($image,$image_new_name, $image_width, $image_height, $t
 		imagecopyresampled($image_new, $image_src, 0, 0,  0, $crop,  $image_width, $image_height, $orig_w, $orig_h -(2*$crop));
 	}
 
-	$image_new_name = $image_new_name.".png";
+	$image_new_name = $image_new_name.'.png';
 	imagepng($image_new,$image_new_name,9);
 
 	imagedestroy($image_new);
@@ -430,13 +430,13 @@ function libxml_display_error($error)
 	$return = "<br/>\n";
 	switch ($error->level) {
 		case LIBXML_ERR_WARNING:
-			$return .= "<b>Warning $error->code</b>: ";
+			$return .= '<b>Warning'.$error->code.'</b>: ';
 			break;
 		case LIBXML_ERR_ERROR:
-			$return .= "<b>Error $error->code</b>: ";
+			$return .= '<b>Error'.$error->code.'</b>: ';
 			break;
 		case LIBXML_ERR_FATAL:
-			$return .= "<b>Fatal Error $error->code</b>: ";
+			$return .= '<b>Fatal Error'.$error->code.'</b>: ';
 			break;
 	}
 	$return .= trim($error->message);

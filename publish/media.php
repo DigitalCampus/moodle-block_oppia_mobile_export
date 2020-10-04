@@ -1,7 +1,7 @@
 <?php 
 
-require_once(dirname(__FILE__) . '/../../config.php');
-require_once(dirname(__FILE__) . '/constants.php');
+require_once(dirname(__FILE__) . '/../../../config.php');
+require_once(dirname(__FILE__) . '/../constants.php');
 
 require_once($CFG->dirroot . '/course/lib.php');
 require_once($CFG->dirroot . '/lib/filestorage/file_storage.php');

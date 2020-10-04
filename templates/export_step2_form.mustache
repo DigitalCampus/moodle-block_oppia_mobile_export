@@ -1,10 +1,9 @@
 <br>
 
-
 <div>
 {{# media_files.0 }}<h3> Pushing local media files </h3>{{/ media_files.0 }}
 
-<div class="media_files" data-publish="{{wwwroot}}/blocks/oppia_mobile_export/publish_media.php" data-server="{{server}}">
+<div class="media_files" data-publish="{{wwwroot}}/blocks/oppia_mobile_export/publish/media.php" data-server="{{server_id}}">
 {{# media_files }}
 	<div class="media_file" data-moodlefile="{{moodlefile}}">
 		<span class="filename">{{filename}}</span> <span class="status loading"></span>
@@ -46,7 +45,7 @@
 	<input type="hidden" name="media_files" value="{{media_files}}">
 	<input type="hidden" name="stylesheet" value="{{stylesheet}}">
 	<input type="hidden" name="course_status" value="{{course_status}}">
-	<input type="hidden" name="server" value="{{server}}">
+	<input type="hidden" name="server_id" value="{{server_id}}">
 	<input type="hidden" name="course_root" value="{{course_root}}">
 	<input type="hidden" name="coursetags" value="{{coursetags}}">
 
