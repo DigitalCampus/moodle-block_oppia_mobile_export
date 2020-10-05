@@ -327,10 +327,8 @@ class MobileActivityQuiz extends MobileActivity {
 	}
 	
 	function export2print(){
-		global $DB,$CFG,$USER,$QUIZ_CACHE;
+		global $USER;
 		$cm = get_coursemodule_from_id('quiz', $this->id);
-		$context = context_module::instance($cm->id);
-		$quiz = $DB->get_record('quiz', array('id'=>$cm->instance), '*', MUST_EXIST);
 		
 		$quizobj = quiz::create($cm->instance, $USER->id);
 		$return_content = "";
@@ -389,11 +387,10 @@ class MobileActivityQuiz extends MobileActivity {
 	}
 	
 	private function extractMedia($question_id, $content){
-		global $MEDIA;
 	
 		$regex = '((\[\[[[:space:]]?media[[:space:]]?object=[\"|\'](?P<mediaobject>[\{\}\'\"\:a-zA-Z0-9\._\-/,[:space:]]*)[[:space:]]?[\"|\']\]\]))';
 	
-		preg_match_all($regex,$content,$media_tmp, PREG_OFFSET_CAPTURE);
+		preg_match_all($regex, $content, $media_tmp, PREG_OFFSET_CAPTURE);
 	
 		if(!isset($media_tmp['mediaobject']) || count($media_tmp['mediaobject']) == 0){
 			return $content;
@@ -419,10 +416,9 @@ class MobileActivityQuiz extends MobileActivity {
 	}
 	
 	function exportQuestionImages (){
-		global $DB,$CFG,$USER,$QUIZ_CACHE,$CFG;
+		global $USER;
 		$cm = get_coursemodule_from_id('quiz', $this->id);
-		$context = context_module::instance($cm->id);
-		$quiz = $DB->get_record('quiz', array('id'=>$cm->instance), '*', MUST_EXIST);
+
 		$quizobj = quiz::create($cm->instance, $USER->id);
 		try {
 			$quizobj->preload_questions();
@@ -444,10 +440,9 @@ class MobileActivityQuiz extends MobileActivity {
 	}
 	
 	function exportQuestionMedia(){
-		global $DB,$CFG,$USER,$QUIZ_CACHE,$CFG;
+		global $USER;
 		$cm = get_coursemodule_from_id('quiz', $this->id);
-		$context = context_module::instance($cm->id);
-		$quiz = $DB->get_record('quiz', array('id'=>$cm->instance), '*', MUST_EXIST);
+
 		$quizobj = quiz::create($cm->instance, $USER->id);
 		try {
 			$quizobj->preload_questions();

@@ -2,7 +2,7 @@
 
 //This is the regex for detecting any number of spaces or <br> or <p> tags (in any of its forms) 
 
-const spaces_regex = '([[:space:]]|\<br\/?[[:space:]]*\>|\<\/?p\>)*';
+const SPACES_REGEX = '([[:space:]]|\<br\/?[[:space:]]*\>|\<\/?p\>)*';
 
 class MobileActivityPage extends MobileActivity {	
 
@@ -204,7 +204,6 @@ class MobileActivityPage extends MobileActivity {
 			$filename = urldecode($orig_filename);
 			if ( !$this->isLocalMedia($orig_filename) ){
 				
-				$fullpath = "/$contextid/$component/$filearea/$itemid/$filename";
 				$filepath = '/';
 				$fs = get_file_storage();
 				$file = $fs->get_file($contextid, $component, $filearea, $itemid, $filepath, $filename);
@@ -215,7 +214,7 @@ class MobileActivityPage extends MobileActivity {
 				} else {
 					if($CFG->block_oppia_mobile_export_debug){
 						echo '<span class="export-error">'.get_string('error_file_not_found','block_oppia_mobile_export',$filename).'</span><br/>';
-						return;
+						return null;
 					}
 				}
 
@@ -241,7 +240,7 @@ class MobileActivityPage extends MobileActivity {
 	private function extractAndReplaceMedia($content){
 		global $MEDIA;
 
-		$regex = '((\[\[' . spaces_regex . 'media' . spaces_regex . 'object=[\"|\'](?P<mediaobject>[\{\}\'\"\:a-zA-Z0-9\._\-\/,[:space:]]*)([[:space:]]|\<br\/?[[:space:]]*\>)*[\"|\']' . spaces_regex . '\]\]))';
+		$regex = '((\[\[' . SPACES_REGEX . 'media' . SPACES_REGEX . 'object=[\"|\'](?P<mediaobject>[\{\}\'\"\:a-zA-Z0-9\._\-\/,[:space:]]*)([[:space:]]|\<br\/?[[:space:]]*\>)*[\"|\']' . SPACES_REGEX . '\]\]))';
 
 		preg_match_all($regex,$content,$media_tmp, PREG_OFFSET_CAPTURE);
 		
@@ -273,7 +272,7 @@ class MobileActivityPage extends MobileActivity {
 
 		$html = new DOMDocument();
 		$parsed = $html->loadHTML($content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-		if ($parsed == false){
+		if (!$parsed){
 			echo '<span class="export-error">'.get_string('error_parsing_html','block_oppia_mobile_export').'</span><br/>';
 			return;
 		}
@@ -332,7 +331,7 @@ class MobileActivityPage extends MobileActivity {
 	private function extractAndReplaceRelated($content){
 		global $DB, $RELATED;
 		$regex = '((\[\[[[:space:]]?related=[\"|\'](?P<relatedobject>[\{\}\'\"\:0-9[:space:]]*)[[:space:]]?[\"|\']\]\]))';
-		preg_match_all($regex,$content,$related_tmp, PREG_OFFSET_CAPTURE);
+		preg_match_all($regex, $content, $related_tmp, PREG_OFFSET_CAPTURE);
 		
 		if(!isset($related_tmp['relatedobject']) || count($related_tmp['relatedobject']) == 0){
 			return $content;
@@ -361,7 +360,7 @@ class MobileActivityPage extends MobileActivity {
 	
 	private function extractMediaImage($content,$component, $filearea, $itemid, $contextid){
 		global $CFG;
-		$regex = '(\]\]'.spaces_regex.'\<img[[:space:]]src=[\"|\\\']images/(?P<filenames>[\w\W]*?)[\"|\\\'])';
+		$regex = '(\]\]'.SPACES_REGEX.'\<img[[:space:]]src=[\"|\\\']images/(?P<filenames>[\w\W]*?)[\"|\\\'])';
 		
 		preg_match_all($regex,$content,$files_tmp, PREG_OFFSET_CAPTURE);
 		if(!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0){
@@ -373,7 +372,6 @@ class MobileActivityPage extends MobileActivity {
 			echo '<span>' . get_string('export_file_trying','block_oppia_mobile_export',$filename).'</span><br/>';
 		}
 		
-		$fullpath = "/$contextid/$component/$filearea/$itemid/$filename";
 		$fs = get_file_storage();
 		$fileinfo = array(
 				'component' => $component,

@@ -6,7 +6,7 @@ const regex_forbidden_dir_chars = '([\\/?%*:|"<>\.[:space:]]+)';
 const regex_forbidden_tag_chars = '([^a-zA-z0-9,\_]+)';
 const regex_html_entities = '(&nbsp;|&amp;|&quot;)';
 const regex_resource_extensions = '/\.(mp3|mp4|avi)/';
-const regex_image_extensions = '/\.(png|jpg|jpeg|gif)/';
+const REGEX_IMAGE_EXTENSIONS = '/\.(png|jpg|jpeg|gif)/';
 const basic_html_tags = '<strong><b><i><em>';
 
 
@@ -142,7 +142,9 @@ function cleanTagList($tags){
 	$cleantags = preg_replace('([[:space:]]*\,[[:space:]])', ',', $tags);
 	$cleantags = preg_replace(regex_forbidden_tag_chars, "-", $cleantags);
 	
-	if (strlen($cleantags) == 0) return $cleantags;
+	if (strlen($cleantags) == 0){
+	    return $cleantags;
+	}
 	$strStart = ($cleantags[0] == ',') ? 1 : 0; //avoid first colon
 	$strEnd = $strStart + (($cleantags[strlen($cleantags)-1] == ',') ? 1 : 0); //avoid last colon
 	$cleantags = substr($cleantags, $strStart, strlen($cleantags) - $strEnd);
@@ -161,8 +163,7 @@ function cleanShortname($shortname){
 function extractImageFile($content, $component, $filearea, $itemid, $contextid, $course_root, $cmid){
 	global $CFG;
 	//find if any images/links exist
-	//preg_match_all('((@@PLUGINFILE@@/(?P<filenames>[\w\.\-\_[:space:]]*)[\"|\']))',$content,$files_tmp, PREG_OFFSET_CAPTURE);
-		
+	
 	preg_match_all('((@@PLUGINFILE@@/(?P<filenames>[^\"\'\?<>]*)))',$content,$files_tmp, PREG_OFFSET_CAPTURE);
 	
 	if(!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0){
@@ -229,7 +230,7 @@ function copyFile($file, $component, $filearea, $itemid, $contextid, $course_roo
 	if ($file) {
 
 			$filename = $file->get_filename();
-			$fullpath = '/$contextid/$component/$filearea/$itemid/$filename';
+			$fullpath = '/'. $contextid .'/'. $component .'/'. $filearea .'/'. $itemid .'/'. $filename;
 			$sha1 = sha1($fullpath);
 			if (preg_match(regex_resource_extensions, $filename) > 0){
 				$is_image = false;
@@ -327,8 +328,7 @@ function resizeImageScale($image,$image_new_name, $image_width, $image_height, $
 
 
 function IsFileAnImage($filepath){ 
-	//TODO: Check based in mimetype information instead of extension
-	return (preg_match(regex_image_extensions, $filepath) > 0); 
+    return (preg_match(REGEX_IMAGE_EXTENSIONS, $filepath) > 0); 
 }
 
 function resizeImageCrop($image,$image_new_name, $image_width, $image_height, $transparent=false){
