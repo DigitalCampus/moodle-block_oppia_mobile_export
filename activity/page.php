@@ -274,7 +274,7 @@ class MobileActivityPage extends MobileActivity {
 		$parsed = $html->loadHTML($content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
 		if (!$parsed){
 			echo '<span class="export-error">'.get_string('error_parsing_html','block_oppia_mobile_export').'</span><br/>';
-			return;
+			return null;
 		}
 
 		$videos = $html->getElementsByTagName('video');
