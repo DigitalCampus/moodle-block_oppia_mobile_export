@@ -58,9 +58,13 @@ class block_oppia_mobile_export extends block_base {
         	}
         	$this->content->text .= '>'.$s->servername. ' ('.$s->url.')</option>';
         }
+        $this->content->text .= '<option value="default"';
         if (count($servers) == 0){
-        	$this->content->text .= '<option value="default" selected="selected">'. $CFG->block_oppia_mobile_export_default_server .'</option>';
+            $this->content->text .= ' selected="selected">'. $CFG->block_oppia_mobile_export_default_server .'</option>';
+        } else {
+            $this->content->text .= '>'. $CFG->block_oppia_mobile_export_default_server .'</option>';
         }
+        
         $this->content->text .= '</select></p>';
         $this->content->text .= '<p>'.get_string('servers_block_add', PLUGINNAME, $CFG->wwwroot.PLUGINPATH.'servers.php').'</p>';
 
