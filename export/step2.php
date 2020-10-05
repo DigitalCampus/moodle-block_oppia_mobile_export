@@ -152,7 +152,7 @@ if(is_array($title) && count($title)>0){
 		$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($l));
 		$meta->appendChild($temp);
 	}
-} else {;
+} else {
 	$temp = $xmlDoc->createElement("title");
 	$temp->appendChild($xmlDoc->createCDATASection(strip_tags($course->fullname)));
 	$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
@@ -169,7 +169,7 @@ if(is_array($summary) && count($summary)>0){
 		$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($l));
 		$meta->appendChild($temp);
 	}
-} else {;
+} else {
 	$temp = $xmlDoc->createElement("description");
 	$temp->appendChild($xmlDoc->createCDATASection(trim(strip_tags($course->summary))));
 	$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
@@ -184,7 +184,7 @@ if ($server_info && $server_info->version ){
 	echo '<strong>Current server version:</strong> '.$server_info->version.'<br/>';
 	$v_regex = '/^v([0-9])+\.([0-9]+)\.([0-9]+)$/';
 	preg_match($v_regex, $server_info->version, $version_nums);
-	if (count($version_nums)>0 && (
+	if (!empty($version_nums) && (
 		( (int) $version_nums[1] >= 0) || //major version check (>0.x.x)
 		( (int) $version_nums[2] >= $QUIZ_EXPORT_MINVERSION_MINOR) || //minor version check (>=0.9.x)
 		( (int) $version_nums[3] >= $QUIZ_EXPORT_MINVERSION_SUB) //sub version check (>=0.9.8)

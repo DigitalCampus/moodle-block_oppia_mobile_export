@@ -33,8 +33,6 @@ class MobileActivityQuiz extends MobileActivity {
 	function preprocess(){
 		global $DB,$USER;
 		$cm = get_coursemodule_from_id('quiz', $this->id);
-		$context = context_module::instance($cm->id);
-		$quiz = $DB->get_record('quiz', array('id'=>$cm->instance), '*', MUST_EXIST);
 		
 		$quizobj = quiz::create($cm->instance, $USER->id);
 		if(!$quizobj->has_questions()){

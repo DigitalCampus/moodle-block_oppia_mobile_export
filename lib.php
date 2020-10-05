@@ -13,7 +13,6 @@ const basic_html_tags = '<strong><b><i><em>';
 function deleteDir($dirPath) {
 	if (! is_dir($dirPath)) {
 		return;
-		//throw new InvalidArgumentException('$dirPath must be a directory');
 	}
 	if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') {
 		$dirPath .= '/';
@@ -133,12 +132,10 @@ function cleanHTMLEntities($text, $replace_br=false){
 	if ($replace_br){
 		$cleantext = preg_replace("(<br[[:space:]]*/?>)", "\n", $cleantext);
 	}
-	$cleantext = preg_replace(regex_html_entities, " ", $cleantext);
-	return $cleantext;
+	return preg_replace(regex_html_entities, " ", $cleantext);
 }
 
 function cleanTagList($tags){
-	$cleantags = trim($tags);
 	$cleantags = preg_replace('([[:space:]]*\,[[:space:]])', ',', $tags);
 	$cleantags = preg_replace(regex_forbidden_tag_chars, "-", $cleantags);
 	
@@ -147,16 +144,14 @@ function cleanTagList($tags){
 	}
 	$strStart = ($cleantags[0] == ',') ? 1 : 0; //avoid first colon
 	$strEnd = $strStart + (($cleantags[strlen($cleantags)-1] == ',') ? 1 : 0); //avoid last colon
-	$cleantags = substr($cleantags, $strStart, strlen($cleantags) - $strEnd);
 	
-	return $cleantags;
+	return substr($cleantags, $strStart, strlen($cleantags) - $strEnd);
 }
 
 function cleanShortname($shortname){
 	$shortname = trim($shortname);
 	$shortname = preg_replace(regex_forbidden_dir_chars, "-", $shortname);
-	$shortname = preg_replace('(\-+)', "-", $shortname); //clean duplicated hyphens
-	return $shortname;
+	return preg_replace('(\-+)', "-", $shortname); //clean duplicated hyphens
 }
 
 
@@ -196,7 +191,7 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
 				$fileinfo['itemid'], $fileinfo['filepath'], urldecode($fileinfo['filename']));
 		$result = copyFile($file, $component, $filearea, $itemid, $contextid, $course_root, $cmid);
 
-		if ($result != false){
+		if ($result){
 			$lastimg = $result;
 		}
 		
@@ -205,7 +200,6 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
 }
 
 function getFileInfo($filename, $component, $filearea, $itemid, $contextid){
-	global $CFG;
 
 	$fs = get_file_storage();
 	$path = '/';

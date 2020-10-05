@@ -328,36 +328,6 @@ class MobileActivityPage extends MobileActivity {
 		return $exists;
 	}
 	
-	private function extractAndReplaceRelated($content){
-		global $DB, $RELATED;
-		$regex = '((\[\[[[:space:]]?related=[\"|\'](?P<relatedobject>[\{\}\'\"\:0-9[:space:]]*)[[:space:]]?[\"|\']\]\]))';
-		preg_match_all($regex, $content, $related_tmp, PREG_OFFSET_CAPTURE);
-		
-		if(!isset($related_tmp['relatedobject']) || count($related_tmp['relatedobject']) == 0){
-			return $content;
-		}
-		
-		for($i=0;$i<count($related_tmp['relatedobject']);$i++){
-			$related = new stdClass();
-			$related->order = $i+1;
-			$related->activity = array();
-			$cm= get_coursemodule_from_id('page', $related_tmp['relatedobject'][$i][0]);
-			$page = $DB->get_record('page', array('id'=>$cm->instance), '*', MUST_EXIST);
-			$related->digest = md5($page->content).$related_tmp['relatedobject'][$i][0];
-			
-			$activity = new stdClass();
-			$activity->lang = "en";
-			$activity->title = $page->intro;
-			array_push($related->activity,$activity);
-			
-			array_push($this->page_related,$related);
-			
-			$toreplace = $related_tmp[0][$i][0];
-			$content = str_replace($toreplace, "", $content);
-		}
-		return $content;
-	}
-	
 	private function extractMediaImage($content,$component, $filearea, $itemid, $contextid){
 		global $CFG;
 		$regex = '(\]\]'.SPACES_REGEX.'\<img[[:space:]]src=[\"|\\\']images/(?P<filenames>[\w\W]*?)[\"|\\\'])';

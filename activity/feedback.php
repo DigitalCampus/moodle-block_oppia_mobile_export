@@ -201,8 +201,7 @@ class MobileActivityFeedback extends MobileActivity {
     
     
     function export2print(){
-        global $DB,$CFG,$USER,$QUIZ_CACHE;
-        $cm = get_coursemodule_from_id('feedback', $this->id);
+        // do nothing
     }
     
     function getXML($mod, $counter, &$node, &$xmlDoc, $activity=true){
