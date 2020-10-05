@@ -11,7 +11,7 @@ abstract class MobileActivity {
 	public $component_name;
 
 	abstract function process();
-	abstract function getXML($mod,$counter,$activity=true,&$node,&$xmlDoc);
+	abstract function getXML($mod,$counter,&$node,&$xmlDoc,$activity=true);
 	abstract function export2print();
 
 

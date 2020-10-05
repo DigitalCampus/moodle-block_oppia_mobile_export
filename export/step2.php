@@ -217,7 +217,7 @@ foreach ($sectionmods as $modnumber) {
 		$page->id = $mod->id;
 		$page->section = 0;
 		$page->process();
-		$page->getXML($mod,$i,false,$meta,$xmlDoc);
+		$page->getXML($mod, $i, $meta, $xmlDoc, false);
 	}
 	if($mod->modname == 'quiz' && $mod->visible == 1){
 		echo "<p>".$mod->name."</p>";
@@ -247,7 +247,7 @@ foreach ($sectionmods as $modnumber) {
 		$quiz->preprocess();
 		if ($quiz->get_is_valid()){
 			$quiz->process();
-			$quiz->getXML($mod,$i,true,$meta,$xmlDoc);
+			$quiz->getXML($mod, $i, $meta, $xmlDoc, true);
 		}
 	}
 	if($mod->modname == 'feedback' && $mod->visible == 1){
@@ -265,7 +265,7 @@ foreach ($sectionmods as $modnumber) {
 		$feedback->preprocess();
 		if ($feedback->get_is_valid()){
 			$feedback->process();
-			$feedback->getXML($mod,$i,true,$meta,$xmlDoc);
+			$feedback->getXML($mod, $i, $meta, $xmlDoc, true);
 		} else {
 			echo get_string('error_feedback_no_questions', PLUGINNAME)."<br/>";
 		}
@@ -364,7 +364,7 @@ foreach($sections as $sect) {
 				$page->id = $mod->id;
 				$page->section = $sect_orderno;
 				$page->process();
-				$page->getXML($mod,$act_orderno,true,$activities,$xmlDoc);
+				$page->getXML($mod, $act_orderno, $activities, $xmlDoc, true);
 				$local_media_files = array_merge($local_media_files, $page->getLocalMedia());
 
 				$act_orderno++;
@@ -395,7 +395,7 @@ foreach($sections as $sect) {
 				$quiz->preprocess();
 				if ($quiz->get_is_valid()){
 					$quiz->process();
-					$quiz->getXML($mod,$act_orderno,true,$activities,$xmlDoc);
+					$quiz->getXML($mod, $act_orderno, $activities, $xmlDoc, true);
 					$act_orderno++;
 				} else {
 					echo get_string('error_quiz_no_questions', PLUGINNAME)."<br/>";
@@ -407,7 +407,7 @@ foreach($sections as $sect) {
 				$resource->id = $mod->id;
 				$resource->section = $sect_orderno;
 				$resource->process();
-				$resource->getXML($mod,$act_orderno,true,$activities,$xmlDoc);
+				$resource->getXML($mod, $act_orderno, $activities, $xmlDoc, true);
 				$act_orderno++;
 			}
 			else if($mod->modname == 'url'){
@@ -416,7 +416,7 @@ foreach($sections as $sect) {
 				$url->id = $mod->id;
 				$url->section = $sect_orderno;
 				$url->process();
-				$url->getXML($mod,$act_orderno,true,$activities,$xmlDoc);
+				$url->getXML($mod, $act_orderno, $activities, $xmlDoc, true);
 				$act_orderno++;
 			}
 			else if($mod->modname == 'feedback'){
@@ -432,7 +432,7 @@ foreach($sections as $sect) {
 				$feedback->preprocess();
 				if ($feedback->get_is_valid()){
 					$feedback->process();
-					$feedback->getXML($mod,$act_orderno,true,$activities,$xmlDoc);
+					$feedback->getXML($mod, $act_orderno, $activities, $xmlDoc, true);
 					$act_orderno++;
 				} else {
 					echo get_string('error_feedback_no_questions', PLUGINNAME)."<br/>";

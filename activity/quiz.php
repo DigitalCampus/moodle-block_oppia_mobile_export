@@ -75,10 +75,9 @@ class MobileActivityQuiz extends MobileActivity {
 
 
 	function process_locally(){
-		global $DB,$CFG,$USER,$QUIZ_CACHE;
+		global $DB, $USER;
 
 		$cm = get_coursemodule_from_id('quiz', $this->id);
-		$context = context_module::instance($cm->id);
 		$quiz = $DB->get_record('quiz', array('id'=>$cm->instance), '*', MUST_EXIST);
 		$quizobj = quiz::create($cm->instance, $USER->id);
 		$quizobj->preload_questions();
@@ -463,7 +462,7 @@ class MobileActivityQuiz extends MobileActivity {
 		}
 	}
 	
-	function getXML($mod,$counter,$activity=true,&$node,&$xmlDoc){
+	function getXML($mod, $counter, &$node, &$xmlDoc, $activity=true){
 		
 		$act = $this->getActivityNode($xmlDoc, $mod, $counter);
 		$this->addLangXMLNodes($xmlDoc, $act, $mod->name, "title");

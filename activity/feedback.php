@@ -26,9 +26,8 @@ class MobileActivityFeedback extends MobileActivity {
     
     
     function preprocess(){
-        global $DB,$CFG,$USER;
+        global $DB;
         $cm = get_coursemodule_from_id('feedback', $this->id);
-        $context = context_module::instance($cm->id);
         $feedback = $DB->get_record('feedback', array('id'=>$cm->instance), '*', MUST_EXIST);
         
         $select = 'feedback = ?';
@@ -62,10 +61,9 @@ class MobileActivityFeedback extends MobileActivity {
     }
     
     function process_locally(){
-        global $DB,$CFG,$USER,$QUIZ_CACHE;
+        global $DB;
         
         $cm = get_coursemodule_from_id('feedback', $this->id);
-        $context = context_module::instance($cm->id);
         $feedback = $DB->get_record('feedback', array('id'=>$cm->instance), '*', MUST_EXIST);
         $select = 'feedback = ?';
         $params = array($feedback->id);
@@ -207,7 +205,7 @@ class MobileActivityFeedback extends MobileActivity {
         $cm = get_coursemodule_from_id('feedback', $this->id);
     }
     
-    function getXML($mod, $counter, $activity=true, &$node, &$xmlDoc){
+    function getXML($mod, $counter, &$node, &$xmlDoc, $activity=true){
         global $DEFAULT_LANG;
         
         $act = $this->getActivityNode($xmlDoc, $mod, $counter);

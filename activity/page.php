@@ -27,8 +27,6 @@ class MobileActivityPage extends MobileActivity {
 		$content = $this->extractAndReplaceFiles($content, 'mod_page', 'content',
 										0, $context->id, $this->courseroot, $cm->id);
 
-		//$content = $this->extractRelated($content);
-
 		// get the image from the intro section
 		$this->extractThumbnailFromIntro($page->intro, $cm->id);
 
@@ -59,7 +57,7 @@ class MobileActivityPage extends MobileActivity {
 		
 		// add html header tags etc
 		// need to do this to ensure it all has the right encoding when loaded in android webview
-		$webbpage = '<!DOCTYPE html>';
+		$webpage = '<!DOCTYPE html>';
 		$webpage .= '<html><head>';
 		$webpage .= '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 		$webpage .= '<link href="style.css" rel="stylesheet" type="text/css"/>';
@@ -83,7 +81,7 @@ class MobileActivityPage extends MobileActivity {
 	}
 	
 	function export2print(){
-		global $DB, $CFG, $MOBILE_LANGS, $DEFAULT_LANG, $MEDIA;
+		global $DB;
 		$cm= get_coursemodule_from_id('page', $this->id);
 		$page = $DB->get_record('page', array('id'=>$cm->instance), '*', MUST_EXIST);
 		$context = context_module::instance($cm->id);
@@ -131,8 +129,7 @@ class MobileActivityPage extends MobileActivity {
 		return $this->page_local_media;
 	}
 	
-	function getXML($mod,$counter,$activity=true,&$node,&$xmlDoc){
-		global $DEFAULT_LANG;
+	function getXML($mod, $counter, &$node, &$xmlDoc, $activity=true){
 		if($activity){
 			$struct = $this->getActivityNode($xmlDoc, $mod, $counter);
 			$node->appendChild($struct);
