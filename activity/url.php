@@ -1,6 +1,6 @@
 <?php
 
-class mobile_activity_url extends mobile_activity {
+class MobileActivityUrl extends MobileActivity {
 	
 	private $act = array();
 	private $url;

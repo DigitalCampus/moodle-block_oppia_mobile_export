@@ -1,6 +1,6 @@
 <?php
 
-class mobile_activity_quiz extends mobile_activity {
+class MobileActivityQuiz extends MobileActivity {
 
 	private $supported_types = array('multichoice', 'match', 'truefalse', 'description', 'shortanswer', 'numerical', 'ddimageortext');
 	private $courseversion;

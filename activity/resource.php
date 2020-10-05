@@ -1,6 +1,6 @@
 <?php
 
-class mobile_activity_resource extends mobile_activity {
+class MobileActivityResource extends MobileActivity {
 	
 	private $act = array();
 	private $resource;

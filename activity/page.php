@@ -4,7 +4,7 @@
 
 const spaces_regex = '([[:space:]]|\<br\/?[[:space:]]*\>|\<\/?p\>)*';
 
-class mobile_activity_page extends mobile_activity {	
+class MobileActivityPage extends MobileActivity {	
 
 	private $act = array();
 	private $page_media = array();

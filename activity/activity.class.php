@@ -1,6 +1,6 @@
 <?php 
 
-abstract class mobile_activity {
+abstract class MobileActivity {
 	
 	public $courseroot;
 	public $id;

@@ -1,6 +1,6 @@
 <?php
 
-class mobile_activity_feedback extends mobile_activity {
+class MobileActivityFeedback extends MobileActivity {
     
     private $supported_types = array('multichoicerated', 'textarea', 'multichoice', 'numeric', 'textfield');
     private $courseversion;

@@ -212,7 +212,7 @@ foreach ($sectionmods as $modnumber) {
 	
 	if($mod->modname == 'page' && $mod->visible == 1){
 		echo "<p>".$mod->name."</p>";
-		$page = new mobile_activity_page();
+		$page = new MobileActivityPage();
 		$page->courseroot = $course_root;
 		$page->id = $mod->id;
 		$page->section = 0;
@@ -222,7 +222,7 @@ foreach ($sectionmods as $modnumber) {
 	if($mod->modname == 'quiz' && $mod->visible == 1){
 		echo "<p>".$mod->name."</p>";
 
-		$quiz = new mobile_activity_quiz();
+		$quiz = new MobileActivityQuiz();
 		
 		$random = optional_param('quiz_'.$mod->id.'_randomselect',0,PARAM_INT);
 		add_or_update_oppiaconfig($mod->id, 'randomselect', $random);
@@ -252,7 +252,7 @@ foreach ($sectionmods as $modnumber) {
 	}
 	if($mod->modname == 'feedback' && $mod->visible == 1){
 		echo $mod->name."<br/>";
-		$feedback = new mobile_activity_feedback();
+		$feedback = new MobileActivityFeedback();
 		$configArray = Array(
 		    'showfeedback'=>false,
 		    'passthreshold'=>0,
@@ -359,7 +359,7 @@ foreach($sections as $sect) {
 			echo '<div class="step"><strong>' . $mod->name . '</strong><br>';
 
 			if($mod->modname == 'page'){
-				$page = new mobile_activity_page();
+			    $page = new MobileActivityPage();
 				$page->courseroot = $course_root;
 				$page->id = $mod->id;
 				$page->section = $sect_orderno;
@@ -370,7 +370,7 @@ foreach($sections as $sect) {
 				$act_orderno++;
 			}
 			else if($mod->modname == 'quiz'){
-				$quiz = new mobile_activity_quiz();
+			    $quiz = new MobileActivityQuiz();
 				$random = optional_param('quiz_'.$mod->id.'_randomselect',0,PARAM_INT);
 				add_or_update_oppiaconfig($mod->id, 'randomselect', $random);
 				
@@ -402,7 +402,7 @@ foreach($sections as $sect) {
 				}
 			}
 			else if($mod->modname == 'resource'){
-				$resource = new mobile_activity_resource();
+			    $resource = new MobileActivityResource();
 				$resource->courseroot = $course_root;
 				$resource->id = $mod->id;
 				$resource->section = $sect_orderno;
@@ -411,7 +411,7 @@ foreach($sections as $sect) {
 				$act_orderno++;
 			}
 			else if($mod->modname == 'url'){
-				$url = new mobile_activity_url();
+			    $url = new MobileActivityUrl();
 				$url->courseroot = $course_root;
 				$url->id = $mod->id;
 				$url->section = $sect_orderno;
@@ -420,7 +420,7 @@ foreach($sections as $sect) {
 				$act_orderno++;
 			}
 			else if($mod->modname == 'feedback'){
-				$feedback = new mobile_activity_feedback();
+			    $feedback = new MobileActivityFeedback();
 				$configArray = Array(
 				    'showfeedback'=>false,
 				    'passthreshold'=>0,
