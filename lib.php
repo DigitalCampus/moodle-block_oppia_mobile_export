@@ -2,12 +2,12 @@
 
 require_once(dirname(__FILE__) . '/constants.php');
 
-const regex_forbidden_dir_chars = '([\\/?%*:|"<>\.[:space:]]+)';
-const regex_forbidden_tag_chars = '([^a-zA-z0-9,\_]+)';
-const regex_html_entities = '(&nbsp;|&amp;|&quot;)';
-const regex_resource_extensions = '/\.(mp3|mp4|avi)/';
+const REGEX_FORBIDDEN_DIR_CHARS = '([\\/?%*:|"<>\.[:space:]]+)';
+const REGEX_FORBIDDEN_TAG_CHARS = '([^a-zA-z0-9,\_]+)';
+const REGEX_HTML_ENTITIES = '(&nbsp;|&amp;|&quot;)';
+const REGEX_RESOURCE_EXTENSIONS = '/\.(mp3|mp4|avi)/';
 const REGEX_IMAGE_EXTENSIONS = '/\.(png|jpg|jpeg|gif)/';
-const basic_html_tags = '<strong><b><i><em>';
+const BASIC_HTML_TAGS = '<strong><b><i><em>';
 
 
 function deleteDir($dirPath) {
@@ -100,7 +100,7 @@ function extractLangs($content, $asJSON = false, $strip_tags = false){
 		return $content;
 	} else {
 		$json = new stdClass;
-		$json->{$DEFAULT_LANG} = trim(strip_tags($content, basic_html_tags));
+		$json->{$DEFAULT_LANG} = trim(strip_tags($content, BASIC_HTML_TAGS));
 		return json_encode($json);
 	}
 
@@ -108,7 +108,7 @@ function extractLangs($content, $asJSON = false, $strip_tags = false){
 	foreach($tempLangs as $k=>$v){
 		$CURRENT_LANG = $k;
 		if ($strip_tags){
-			$tempLangs[$k] = trim(strip_tags($filter->filter($content), basic_html_tags));
+			$tempLangs[$k] = trim(strip_tags($filter->filter($content), BASIC_HTML_TAGS));
 		} else {
 			$tempLangs[$k] = trim($filter->filter($content));
 		}
@@ -132,12 +132,12 @@ function cleanHTMLEntities($text, $replace_br=false){
 	if ($replace_br){
 		$cleantext = preg_replace("(<br[[:space:]]*/?>)", "\n", $cleantext);
 	}
-	return preg_replace(regex_html_entities, " ", $cleantext);
+	return preg_replace(REGEX_HTML_ENTITIES, " ", $cleantext);
 }
 
 function cleanTagList($tags){
 	$cleantags = preg_replace('([[:space:]]*\,[[:space:]])', ',', $tags);
-	$cleantags = preg_replace(regex_forbidden_tag_chars, "-", $cleantags);
+	$cleantags = preg_replace(REGEX_FORBIDDEN_TAG_CHARS, "-", $cleantags);
 	
 	if (strlen($cleantags) == 0){
 	    return $cleantags;
@@ -150,7 +150,7 @@ function cleanTagList($tags){
 
 function cleanShortname($shortname){
 	$shortname = trim($shortname);
-	$shortname = preg_replace(regex_forbidden_dir_chars, "-", $shortname);
+	$shortname = preg_replace(REGEX_FORBIDDEN_DIR_CHARS, "-", $shortname);
 	return preg_replace('(\-+)', "-", $shortname); //clean duplicated hyphens
 }
 
@@ -226,7 +226,7 @@ function copyFile($file, $component, $filearea, $itemid, $contextid, $course_roo
 			$filename = $file->get_filename();
 			$fullpath = '/'. $contextid .'/'. $component .'/'. $filearea .'/'. $itemid .'/'. $filename;
 			$sha1 = sha1($fullpath);
-			if (preg_match(regex_resource_extensions, $filename) > 0){
+			if (preg_match(REGEX_RESOURCE_EXTENSIONS, $filename) > 0){
 				$is_image = false;
 				$filedest = "/resources/".$filename;
 			}
@@ -424,20 +424,20 @@ function libxml_display_error($error)
 	$return = "<br/>\n";
 	switch ($error->level) {
 		case LIBXML_ERR_WARNING:
-			$return .= '<b>Warning'.$error->code.'</b>: ';
+		    $return .= '<strong>Warning'.$error->code.OPPIA_HTML_STRONG_END.': ';
 			break;
 		case LIBXML_ERR_ERROR:
-			$return .= '<b>Error'.$error->code.'</b>: ';
+		    $return .= '<strong>Error'.$error->code.OPPIA_HTML_STRONG_END.': ';
 			break;
 		case LIBXML_ERR_FATAL:
-			$return .= '<b>Fatal Error'.$error->code.'</b>: ';
+		    $return .= '<strong>Fatal Error'.$error->code.OPPIA_HTML_STRONG_END.': ';
 			break;
 	}
 	$return .= trim($error->message);
 	if ($error->file) {
-		$return .= " in <b>$error->file</b>";
+		$return .= " in <strong>$error->file</strong>";
 	}
-	$return .= " on line <b>$error->line</b>\n";
+	$return .= " on line <strong>$error->line</strong>\n";
 
 	return $return;
 }

@@ -48,7 +48,7 @@ class tomobile_langfilter  {
         // [nicolasconnault] Should support inverted attributes: <span class="multilang" lang="en"> (Doesn't work curently)
         // [skodak] it supports it now, though it is slower - any better idea?
 
-        if (empty($text) or is_numeric($text)) {
+        if (empty($text) || is_numeric($text)) {
             return $text;
         }
 
