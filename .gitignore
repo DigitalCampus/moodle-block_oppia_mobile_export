@@ -4,3 +4,4 @@
 output/
 /sonarcloud
 .scannerwork
+/tools/
