@@ -401,13 +401,7 @@ function Zip($source, $destination){
 		foreach ($files as $file){
 			$file = str_replace('\\', '/', realpath($file));
 
-			if (is_dir($file) === true)
-			{
-				//echo "adding dir $file\n";
-				//$zip->addEmptyDir(str_replace($source . '/', '', $file . '/'));
-			}
-			else if (is_file($file) === true)
-			{
+			if (is_file($file) === true){
 				$zip->addFromString(str_replace($source . '/', '', $file), file_get_contents($file));
 			}
 		}
