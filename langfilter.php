@@ -41,12 +41,6 @@ defined('MOODLE_INTERNAL') || die();
 
 class tomobile_langfilter  {
     function filter($text) {
-        global $CFG;
-
-        // [pj] I don't know about you but I find this new implementation funny :P
-        // [skodak] I was laughing while rewriting it ;-)
-        // [nicolasconnault] Should support inverted attributes: <span class="multilang" lang="en"> (Doesn't work curently)
-        // [skodak] it supports it now, though it is slower - any better idea?
 
         if (empty($text) || is_numeric($text)) {
             return $text;
@@ -59,7 +53,7 @@ class tomobile_langfilter  {
 }
 
 function tomobile_langfilter_callback($langblock) {
-    global $CFG,$CURRENT_LANG;
+    global $CURRENT_LANG;
     $searchtosplit = '/<(?:lang|span)[^>]+lang="([a-zA-Z0-9_-]+)"[^>]*>(.*?)<\/(?:lang|span)>/is';
 
     if (!preg_match_all($searchtosplit, $langblock[0], $rawlanglist)) {
