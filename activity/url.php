@@ -2,7 +2,6 @@
 
 class MobileActivityUrl extends MobileActivity {
 	
-	private $act = array();
 	private $url;
 
 	public function __construct(){ 
