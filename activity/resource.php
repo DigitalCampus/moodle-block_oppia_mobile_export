@@ -2,7 +2,6 @@
 
 class MobileActivityResource extends MobileActivity {
 	
-	private $act = array();
 	private $resource;
 	private $resource_filename = null;
 	private $resource_type = null;
@@ -12,11 +11,11 @@ class MobileActivityResource extends MobileActivity {
     } 
 
 	function process(){
-		global $DB, $CFG, $MOBILE_LANGS, $DEFAULT_LANG, $MEDIA;
+		global $DB;
 		$cm = get_coursemodule_from_id('resource', $this->id);
 		$this->resource = $DB->get_record('resource', array('id'=>$cm->instance), '*', MUST_EXIST);
 		$context = context_module::instance($cm->id);
-		$this->extractResource($context->id, $this->resource->revision);
+		$this->extractResource($context->id);
 	
 		// get the image from the intro section
         $this->extractThumbnailFromIntro($this->resource->intro, $cm->id);
@@ -53,7 +52,7 @@ class MobileActivityResource extends MobileActivity {
 		$node->appendChild($act);
 	}
 	
-	private function extractResource($contextid,$revision){
+	private function extractResource($contextid){
 		$fs = get_file_storage();
 		$files = $fs->get_area_files($contextid, 'mod_resource', 'content', 0, 'sortorder DESC, id ASC', false);
 		$file = reset($files);

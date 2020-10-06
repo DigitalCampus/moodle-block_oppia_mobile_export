@@ -49,7 +49,7 @@ class block_oppia_mobile_export extends block_base {
         $this->content->text .= '<input type="hidden" name="sesskey" value="'.sesskey().'">';
         // show the OppiaServer options
         $servers = get_oppiaservers();
-       	$this->content->text .= '<br/><p>'.get_string('servers_block_select_connection', PLUGINNAME).'<br/>';
+        $this->content->text .= '<br/><p>'.get_string('servers_block_select_connection', PLUGINNAME).OPPIA_HTML_BR;
         $this->content->text .= '<select name="server" class="custom-select" style="width:100%;">';
         foreach ($servers as $s){
         	$this->content->text .= '<option value="'.$s->id.'" ';
@@ -70,19 +70,9 @@ class block_oppia_mobile_export extends block_base {
 
        
         // Show the style options
-        if ($handle = opendir(dirname(__FILE__).'/styles/')) {
-	        $this->content->text .= "<p>".get_string('oppia_block_style', PLUGINNAME)."<br/>";
-	        $this->content->text .= "<select name=\"stylesheet\" class=\"custom-select\" style=\"width:100%;\">";
-	        while (false !== ($file = readdir($handle))) {
-	        	if($file!="." && $file!=".." && !is_dir(dirname(__FILE__).'/styles/'.$file)){
-	        		$this->content->text .= "<option value='".$file."'>".$file."</option>";
-	        	}
-	        }
-	        $this->content->text .= "</select>";
-	        $this->content->text .= "</p>";
-        }
+        $this->content->text .= $this->getStylesDropDown();
         
-        $this->content->text .= "<p>".get_string('course_status', PLUGINNAME)."<br/>";
+        $this->content->text .= "<p>".get_string('course_status', PLUGINNAME).OPPIA_HTML_BR;
         $this->content->text .= "<select name=\"course_status\" class=\"custom-select\" style=\"width:100%;\">";
         $this->content->text .= "<option value='draft'>".get_string('course_status_draft', PLUGINNAME)."</option>";
         $this->content->text .= "<option value='live'>".get_string('course_status_live', PLUGINNAME)."</option>";
@@ -97,17 +87,7 @@ class block_oppia_mobile_export extends block_base {
         $this->content->text .= "<form action='".$CFG->wwwroot.PLUGINPATH."export2print.php' method='post'>";
         $this->content->text .= "<input type='hidden' name='courseid' value='".$COURSE->id."'>";
         $this->content->text .= "<input type='hidden' name='sesskey' value='".sesskey()."'>";
-        if ($handle = opendir(dirname(__FILE__).'/styles/')) {
-        	$this->content->text .= "<br/><p>".get_string('oppia_block_style', PLUGINNAME)."<br/>";
-        	$this->content->text .= "<select name='stylesheet' class=\"custom-select\" style=\"width:100%;\">";
-        	while (false !== ($file = readdir($handle))) {
-        		if($file!="." && $file!=".." && !is_dir(dirname(__FILE__).'/styles/'.$file)){
-        			$this->content->text .= "<option value='".$file."'>".$file."</option>";
-        		}
-        	}
-        	$this->content->text .= "</select>";
-        	$this->content->text .= "</p>";
-        }
+        $this->content->text .= $this->getStylesDropDown();
         $this->content->text .= "<input type='submit' class=\"btn\" name='submit' value='".get_string('oppia_block_export2print_button', PLUGINNAME)."'>";
         $this->content->text .= "</form></p>";
 
@@ -120,6 +100,23 @@ class block_oppia_mobile_export extends block_base {
         }
 
         return $this->content;
+    }
+    
+    private function getStylesDropDown(){
+        $returnString = "";
+        if ($handle = opendir(dirname(__FILE__).'/styles/')) {
+            $returnString .= "<br/><p>".get_string('oppia_block_style', PLUGINNAME).OPPIA_HTML_BR;
+            $returnString .= "<select name='stylesheet' class=\"custom-select\" style=\"width:100%;\">";
+            while (false !== ($file = readdir($handle))) {
+                if($file!="." && $file!=".." && !is_dir(dirname(__FILE__).'/styles/'.$file)){
+                    $returnString .= "<option value='".$file."'>".$file."</option>";
+                }
+            }
+            $returnString .= "</select>";
+            $returnString .= "</p>";
+        }
+        
+        return $returnString;
     }
     
 }

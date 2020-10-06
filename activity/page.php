@@ -47,7 +47,7 @@ class MobileActivityPage extends MobileActivity {
 		$content = $this->extractAndReplaceMedia($content);
 		// if page has media and no special icon for page, extract the image for first video
 		if (count($this->page_media) > 0 && $this->thumbnail_image == null){
-			if($this->extractMediaImage($pre_content,'mod_page','content',0, $context->id)){
+			if($this->extractMediaImage($pre_content, 'mod_page', 'content', $context->id)){
 				$this->saveResizedThumbnail($this->thumbnail_image, $mod_id);
 			}
 		} else if ($this->thumbnail_image == null){
@@ -100,7 +100,7 @@ class MobileActivityPage extends MobileActivity {
 				$t = $this->extractAndReplaceMedia($t);
 				// if page has media and no special icon for page, extract the image for first video
 				if (count($this->page_media) > 0 && $this->thumbnail_image == null){
-					if($this->extractMediaImage($pre_content,'mod_page','content',0, $context->id)){
+					if($this->extractMediaImage($pre_content, 'mod_page', 'content', $context->id)){
 						$this->saveResizedThumbnail($this->thumbnail_image, $cm->id);
 					}
 				}
@@ -112,7 +112,7 @@ class MobileActivityPage extends MobileActivity {
 			$content = $this->extractAndReplaceMedia($content);
 			// if page has media and no special icon for page, extract the image for first video
 			if (count($this->page_media) > 0 && $this->thumbnail_image == null){
-				if($this->extractMediaImage($pre_content,'mod_page','content',0, $context->id)){
+				if($this->extractMediaImage($pre_content, 'mod_page', 'content', $context->id)){
 						$this->saveResizedThumbnail($this->thumbnail_image, $cm->id);
 				}
 			} else if ($this->thumbnail_image == null){
@@ -213,13 +213,13 @@ class MobileActivityPage extends MobileActivity {
 					$file->copy_content_to($imgfile);
 				} else {
 					if($CFG->block_oppia_mobile_export_debug){
-						echo '<span class="export-error">'.get_string('error_file_not_found','block_oppia_mobile_export',$filename).'</span><br/>';
+					    echo OPPIA_HTML_SPAN_ERROR_START.get_string('error_file_not_found','block_oppia_mobile_export',$filename).OPPIA_HTML_SPAN_END.OPPIA_HTML_BR;
 						return null;
 					}
 				}
 
 				if($CFG->block_oppia_mobile_export_debug){
-					echo get_string('export_file_success','block_oppia_mobile_export',$filename)."<br/>";
+				    echo get_string('export_file_success','block_oppia_mobile_export',$filename).OPPIA_HTML_BR;
 				}
 			}
 			
@@ -256,7 +256,7 @@ class MobileActivityPage extends MobileActivity {
 			$content = str_replace($toreplace, $r, $content);
 			// check all the required attrs exist
 			if(!isset($mediajson->digest) || !isset($mediajson->download_url) || !isset($mediajson->filename)){
-				echo get_string('error_media_attributes','block_oppia_mobile_export')."<br/>";
+			    echo get_string('error_media_attributes','block_oppia_mobile_export').OPPIA_HTML_BR;
 				die;
 			}
 			
@@ -264,8 +264,7 @@ class MobileActivityPage extends MobileActivity {
 			$MEDIA[$mediajson->digest] = $mediajson;
 			$this->page_media[$mediajson->digest] = $mediajson;
 		}
-		$content = str_replace("[[/media]]", "</a>", $content);
-		return $content;
+		return str_replace("[[/media]]", "</a>", $content);
 	}
 
 	private function extractAndReplaceLocalMedia($content, $component, $filearea, $itemid, $contextid){
@@ -273,7 +272,7 @@ class MobileActivityPage extends MobileActivity {
 		$html = new DOMDocument();
 		$parsed = $html->loadHTML($content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
 		if (!$parsed){
-			echo '<span class="export-error">'.get_string('error_parsing_html','block_oppia_mobile_export').'</span><br/>';
+		    echo OPPIA_HTML_SPAN_ERROR_START.get_string('error_parsing_html','block_oppia_mobile_export').OPPIA_HTML_SPAN_END.OPPIA_HTML_BR;
 			return null;
 		}
 
@@ -293,12 +292,12 @@ class MobileActivityPage extends MobileActivity {
 					}
 					
 					$video_params['filename'] = $filename;
-					echo 'Video included: <code>' . $filename . '</code><br/>';
+					echo 'Video included: <code>' . $filename . '</code>'.OPPIA_HTML_BR;
 				}
 			}
 
 			if (!$video->hasAttribute('poster')){
-				echo '<span class="export-error">'.get_string('missing_video_poster','block_oppia_mobile_export').'</span><br/>';
+			    echo OPPIA_HTML_SPAN_ERROR_START.get_string('missing_video_poster','block_oppia_mobile_export').OPPIA_HTML_SPAN_END.OPPIA_HTML_BR;
 			}
 			else{
 				$video_params['poster'] = $video->getAttribute('poster');
@@ -328,7 +327,7 @@ class MobileActivityPage extends MobileActivity {
 		return $exists;
 	}
 	
-	private function extractMediaImage($content,$component, $filearea, $itemid, $contextid){
+	private function extractMediaImage($content, $component, $filearea, $contextid){
 		global $CFG;
 		$regex = '(\]\]'.SPACES_REGEX.'\<img[[:space:]]src=[\"|\\\']images/(?P<filenames>[\w\W]*?)[\"|\\\'])';
 		
@@ -339,7 +338,7 @@ class MobileActivityPage extends MobileActivity {
 		$filename = $files_tmp['filenames'][0][0];
 			
 		if($CFG->block_oppia_mobile_export_debug){
-			echo '<span>' . get_string('export_file_trying','block_oppia_mobile_export',$filename).'</span><br/>';
+		    echo '<span>' . get_string('export_file_trying','block_oppia_mobile_export',$filename).OPPIA_HTML_SPAN_END.OPPIA_HTML_BR;
 		}
 		
 		$fs = get_file_storage();
@@ -358,12 +357,12 @@ class MobileActivityPage extends MobileActivity {
 			$file->copy_content_to($imgfile);
 		} else {
 			if($CFG->block_oppia_mobile_export_debug){
-				echo '<span class="export-error">'.get_string('error_file_not_found','block_oppia_mobile_export',$filename).'</span><br/>';
+			    echo OPPIA_HTML_SPAN_ERROR_START.get_string('error_file_not_found','block_oppia_mobile_export',$filename).OPPIA_HTML_SPAN_END.OPPIA_HTML_BR;
 			}
 		}
 		
 		if($CFG->block_oppia_mobile_export_debug){
-			echo get_string('export_file_success','block_oppia_mobile_export',$filename)."<br/>";
+		    echo get_string('export_file_success','block_oppia_mobile_export',$filename).OPPIA_HTML_BR;
 		}
 		$this->thumbnail_image = "images/".$filename;
 		return true;

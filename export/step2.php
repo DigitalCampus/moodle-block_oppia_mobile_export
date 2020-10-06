@@ -181,7 +181,7 @@ $apiHelper->init($server_connection);
 $server_info = $apiHelper->exec('server', array(),'get', false, false);
 echo '<p>';
 if ($server_info && $server_info->version ){
-	echo '<strong>Current server version:</strong> '.$server_info->version.'<br/>';
+    echo '<strong>Current server version:</strong> '.$server_info->version.OPPIA_HTML_BR;
 	$v_regex = '/^v([0-9])+\.([0-9]+)\.([0-9]+)$/';
 	preg_match($v_regex, $server_info->version, $version_nums);
 	if (!empty($version_nums) && (
@@ -193,7 +193,7 @@ if ($server_info && $server_info->version ){
 	}
 }
 else{
-	echo '<span class="export-error">Unable to get server info (is it correctly configured and running?)</span><br/>';
+    echo '<span class="export-error">Unable to get server info (is it correctly configured and running?)</span>'.OPPIA_HTML_BR;
 	add_publishing_log($server_connection->url, $USER->id, $id, "server_unavailable", "Unable to get server info");
 }
 echo '<strong>Quiz export method:</strong> '.$QUIZ_EXPORT_METHOD.'</p>';
@@ -251,7 +251,7 @@ foreach ($sectionmods as $modnumber) {
 		}
 	}
 	if($mod->modname == 'feedback' && $mod->visible == 1){
-		echo $mod->name."<br/>";
+	    echo $mod->name.OPPIA_HTML_BR;
 		$feedback = new MobileActivityFeedback();
 		$configArray = Array(
 		    'showfeedback'=>false,
@@ -267,7 +267,7 @@ foreach ($sectionmods as $modnumber) {
 			$feedback->process();
 			$feedback->getXML($mod, $i, $meta, $xmlDoc, true);
 		} else {
-			echo get_string('error_feedback_no_questions', PLUGINNAME)."<br/>";
+		    echo get_string('error_feedback_no_questions', PLUGINNAME).OPPIA_HTML_BR;
 		}
 	}
 	$i++;
@@ -398,7 +398,7 @@ foreach($sections as $sect) {
 					$quiz->getXML($mod, $act_orderno, $activities, $xmlDoc, true);
 					$act_orderno++;
 				} else {
-					echo get_string('error_quiz_no_questions', PLUGINNAME)."<br/>";
+				    echo get_string('error_quiz_no_questions', PLUGINNAME).OPPIA_HTML_BR;
 				}
 			}
 			else if($mod->modname == 'resource'){
@@ -435,7 +435,7 @@ foreach($sections as $sect) {
 					$feedback->getXML($mod, $act_orderno, $activities, $xmlDoc, true);
 					$act_orderno++;
 				} else {
-					echo get_string('error_feedback_no_questions', PLUGINNAME)."<br/>";
+				    echo get_string('error_feedback_no_questions', PLUGINNAME).OPPIA_HTML_BR;
 				}
 			}
 			else {
@@ -451,7 +451,7 @@ foreach($sections as $sect) {
 			$structure->appendChild($section);
 			$sect_orderno++;
 		} else {
-			echo get_string('error_section_no_activities', PLUGINNAME)."<br/>";
+		    echo get_string('error_section_no_activities', PLUGINNAME).OPPIA_HTML_BR;
 		}
 
 		echo '</div>';
