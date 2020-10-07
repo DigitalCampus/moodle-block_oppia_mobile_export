@@ -99,10 +99,9 @@ class MobileActivityPage extends MobileActivity {
 				$pre_content = $t;
 				$t = $this->extractAndReplaceMedia($t);
 				// if page has media and no special icon for page, extract the image for first video
-				if (count($this->page_media) > 0 && $this->thumbnail_image == null){
-					if($this->extractMediaImage($pre_content, 'mod_page', 'content', $context->id)){
+				if (count($this->page_media) > 0 && $this->thumbnail_image == null
+				    && $this->extractMediaImage($pre_content, 'mod_page', 'content', $context->id)){
 						$this->saveResizedThumbnail($this->thumbnail_image, $cm->id);
-					}
 				}
 				$return_content .= $t;
 					

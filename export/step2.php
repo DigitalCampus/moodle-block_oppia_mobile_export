@@ -93,16 +93,16 @@ if ($server == "default"){
 }
 
 //make course dir etc for output
-deleteDir($pluginroot."output/".$USER->id."/temp");
-deleteDir($pluginroot."output/".$USER->id);
+deleteDir($pluginroot.OPPIA_OUTPUT_DIR.$USER->id."/temp");
+deleteDir($pluginroot.OPPIA_OUTPUT_DIR.$USER->id);
 if(!is_dir($pluginroot."output")){
 	if (!mkdir($pluginroot."output",0777)){
 		echo "<h3>Failed to create the output directory, please check your server permissions to allow the webserver user to create the output directory under " . __DIR__ . "</h3>";
 		die;
 	}
 }
-mkdir($pluginroot."output/".$USER->id."/temp/",0777, true);
-$course_root = $pluginroot."output/".$USER->id."/temp/".strtolower($course->shortname);
+mkdir($pluginroot.OPPIA_OUTPUT_DIR.$USER->id."/temp/",0777, true);
+$course_root = $pluginroot.OPPIA_OUTPUT_DIR.$USER->id."/temp/".strtolower($course->shortname);
 mkdir($course_root,0777);
 mkdir($course_root."/images",0777);
 $fh = fopen($course_root."/images/.nomedia", 'w');
@@ -496,7 +496,7 @@ if(count($MEDIA) > 0 || count($local_media_files) > 0){
 }
 $xmlDoc->preserveWhiteSpace = false;
 $xmlDoc->formatOutput = true;
-$xmlDoc->save($course_root."/module.xml");
+$xmlDoc->save($course_root.OPPIA_MODULE_XML);
 
 
 if ($sect_orderno <= 1){

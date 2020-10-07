@@ -16,7 +16,7 @@ $PAGE->set_heading(get_string('oppia_block_export_servers', PLUGINNAME));
 
 echo $OUTPUT->header();
 
-$serverform = new oppiaserver_form();
+$serverform = new OppiaServerForm();
 
 if ($serverform->is_cancelled()) {
 	// do nothing
@@ -41,7 +41,7 @@ if (count($servers)== 0){
 		echo "<li>";
 		echo $s->servername;
 		echo " (<a href='".$s->url."' target='_blank'>".$s->url. "</a>)";
-		echo "</li>";
+		echo OPPIA_HTML_LI_END;
 	}	
 	echo "</ul>";
 }

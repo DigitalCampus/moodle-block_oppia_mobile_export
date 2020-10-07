@@ -355,7 +355,7 @@ class MobileActivityQuiz extends MobileActivity {
 				if(isset($q->options->subquestions)){
 					$return_content .= "<ul>";
 					foreach($q->options->subquestions as $sq){
-						$return_content .= "<li>".strip_tags($sq->questiontext)." -> ".strip_tags($sq->answertext)."</li>";
+					    $return_content .= "<li>".strip_tags($sq->questiontext)." -> ".strip_tags($sq->answertext).OPPIA_HTML_LI_END;
 					}
 					$return_content .= "</ul>";
 				}
@@ -367,11 +367,11 @@ class MobileActivityQuiz extends MobileActivity {
 						if(strip_tags($r->feedback) != ""){
 							$return_content .= "feedback: ".strip_tags($r->feedback);
 						}
-						$return_content .= "</li>";
+						$return_content .= OPPIA_HTML_LI_END;
 					}
 					$return_content .= "</ul>";
 				}
-				$return_content .= "</li>";
+				$return_content .= OPPIA_HTML_LI_END;
 				
 				$i++;
 			}

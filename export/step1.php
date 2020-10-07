@@ -162,7 +162,7 @@ echo "<input type='hidden' name='stylesheet' value='".$stylesheet."'>";
 echo "<input type='hidden' name='server' value='".$server."'>";
 echo "<input type='hidden' name='course_status' value='".$course_status."'>";
 
-if (count($quizzes)> 0){
+if (!empty($quizzes)){
 	echo "<p>".get_string('export_contains_quizzes', PLUGINNAME)."</p>";
 	echo $OUTPUT->render_from_template(PLUGINNAME.'/quizzes', $quizzes);
 }

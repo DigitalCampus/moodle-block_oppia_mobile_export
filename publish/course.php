@@ -111,7 +111,7 @@ if ($course_status == 'draft'){
     $is_draft = "false";
 }
 
-$filepath = $pluginroot."output/".$USER->id."/".$file;
+$filepath = $pluginroot.OPPIA_OUTPUT_DIR.$USER->id."/".$file;
 $curlfile = new CurlFile($filepath, 'application/zip', $file);
 
 $post = array(

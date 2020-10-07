@@ -1,7 +1,7 @@
 <?php 
 require_once("$CFG->libdir/formslib.php");
  
-class oppiaserver_form extends moodleform {
+class OppiaServerForm extends moodleform {
     //Add elements to form
     public function definition() {
         global $CFG;
@@ -15,7 +15,7 @@ class oppiaserver_form extends moodleform {
         $mform->setType('server_url', PARAM_NOTAGS);
         $mform->setDefault('server_url', 'https://demo.oppia-mobile.org/');
         
-        $this->add_action_buttons($cancel=false);
+        $this->add_action_buttons(false);
 
     }
     //Custom validation should be added here

@@ -73,7 +73,7 @@ echo '<div class="oppia_export_section">';
 
 echo '<p class="step">'. get_string('export_xml_valid_start', PLUGINNAME);
 
-if (!file_exists($course_root."/module.xml")){
+if (!file_exists($course_root.OPPIA_MODULE_XML)){
 	echo "<p>".get_string('error_xml_notfound', PLUGINNAME)."</p>";
 	echo $OUTPUT->footer();
 	die();
@@ -82,7 +82,7 @@ if (!file_exists($course_root."/module.xml")){
 
 libxml_use_internal_errors(true);
 $xml = new DOMDocument();
-$xml->load($course_root."/module.xml");
+$xml->load($course_root.OPPIA_MODULE_XML);
 
 // We update the local media URLs from the results of the previous step
 foreach ($xml->getElementsByTagName('file') as $mediafile) {
@@ -114,7 +114,7 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
 	
 	$xml->preserveWhiteSpace = false;
 	$xml->formatOutput = true;
-	$xml->save($course_root."/module.xml");
+	$xml->save($course_root.OPPIA_MODULE_XML);
 
 	echo '<p class="step">'. get_string('export_style_start', PLUGINNAME) . '</p>';
 	
@@ -129,17 +129,17 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
 	recurse_copy($pluginroot."js/", $course_root."/js/");
 	
 	echo '<p class="step">'. get_string('export_export_complete', PLUGINNAME) . '</p>';
-	$dir2zip = $pluginroot."output/".$USER->id."/temp";
+	$dir2zip = $pluginroot.OPPIA_OUTPUT_DIR.$USER->id."/temp";
 
 	$zipname = strtolower($course->shortname).'-'.$versionid.'.zip';
-	$ziprelativepath = "output/".$USER->id."/".$zipname;
+	$ziprelativepath = OPPIA_OUTPUT_DIR.$USER->id."/".$zipname;
 	$outputzip = $pluginroot.$ziprelativepath;
 	Zip($dir2zip, $outputzip);
 
 	$outputpath =  $CFG->wwwroot.PLUGINPATH.$ziprelativepath;
 	
 	echo '<p class="step">'. get_string('export_export_compressed', PLUGINNAME) . '</p>';
-	deleteDir($pluginroot."output/".$USER->id."/temp");
+	deleteDir($pluginroot.OPPIA_OUTPUT_DIR.$USER->id."/temp");
 	
 	$form_values = array(
 		'server_connection' =>$server_connection->url,

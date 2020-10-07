@@ -41,16 +41,16 @@ $PAGE->set_heading($course->fullname);
 echo $OUTPUT->header();
 
 
-deleteDir("output/".$USER->id."/temp/print/");
-deleteDir("output/".$USER->id."/temp");
-deleteDir("output/".$USER->id);
+deleteDir(OPPIA_OUTPUT_DIR.$USER->id."/temp/print/");
+deleteDir(OPPIA_OUTPUT_DIR.$USER->id."/temp");
+deleteDir(OPPIA_OUTPUT_DIR.$USER->id);
 if(!is_dir("output")){
 	mkdir("output",0777);
 }
-mkdir("output/".$USER->id,0777);
-mkdir("output/".$USER->id."/temp/",0777);
-mkdir("output/".$USER->id."/temp/print/",0777);
-$course_root = "output/".$USER->id."/temp/print/".strtolower($course->shortname);
+mkdir(OPPIA_OUTPUT_DIR.$USER->id,0777);
+mkdir(OPPIA_OUTPUT_DIR.$USER->id."/temp/",0777);
+mkdir(OPPIA_OUTPUT_DIR.$USER->id."/temp/print/",0777);
+$course_root = OPPIA_OUTPUT_DIR.$USER->id."/temp/print/".strtolower($course->shortname);
 mkdir($course_root,0777);
 mkdir($course_root."/images",0777);
 mkdir($course_root."/resources",0777);
@@ -66,7 +66,7 @@ $mods = $modinfo->get_cms();
 $a = new stdClass();
 $a->stepno = 1;
 $a->coursename = strip_tags($course->fullname);
-echo "<h2>".get_string('export2print_title', PLUGINNAME, $a)."</h2>";
+echo OPPIA_HTML_H2_START.get_string('export2print_title', PLUGINNAME, $a).OPPIA_HTML_H2_END;
 
 if (!copy("styles/".$stylesheet, $course_root."/style.css")) {
 	echo "<p>".get_string('error_style_copy', PLUGINNAME)."</p>";
@@ -100,7 +100,7 @@ foreach ($sectionmods as $modnumber) {
 		$quiz->section = $orderno;
 		$quiz->preprocess();
 		if ($quiz->get_is_valid()){
-			$quiz_output .= "<h2>".$mod->name."</h2>";
+		    $quiz_output .= OPPIA_HTML_H2_START.$mod->name.OPPIA_HTML_H2_END;
 			$quiz_output .= $quiz->export2print();
 		}
 	}
@@ -137,7 +137,7 @@ foreach($sections as $sect) {
 			$mod = $mods[$modnumber];
 				
 			if($mod->modname == 'page' && $mod->visible == 1){
-				$webpage .= "<h2>".$mod->name."</h2>";
+			    $webpage .= OPPIA_HTML_H2_START.$mod->name.OPPIA_HTML_H2_END;
 				$webpage .= "<div class='page'>";
 				$page = new MobileActivityPage();
 				$page->courseroot = $course_root;
@@ -153,10 +153,10 @@ foreach($sections as $sect) {
 				$quiz->section = $orderno;
 				$quiz->preprocess();
 				if ($quiz->get_is_valid()){
-					$webpage .= "<h2>".$mod->name."</h2>";
+				    $webpage .= OPPIA_HTML_H2_START.$mod->name.OPPIA_HTML_H2_END;
 					$webpage .= "<div class='quiz'>";
 					$webpage .= $quiz->export2print();
-					$quiz_output .= "<h2>".$mod->name."</h2>";
+					$quiz_output .= OPPIA_HTML_H2_START.$mod->name.OPPIA_HTML_H2_END;
 					$quiz_output .= $quiz->export2print();
 					$webpage .= "</div>";
 				}
@@ -167,7 +167,7 @@ foreach($sections as $sect) {
 				$resource->id = $mod->id;
 				$resource->section = $orderno;
 				$resource->process();
-				$webpage .= "<h2>".$mod->name."</h2>";
+				$webpage .= OPPIA_HTML_H2_START.$mod->name.OPPIA_HTML_H2_END;
 				$webpage .= "<div class='resource'>";
 				$webpage .= $resource->export2print();
 				$webpage .= "</div>";
@@ -231,8 +231,8 @@ echo "<p>".get_string('export_preview_quiz', PLUGINNAME, $a )."</p>";
  */
 
 $versionid = date("YmdHis");
-$dir2zip = "output/".$USER->id."/temp/print/";
-$outputzip = "output/".$USER->id."/".strtolower($course->shortname)."-preview-".$versionid.".zip";
+$dir2zip = OPPIA_OUTPUT_DIR.$USER->id."/temp/print/";
+$outputzip = OPPIA_OUTPUT_DIR.$USER->id."/".strtolower($course->shortname)."-preview-".$versionid.".zip";
 Zip($dir2zip,$outputzip);
 
 $a = new stdClass();

@@ -15,7 +15,7 @@ require_once($pluginroot . 'lib.php');
 
 require_once($CFG->libdir.'/componentlib.class.php');
 
-$temp_media = $pluginroot."output/".$USER->id."/temp_media/";
+$temp_media = $pluginroot.OPPIA_OUTPUT_DIR.$USER->id."/temp_media/";
 mkdir($temp_media, 0777, true);
 
 $server = required_param('server', PARAM_TEXT);
@@ -47,10 +47,9 @@ else{
 	$media_info = publish_media($server_connection->url, $file, $username, $password, $temp_media);
 }
 
-if ($media_info == false){
+if (!$media_info){
 	echo json_encode(array('error'=>'not_valid_json'));
-}
-else{
+} else{
 	echo json_encode($media_info);
 }
 
