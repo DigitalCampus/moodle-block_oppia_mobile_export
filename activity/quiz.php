@@ -2,7 +2,7 @@
 
 class MobileActivityQuiz extends MobileActivity {
 
-	private $supported_types = array('multichoice', 'match', 'truefalse', 'description', 'shortanswer', 'numerical', 'ddimageortext');
+	private $supported_types = array('multichoice', 'match', 'truefalse', 'description', 'shortanswer', 'numerical');
 	private $courseversion;
 	private $summary;
 	private $shortname;
@@ -46,7 +46,7 @@ class MobileActivityQuiz extends MobileActivity {
 		
 		// check has at least one non-essay and non-random question
 		$count_omitted = 0;
-		foreach($qs as $q){			
+		foreach($qs as $q){	
 			if(in_array($q->qtype,$this->supported_types)){
 				$this->no_questions++;
 			} else {
@@ -160,74 +160,6 @@ class MobileActivityQuiz extends MobileActivity {
 				}
 			}
 
-			if ($q->qtype == 'ddimageortext'){
-				$q->qtype = 'draganddrop';
-				$fs = get_file_storage();
-				$ddoptions = $q->options;
-
-				// find the dropzones
-				$responseprops;
-				foreach ($ddoptions->drops as $drop){
-					$responseprops = array(
-						'id' 		=> rand(1,1000),
-						'type'		=> 'dropzone',
-						'choice' 	=> $drop->choice,
-						'xleft'		=> $drop->xleft,
-						'ytop'		=> $drop->ytop,
-						'droplabel'	=> $drop->label);
-
-					array_push($responses, array(
-						'order' => 1,
-						'id' 	=> rand(1,1000),
-						'props' => $responseprops,
-						'title' => $drop->label,
-						'score' => sprintf("%.4f", 0)
-					));
-				}
-
-				// find the draggables
-				foreach($ddoptions->drags as $drag){
-					$responseprops = array(
-						'id' 		=> rand(1,1000),
-						'type'		=> 'drag',
-						'draggroup'	=> $drag->draggroup,
-						'infinite'	=> $drag->infinite,
-						'no' 		=> $drag->no,
-						'label'		=> $drag->label);
-
-					$dragimage = $fs->get_area_files($q->contextid, 'qtype_ddimageortext', 'dragimage', $drag->id, 'itemid');
-					foreach ($dragimage as $file){
-						if ($file->is_directory()) {
-		                    continue;
-		                }
-		                if ($dragimage = copyFile($file, 'qtype_ddimageortext', 'dragimage', $drag->id, $q->contextid,$this->courseroot,$cm->id)){
-		                	$responseprops['dragimage'] = $dragimage;
-		                }
-					}
-
-					array_push($responses, array(
-						'order' => 1,
-						'id' 	=> rand(1,1000),
-						'props' => $responseprops,
-						'title' => $drag->label,
-						'score' => sprintf("%.4f", 0)
-					));			
-				}
-				
-				$bgfiles = $fs->get_area_files($q->contextid, 'qtype_ddimageortext', 'bgimage', $q->id, 'itemid');
-				if ($bgfiles) {
-            		foreach ($bgfiles as $file) {
-		                if ($file->is_directory()) {
-		                    continue;
-		                }
-
-		                $bgimage = copyFile($file, 'qtype_ddimageortext', 'bgimage', $q->id, $q->contextid,$this->courseroot,$cm->id);
-		                if ($bgimage){
-		                	$questionprops["bgimage"] = $bgimage;
-		                }
-		            }
-		        }
-			}
 
 			// find if the question text has any images in it
 			$question_image = extractImageFile($q->questiontext,'question','questiontext',
