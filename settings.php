@@ -4,7 +4,7 @@ defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
 	
-	$settings->add(new admin_setting_configtext('block_oppia_mobile_export_default_server', get_string('default_server', 'block_oppia_mobile_export'),'', 'http://demo.oppia-mobile.org/', PARAM_TEXT));
+	$settings->add(new admin_setting_configtext('block_oppia_mobile_export_default_server', get_string('default_server', 'block_oppia_mobile_export'),'', 'https://demo.oppia-mobile.org/', PARAM_TEXT));
 
 	$settings->add(new admin_setting_configtext('block_oppia_mobile_export_default_lang', get_string('default_lang', 'block_oppia_mobile_export'),get_string('default_lang_info', 'block_oppia_mobile_export'), 'en', PARAM_TEXT));
 	
