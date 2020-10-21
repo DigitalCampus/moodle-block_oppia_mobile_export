@@ -277,7 +277,7 @@ $filename = extractImageFile($course->summary,
 
 if($filename){
 	$resizedFilename = resizeImage($course_root."/".$filename,
-				$course_root."/images/".$context->id,
+				$course_root."/images/".$course->id.'_'.$context->id,
 						$CFG->block_oppia_mobile_export_course_icon_width,
 						$CFG->block_oppia_mobile_export_course_icon_height,
 						true);
@@ -572,7 +572,5 @@ if (!$xml->schemaValidate('./oppia-schema.xsd')) {
 }
 
 echo $OUTPUT->footer();
-
-
 
 ?>
