@@ -232,7 +232,7 @@ foreach ($sectionmods as $modnumber) {
 								'showfeedback'=>$showfeedback,
 								'passthreshold'=>$passthreshold,
 								'maxattempts'=>$maxattempts);
-		$quiz->init($server_connection,$course->shortname,"Pre-test",$configArray,$versionid,$QUIZ_EXPORT_METHOD);
+		$quiz->init($course->shortname,"Pre-test",$configArray,$versionid);
 		$quiz->courseroot = $course_root;
 		$quiz->id = $mod->id;
 		$quiz->section = 0;
@@ -376,7 +376,7 @@ foreach($sections as $sect) {
 									'passthreshold'=>$passthreshold,
 									'maxattempts'=>$maxattempts);
 				
-				$quiz->init($server_connection, $course->shortname,$sect->summary,$configArray,$versionid,$QUIZ_EXPORT_METHOD);
+				$quiz->init($course->shortname,$sect->summary,$configArray,$versionid);
 				$quiz->courseroot = $course_root;
 				$quiz->id = $mod->id;
 				$quiz->section = $sect_orderno;
@@ -419,7 +419,7 @@ foreach($sections as $sect) {
 				    'showfeedback'=>false,
 				    'passthreshold'=>0,
 				    'maxattempts'=>0);
-				$feedback->init($server_connection, $course->shortname,$sect->summary,$versionid, $configArray);
+				$feedback->init($course->shortname,$sect->summary,$versionid, $configArray);
 				$feedback->courseroot = $course_root;
 				$feedback->id = $mod->id;
 				$feedback->section = $sect_orderno;

@@ -11,12 +11,18 @@ class mobile_activity_page extends mobile_activity {
 	private $page_image = null;
 	private $page_related = array();
 	
+	function generate_md5($page){
+		$contents = $page->name . $page->intro . $page->content;
+		$this->md5 = md5($contents);
+	}
+
 	function process(){
 		global $DB, $CFG, $MOBILE_LANGS, $DEFAULT_LANG, $MEDIA;
 		$cm = get_coursemodule_from_id('page', $this->id);
 		$page = $DB->get_record('page', array('id'=>$cm->instance), '*', MUST_EXIST);
 		$context = context_module::instance($cm->id);
-		$this->md5 =  md5($page->content).$this->id;
+		
+		$this->generate_md5($page);
 		
 		$content = $this->extractFiles($page->content,
 										'mod_page',

@@ -136,7 +136,7 @@ function cleanHTMLEntities($text, $replace_br=false){
 
 function cleanTagList($tags){
 	$cleantags = trim($tags);
-	$cleantags = preg_replace('([[:space:]]*\,[[:space:]])', ',', $tags);
+	$cleantags = preg_replace('([[:space:]]*\,[[:space:]])', ',', $cleantags);
 	$cleantags = preg_replace(regex_forbidden_tag_chars, "-", $cleantags);
 	
 	if (strlen($cleantags) == 0) return $cleantags;
@@ -152,6 +152,10 @@ function cleanShortname($shortname){
 	$shortname = preg_replace(regex_forbidden_dir_chars, "-", $shortname);
 	$shortname = preg_replace('(\-+)', "-", $shortname); //clean duplicated hyphens
 	return $shortname;
+}
+
+function removeIDsFromJSON($jsonString){
+	 return preg_replace("(\"id\":[0-9]+,?)", "", $jsonString);
 }
 
 
