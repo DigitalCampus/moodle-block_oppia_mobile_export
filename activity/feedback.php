@@ -11,16 +11,22 @@ class mobile_activity_feedback extends mobile_activity {
     private $is_valid = true; //i.e. doesn't only contain essay or random questions.
     private $no_questions = 0; // total no of valid questions
     private $configArray = array(); // config (quiz props) array
-    private $server_connection;
     
-    function init($server_connection, $shortname, $summary, $courseversion, $configArray){
+    function init($shortname, $summary, $courseversion, $configArray){
         $this->shortname = strip_tags($shortname);
         $this->summary = $summary;
         $this->courseversion = $courseversion;
-        $this->server_connection = $server_connection;
         $this->configArray = $configArray;
     }
-    
+
+    function generate_md5($feedback, $quizJSON){
+        $md5postfix = "";
+        foreach($this->configArray as $key => $value){
+            $md5postfix .= $key[0].((string) $value);
+        }
+        $contents = json_encode($quizJSON);
+        $this->md5 = md5( $feedback->intro . removeIDsFromJSON($contents) . $md5postfix);
+    }
     
     function preprocess(){
         global $DB,$CFG,$USER;
@@ -45,20 +51,8 @@ class mobile_activity_feedback extends mobile_activity {
         }
     }
     
+    
     function process(){
-        $this->process_locally();
-    }
-    
-    function generate_md5($quiz_questions){
-        $md5postfix = "";
-        foreach($this->configArray as $key => $value){
-            $md5postfix .= $key[0].((string) $value);
-        }
-        // generate the md5 of the quiz
-        $this->md5 = md5(serialize($quiz_questions)).$this->id."c".$md5postfix;
-    }
-    
-    function process_locally(){
         global $DB,$CFG,$USER,$QUIZ_CACHE;
         
         $cm = get_coursemodule_from_id('feedback', $this->id);
@@ -68,8 +62,7 @@ class mobile_activity_feedback extends mobile_activity {
         $params = array($feedback->id);
         $feedbackitems = $DB->get_records_select('feedback_item', $select, $params, 'position');
         
-        $this->generate_md5($feedbackitems);
-        $filename = extractImageFile($quiz->intro,'mod_feedback','intro','0',
+        $filename = extractImageFile($feedback->intro,'mod_feedback','intro','0',
             $context->id,$this->courseroot,$cm->id);
         
         if($filename){
@@ -81,9 +74,7 @@ class mobile_activity_feedback extends mobile_activity {
             unlink($this->courseroot."/".$filename) or die(get_string('error_file_delete','block_oppia_mobile_export'));
         }
         
-        $quizprops = array(
-            "digest" => $this->md5,
-            "courseversion" => $this->courseversion);
+        $quizprops = array("courseversion" => $this->courseversion);
         
         foreach($this->configArray as $k=>$v){
             if ($k != 'randomselect' || $v != 0){
@@ -203,6 +194,8 @@ class mobile_activity_feedback extends mobile_activity {
             'props'      => $quizprops,
             'questions'  => $quizJsonQuestions);
         
+        $this->generate_md5($feedback, $quizJson);
+        $quizJson['props']['digest'] = $this->md5;
         $this->content = json_encode($quizJson);
     }
     

@@ -7,6 +7,13 @@ class mobile_activity_resource extends mobile_activity {
 	private $resource_filename = null;
 	private $resource_image = null;
 	private $resource_type = null;
+
+	function generate_md5($file){
+		$resourcefile = $this->courseroot."/resources/".$file->get_filename();
+		$md5contents = $file->get_filename() . md5_file($resourcefile);
+
+		$this->md5 = md5($md5contents);
+	}
 	
 	function process(){
 		global $DB, $CFG, $MOBILE_LANGS, $DEFAULT_LANG, $MEDIA;
@@ -113,7 +120,7 @@ class mobile_activity_resource extends mobile_activity {
 		$type = $finfo->file($resourcefile);
 		$this->resource_type = substr($type, 0, strpos($type, ';'));
 		
-		$this->md5 = md5_file($resourcefile).$contextid;
+		$this->generate_md5($file);
 		$this->resource_filename = "/resources/".$file->get_filename();
 	}
 	

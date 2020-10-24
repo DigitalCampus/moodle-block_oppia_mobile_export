@@ -6,12 +6,18 @@ class mobile_activity_url extends mobile_activity {
 	private $url;
 	private $url_image = null;
 	
+
+	function generate_md5($activity){
+		$md5contents = $activity->intro . $activity->externalurl;
+		$this->md5 = md5($md5contents);
+	}
+
 	function process(){
 		global $DB, $CFG, $MOBILE_LANGS, $DEFAULT_LANG, $MEDIA;
 		$cm= get_coursemodule_from_id('url', $this->id);
 		$this->url = $DB->get_record('url', array('id'=>$cm->instance), '*', MUST_EXIST);
 		$context = context_module::instance($cm->id);
-		$this->md5 = md5($this->url->externalurl).$this->id;
+		$this->generate_md5($this->url);
 		$eiffilename = extractImageFile($this->url->intro,
 										'mod_url',
 										'intro',
