@@ -154,6 +154,10 @@ function cleanShortname($shortname){
 	return preg_replace('(\-+)', "-", $shortname); //clean duplicated hyphens
 }
 
+function removeIDsFromJSON($jsonString){
+	 return preg_replace("(\"id\":[0-9]+,?)", "", $jsonString);
+}
+
 
 function extractImageFile($content, $component, $filearea, $itemid, $contextid, $course_root, $cmid){
 	global $CFG;

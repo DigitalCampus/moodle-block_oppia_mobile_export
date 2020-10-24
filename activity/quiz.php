@@ -11,23 +11,27 @@ class MobileActivityQuiz extends MobileActivity {
 	private $is_valid = true; //i.e. doesn't only contain essay or random questions.
 	private $no_questions = 0; // total no of valid questions
 	private $configArray = array(); // config (quiz props) array
-	private $server_connection;
 	private $quiz_media = array();
 
-	private $export_method;
 
 	public function __construct(){ 
 		$this->component_name = 'mod_quiz';
     } 
 	
-	function init($server_connection, $shortname, $summary, 
-		$configArray, $courseversion, $export_method='server'){
+	function init($shortname, $summary, $configArray, $courseversion){
 		$this->shortname = strip_tags($shortname);
 		$this->summary = $summary;
 		$this->configArray = $configArray;
 		$this->courseversion = $courseversion;
-		$this->server_connection = $server_connection;
-		$this->export_method = $export_method;
+	}
+
+	function generate_md5($quiz, $quizJSON){
+		$md5postfix = "";
+		foreach($this->configArray as $key => $value){
+			$md5postfix .= $key[0].((string) $value);
+		}
+		$contents = json_encode($quizJSON);
+		$this->md5 = md5( $quiz->intro . removeIDsFromJSON($contents) . $md5postfix);
 	}
 	
 	function preprocess(){
@@ -57,23 +61,10 @@ class MobileActivityQuiz extends MobileActivity {
 			$this->is_valid = false;
 		}
 	}
-	
+
+
 	function process(){
-		$this->process_locally();
-	}
-
-	function generate_md5($quiz_questions){
-		$md5postfix = "";
-		foreach($this->configArray as $key => $value){
-			$md5postfix .= $key[0].((string) $value);
-		}
-		// generate the md5 of the quiz
-		$this->md5 = md5(serialize($quiz_questions)).$this->id."c".$md5postfix;
-	}
-
-
-	function process_locally(){
-		global $DB, $USER;
+		global $DB,$CFG,$USER,$QUIZ_CACHE;
 
 		$cm = get_coursemodule_from_id('quiz', $this->id);
 		$quiz = $DB->get_record('quiz', array('id'=>$cm->instance), '*', MUST_EXIST);
@@ -82,14 +73,12 @@ class MobileActivityQuiz extends MobileActivity {
 		$quizobj->load_questions();
 		$qs = $quizobj->get_questions();
 
-		$this->generate_md5($qs);
+
 
 		// get the image from the intro section
 		$this->extractThumbnailFromIntro($quiz->intro, $cm->id);
 		
-		$quizprops = array(
-			"digest" => $this->md5,
-			"courseversion" => $this->courseversion);
+		$quizprops = array("courseversion" => $this->courseversion);
 		
 		foreach($this->configArray as $k=>$v){
 			if ($k != 'randomselect' || $v != 0){
@@ -253,7 +242,10 @@ class MobileActivityQuiz extends MobileActivity {
 			'props' 	 => $quizprops,
 			'questions'  => $quizJsonQuestions);
 
+		$this->generate_md5($quiz, $quizJson);
+		$quizJson['props']['digest'] = $this->md5;
 		$this->content = json_encode($quizJson);
+		
 	}
 	
 	function export2print(){

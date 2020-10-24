@@ -10,20 +10,28 @@ class MobileActivityFeedback extends MobileActivity {
     private $is_valid = true; //i.e. doesn't only contain essay or random questions.
     private $no_questions = 0; // total no of valid questions
     private $configArray = array(); // config (quiz props) array
-    private $server_connection;
-    
+
+
     public function __construct(){ 
         $this->component_name = 'mod_feedback';
-    } 
+    }
 
-    function init($server_connection, $shortname, $summary, $courseversion, $configArray){
+
+    function init($shortname, $summary, $courseversion, $configArray){
         $this->shortname = strip_tags($shortname);
         $this->summary = $summary;
         $this->courseversion = $courseversion;
-        $this->server_connection = $server_connection;
         $this->configArray = $configArray;
     }
-    
+
+    function generate_md5($feedback, $quizJSON){
+        $md5postfix = "";
+        foreach($this->configArray as $key => $value){
+            $md5postfix .= $key[0].((string) $value);
+        }
+        $contents = json_encode($quizJSON);
+        $this->md5 = md5( $feedback->intro . removeIDsFromJSON($contents) . $md5postfix);
+    }
     
     function preprocess(){
         global $DB;
@@ -47,36 +55,23 @@ class MobileActivityFeedback extends MobileActivity {
         }
     }
     
+    
     function process(){
-        $this->process_locally();
-    }
-    
-    function generate_md5($quiz_questions){
-        $md5postfix = "";
-        foreach($this->configArray as $key => $value){
-            $md5postfix .= $key[0].((string) $value);
-        }
-        // generate the md5 of the quiz
-        $this->md5 = md5(serialize($quiz_questions)).$this->id."c".$md5postfix;
-    }
-    
-    function process_locally(){
-        global $DB;
+        global $DB,$CFG,$USER,$QUIZ_CACHE;
         
         $cm = get_coursemodule_from_id('feedback', $this->id);
+        $context = context_module::instance($cm->id);
         $feedback = $DB->get_record('feedback', array('id'=>$cm->instance), '*', MUST_EXIST);
         $select = 'feedback = ?';
         $params = array($feedback->id);
         $feedbackitems = $DB->get_records_select('feedback_item', $select, $params, 'position');
         
-        $this->generate_md5($feedbackitems);
+
 
         // get the image from the intro section
         $this->extractThumbnailFromIntro($feedback->intro, $cm->id);
         
-        $quizprops = array(
-            "digest" => $this->md5,
-            "courseversion" => $this->courseversion);
+        $quizprops = array("courseversion" => $this->courseversion);
         
         foreach($this->configArray as $k=>$v){
             if ($k != 'randomselect' || $v != 0){
@@ -196,6 +191,8 @@ class MobileActivityFeedback extends MobileActivity {
             'props'      => $quizprops,
             'questions'  => $quizJsonQuestions);
         
+        $this->generate_md5($feedback, $quizJson);
+        $quizJson['props']['digest'] = $this->md5;
         $this->content = json_encode($quizJson);
     }
     

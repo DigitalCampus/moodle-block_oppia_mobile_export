@@ -11,16 +11,23 @@ class MobileActivityPage extends MobileActivity {
 	private $page_related = array();
 	private $page_local_media = array();
 
+
 	public function __construct(){ 
 		$this->component_name = 'mod_page';
-    } 
+    }
+
 	
+	function generate_md5($page){
+		$contents = $page->name . $page->intro . $page->content;
+		$this->md5 = md5($contents);
+	}
+
 	function process(){
 		global $DB, $CFG, $MOBILE_LANGS, $DEFAULT_LANG, $MEDIA;
 		$cm = get_coursemodule_from_id('page', $this->id);
 		$page = $DB->get_record('page', array('id'=>$cm->instance), '*', MUST_EXIST);
 		$context = context_module::instance($cm->id);
-		$this->md5 = md5($page->content).$this->id;
+		$this->generate_md5($page);
 
 		$content = $this->extractAndReplaceLocalMedia($page->content, 'mod_page', 'content',
 										0, $context->id, $this->courseroot, $cm->id);

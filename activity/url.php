@@ -4,16 +4,23 @@ class MobileActivityUrl extends MobileActivity {
 	
 	private $url;
 
+
 	public function __construct(){ 
 		$this->component_name = 'mod_url';
     }
 	
+
+	function generate_md5($activity){
+		$md5contents = $activity->intro . $activity->externalurl;
+		$this->md5 = md5($md5contents);
+	}
+
+
 	function process(){
 		global $DB;
 		$cm= get_coursemodule_from_id('url', $this->id);
 		$this->url = $DB->get_record('url', array('id'=>$cm->instance), '*', MUST_EXIST);
-		$this->md5 = md5($this->url->externalurl).$this->id;
-
+		$this->generate_md5($this->url);
 		// get the image from the intro section
         $this->extractThumbnailFromIntro($this->url->intro, $cm->id);
 	}
