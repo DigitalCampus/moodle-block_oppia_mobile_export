@@ -66,7 +66,7 @@ class mobile_activity_feedback extends mobile_activity {
             $context->id,$this->courseroot,$cm->id);
         
         if($filename){
-            $this->quiz_image = "/images/".resizeImage($this->courseroot."/".$filename,
+            $this->feedback_image = "/images/".resizeImage($this->courseroot."/".$filename,
                 $this->courseroot."/images/".$cm->id,
                 $CFG->block_oppia_mobile_export_thumb_width,
                 $CFG->block_oppia_mobile_export_thumb_height);
