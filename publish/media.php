@@ -69,17 +69,7 @@ function get_media_info($server, $digest){
 		return false;
 	}
 
-	$media_info = array();
-	if (array_key_exists('download_url', $json_response)){
-		$media_info['download_url'] = $json_response['download_url'];
-	}
-	if (array_key_exists('filesize', $json_response)){
-		$media_info['filesize'] = $json_response['filesize'];
-	}
-	if (array_key_exists('length', $json_response)){
-		$media_info['length'] = $json_response['length'];
-	}
-	return $media_info;
+	return get_mediainfo_from_response($json_response);
 }
 
 
@@ -128,6 +118,12 @@ function publish_media($server, $moodlefile, $username, $password, $temp_media){
 		return false;
 	}
 
+	return get_mediainfo_from_response($json_response);
+
+}
+
+
+function get_mediainfo_from_response($json_response){
 	$media_info = array();
 	if (array_key_exists('download_url', $json_response)){
 		$media_info['download_url'] = $json_response['download_url'];

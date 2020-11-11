@@ -43,6 +43,7 @@ require(['jquery'], function($) { $(function(){
 
 		$.ajax({
 			type: 'get',
+			dataType: 'json',
 			url: publishURL, 
 			data: { 'digest':digest, 'server':server }, 
 			
@@ -88,6 +89,7 @@ require(['jquery'], function($) { $(function(){
 
 		$.ajax({
 			type: 'post',
+			dataType: 'json',
 			url: publishURL, 
 			data: { 'digest':digest, 'server':server, 'moodlefile':moodlefile, 'username': username, 'password':password }, 
 			
