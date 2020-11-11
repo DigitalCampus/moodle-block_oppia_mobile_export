@@ -35,9 +35,7 @@ if (substr($server_connection->url, -strlen('/'))!=='/'){
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-
 	$digest = required_param('digest', PARAM_TEXT);
-	header('Content-Type: application/json');
 	$media_info = get_media_info($server_connection->url, $digest);
 }
 else{
@@ -47,6 +45,7 @@ else{
 	$media_info = publish_media($server_connection->url, $file, $username, $password, $temp_media);
 }
 
+header('Content-Type: application/json');
 if (!$media_info){
 	echo json_encode(array('error'=>'not_valid_json'));
 } else{
@@ -58,18 +57,11 @@ function get_media_info($server, $digest){
 	$curl = curl_init();
 	curl_setopt($curl, CURLOPT_URL, $server."api/media/".$digest );
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-	$result = curl_exec($curl);
+	$response = curl_exec($curl);
 	$http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 	curl_close ($curl);
 
-	$json_response = json_decode($result, true);
-	http_response_code($http_status);
-
-	if ($http_status == 404 || is_null($json_response)){
-		return false;
-	}
-
-	return get_mediainfo_from_response($json_response);
+	return process_response($http_status, $response);
 }
 
 
@@ -103,23 +95,30 @@ function publish_media($server, $moodlefile, $username, $password, $temp_media){
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($curl, CURLOPT_VERBOSE, true);
 
-	$result = curl_exec($curl);
-	$http_status = curl_getinfo($curl);
+	$response = curl_exec($curl);
+	$http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 	curl_close ($curl);
-
-	$json_response = json_decode($result, true);
-	http_response_code($http_status);
 
 	//We remove the temporary copied file
 	unlink($temppath);
 
-	if ($http_status == 404 || is_null($json_response)){
-		http_response_code($http_status);
+	return process_response($http_status, $response);
+
+}
+
+function process_response($http_status, $response){
+	
+	$json_response = json_decode($response, true);
+	http_response_code($http_status);
+
+	if (!$http_status || $http_status == 404 || is_null($json_response)){
+		if (!$http_status || !$response){
+			http_response_code(400);
+		}
 		return false;
 	}
 
 	return get_mediainfo_from_response($json_response);
-
 }
 
 

@@ -15,7 +15,7 @@ require(['jquery'], function($) { $(function(){
 		var username = publishForm.find('[name="username"]').val();
 		var password = publishForm.find('[name="password"]').val();
 		pending = $('.media_files .media_file.pending');
-		pending.find('.status').removeClass('pending').addClass('loading')
+		pending.find('.status').removeClass('pending').removeClass('error').addClass('loading')
 		
 		pendingFiles = false;
 		publishForm.hide();
@@ -48,23 +48,12 @@ require(['jquery'], function($) { $(function(){
 			data: { 'digest':digest, 'server':server }, 
 			
 			success: function(data, status){
-				var downloadUrl = data['download_url'];
-				file.find('.download_url').text(downloadUrl);
-				file.find('.length').text(data['length']);
-				file.find('.status').removeClass('loading').addClass('completed');
-				form.append('<input type="hidden" name="'+digest+'" value="'+encodeURI(downloadUrl)+'">');
+				updateOnSuccess(file, digest, data);
 				fetchMediaInfo(mediaElem+1);
 			},
 
 			error: function (response, status, error) {
-				pendingFiles = true;
-				if (response.status == 404){
-					file.addClass('pending');
-					file.find('.status').removeClass('loading').addClass('pending');
-				}
-				else{
-					file.find('.status').removeClass('loading').addClass('error');	
-				}
+				updateOnError(file, response);
 				fetchMediaInfo(mediaElem+1);
 			}
 		});
@@ -94,28 +83,39 @@ require(['jquery'], function($) { $(function(){
 			data: { 'digest':digest, 'server':server, 'moodlefile':moodlefile, 'username': username, 'password':password }, 
 			
 			success: function(data, status){
-				var downloadUrl = data['download_url'];
-				file.find('.download_url').text(downloadUrl);
-				file.find('.length').text(data['length']);
-				file.find('.status').removeClass('loading').addClass('completed');
-				form.append('<input type="hidden" name="'+digest+'" value="'+encodeURI(downloadUrl)+'">');
+				updateOnSuccess(file, digest, data);
 				publishMedia(mediaElem+1, username, password);
 			},
 
 			error: function (response, status, error) {
-				pendingFiles = true;
-				if (response.status == 404){
-					file.addClass('pending');
-					file.find('.status').removeClass('loading').addClass('pending');
-				}
-				else{
-					file.find('.status').removeClass('loading').addClass('error');	
-				}
+				updateOnError(file, response);
 				publishMedia(mediaElem+1, username, password);
 			}
 		});
 	}
 
+
+	function updateOnSuccess(file, digest, data){
+		var downloadUrl = data['download_url'];
+		file.find('.download_url').text(downloadUrl);
+		file.find('.length').text(data['length']);
+		file.find('.media_request').hide();
+		file.find('.status').removeClass('loading').addClass('completed');
+		form.append('<input type="hidden" name="'+digest+'" value="'+encodeURI(downloadUrl)+'">');
+	}
+
+	function updateOnError(file, response){
+		pendingFiles = true;
+		if (response.status == 404){
+			file.addClass('pending');
+			file.find('.media_request').hide().filter('.pending_message').show();
+			file.find('.status').removeClass('loading').addClass('pending');
+		}
+		else{
+			file.find('.media_request').hide().filter('.error_message').show();
+			file.find('.status').removeClass('loading').addClass('error');	
+		}
+	}
 
 
 });});
