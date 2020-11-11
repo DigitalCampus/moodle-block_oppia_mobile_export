@@ -160,7 +160,7 @@ echo "<input type='hidden' name='id' value='".$COURSE->id."'>";
 echo "<input type='hidden' name='sesskey' value='".sesskey()."'>";
 echo "<input type='hidden' name='stylesheet' value='".$stylesheet."'>";
 echo "<input type='hidden' name='server' value='".$server."'>";
-echo "<input type='hidden' name='course_status' value='".$course_status."'>";
+echo "<input type='hidden' name='course_export_status' value='".$course_status."'>";
 
 if (!empty($quizzes)){
 	echo "<p>".get_string('export_contains_quizzes', PLUGINNAME)."</p>";

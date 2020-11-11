@@ -31,7 +31,7 @@ $priority = required_param('coursepriority', PARAM_INT);
 $sequencing = required_param('coursesequencing', PARAM_TEXT);
 $DEFAULT_LANG = required_param('default_lang', PARAM_TEXT);
 $server = required_param('server', PARAM_TEXT);
-$course_status = required_param('course_status', PARAM_TEXT);
+$course_export_status = required_param('course_export_status', PARAM_TEXT);
 $tags = required_param('coursetags', PARAM_TEXT);
 $tags = cleanTagList($tags);
 
@@ -39,7 +39,8 @@ $course = $DB->get_record('course', array('id'=>$id));
 //we clean the shortname of the course (the change doesn't get saved in Moodle)
 $course->shortname = cleanShortname($course->shortname);
 
-if ($course_status == 'draft'){
+$is_draft = ($course_export_status == 'draft');
+if ($is_draft){
     $course->shortname = $course->shortname."-draft";
 }
 
@@ -514,7 +515,7 @@ echo $OUTPUT->render_from_template(
 		'server_id' => $server,
 		'stylesheet' => $stylesheet,
 		'coursetags' => $tags,
-		'course_status' => $course_status,
+		'course_export_status' => $course_export_status,
 		'course_root' => $course_root,
 		'wwwroot' => $CFG->wwwroot));
 

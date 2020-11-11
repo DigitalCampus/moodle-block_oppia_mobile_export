@@ -29,7 +29,7 @@ $tags = cleanTagList(required_param('tags', PARAM_TEXT));
 $server = required_param('server_id', PARAM_TEXT);
 $username = required_param('username', PARAM_TEXT);
 $password = required_param('password', PARAM_TEXT);
-$course_status = required_param('course_status', PARAM_TEXT);
+$course_status = required_param('course_export_status', PARAM_TEXT);
 
 $course = $DB->get_record('course', array('id'=>$id));
 
