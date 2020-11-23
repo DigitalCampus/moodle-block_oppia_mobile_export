@@ -1,0 +1,166 @@
+/*
+#1CABE2 - Main Unicef blue
+#374EA2 - dark blue
+*/
+
+* { 
+	padding:0px;
+    margin:0px;
+}
+body {
+	font-family: Helvetica, Verdana, sans-serif;
+	line-height: 1.5em;
+	margin: 5px;
+	font-size:100%;
+}
+h1,h2,h3,h4 {
+	margin: 10px 5px;
+	text-align:center;
+	color: #374EA2;
+	font-size: 120%;
+}
+p {
+	margin:10px 5px;
+}
+ul {
+	margin: 10px 0;
+}
+ul li {
+	margin-left:25px;
+	list-style: none;	
+}
+ul li:before {
+	/* For a round bullet */
+	content:'\2022';
+	/* For a square bullet */
+	/*content:'\25A0';*/
+	display: block;
+	position: relative;
+	max-width: 0px;
+	max-height: 0px;
+	left: -20px;
+	top: 2px;
+	color: #374EA2;
+	font-size: 30px;
+	text-shadow: 0 2px 1px rgba(0,0,0,0.2);
+}
+ul ul{
+	margin-top:0;
+}
+ul > ul{
+	margin-left:20px;
+}
+ul ul li:before{
+	color: #374EA2;
+	font-size: 24px;
+}
+ul ul li{
+	line-height: 1.4em;
+}
+ol {
+	margin: 10px 0;
+}
+ol li {
+	margin-left:25px;
+}
+a {
+	color: #374EA2;
+	text-decoration: underline;
+}
+table {
+	border:1px solid #000;
+	width:100%;
+	border-collapse: collapse;
+}
+table th {
+	font-weight: bold;
+	background: #374EA2;
+	padding: 0.5em;
+	border-bottom: 1px solid #000;
+	border-right: 1px solid #000;
+}
+table td {
+	padding: 0.5em;
+	border-bottom: 1px solid #000;
+	border-right: 1px solid #000;
+	vertical-align: top;
+}
+td > ul > li:before {
+        /* For a round bullet */
+      content:'\2022';
+      /* For a square bullet */
+      /*content:'\25A0';*/
+      display: block;
+      position: relative;
+      max-width: 0px;
+      max-height: 0px;
+      left: -20px;
+      top: -0px;
+      color: #000;
+}
+.box {
+	margin:10px 5px;
+	padding: 4px 4px 4px 4px;
+	border: 1px solid #888;
+	border-radius: 0.3em;
+	-moz-border-radius: 0.3em;
+	-webkit-border-radius: 0.3em;
+}
+.activity, 
+.core,
+.casestudy,
+.pause {
+	
+}
+.definition,
+.action,
+.warning,
+.suggestion, 
+.info,
+.question {
+	padding: 10px 10px 5px 60px;
+	background-repeat: no-repeat;
+	min-height: 60px;
+}
+.definition{
+	background-image: url('style_resources/book.png'); 
+}
+.action {
+	background-image: url('style_resources/tick.png'); 
+}
+.warning {
+	background-image: url('style_resources/warning.png'); 
+	font-weight:bold;
+}
+.suggestion, .info {
+	background-image: url('style_resources/info.png'); 
+}
+.question {
+	background-image: url('style_resources/question.png'); 
+}
+div.question > p:first-child {
+	font-weight:bold;
+}
+div.question p {
+	margin: 0 10px 10px 0;
+}
+.reveal {
+	text-decoration: underline;
+	color: #374EA2;
+	cursor: pointer;
+}
+img {
+	text-align:center;
+	display:block;
+	margin-left: auto;
+    margin-right: auto;
+    max-width: 90%;
+}
+.credit, .caption {
+	font-size: 80%;
+	margin: 3px 0 10px 0;
+	text-align:center;
+	line-height: 1.2em;
+	color:#666;
+	font-style:italic;
+}
