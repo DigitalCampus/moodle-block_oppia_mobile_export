@@ -56,7 +56,7 @@ $mods = $modinfo->get_cms();
 $server_connection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid'=>$USER->id,'id'=>$server));
 
 add_or_update_oppiaconfig($id, 'is_draft', $is_draft);
-add_publishing_log($server_connection->url, $USER->id, $id,  "api_publish_start", "API publish process started");
+add_publishing_log($server_connection->url, $USER->id, $id, "api_publish_start", "API publish process started");
 
 echo $OUTPUT->header();
 
@@ -186,7 +186,7 @@ else{
 
 
 
-add_publishing_log($server_connection->url, $USER->id, $id,  "api_publish_end", "API publish process ended");
+add_publishing_log($server_connection->url, $USER->id, $id, "api_publish_end", "API publish process ended");
 
 echo $OUTPUT->footer();
 

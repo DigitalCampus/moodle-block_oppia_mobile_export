@@ -8,10 +8,10 @@ class OppiaServerForm extends moodleform {
  
         $mform = $this->_form; // Don't forget the underscore! 
  
-        $mform->addElement('text', 'server_ref', get_string('server_form_name','block_oppia_mobile_export')); 
+        $mform->addElement('text', 'server_ref', get_string('server_form_name', PLUGINNAME)); 
         $mform->setType('server_ref', PARAM_NOTAGS);                  
 
-        $mform->addElement('text', 'server_url', get_string('server_form_url','block_oppia_mobile_export'));
+        $mform->addElement('text', 'server_url', get_string('server_form_url', PLUGINNAME));
         $mform->setType('server_url', PARAM_NOTAGS);
         $mform->setDefault('server_url', 'https://demo.oppia-mobile.org/');
         
@@ -23,10 +23,10 @@ class OppiaServerForm extends moodleform {
     	$errors= array();
     	
     	if(trim($data['server_ref']) == ""){
-    		$errors['server_ref'] = get_string('server_form_name_error_none','block_oppia_mobile_export');
+    		$errors['server_ref'] = get_string('server_form_name_error_none', PLUGINNAME);
     	}
     	if(trim($data['server_url']) == ""){
-    		$errors['server_url'] = get_string('server_form_url_error_none','block_oppia_mobile_export');
+    		$errors['server_url'] = get_string('server_form_url_error_none', PLUGINNAME);
     	}    	
         return $errors;
     }

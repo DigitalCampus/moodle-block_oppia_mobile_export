@@ -220,13 +220,13 @@ class MobileActivityPage extends MobileActivity {
 					$file->copy_content_to($imgfile);
 				} else {
 					if($CFG->block_oppia_mobile_export_debug){
-					    echo OPPIA_HTML_SPAN_ERROR_START.get_string('error_file_not_found','block_oppia_mobile_export',$filename).OPPIA_HTML_SPAN_END.OPPIA_HTML_BR;
+					    echo OPPIA_HTML_SPAN_ERROR_START.get_string('error_file_not_found', PLUGINNAME, $filename).OPPIA_HTML_SPAN_END.OPPIA_HTML_BR;
 						return null;
 					}
 				}
 
 				if($CFG->block_oppia_mobile_export_debug){
-				    echo get_string('export_file_success','block_oppia_mobile_export',$filename).OPPIA_HTML_BR;
+				    echo get_string('export_file_success', PLUGINNAME, $filename).OPPIA_HTML_BR;
 				}
 			}
 			
@@ -263,7 +263,7 @@ class MobileActivityPage extends MobileActivity {
 			$content = str_replace($toreplace, $r, $content);
 			// check all the required attrs exist
 			if(!isset($mediajson->digest) || !isset($mediajson->download_url) || !isset($mediajson->filename)){
-			    echo get_string('error_media_attributes','block_oppia_mobile_export').OPPIA_HTML_BR;
+			    echo get_string('error_media_attributes', PLUGINNAME).OPPIA_HTML_BR;
 				die;
 			}
 			
@@ -279,7 +279,7 @@ class MobileActivityPage extends MobileActivity {
 		$html = new DOMDocument();
 		$parsed = $html->loadHTML($content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
 		if (!$parsed){
-		    echo OPPIA_HTML_SPAN_ERROR_START.get_string('error_parsing_html','block_oppia_mobile_export').OPPIA_HTML_SPAN_END.OPPIA_HTML_BR;
+		    echo OPPIA_HTML_SPAN_ERROR_START.get_string('error_parsing_html', PLUGINNAME).OPPIA_HTML_SPAN_END.OPPIA_HTML_BR;
 			return null;
 		}
 
@@ -304,18 +304,18 @@ class MobileActivityPage extends MobileActivity {
 					}
 					
 					$video_params['filename'] = $filename;
-					echo get_string('video_included','block_oppia_mobile_export').'<code>'. $filename .'</code>'.OPPIA_HTML_BR;
+					echo get_string('video_included', PLUGINNAME).'<code>'. $filename .'</code>'.OPPIA_HTML_BR;
 				}
 			}
 
 			if (!$video->hasAttribute('poster')){
-			    echo OPPIA_HTML_SPAN_ERROR_START.get_string('missing_video_poster','block_oppia_mobile_export').OPPIA_HTML_SPAN_END.OPPIA_HTML_BR;
+			    echo OPPIA_HTML_SPAN_ERROR_START.get_string('missing_video_poster', PLUGINNAME).OPPIA_HTML_SPAN_END.OPPIA_HTML_BR;
 			}
 			else{
 				$video_params['poster'] = $video->getAttribute('poster');
 			}
 
-			$embed = createDOMElemFromTemplate($html, 'block_oppia_mobile_export/video_embed', $video_params);
+			$embed = createDOMElemFromTemplate($html, block_oppia_mobile_export.'/video_embed', $video_params);
 			$video->parentNode->replaceChild($embed, $video);
         } 
 
@@ -350,7 +350,7 @@ class MobileActivityPage extends MobileActivity {
 		$filename = $files_tmp['filenames'][0][0];
 			
 		if($CFG->block_oppia_mobile_export_debug){
-		    echo '<span>' . get_string('export_file_trying','block_oppia_mobile_export',$filename).OPPIA_HTML_SPAN_END.OPPIA_HTML_BR;
+		    echo '<span>' . get_string('export_file_trying', PLUGINNAME, $filename).OPPIA_HTML_SPAN_END.OPPIA_HTML_BR;
 		}
 		
 		$fs = get_file_storage();
@@ -369,12 +369,12 @@ class MobileActivityPage extends MobileActivity {
 			$file->copy_content_to($imgfile);
 		} else {
 			if($CFG->block_oppia_mobile_export_debug){
-			    echo OPPIA_HTML_SPAN_ERROR_START.get_string('error_file_not_found','block_oppia_mobile_export',$filename).OPPIA_HTML_SPAN_END.OPPIA_HTML_BR;
+			    echo OPPIA_HTML_SPAN_ERROR_START.get_string('error_file_not_found', PLUGINNAME, $filename).OPPIA_HTML_SPAN_END.OPPIA_HTML_BR;
 			}
 		}
 		
 		if($CFG->block_oppia_mobile_export_debug){
-		    echo get_string('export_file_success','block_oppia_mobile_export',$filename).OPPIA_HTML_BR;
+		    echo get_string('export_file_success', PLUGINNAME, $filename).OPPIA_HTML_BR;
 		}
 		$this->thumbnail_image = "images/".$filename;
 		return true;

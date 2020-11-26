@@ -101,13 +101,13 @@ class MobileActivityQuiz extends MobileActivity {
 
 			// skip any essay questions
 			if($q->qtype == 'essay'){
-			    echo get_string('export_quiz_skip_essay','block_oppia_mobile_export').OPPIA_HTML_BR;
+			    echo get_string('export_quiz_skip_essay', PLUGINNAME).OPPIA_HTML_BR;
 				continue;
 			}
 			
 			// skip any random questions
 			if($q->qtype == 'random'){
-			    echo get_string('export_quiz_skip_random','block_oppia_mobile_export').OPPIA_HTML_BR;
+			    echo get_string('export_quiz_skip_random', PLUGINNAME).OPPIA_HTML_BR;
 				continue;
 			}
 			
@@ -325,7 +325,7 @@ class MobileActivityQuiz extends MobileActivity {
 			$content = str_replace($toreplace, "", $content);
 			// check all the required attrs exist
 			if(!isset($mediajson->digest) || !isset($mediajson->download_url) || !isset($mediajson->filename)){
-			    echo get_string('error_media_attributes','block_oppia_mobile_export').OPPIA_HTML_BR;
+			    echo get_string('error_media_attributes', PLUGINNAME).OPPIA_HTML_BR;
 				die;
 			}
 				

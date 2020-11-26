@@ -47,11 +47,11 @@ abstract class MobileActivity {
 		if ($imageResized){
 			$this->thumbnail_image = "/images/" . $imageResized;
 			if (!$keep_original){
-				unlink($this->courseroot."/".$thumbnail) or die(get_string('error_file_delete','block_oppia_mobile_export'));
+				unlink($this->courseroot."/".$thumbnail) or die(get_string('error_file_delete', PLUGINNAME));
 			}
 		} else{
 			$link = $CFG->wwwroot."/course/modedit.php?return=0&sr=0&update=".$module_id;
-			echo '<span class="export-error">'.get_string('error_edit_page','block_oppia_mobile_export', $link).'</span><br/>';
+			echo '<span class="export-error">'.get_string('error_edit_page', PLUGINNAME, $link).'</span><br/>';
 		}
 	}
 
