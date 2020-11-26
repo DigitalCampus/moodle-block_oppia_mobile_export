@@ -3,6 +3,7 @@
 //This is the regex for detecting any number of spaces or <br> or <p> tags (in any of its forms) 
 
 const SPACES_REGEX = '([[:space:]]|\<br\/?[[:space:]]*\>|\<\/?p\>)*';
+const MEDIAFILE_REGEX = '((@@PLUGINFILE@@/(?P<filenames>[^\"\'\?<>]*)))';
 
 class MobileActivityPage extends MobileActivity {	
 
@@ -197,7 +198,7 @@ class MobileActivityPage extends MobileActivity {
 	private function extractAndReplaceFiles($content, $component, $filearea, $itemid, $contextid){
 		global $CFG;
 		
-		preg_match_all('((@@PLUGINFILE@@/(?P<filenames>[^\"\'\?<>]*)))',$content,$files_tmp, PREG_OFFSET_CAPTURE);
+		preg_match_all(MEDIAFILE_REGEX, $content, $files_tmp, PREG_OFFSET_CAPTURE);
 		
 		if(!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0){
 			return $content;
@@ -288,8 +289,13 @@ class MobileActivityPage extends MobileActivity {
 			$video_params = array();
 			foreach ($video->childNodes as $source){
 				if (($source->nodeName == 'source') && ($source->hasAttribute('src'))){
-					$filename = $source->getAttribute('src');
-					$filename =  str_replace('@@PLUGINFILE@@/', '', $filename);
+					$source = $source->getAttribute('src');
+					preg_match_all(MEDIAFILE_REGEX, $source, $files_tmp, PREG_OFFSET_CAPTURE);
+		
+					if(!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0){
+						continue;
+					}
+					$filename = $files_tmp['filenames'][0][0];
 
 					if (!$this->isLocalMedia($filename)){
 						//If it hasn't been added yet, we include it
