@@ -105,7 +105,7 @@ foreach ($xml->getElementsByTagName('file') as $mediafile) {
 $versionid = $xml->getElementsByTagName('versionid')->item(0)->textContent;
 
 if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
-	print '<p><b>'.get_string('error_xml_invalid', PLUGINNAME).'</b></p>';
+	print '<p><strong>'.get_string('error_xml_invalid', PLUGINNAME).'</strong></p>';
 	libxml_display_errors();
 	add_publishing_log($server_connection->url, $USER->id, $id, "error_xml_invalid", "Invalid course XML");
 } else {

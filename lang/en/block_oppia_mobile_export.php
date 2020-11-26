@@ -129,6 +129,7 @@ $string['export_sequencing_label'] = 'Sequencing mode';
 
 $string['export_sections_start'] = 'Exporting course Sections...';
 $string['export_section_title'] = 'Exporting Section: {$a}';
+$string['export_sections_finish'] = 'Finished exporting activities and sections';
 $string['export_xml_valid_start'] = 'Validating course XML file...';
 $string['export_xml_validated'] = 'validated';
 $string['export_course_xml_created'] = 'Exported course XML file';
@@ -190,3 +191,11 @@ $string['settings_avoid_push_quizzes'] = 'Don\'t push quizzes info to the Oppia 
 $string['settings_avoid_push_quizzes_info'] = 'Avoid pushing quizzes info to the Oppia server in the export process. If enabled, be sure that the Oppia server is capable of processing the full course including quizzes.';
 
 $string['missing_video_poster'] = 'Warning: Missing "poster" image for media element.';
+$string['video_included'] = 'Video included:';
+
+$string['media_files_size'] = 'Size';
+$string['media_files_digest'] = 'Digest';
+$string['media_files_length'] = 'Length';
+$string['media_files_not_uploaded'] = 'Not uploaded to the server yet.';
+$string['media_files_request_error'] = 'Error processing request.';
+$string['media_files_title'] = 'Pushing local media files';

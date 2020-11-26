@@ -304,7 +304,7 @@ class MobileActivityPage extends MobileActivity {
 					}
 					
 					$video_params['filename'] = $filename;
-					echo 'Video included: <code>' . $filename . '</code>'.OPPIA_HTML_BR;
+					echo get_string('video_included','block_oppia_mobile_export').'<code>'. $filename .'</code>'.OPPIA_HTML_BR;
 				}
 			}
 

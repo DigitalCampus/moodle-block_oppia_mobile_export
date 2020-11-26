@@ -1,19 +1,23 @@
 <br>
 
 <div>
-{{# media_files.0 }}<h3> Pushing local media files </h3>{{/ media_files.0 }}
+{{# media_files.0 }}<h3> {{# str }}media_files_title,block_oppia_mobile_export{{/ str }}</h3>{{/ media_files.0 }}
 
 <div class="media_files" data-publish="{{wwwroot}}/blocks/oppia_mobile_export/publish/media.php" data-server="{{server_id}}">
 {{# media_files }}
 	<div class="media_file" data-moodlefile="{{moodlefile}}">
 		<span class="filename">{{filename}}</span> <span class="status loading"></span>
 		<div class="info">
-			<strong>Size:</strong> <span class="filesize">{{filesize}}</span><br>
-			<strong>Digest:</strong> <span class="digest">{{digest}}</span><br>
+			<strong>{{# str }}media_files_size,block_oppia_mobile_export{{/ str }}:</strong> <span class="filesize">{{filesize}}</span><br>
+			<strong>{{# str }}media_files_digest,block_oppia_mobile_export{{/ str }}:</strong> <span class="digest">{{digest}}</span><br>
 			<strong>Download URL:</strong> <span class="download_url">...</span>
-				<span class="media_request pending_message" style="display:none;"><code>Not uploaded to the server yet. </code></span>
-				<span class="media_request error_message export-error" style="display:none;">Error processing request. </span><br>
-			<strong>Length:</strong> <span class="length">...</span><br>
+				<span class="media_request pending_message" style="display:none;">
+					<code>{{# str }}media_files_not_uploaded,block_oppia_mobile_export{{/ str }}</code>
+				</span>
+				<span class="media_request error_message export-error" style="display:none;">
+					{{# str }}media_files_request_error,block_oppia_mobile_export{{/ str }}
+				</span><br>
+			<strong>{{# str }}media_files_length,block_oppia_mobile_export{{/ str }}:</strong> <span class="length">...</span><br>
 		</div>
 	</div>
 	<hr>
@@ -30,12 +34,12 @@
 			<p>{{# str }}export_media_missing,block_oppia_mobile_export, {{server_connection}}{{/ str }}</p>
 		</div>
 		<div class="pure-u-1 pure-u-md-1-4 input-label">{{# str }}publish_field_username,block_oppia_mobile_export{{/ str }}</div>
-		<div class="pure-u-1 pure-u-md-1-4 "> <input type='text' class="form-control" name='username' value=''></div>
+		<div class="pure-u-1 pure-u-md-1-4 "> <input type="text" class="form-control" name="username" value=""></div>
 		<div class="pure-u-1 pure-u-md-2-4" style="padding:0;"></div>
 
 		<div class="pure-u-1 pure-u-md-1-4 input-label">{{# str }}publish_field_password,block_oppia_mobile_export{{/ str }}</div>
-		<div class="pure-u-1 pure-u-md-1-4"><input type='password' class="form-control" name='password' value=''></div>
-		<div class="pure-u-1 pure-u-md-1-4 text-left"><input type="submit" class="btn btn-block btn-secondary" name="submit" value="Publish"></div>
+		<div class="pure-u-1 pure-u-md-1-4"><input type="password" class="form-control" name="password" value=""></div>
+		<div class="pure-u-1 pure-u-md-1-4 text-left"><input type="submit" class="btn btn-block btn-secondary" name="submit" value="{{# str }}publish_btn, block_oppia_mobile_export{{/ str }}"></div>
 
 	</div>
 	
@@ -51,5 +55,6 @@
 	<input type="hidden" name="course_root" value="{{course_root}}">
 	<input type="hidden" name="coursetags" value="{{coursetags}}">
 
-	<button type="submit" class="btn btn-primary" {{# media_files.0 }}disabled{{/ media_files.0 }}>Continue</button>
+	<button type="submit" class="btn btn-primary" {{# media_files.0 }}disabled{{/ media_files.0 }}>
+		{{# str }}continue,block_oppia_mobile_export{{/ str }} </button>
 </div>

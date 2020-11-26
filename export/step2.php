@@ -357,7 +357,7 @@ foreach($sections as $sect) {
 				continue;
 			}
 			
-			echo '<div class="step"><strong>' . $mod->name . '</strong><br>';
+			echo '<div class="step"><strong>' . $mod->name . '</strong>'.OPPIA_HTML_BR;
 
 			if($mod->modname == 'page'){
 			    $page = new MobileActivityPage();
@@ -460,7 +460,7 @@ foreach($sections as $sect) {
 	}
 }
 echo '<hr><br>';
-echo "Finished exporting activities and sections. <br>";
+echo get_string('export_sections_finish', PLUGINNAME).OPPIA_HTML_BR;
 $root->appendChild($structure);
 
 // add in the langs available here
