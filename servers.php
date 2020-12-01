@@ -28,6 +28,13 @@ if ($serverform->is_cancelled()) {
 	$DB->insert_record('block_oppia_mobile_server', $record, false);
 }
 
+$delete = optional_param('delete', 0, PARAM_INT);
+if($delete != 0){
+    $DB->delete_records('block_oppia_mobile_server', array('id' => $delete,
+        'moodleuserid'=>$USER->id));
+}
+
+
 // get users current servers
 $servers = get_oppiaservers();
 
@@ -41,6 +48,7 @@ if (count($servers)== 0){
 		echo "<li>";
 		echo $s->servername;
 		echo " (<a href='".$s->url."' target='_blank'>".$s->url. "</a>)";
+		echo " [<a href='?delete=".$s->id."'>". get_string('server_delete', PLUGINNAME)."</a>]";
 		echo OPPIA_HTML_LI_END;
 	}	
 	echo "</ul>";
