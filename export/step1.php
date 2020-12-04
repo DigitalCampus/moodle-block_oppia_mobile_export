@@ -120,8 +120,8 @@ for ($qid=0; $qid<count($quizzes); $qid++){
 
 		$current_threshold = get_oppiaconfig($quiz['id'], 'passthreshold', 80);
 		$quiz['passthreshold'] = [];
-		for ($t=0; $t<20; $t++){
-			$quiz['passthreshold'][$t] = array ("threshold" => ($t+1)*5, "selected" => $current_threshold == ($t+1)*5); 
+		for ($t=0; $t<21; $t++){
+			  $quiz['passthreshold'][$t] = array ("threshold" => $t*5, "selected" => $current_threshold == $t*5);
 		}
 
 		$current_maxattempts = get_oppiaconfig($quiz['id'], 'maxattempts', 'unlimited');
