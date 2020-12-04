@@ -23,7 +23,7 @@ if ($serverform->is_cancelled()) {
 } else if ($fromform = $serverform->get_data()) {
 	$record = new stdClass();
 	$record->servername = $fromform->server_ref;
-	$record->url = $fromform->server_url;
+	$record->url = trim($fromform->server_url);
 	$record->moodleuserid = $USER->id;
 	$DB->insert_record('block_oppia_mobile_server', $record, false);
 }
