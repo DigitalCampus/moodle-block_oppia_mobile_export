@@ -76,8 +76,6 @@ $MEDIA = array();
 
 $advice = array();
 
-$QUIZ_EXPORT_MINVERSION_MINOR = 9;
-$QUIZ_EXPORT_MINVERSION_SUB = 8;
 $QUIZ_EXPORT_METHOD = 'server';
 
 $server_connection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid'=>$USER->id,'id'=>$server));
@@ -177,27 +175,21 @@ if(is_array($summary) && count($summary)>0){
 	$meta->appendChild($temp);
 }
 
-$apiHelper = new QuizHelper();
-$apiHelper->init($server_connection);
-$server_info = $apiHelper->exec('server', array(),'get', false, false);
+$apiHelper = new ApiHelper();
+$apiHelper->fetchServerVersion($server_connection);
+$method = $apiHelper->getExportMethod();
+
 echo '<p>';
-if ($server_info && $server_info->version ){
-    echo '<strong>Current server version:</strong> '.$server_info->version.OPPIA_HTML_BR;
-	$v_regex = '/^v([0-9])+\.([0-9]+)\.([0-9]+)$/';
-	preg_match($v_regex, $server_info->version, $version_nums);
-	if (!empty($version_nums) && (
-		( (int) $version_nums[1] >= 0) || //major version check (>0.x.x)
-		( (int) $version_nums[2] >= $QUIZ_EXPORT_MINVERSION_MINOR) || //minor version check (>=0.9.x)
-		( (int) $version_nums[3] >= $QUIZ_EXPORT_MINVERSION_SUB) //sub version check (>=0.9.8)
-	)){
-		$QUIZ_EXPORT_METHOD = 'local';
-	}
-}
-else{
-    echo '<span class="export-error">Unable to get server info (is it correctly configured and running?)</span>'.OPPIA_HTML_BR;
+if ($method == false){
+	echo '<span class="export-error">'. get_string('export_server_error', PLUGINNAME).OPPIA_HTML_BR;
 	add_publishing_log($server_connection->url, $USER->id, $id, "server_unavailable", "Unable to get server info");
 }
-echo '<strong>Quiz export method:</strong> '.$QUIZ_EXPORT_METHOD.'</p>';
+else{
+	$QUIZ_EXPORT_METHOD = $method;
+
+	echo get_string('export_server_version', PLUGINNAME, $apiHelper->version).OPPIA_HTML_BR;
+}
+echo '<strong>'.get_string('export_method', PLUGINNAME).':</strong> '.$QUIZ_EXPORT_METHOD.'</p>';
 
 /*-------Get course info pages/about etc----------------------*/
 $thissection = $sections[0];
