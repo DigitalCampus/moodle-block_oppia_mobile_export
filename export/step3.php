@@ -96,9 +96,11 @@ foreach ($xml->getElementsByTagName('file') as $mediafile) {
 	}
 
 	$digest = $mediafile->getAttribute('digest');
+	$medialength = optional_param($digest.'_length', null, PARAM_INT);
 	$url = optional_param($digest, null, PARAM_TEXT);
 	if ($url !== null){
 		$mediafile->setAttribute('download_url', $url);
+		$mediafile->setAttribute('length', $medialength);
 	}
 }
 
