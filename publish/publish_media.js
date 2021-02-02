@@ -102,6 +102,7 @@ require(['jquery'], function($) { $(function(){
 		file.find('.media_request').hide();
 		file.find('.status').removeClass('loading').addClass('completed');
 		form.append('<input type="hidden" name="'+digest+'" value="'+encodeURI(downloadUrl)+'">');
+		form.append('<input type="hidden" name="'+digest+'_length" value="'+data['length']+'">');
 	}
 
 	function updateOnError(file, response){
