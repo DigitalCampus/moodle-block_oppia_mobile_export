@@ -79,8 +79,8 @@ class MobileActivityFeedback extends MobileActivity {
             }
         }
         
-        $nameJSON = extractLangs($cm->name,true);
-        $descJSON = extractLangs($this->summary,true);
+        $nameJSON = extractLangs($cm->name, true);
+        $descJSON = extractLangs($this->summary, true);
         
         $quizJsonQuestions = array();
         $quizMaxScore = 0;
@@ -92,15 +92,15 @@ class MobileActivityFeedback extends MobileActivity {
             $title = $q->label;
             if ($title == "" || $title == null){
                 $title = $q->name;
-  
             }
+            $required = $q->required == 1;
             $questionTitle = extractLangs(cleanHTMLEntities($title, true), true, true);
             $type = null;
             
             // multichoice multi
             if($q->typ == "multichoice" 
-                && (substr($q->presentation,0,1)==='c'
-                    || substr($q->presentation,0,1)==='d')){
+                && (substr($q->presentation, 0, 1)==='c'
+                    || substr($q->presentation, 0, 1)==='d')){
                 $type = "multiselect";
                 $respstr = substr($q->presentation, 6);
                 $resps = explode('|', $respstr);
@@ -167,12 +167,15 @@ class MobileActivityFeedback extends MobileActivity {
                     $j++;
                 }
             }
-            $questionprops = array("maxscore" => 0);
+            $questionprops = array(
+                "maxscore" => 0,
+                "required"  => $required
+            );
             $questionJson = array(
-                "id"    => rand(1,1000),
-                "type"  => $type,
-                "title" => json_decode($questionTitle),
-                "props" => $questionprops,
+                "id"        => rand(1,1000),
+                "type"      => $type,
+                "title"     => json_decode($questionTitle),
+                "props"     => $questionprops,
                 "responses" => $responses);
             
             array_push($quizJsonQuestions, array(
