@@ -104,6 +104,33 @@ foreach ($xml->getElementsByTagName('file') as $mediafile) {
 	}
 }
 
+
+$activities = array();
+$duplicated = array();
+// Check that we don't have duplicated digests in the course
+foreach ($xml->getElementsByTagName('activity') as $activity) {
+	$digest = $activity->getAttribute('digest');
+	if (isset($activities[$digest])){
+		foreach ($activity->childNodes as $node){
+	    	if ($node->nodeName == "title"){
+	    		$title = $node->nodeValue;
+	    		break;
+	    	}
+		}
+		array_push($duplicated, array(
+			'title' => $title, 
+			'digest' => $digest));
+	}
+	else{
+		$activities[$digest] = true;
+	}
+}
+if (count($duplicated) > 0){
+	echo $OUTPUT->render_from_template(PLUGINNAME.'/export_error_duplicated_digest', array('duplicated'=>$duplicated));
+	echo $OUTPUT->footer();
+	die();
+}
+
 $versionid = $xml->getElementsByTagName('versionid')->item(0)->textContent;
 
 if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
