@@ -66,16 +66,28 @@ class MobileActivityResource extends MobileActivity {
 		$fs = get_file_storage();
 		$files = $fs->get_area_files($contextid, 'mod_resource', 'content', 0, 'sortorder DESC, id ASC', false);
 		$file = reset($files);
-		$resourcefile = $this->courseroot."/resources/".$file->get_filename();
-		$file->copy_content_to($resourcefile);
 
+		$filename = $this->filter_filename($file->get_filename());
+		$resourcefile = $this->courseroot."/resources/".$filename;
+		$success = $file->copy_content_to($resourcefile);
 
 		$finfo = new finfo(FILEINFO_MIME);
 		$type = $finfo->file($resourcefile);
 		$this->resource_type = substr($type, 0, strpos($type, ';'));
 		
 		$this->generate_md5($file);
-		$this->resource_filename = "/resources/".$file->get_filename();
+		$this->resource_filename = "/resources/".$filename;
+	}
+
+	private function filter_filename($filename){
+		return preg_replace(
+	        '~
+	        [<>:"/\\|?*]|            # file system reserved https://en.wikipedia.org/wiki/Filename#Reserved_characters_and_words
+	        [\x00-\x1F]|             # control characters http://msdn.microsoft.com/en-us/library/windows/desktop/aa365247%28v=vs.85%29.aspx
+	        [\x7F\xA0\xAD]|          # non-printing characters DEL, NO-BREAK SPACE, SOFT HYPHEN
+	        [{}^\~`]                 # URL unsafe characters https://www.ietf.org/rfc/rfc1738.txt
+	        ~x',
+        	'_', $filename);
 	}
 	
 }
