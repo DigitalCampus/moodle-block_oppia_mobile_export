@@ -206,6 +206,6 @@ $string['media_files_request_error'] = 'Error processing request.';
 $string['media_files_title'] = 'Pushing local media files';
 
 $string['duplicated_digest_title'] = 'Error: Duplicated digests';
-$string['duplicated_digest_description'] = 'There are identical activities in your course that contain the same digest:';
-$string['duplicated_digest_footer'] = 'Please, correct these issues and export your course again.';
+$string['duplicated_digest_description'] = 'There are identical activities in your course that have the same digest:';
+$string['duplicated_digest_footer'] = 'Please, correct these issues and export your course again, see also <a href="https://oppiamobile.readthedocs.io/en/latest/support/troubleshooting/block.html">Troubleshooting Moodle Oppia Export Block</a> for more help.';
 
