@@ -76,8 +76,6 @@ $MEDIA = array();
 
 $advice = array();
 
-$QUIZ_EXPORT_METHOD = 'server';
-
 $server_connection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid'=>$USER->id,'id'=>$server));
 if(!$server_connection && $server != "default"){
 	echo "<p>".get_string('server_not_owner', PLUGINNAME)."</p>";
@@ -177,19 +175,16 @@ if(is_array($summary) && count($summary)>0){
 
 $apiHelper = new ApiHelper();
 $apiHelper->fetchServerVersion($server_connection);
-$method = $apiHelper->getExportMethod();
 
 echo '<p>';
-if ($method == false){
+if ($apiHelper->version == null || $apiHelper->version==''){
 	echo '<span class="export-error">'. get_string('export_server_error', PLUGINNAME).OPPIA_HTML_BR;
 	add_publishing_log($server_connection->url, $USER->id, $id, "server_unavailable", "Unable to get server info");
 }
 else{
-	$QUIZ_EXPORT_METHOD = $method;
-
 	echo get_string('export_server_version', PLUGINNAME, $apiHelper->version).OPPIA_HTML_BR;
 }
-echo '<strong>'.get_string('export_method', PLUGINNAME).':</strong> '.$QUIZ_EXPORT_METHOD.'</p>';
+
 
 /*-------Get course info pages/about etc----------------------*/
 $thissection = $sections[0];
@@ -201,7 +196,6 @@ foreach ($sectionmods as $modnumber) {
 		continue;
 	}
 	$mod = $mods[$modnumber];
-	
 	
 	if($mod->modname == 'page' && $mod->visible == 1){
 		echo "<p>".$mod->name."</p>";
