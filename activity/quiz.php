@@ -74,7 +74,6 @@ class MobileActivityQuiz extends MobileActivity {
 		$qs = $quizobj->get_questions();
 
 
-
 		// get the image from the intro section
 		$this->extractThumbnailFromIntro($quiz->intro, $cm->id);
 		

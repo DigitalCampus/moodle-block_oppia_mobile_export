@@ -284,9 +284,16 @@ class MobileActivityPage extends MobileActivity {
 		}
 
 		$videos = $html->getElementsByTagName('video');
+		$videos_length = $videos->length;
 
-		foreach ($videos as $video) {
+		if ($videos_length <= 0){
+			return $content;
+		}
+
+		for ($i=0; $i<$videos_length; $i++) {
+			$video = $videos->item(0); //We always get the first one, as the previous one would be replaced by now
 			$video_params = array();
+
 			foreach ($video->childNodes as $source){
 				if (($source->nodeName == 'source') && ($source->hasAttribute('src'))){
 					$source = $source->getAttribute('src');
