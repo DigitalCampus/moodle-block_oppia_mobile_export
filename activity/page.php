@@ -54,7 +54,7 @@ class MobileActivityPage extends MobileActivity {
 
 		$content = $this->extractAndReplaceMedia($content);
 		// if page has media and no special icon for page, extract the image for first video
-		if (count($this->page_media) > 0 && $this->thumbnail_image == null){
+		if ((count($this->page_media)>0 || count($this->page_local_media)>0) && $this->thumbnail_image == null){
 			if($this->extractMediaImage($pre_content, 'mod_page', 'content', $context->id)){
 				$this->saveResizedThumbnail($this->thumbnail_image, $mod_id);
 			}
@@ -346,16 +346,23 @@ class MobileActivityPage extends MobileActivity {
 		return $exists;
 	}
 	
+
 	private function extractMediaImage($content, $component, $filearea, $contextid){
 		global $CFG;
-		$regex = '(\]\]'.SPACES_REGEX.'\<img[[:space:]]src=[\"|\\\']images/(?P<filenames>[\w\W]*?)[\"|\\\'])';
+
+		$embed_media_regex = '(\]\]'.SPACES_REGEX.'\<img[[:space:]]src=[\"|\\\']images/(?P<filenames>[\w\W]*?)[\"|\\\'])';
+		$local_media_regex = '(\<img[[:space:]]class=[\"|\\\']video-poster[\"|\\\'][[:space:]]src=[\"|\\\']images/(?P<filenames>[\w\W]*?)[\"|\\\'])';
+
+		preg_match_all($embed_media_regex, $content, $files_tmp, PREG_OFFSET_CAPTURE);
+		if(!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0){
+			preg_match_all($local_media_regex, $content, $files_tmp, PREG_OFFSET_CAPTURE);
+		}
 		
-		preg_match_all($regex,$content,$files_tmp, PREG_OFFSET_CAPTURE);
 		if(!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0){
 			return false;
 		}
 		$filename = $files_tmp['filenames'][0][0];
-			
+		
 		if($CFG->block_oppia_mobile_export_debug){
 		    echo '<span>' . get_string('export_file_trying', PLUGINNAME, $filename).OPPIA_HTML_SPAN_END.OPPIA_HTML_BR;
 		}
