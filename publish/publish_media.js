@@ -6,6 +6,7 @@ require(['jquery'], function($) { $(function(){
 	var form = $('#step2_form');
 
 	var pendingFiles = false;
+	var pendingCount;
 	var pending;
 
 	var publishForm = $('#publish_form').hide();
@@ -15,6 +16,7 @@ require(['jquery'], function($) { $(function(){
 		var username = publishForm.find('[name="username"]').val();
 		var password = publishForm.find('[name="password"]').val();
 		pending = $('.media_files .media_file.pending');
+		pendingCount = pending.length;
 		pending.find('.status').removeClass('pending').removeClass('error').addClass('loading')
 		
 		pendingFiles = false;
@@ -61,7 +63,7 @@ require(['jquery'], function($) { $(function(){
 
 	function publishMedia(mediaElem, username, password){
 
-		if (mediaElem >= pending.length){
+		if (mediaElem >= pendingCount){
 			if (pendingFiles){
 				publishForm.show();
 			}
@@ -107,8 +109,8 @@ require(['jquery'], function($) { $(function(){
 
 	function updateOnError(file, response){
 		pendingFiles = true;
+		file.addClass('pending');
 		if (response.status == 404){
-			file.addClass('pending');
 			file.find('.media_request').hide().filter('.pending_message').show();
 			file.find('.status').removeClass('loading').addClass('pending');
 		}
