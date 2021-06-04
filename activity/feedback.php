@@ -200,10 +200,6 @@ class MobileActivityFeedback extends MobileActivity {
     }
     
     
-    function export2print(){
-        // do nothing
-    }
-    
     function getXML($mod, $counter, &$node, &$xmlDoc, $activity=true){
         global $DEFAULT_LANG;
         

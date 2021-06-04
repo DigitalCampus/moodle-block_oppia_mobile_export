@@ -34,13 +34,7 @@ class MobileActivityResource extends MobileActivity {
 			$this->saveResizedThumbnail($this->resource_filename, $cm->id, true);
 		}
 	}
-	
-	function export2print(){
-		$return_content = "";
-		$return_content .= "<p>".strip_tags($this->resource->intro)."</p>";
-		$return_content .= "<p>[".$this->resource_type ."] Filename: ".$this->resource_filename."</p>";
-		return $return_content;
-	}
+
 	
 	function getXML($mod, $counter, &$node, &$xmlDoc, $activity=true){
 		global $DEFAULT_LANG;

@@ -34,7 +34,6 @@ $string['oppia_mobile_export:addinstance'] = 'Add a new Oppia export block';
 $string['oppia_block_api'] = 'Current OppiaMobile API:';
 $string['oppia_block_style'] = 'Course design:';
 $string['oppia_block_export_button'] = 'Export to Oppia Package';
-$string['oppia_block_export2print_button'] = 'Export to print';
 
 $string['oppia_block_export_servers'] = 'OppiaMobile Servers';
 
@@ -97,7 +96,6 @@ $string['error_parsing_html'] = 'Error parsing HTML contents';
 $string['error_exporting_no_sections'] = 'The course cannot be exported as there are no sections. This can happen if the section has the summary field empty or if none of the sections contain any supported activities, that is usually because of them not having the summary field completed too. Please check your activities\' summaries and try again.';
 
 $string['export_title'] = 'Export - step {$a->stepno}: {$a->coursename}';
-$string['export2print_title'] = 'Export to Print - step {$a->stepno}: {$a->coursename}';
 $string['export_contains_quizzes'] = 'Since this course contains quizzes, please select which quizzes (if any) should be a random selection of the questions available';
 
 $string['export_quiz_sectionname'] = 'Section Name';
