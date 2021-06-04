@@ -1,0 +1,42 @@
+<form action="{{wwwplugin}}export/step1.php" method="post">
+    <input type="hidden" name="id" value="{{id}}">
+    <input type="hidden" name="sesskey" value="{{sesskey}}">
+
+    <p>
+        {{# str }}servers_block_select_connection,block_oppia_mobile_export{{/ str }} <br>
+        <select name="server" class="custom-select" style="width:100%;">
+            {{# servers }}
+            	<option value="{{id}}" {{#selected}}selected="selected"{{/selected}}>{{servername}} ({{url}}) </option>
+            {{/ servers}}
+            <option value="default" {{^servers.0 }} selected="selected" {{/servers.0}}> {{default_server}} </option>
+        </select>
+    </p>
+
+    <p>
+        <a href="{{wwwplugin}}servers.php">{{# str }}servers_block_add,block_oppia_mobile_export{{/ str }}</a>
+    </p>
+       
+    {{#styles.0 }}
+     <p>
+        {{# str }}oppia_block_style,block_oppia_mobile_export{{/ str }}<br>
+        <select name="stylesheet" class="custom-select" style="width:100%;">
+        {{#styles}}
+            <option value="{{.}}">{{.}}</option>
+        {{/styles}}
+        </select>
+    </p>
+    {{/styles.0 }}
+        
+    <p>
+        {{# str }}course_status,block_oppia_mobile_export{{/ str }}<br>
+        <select name="course_status" class="custom-select" style="width:100%;">
+            <option value='draft'>{{# str }}course_status_draft,block_oppia_mobile_export{{/ str }}</option>
+            <option value='live'>{{# str }}course_status_live,block_oppia_mobile_export{{/ str }}</option>
+        </select>
+    </p>
+        
+    <p>
+        <input type="submit" name="submit" class="btn btn-primary" value="{{# str }}oppia_block_export_button,block_oppia_mobile_export{{/ str }}">
+    </p>
+</form>
+<hr/>

@@ -66,7 +66,7 @@ $string['servers_current'] = 'Your current OppiaMobile servers';
 $string['servers_add'] = 'Add OppiaMobile server connection';
 $string['servers_none'] = 'You don\'t current have any OppiaMobile server connections set up. Add one using the form below.';
 $string['servers_block_none'] = 'You don\'t current have any OppiaMobile server connections set up. <a href="{$a}">Add one now</a>.';
-$string['servers_block_add'] = '<a href="{$a}">Add/delete server connection</a>.';
+$string['servers_block_add'] = 'Add/delete server connection';
 $string['servers_block_select_connection'] = 'Select connection:';
 $string['server_not_owner'] = 'The selected OppiaMobile server connection does not belong to your account.';
 $string['server_delete'] = 'delete';
