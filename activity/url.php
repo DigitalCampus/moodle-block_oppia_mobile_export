@@ -25,9 +25,6 @@ class MobileActivityUrl extends MobileActivity {
         $this->extractThumbnailFromIntro($this->url->intro, $cm->id);
 	}
 	
-	function export2print(){
-		return "<p>".strip_tags($this->url->intro)."</p><p>URL: ".$this->url->externalurl."</p>";
-	}
 	
 	function getXML($mod, $counter, &$node, &$xmlDoc, $activity=true){
 		global $DEFAULT_LANG;

@@ -247,66 +247,6 @@ class MobileActivityQuiz extends MobileActivity {
 		
 	}
 	
-	function export2print(){
-		global $USER;
-		$cm = get_coursemodule_from_id('quiz', $this->id);
-		
-		$quizobj = quiz::create($cm->instance, $USER->id);
-		$return_content = "";
-		try {
-			$quizobj->preload_questions();
-			$quizobj->load_questions();
-			$qs = $quizobj->get_questions();
-			
-			$return_content = "<ol>";
-			
-			$i = 1;
-			foreach($qs as $q){
-				// skip any essay questions
-				if($q->qtype == 'essay'){
-					continue;
-				}
-			
-				// skip any random questions
-				if($q->qtype == 'random'){
-					continue;
-				}
-				
-				$return_content .= "<li>";
-				$return_content .= "[".$q->name .": ".$q->qtype."] ".strip_tags($q->questiontext);
-				
-				if(isset($q->options->subquestions)){
-					$return_content .= "<ul>";
-					foreach($q->options->subquestions as $sq){
-					    $return_content .= "<li>".strip_tags($sq->questiontext)." -> ".strip_tags($sq->answertext).OPPIA_HTML_LI_END;
-					}
-					$return_content .= "</ul>";
-				}
-				
-				if(isset($q->options->answers)){
-					$return_content .= "<ul>";
-					foreach($q->options->answers as $r){
-						$return_content .= "<li>".strip_tags($r->answer)." [". ($r->fraction * $q->maxmark) ."] ";
-						if(strip_tags($r->feedback) != ""){
-							$return_content .= "feedback: ".strip_tags($r->feedback);
-						}
-						$return_content .= OPPIA_HTML_LI_END;
-					}
-					$return_content .= "</ul>";
-				}
-				$return_content .= OPPIA_HTML_LI_END;
-				
-				$i++;
-			}
-			$return_content .= "</ol>";
-			return $return_content;
-			
-		} catch (moodle_exception $me){
-			$this->is_valid = false;
-			return null;
-		}	
-	}
-	
 	private function extractMedia($question_id, $content){
 	
 		$regex = '((\[\[[[:space:]]?media[[:space:]]?object=[\"|\'](?P<mediaobject>[\{\}\'\"\:a-zA-Z0-9\._\-/,[:space:]]*)[[:space:]]?[\"|\']\]\]))';

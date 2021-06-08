@@ -12,7 +12,6 @@ abstract class MobileActivity {
 
 	abstract function process();
 	abstract function getXML($mod,$counter,&$node,&$xmlDoc,$activity=true);
-	abstract function export2print();
 
 
 	public function extractThumbnailFromIntro($content, $module_id){

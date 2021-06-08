@@ -87,50 +87,6 @@ class MobileActivityPage extends MobileActivity {
 		array_push($this->act, $o);
 		unset($page_filename);
 	}
-	
-	function export2print(){
-		global $DB;
-		$cm= get_coursemodule_from_id('page', $this->id);
-		$page = $DB->get_record('page', array('id'=>$cm->instance), '*', MUST_EXIST);
-		$context = context_module::instance($cm->id);
-		$content = $this->extractAndReplaceFiles($page->content,
-				'mod_page', 'content', 0, $context->id, $this->courseroot);
-		$langs = extractLangs($content);
-		
-		// get the image from the intro section
-		$this->extractThumbnailFromIntro($page->intro, $cm->id);
-
-		$return_content = "";
-		if(is_array($langs) && count($langs)>0){
-			foreach($langs as $l=>$t){
-		
-				$pre_content = $t;
-				$t = $this->extractAndReplaceMedia($t);
-				// if page has media and no special icon for page, extract the image for first video
-				if (count($this->page_media) > 0 && $this->thumbnail_image == null
-				    && $this->extractMediaImage($pre_content, 'mod_page', 'content', $context->id)){
-						$this->saveResizedThumbnail($this->thumbnail_image, $cm->id);
-				}
-				$return_content .= $t;
-					
-			}
-		} else {
-			$pre_content = $content;
-			$content = $this->extractAndReplaceMedia($content);
-			// if page has media and no special icon for page, extract the image for first video
-			if (count($this->page_media) > 0 && $this->thumbnail_image == null){
-				if($this->extractMediaImage($pre_content, 'mod_page', 'content', $context->id)){
-						$this->saveResizedThumbnail($this->thumbnail_image, $cm->id);
-				}
-			} else if ($this->thumbnail_image == null){
-				$this->extractThumbnailFromContents($pre_content, $cm->id);
-			}
-			$return_content = $content;
-				
-		}
-		return $return_content;
-		
-	}
 
 	function getLocalMedia(){
 		return $this->page_local_media;
