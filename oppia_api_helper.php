@@ -2,10 +2,6 @@
 
 require_once(dirname(__FILE__) . '/constants.php');
 
-const VERSION_REGEX = '/^v([0-9])+\.([0-9]+)\.([0-9]+)[\-_a-zA-Z0-9\.]*$/';
-const QUIZ_EXPORT_MINVERSION_MINOR = 9;
-const QUIZ_EXPORT_MINVERSION_SUB = 8;
-
 class ApiHelper{
 	private $connection;
 	private $curl;
@@ -24,32 +20,6 @@ class ApiHelper{
 		$this->version = $server_info->version;
 
 	}
-
-	function getExportMethod(){
-
-
-		if ($this->version == null || $this->version==''){
-			return false;
-		}
-
-		$result = preg_match(VERSION_REGEX, $this->version, $version_nums);
-		if ($result >=0 && !empty($version_nums)){
-			if (!empty($version_nums) && (
-				( (int) $version_nums[1] >= 0) || //major version check (>0.x.x)
-				( (int) $version_nums[2] >= $QUIZ_EXPORT_MINVERSION_MINOR) || //minor version check (>=0.9.x)
-				( (int) $version_nums[3] >= $QUIZ_EXPORT_MINVERSION_SUB) //sub version check (>=0.9.8)
-				)){
-				return 'local';
-			}
-			else{
-				return 'server';	
-			}
-			
-		}
-		//If there was some error, we return a false value as a fallback
-		return false;
-	}
-
 	
 	function exec($object, $data_array, $type='post', $api_path=true, $print_error_msg=true){
 		

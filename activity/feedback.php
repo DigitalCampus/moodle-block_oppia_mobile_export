@@ -57,10 +57,10 @@ class MobileActivityFeedback extends MobileActivity {
     
     
     function process(){
-        global $DB,$CFG,$USER,$QUIZ_CACHE;
+        global $DB;
         
         $cm = get_coursemodule_from_id('feedback', $this->id);
-        $context = context_module::instance($cm->id);
+        context_module::instance($cm->id);
         $feedback = $DB->get_record('feedback', array('id'=>$cm->instance), '*', MUST_EXIST);
         $select = 'feedback = ?';
         $params = array($feedback->id);

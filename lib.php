@@ -87,7 +87,7 @@ function add_publishing_log($server, $userid, $courseid, $action, $data){
 }
 
 function extractLangs($content, $asJSON = false, $strip_tags = false){
-	global $MOBILE_LANGS, $CURRENT_LANG, $DEFAULT_LANG;
+    global $MOBILE_LANGS, $CURRENT_LANG, $DEFAULT_LANG;
 	preg_match_all('((lang=[\'|\"](?P<langs>[\w\-]*)[\'|\"]))',$content,$langs_tmp, PREG_OFFSET_CAPTURE);
 	$tempLangs = array();
 	if(isset($langs_tmp['langs']) && count($langs_tmp['langs']) > 0){
@@ -239,7 +239,7 @@ function copyFile($file, $component, $filearea, $itemid, $contextid, $course_roo
 				$filedest = "/images/".$sha1;
 			}
 			
-			$result = $file->copy_content_to($course_root.$filedest);
+			$file->copy_content_to($course_root.$filedest);
 
 	} else {
 		$link = $CFG->wwwroot.'/course/modedit.php?return=0&sr=0&update='.$cmid;

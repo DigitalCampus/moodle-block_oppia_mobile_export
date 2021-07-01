@@ -7,7 +7,7 @@ require_once(dirname(__FILE__) . '/../constants.php');
 
 function xmldb_block_oppia_mobile_export_upgrade($oldversion) {
 
-	global $CFG, $DB, $OUTPUT;
+	global $DB;
 
 	$dbman = $DB->get_manager();
 

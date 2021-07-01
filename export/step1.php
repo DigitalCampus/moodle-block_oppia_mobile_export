@@ -66,11 +66,9 @@ $orderno = 1;
 foreach($sections as $sect) {
 	$sectionmods = explode(",", $sect->sequence);
 	
-	$defaultSectionTitle = false;
 	$sectionTitle = strip_tags($sect->summary);
 	if ($sectionTitle == "") {
 		$sectionTitle = get_string('sectionname', 'format_topics') . ' ' . $sect->section;
-		$defaultSectionTitle = true;
 	}
 	
 	if(count($sectionmods)>0){

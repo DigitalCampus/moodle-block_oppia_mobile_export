@@ -64,7 +64,7 @@ class MobileActivityQuiz extends MobileActivity {
 
 
 	function process(){
-		global $DB,$CFG,$USER,$QUIZ_CACHE;
+		global $DB, $USER;
 
 		$cm = get_coursemodule_from_id('quiz', $this->id);
 		$quiz = $DB->get_record('quiz', array('id'=>$cm->instance), '*', MUST_EXIST);

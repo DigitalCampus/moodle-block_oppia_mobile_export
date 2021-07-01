@@ -65,16 +65,11 @@ echo $OUTPUT->header();
 
 $PAGE->requires->js(PLUGINPATH.'publish/publish_media.js');
 
-global $QUIZ_CACHE;
-$QUIZ_CACHE = array();
-
 global $MOBILE_LANGS;
 $MOBILE_LANGS = array();
 
 global $MEDIA;
 $MEDIA = array();
-
-$advice = array();
 
 $server_connection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid'=>$USER->id,'id'=>$server));
 if(!$server_connection && $server != "default"){
@@ -281,7 +276,7 @@ if($filename){
 	$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode("/images/".$resizedFilename));
 	$meta->appendChild($temp);
 }
-$index = Array();
+
 $structure = $xmlDoc->createElement("structure");
 $local_media_files = array();
 
