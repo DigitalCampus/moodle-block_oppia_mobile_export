@@ -26,7 +26,7 @@
 
 
 $string['pluginname'] = 'Oppia Mobile Export';
-$string['release'] = 'v1.2.7';
+$string['release'] = 'v1.2.8';
 
 
 $string['oppia_mobile_export:addinstance'] = 'Add a new Oppia export block';
@@ -124,7 +124,7 @@ $string['export_lang_title'] = 'Course default language';
 $string['export_lang_desc'] = 'The default language for this course, using the ISO 639 code';
 
 $string['export_sequencing_title'] = 'Course Sequencing';
-$string['export_sequencing_desc'] = 'Set the sequencing mode of the course. Here you can specify that the course activities must be attempted sequentially, section or course-wise.';
+$string['export_sequencing_desc'] = 'Set the sequencing mode of the course. Here you can specify that the course activities must be attempted sequentially, section or course-wide.';
 $string['export_sequencing_none'] = 'None';
 $string['export_sequencing_course'] = 'Sequencing through whole course';
 $string['export_sequencing_section'] = 'Sequencing within a section';

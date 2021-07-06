@@ -3,7 +3,7 @@
 require_once(dirname(__FILE__) . '/constants.php');
 
 const REGEX_FORBIDDEN_DIR_CHARS = '([\\/?%*:|"<>\.[:space:]]+)';
-const REGEX_FORBIDDEN_TAG_CHARS = '([^a-zA-z0-9,\_]+)';
+const REGEX_FORBIDDEN_TAG_CHARS = '([^a-zA-z0-9\_]+)';
 const REGEX_HTML_ENTITIES = '(&nbsp;|&amp;|&quot;)';
 const REGEX_RESOURCE_EXTENSIONS = '/\.(mp3|mp4|avi)/';
 const REGEX_IMAGE_EXTENSIONS = '/\.(png|jpg|jpeg|gif)/';
@@ -136,16 +136,20 @@ function cleanHTMLEntities($text, $replace_br=false){
 }
 
 function cleanTagList($tags){
-	$cleantags = preg_replace('([[:space:]]*\,[[:space:]])', ',', $tags);
-	$cleantags = preg_replace(REGEX_FORBIDDEN_TAG_CHARS, "-", $cleantags);
-	
-	if (strlen($cleantags) == 0){
-	    return $cleantags;
-	}
-	$strStart = ($cleantags[0] == ',') ? 1 : 0; //avoid first colon
-	$strEnd = $strStart + (($cleantags[strlen($cleantags)-1] == ',') ? 1 : 0); //avoid last colon
-	
-	return substr($cleantags, $strStart, strlen($cleantags) - $strEnd);
+    // split on comma
+    $tagList = explode (",", $tags); 
+    $cleanTags = array();
+    
+    // clean each tag separately
+    foreach($tagList as $tag){
+        $cleanTag = trim($tag);
+        $cleanTag = preg_replace(REGEX_FORBIDDEN_TAG_CHARS, "-", $cleanTag);
+        if (strlen($cleanTag) > 0){
+            array_push($cleanTags, $cleanTag);
+        }
+    }
+	// combine cleanTags to string and return
+    return implode(", ", $cleanTags);
 }
 
 function cleanShortname($shortname){
