@@ -69,8 +69,8 @@ class MobileActivityPage extends MobileActivity {
 		$webpage .= '<html><head>';
 		$webpage .= '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 		$webpage .= '<link href="style.css" rel="stylesheet" type="text/css"/>';
-		$webpage .= '<script src="js/jquery-1.11.0.min.js"></script>';
-		$webpage .= '<script src="js/jquery-ui-1.10.3.custom.min.js"></script>';
+		$webpage .= '<script src="js/jquery-3.6.0.min.js"></script>';
+		$webpage .= '<script src="js/jquery-ui-1.12.1.custom.min.js"></script>';
 		$webpage .= '<script src="js/oppia.js"></script>';
 		$webpage .= '</head>';
 		$webpage .= '<body>'.$content.'</body></html>';
