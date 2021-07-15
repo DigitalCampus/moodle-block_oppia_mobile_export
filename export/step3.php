@@ -145,7 +145,7 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
 	$xml->formatOutput = true;
 	$xml->save($course_root.OPPIA_MODULE_XML);
 
-	echo '<p class="step">'. get_string('export_style_start', PLUGINNAME) . '</p>';
+	echo '<p class="step">'. get_string('export_style_start', PLUGINNAME) . ' - ' . $stylesheet. '</p>';
 	
 	if (!copy($pluginroot."styles/".$stylesheet, $course_root."/style.css")) {
 		echo "<p>".get_string('error_style_copy', PLUGINNAME)."</p>";

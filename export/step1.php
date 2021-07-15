@@ -26,7 +26,7 @@ require_once($CFG->libdir.'/componentlib.class.php');
 const PRIORITY_LEVELS = 10;
 const MAX_ATTEMPTS = 10;
 $id = required_param('id', PARAM_INT);
-$stylesheet = required_param('stylesheet', PARAM_TEXT);
+$stylesheet = required_param('course_stylesheet', PARAM_TEXT);
 $server = required_param('server', PARAM_TEXT);
 $course_status = required_param('course_status', PARAM_TEXT);
 $course = $DB->get_record('course', array('id'=>$id));
