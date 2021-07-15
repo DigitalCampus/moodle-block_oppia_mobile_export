@@ -52,9 +52,12 @@ class block_oppia_mobile_export extends block_base {
             'styles' => $this->getStyles(),
             'default_server' => $CFG->block_oppia_mobile_export_default_server
         );
-
+        
         $this->content->text = $OUTPUT->render_from_template(PLUGINNAME.'/block', $settings);
-        $this->content->footer = $OUTPUT->render_from_template(PLUGINNAME.'/block_footer', array());
+        
+        require($pluginroot . 'version.php'); // to get release no
+        $this->content->footer = $OUTPUT->render_from_template(PLUGINNAME.'/block_footer',
+            array( 'release' => $plugin->release));
 
         if (empty($this->instance)) {
             return $this->content;
@@ -74,9 +77,7 @@ class block_oppia_mobile_export extends block_base {
             }
         }
         return $styles;
-
     }
-    
 }
 
 ?>

@@ -26,8 +26,6 @@
 
 
 $string['pluginname'] = 'Oppia Mobile Export';
-$string['release'] = 'v1.2.8';
-
 
 $string['oppia_mobile_export:addinstance'] = 'Add a new Oppia export block';
 
