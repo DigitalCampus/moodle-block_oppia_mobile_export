@@ -24,7 +24,7 @@ class MobileActivityPage extends MobileActivity {
 	}
 
 	function process(){
-		global $DB, $DEFAULT_LANG;
+	    global $DB, $CFG, $MOBILE_LANGS, $DEFAULT_LANG, $MEDIA;
 		$cm = get_coursemodule_from_id('page', $this->id);
 		$page = $DB->get_record('page', array('id'=>$cm->instance), '*', MUST_EXIST);
 		$context = context_module::instance($cm->id);
@@ -305,15 +305,9 @@ class MobileActivityPage extends MobileActivity {
 
 	private function extractMediaImage($content, $component, $filearea, $contextid){
 		global $CFG;
-
-		$embed_media_regex = '(\]\]'.SPACES_REGEX.'\<img[[:space:]]src=[\"|\\\']images/(?P<filenames>[\w\W]*?)[\"|\\\'])';
-		$local_media_regex = '(\<img[[:space:]]class=[\"|\\\']video-poster[\"|\\\'][[:space:]]src=[\"|\\\']images/(?P<filenames>[\w\W]*?)[\"|\\\'])';
-
-		preg_match_all($embed_media_regex, $content, $files_tmp, PREG_OFFSET_CAPTURE);
-		if(!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0){
-			preg_match_all($local_media_regex, $content, $files_tmp, PREG_OFFSET_CAPTURE);
-		}
+		$regex = '(\]\]'.SPACES_REGEX.'\<img[[:space:]]src=[\"|\\\']images/(?P<filenames>[\w\W]*?)[\"|\\\'])';
 		
+		preg_match_all($regex,$content,$files_tmp, PREG_OFFSET_CAPTURE);
 		if(!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0){
 			return false;
 		}
