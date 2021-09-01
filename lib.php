@@ -37,8 +37,8 @@ function deleteDir($dirPath) {
 function add_or_update_oppiaconfig($modid, $name, $value, $servid="default"){
 	global $DB;
 	
-	$record = $DB->get_record(OPPIA_CONFIG_TABLE, 
-		array('modid'=>$modid,'name'=>$name,'serverid'=>$servid));
+	$record = $DB->get_record_select(OPPIA_CONFIG_TABLE,
+	    "modid=$modid and `name`='$name' and serverid='$servid'");
 	
 	if ($record){
 		$DB->update_record(OPPIA_CONFIG_TABLE,
@@ -51,8 +51,8 @@ function add_or_update_oppiaconfig($modid, $name, $value, $servid="default"){
 
 function get_oppiaconfig($modid, $name, $default, $servid="default"){
 	global $DB;
-	$record = $DB->get_record(OPPIA_CONFIG_TABLE, 
-		array('modid'=>$modid,'name'=>$name,'serverid'=>$servid));
+	$record = $DB->get_record_select(OPPIA_CONFIG_TABLE, 
+		"modid=$modid and `name`='$name' and serverid='$servid'");
 	if ($record){
 		return $record->value;
 	} else {

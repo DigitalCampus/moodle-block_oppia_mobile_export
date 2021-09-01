@@ -193,6 +193,7 @@ echo $OUTPUT->footer();
 
 // Function to show on screen the message and save it in the publishing log
 function show_and_log_message($message, $tags, $log_action, $show_dialog=false){
+    global $USER;
 	echo '<div class="' . ($show_dialog ? 'export-results' : '') . ' ' .$tags.'">'.$message.'</div>';
 	add_publishing_log($server_connection->url, $USER->id, $id, $log_action, ($tags ? $tags.':' : '').$message);
 }

@@ -30,9 +30,6 @@ class ApiHelper{
 		} else {
 			$temp_url = $this->connection->url."/".($api_path ? "api/v1/" : "").$object."/";
 		}
-		$temp_url .= "?format=json";
-		$temp_url .= "&username=".$this->connection->username;
-		$temp_url .= "&api_key=".$this->connection->apikey;
 		curl_setopt($this->curl, CURLOPT_URL, $temp_url );
 		if($type == 'post'){
 			curl_setopt($this->curl, CURLOPT_POSTFIELDS, $json);

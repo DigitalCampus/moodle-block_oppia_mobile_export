@@ -29,7 +29,7 @@ $id = required_param('id', PARAM_INT);
 $stylesheet = required_param('course_stylesheet', PARAM_TEXT);
 $server = required_param('server', PARAM_TEXT);
 $course_status = required_param('course_status', PARAM_TEXT);
-$course = $DB->get_record('course', array('id'=>$id));
+$course = $DB->get_record_select('course', "id=$id");
 
 $PAGE->set_url(PLUGINPATH.'export/step1.php', array('id' => $id));
 context_helper::preload_course($id);
@@ -81,7 +81,7 @@ foreach($sections as $sect) {
 			
 			if($mod->modname == 'quiz' && $mod->visible == 1){
 			    $quiz = new MobileActivityQuiz();
-				$quiz->init($server_connection,$course->shortname,$sect->summary,0,0);
+				$quiz->init($course->shortname,$sect->summary,0,0);
 				$quiz->id = $mod->id;
 				$quiz->section = $orderno;
 				$quiz->preprocess();
@@ -123,7 +123,7 @@ for ($qid=0; $qid<count($quizzes); $qid++){
 		}
 
 		$current_maxattempts = get_oppiaconfig($quiz['id'], 'maxattempts', 'unlimited');
-		$quiz['attempts_unlimited'] = $maxattempts=='unlimited';
+		$quiz['attempts_unlimited'] = 'unlimited';
 		$quiz['max_attempts'] = [];
 		for ($i=0; $i<MAX_ATTEMPTS; $i++){
 			$quiz['max_attempts'][$i] = array ("num" => $i+1, "selected" => $current_maxattempts == $i+1); 
