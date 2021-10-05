@@ -21,4 +21,4 @@ $plugin = new StdClass;
 $plugin->version = 2021092400;
 $plugin->requires = 2016052300;
 $plugin->component = 'block_oppia_mobile_export';
-$plugin->release = "v1.2.9";
+$plugin->release = "v1.2.10";
