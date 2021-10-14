@@ -2,13 +2,23 @@
 
 require_once(dirname(__FILE__) . '/constants.php');
 
-const REGEX_FORBIDDEN_DIR_CHARS = '([\\/?%*:|"<>\.[:space:]]+)';
-const REGEX_FORBIDDEN_TAG_CHARS = '([^a-zA-z0-9\_]+)';
-const REGEX_HTML_ENTITIES = '(&nbsp;|&amp;|&quot;)';
-const REGEX_RESOURCE_EXTENSIONS = '/\.(mp3|mp4|avi)/';
-const REGEX_IMAGE_EXTENSIONS = '/\.(png|jpg|jpeg|gif)/';
-const BASIC_HTML_TAGS = '<strong><b><i><em>';
+const REGEX_FORBIDDEN_DIR_CHARS = '([\\/?%*:|"<>\.[:space:]]+)'; //Catches any sequence of forbidden UNIX dir chars
+const REGEX_FORBIDDEN_TAG_CHARS = '([^a-zA-z0-9\_]+)'; //Catches any character not allowed inside an XML tag
+const REGEX_HTML_ENTITIES = '(&nbsp;|&amp;|&quot;)'; //Catches HTML entities after urlencoding text contents
+const REGEX_RESOURCE_EXTENSIONS = '/\.(mp3|mp4|avi)/'; //Catches media resource supported extensions
+const REGEX_IMAGE_EXTENSIONS = '/\.(png|jpg|jpeg|gif)/'; //Catches image supported extensions
+const BASIC_HTML_TAGS = '<strong><b><i><em>'; // Basic HTML tags allowed for the strip_tags() method 
+const REGEX_LANGS = '((lang=[\'|\"](?P<langs>[\w\-]*)[\'|\"]))'; //Extracts the lang attribute
+const REGEX_BR = '(<br[[:space:]]*/?>)'; //Catches <br> tags in all its possible ways
 
+const MEDIAFILE_PREFIX = '@@PLUGINFILE@@';
+const MEDIAFILE_REGEX = '(('.MEDIAFILE_PREFIX.'/(?P<filenames>[^\"\'\?<>]*)))'; // Catches the filenames for Moodle embeded files in the content
+// Detects any number of spaces or <br> or <p> tags (in any of its forms) 
+const SPACES_REGEX = '([[:space:]]|\<br\/?[[:space:]]*\>|\<\/?p\>)*';
+// Captures the old media embed method code ( [[media object="..."]])
+const EMBED_MEDIA_REGEX = '((\[\['.SPACES_REGEX . 'media'.SPACES_REGEX.'object=[\"|\'](?P<mediaobject>[\{\}\'\"\:a-zA-Z0-9\._\-\/,[:space:]]*)([[:space:]]|\<br\/?[[:space:]]*\>)*[\"|\']'.SPACES_REGEX.'\]\]))';
+// Captures the filename of images inside old media embed method code ( [[media object="..."]])
+const EMBED_MEDIA_IMAGE_REGEX = '(\]\]'.SPACES_REGEX.'\<img[[:space:]]src=[\"|\\\']images/(?P<filenames>[\w\W_-.]*?)[\"|\\\'])';
 
 function deleteDir($dirPath) {
 	if (! is_dir($dirPath)) {
@@ -88,7 +98,7 @@ function add_publishing_log($server, $userid, $courseid, $action, $data){
 
 function extractLangs($content, $asJSON = false, $strip_tags = false){
     global $MOBILE_LANGS, $CURRENT_LANG, $DEFAULT_LANG;
-	preg_match_all('((lang=[\'|\"](?P<langs>[\w\-]*)[\'|\"]))',$content,$langs_tmp, PREG_OFFSET_CAPTURE);
+	preg_match_all(REGEX_LANGS, $content, $langs_tmp, PREG_OFFSET_CAPTURE);
 	$tempLangs = array();
 	if(isset($langs_tmp['langs']) && count($langs_tmp['langs']) > 0){
 		for($i=0;$i<count($langs_tmp['langs']);$i++){
@@ -130,7 +140,7 @@ function extractLangs($content, $asJSON = false, $strip_tags = false){
 function cleanHTMLEntities($text, $replace_br=false){
 	$cleantext = trim($text);
 	if ($replace_br){
-		$cleantext = preg_replace("(<br[[:space:]]*/?>)", "\n", $cleantext);
+		$cleantext = preg_replace(REGEX_BR, "\n", $cleantext);
 	}
 	return preg_replace(REGEX_HTML_ENTITIES, " ", $cleantext);
 }
@@ -168,7 +178,7 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
 	global $CFG;
 	//find if any images/links exist
 	
-	preg_match_all('((@@PLUGINFILE@@/(?P<filenames>[^\"\'\?<>]*)))',$content,$files_tmp, PREG_OFFSET_CAPTURE);
+	preg_match_all(MEDIAFILE_REGEX, $content, $files_tmp, PREG_OFFSET_CAPTURE);
 	
 	if(!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0){
 		return false;
@@ -224,6 +234,21 @@ function getFileInfo($filename, $component, $filearea, $itemid, $contextid){
 	}
 	return false;
 
+}
+
+// Returns the filename without special or non-ASCII characters, replacing them with underscores 
+function cleanFilename($filename){
+	$clean = preg_replace(
+        '([^\x1F-\x7F]|'.	// non-ASCII characters
+        '[[:space:]]|' .	// spaces
+        '[<>:"/\\|?*]|'.  	// file system reserved https://en.wikipedia.org/wiki/Filename#Reserved_characters_and_words
+        '[\x00-\x1F]|'. 	// control characters http://msdn.microsoft.com/en-us/library/windows/desktop/aa365247%28v=vs.85%29.aspx
+        '[\x7F\xA0\xAD]|'. 	// non-printing characters DEL, NO-BREAK SPACE, SOFT HYPHEN
+        '[{}^\~`])',       	// URL unsafe characters https://www.ietf.org/rfc/rfc1738.txt
+    	'_', $filename);
+
+	$clean = preg_replace('(_+)', '_', $clean); // Remove multiple repeated underscores
+	return $clean;
 }
 
 function copyFile($file, $component, $filearea, $itemid, $contextid, $course_root, $cmid){
