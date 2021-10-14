@@ -1,10 +1,5 @@
 <?php
 
-//This is the regex for detecting any number of spaces or <br> or <p> tags (in any of its forms) 
-
-const SPACES_REGEX = '([[:space:]]|\<br\/?[[:space:]]*\>|\<\/?p\>)*';
-const MEDIAFILE_REGEX = '((@@PLUGINFILE@@/(?P<filenames>[^\"\'\?<>]*)))';
-
 class MobileActivityPage extends MobileActivity {	
 
 	private $act = array();
@@ -196,8 +191,8 @@ class MobileActivityPage extends MobileActivity {
 		}
 
 		foreach($toreplace as $tr){
-			$content = str_replace('src="@@PLUGINFILE@@/'.$tr->orig_filename, 'src="images/'.$tr->clean_filename, $content);
-			$content = str_replace('src="@@PLUGINFILE@@/'.urlencode($tr->filename), 'src="images/'.$tr->clean_filename, $content);
+			$content = str_replace(MEDIAFILE_PREFIX.'/'.$tr->orig_filename, 'images/'.$tr->clean_filename, $content);
+			$content = str_replace(MEDIAFILE_PREFIX.'/'.urlencode($tr->filename), 'images/'.$tr->clean_filename, $content);
 		}
 		
 		return $content;
@@ -206,9 +201,7 @@ class MobileActivityPage extends MobileActivity {
 	private function extractAndReplaceMedia($content){
 		global $MEDIA;
 
-		$regex = '((\[\[' . SPACES_REGEX . 'media' . SPACES_REGEX . 'object=[\"|\'](?P<mediaobject>[\{\}\'\"\:a-zA-Z0-9\._\-\/,[:space:]]*)([[:space:]]|\<br\/?[[:space:]]*\>)*[\"|\']' . SPACES_REGEX . '\]\]))';
-
-		preg_match_all($regex,$content,$media_tmp, PREG_OFFSET_CAPTURE);
+		preg_match_all(EMBED_MEDIA_REGEX ,$content, $media_tmp, PREG_OFFSET_CAPTURE);
 		
 		if(!isset($media_tmp['mediaobject']) || count($media_tmp['mediaobject']) == 0){
 			return $content;
@@ -310,9 +303,8 @@ class MobileActivityPage extends MobileActivity {
 
 	private function extractMediaImage($content, $component, $filearea, $contextid){
 		global $CFG;
-		$regex = '(\]\]'.SPACES_REGEX.'\<img[[:space:]]src=[\"|\\\']images/(?P<filenames>[\w\W]*?)[\"|\\\'])';
-		
-		preg_match_all($regex,$content,$files_tmp, PREG_OFFSET_CAPTURE);
+
+		preg_match_all(EMBED_MEDIA_IMAGE_REGEX, $content, $files_tmp, PREG_OFFSET_CAPTURE);
 		if(!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0){
 			return false;
 		}
