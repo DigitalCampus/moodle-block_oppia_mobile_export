@@ -226,6 +226,21 @@ function getFileInfo($filename, $component, $filearea, $itemid, $contextid){
 
 }
 
+// Returns the filename without special or non-ASCII characters, replacing them with underscores 
+function cleanFilename($filename){
+	$clean = preg_replace(
+        '([^\x1F-\x7F]|'.	// non-ASCII characters
+        '[[:space:]]|' .	// spaces
+        '[<>:"/\\|?*]|'.  	// file system reserved https://en.wikipedia.org/wiki/Filename#Reserved_characters_and_words
+        '[\x00-\x1F]|'. 	// control characters http://msdn.microsoft.com/en-us/library/windows/desktop/aa365247%28v=vs.85%29.aspx
+        '[\x7F\xA0\xAD]|'. 	// non-printing characters DEL, NO-BREAK SPACE, SOFT HYPHEN
+        '[{}^\~`])',       	// URL unsafe characters https://www.ietf.org/rfc/rfc1738.txt
+    	'_', $filename);
+
+	$clean = preg_replace('(_+)', '_', $clean); // Remove multiple repeated underscores
+	return $clean;
+}
+
 function copyFile($file, $component, $filearea, $itemid, $contextid, $course_root, $cmid){
 	global $CFG;
 

@@ -161,10 +161,11 @@ class MobileActivityPage extends MobileActivity {
 		}	
 		$toreplace = array();
 
-		for($i=0;$i<count($files_tmp['filenames']);$i++){
+		for($i=0; $i<count($files_tmp['filenames']); $i++){
 
 			$orig_filename = $files_tmp['filenames'][$i][0];
 			$filename = urldecode($orig_filename);
+			$clean_filename = cleanFilename($filename);
 			if ( !$this->isLocalMedia($orig_filename) ){
 				
 				$filepath = '/';
@@ -172,7 +173,7 @@ class MobileActivityPage extends MobileActivity {
 				$file = $fs->get_file($contextid, $component, $filearea, $itemid, $filepath, $filename);
 				
 				if ($file) {
-					$imgfile = $this->courseroot."/images/".urldecode($orig_filename);
+					$imgfile = $this->courseroot."/images/".$clean_filename;
 					$file->copy_content_to($imgfile);
 				} else {
 					if($CFG->block_oppia_mobile_export_debug){
@@ -189,12 +190,14 @@ class MobileActivityPage extends MobileActivity {
 			$filenameReplace = new StdClass;
 			$filenameReplace->filename = $filename;
 			$filenameReplace->orig_filename = $orig_filename;
+			$filenameReplace->clean_filename = $clean_filename;
 			array_push($toreplace, $filenameReplace);
+
 		}
 
 		foreach($toreplace as $tr){
-			$content = str_replace('src="@@PLUGINFILE@@/'.$tr->orig_filename, 'src="images/'.urldecode($tr->orig_filename), $content);
-			$content = str_replace('src="@@PLUGINFILE@@/'.urlencode($tr->filename), 'src="images/'.urldecode($tr->orig_filename), $content);
+			$content = str_replace('src="@@PLUGINFILE@@/'.$tr->orig_filename, 'src="images/'.$tr->clean_filename, $content);
+			$content = str_replace('src="@@PLUGINFILE@@/'.urlencode($tr->filename), 'src="images/'.$tr->clean_filename, $content);
 		}
 		
 		return $content;
