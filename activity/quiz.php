@@ -12,17 +12,19 @@ class MobileActivityQuiz extends MobileActivity {
 	private $no_questions = 0; // total no of valid questions
 	private $configArray = array(); // config (quiz props) array
 	private $quiz_media = array();
+	private $keep_html = false; //Should the HTML of questions and answers be stripped out or not
 
 
 	public function __construct(){ 
 		$this->component_name = 'mod_quiz';
     } 
 	
-	function init($shortname, $summary, $configArray, $courseversion){
+	function init($shortname, $summary, $configArray, $courseversion, $keep_html=false){
 		$this->shortname = strip_tags($shortname);
 		$this->summary = $summary;
 		$this->configArray = $configArray;
 		$this->courseversion = $courseversion;
+		$this->keep_html = $keep_html;
 	}
 
 	function generate_md5($quiz, $quizJSON){
@@ -85,8 +87,8 @@ class MobileActivityQuiz extends MobileActivity {
 			}
 		}
 		
-		$nameJSON = extractLangs($cm->name,true);
-		$descJSON = extractLangs($this->summary,true);
+		$nameJSON = extractLangs($cm->name, true, !$this->keep_html);
+		$descJSON = extractLangs($this->summary, true, !$this->keep_html);
 		
 		$quizJsonQuestions = array();
 		$quizMaxScore = 0;
@@ -135,15 +137,15 @@ class MobileActivityQuiz extends MobileActivity {
 			if($q->qtype == 'match'){
 				$q->qtype = 'matching';
 				if($q->options->correctfeedback != ""){
-					$feedbackJSON = extractLangs($q->options->correctfeedback, true);
+					$feedbackJSON = extractLangs($q->options->correctfeedback, true, !$this->keep_html);
 					$questionprops["correctfeedback"] = json_decode($feedbackJSON);
 				}
 				if($q->options->partiallycorrectfeedback != ""){
-					$feedbackJSON = extractLangs($q->options->partiallycorrectfeedback, true);
+					$feedbackJSON = extractLangs($q->options->partiallycorrectfeedback, true, !$this->keep_html);
 					$questionprops["partiallycorrectfeedback"] = json_decode($feedbackJSON);
 				}
 				if($q->options->incorrectfeedback != ""){
-					$feedbackJSON = extractLangs($q->options->incorrectfeedback, true);
+					$feedbackJSON = extractLangs($q->options->incorrectfeedback, true, !$this->keep_html);
 					$questionprops["incorrectfeedback"] = json_decode($feedbackJSON);
 				}
 			}
@@ -165,7 +167,7 @@ class MobileActivityQuiz extends MobileActivity {
 				}
 			}
 			
-			$questionTitle = extractLangs(cleanHTMLEntities($q->questiontext, true), true, true);
+			$questionTitle = extractLangs(cleanHTMLEntities($q->questiontext, true), true, !$this->keep_html);
 
 			$j = 1;
 			// if matching question then concat the options with |
@@ -178,7 +180,7 @@ class MobileActivityQuiz extends MobileActivity {
 					}	
 				}
 				foreach($q->options->subquestions as $sq){
-					$titleJSON = extractLangs($sq->questiontext.$this->MATCHING_SEPERATOR.$sq->answertext, true, true);
+					$titleJSON = extractLangs($sq->questiontext.$this->MATCHING_SEPERATOR.$sq->answertext, true, !$this->keep_html, true);
 					// add response
 					$score = ($q->maxmark / $subqs);
 
@@ -199,7 +201,7 @@ class MobileActivityQuiz extends MobileActivity {
 					$responseprops = array('id' => rand(1,1000));
 					
 					if(strip_tags($r->feedback) != ""){
-						$feedbackJSON = extractLangs($r->feedback, true);
+						$feedbackJSON = extractLangs($r->feedback, true, !$this->keep_html);
 						$responseprops['feedback'] = json_decode($feedbackJSON);
 					}
 					// if numerical also add a tolerance
@@ -212,7 +214,7 @@ class MobileActivityQuiz extends MobileActivity {
 						'order' => $j,
 						'id' 	=> rand(1,1000),
 						'props' => $responseprops,
-						'title' => json_decode(extractLangs($r->answer, true, true, true)),
+						'title' => json_decode(extractLangs($r->answer, true, !$this->keep_html, true)),
 						'score' => sprintf("%.4f", $score)
 					));
 					$j++;
