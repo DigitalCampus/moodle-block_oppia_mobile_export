@@ -178,7 +178,7 @@ class MobileActivityQuiz extends MobileActivity {
 					}	
 				}
 				foreach($q->options->subquestions as $sq){
-					$titleJSON = extractLangs($sq->questiontext.$this->MATCHING_SEPERATOR.$sq->answertext, true);
+					$titleJSON = extractLangs($sq->questiontext.$this->MATCHING_SEPERATOR.$sq->answertext, true, true);
 					// add response
 					$score = ($q->maxmark / $subqs);
 
@@ -207,11 +207,12 @@ class MobileActivityQuiz extends MobileActivity {
 						$responseprops['tolerance'] = $r->tolerance;
 					}
 					$score = ($r->fraction * $q->maxmark);
+
 					array_push($responses, array(
 						'order' => $j,
 						'id' 	=> rand(1,1000),
 						'props' => $responseprops,
-						'title' => json_decode(extractLangs($r->answer, true, true)),
+						'title' => json_decode(extractLangs($r->answer, true, true, true)),
 						'score' => sprintf("%.4f", $score)
 					));
 					$j++;
