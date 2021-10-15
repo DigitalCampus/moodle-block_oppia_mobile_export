@@ -87,7 +87,7 @@ class MobileActivityQuiz extends MobileActivity {
 			}
 		}
 		
-		$nameJSON = extractLangs($cm->name, true, !$this->keep_html);
+		$nameJSON = extractLangs($cm->name, true);
 		$descJSON = extractLangs($this->summary, true, !$this->keep_html);
 		
 		$quizJsonQuestions = array();

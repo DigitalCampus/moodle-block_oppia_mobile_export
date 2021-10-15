@@ -10,6 +10,7 @@ class MobileActivityFeedback extends MobileActivity {
     private $is_valid = true; //i.e. doesn't only contain essay or random questions.
     private $no_questions = 0; // total no of valid questions
     private $configArray = array(); // config (quiz props) array
+    private $keep_html = false; //Should the HTML of questions and answers be stripped out or not
 
 
     public function __construct(){ 
@@ -17,11 +18,12 @@ class MobileActivityFeedback extends MobileActivity {
     }
 
 
-    function init($shortname, $summary, $courseversion, $configArray){
+    function init($shortname, $summary, $courseversion, $configArray, $keep_html=false){
         $this->shortname = strip_tags($shortname);
         $this->summary = $summary;
         $this->courseversion = $courseversion;
         $this->configArray = $configArray;
+        $this->keep_html = $keep_html;
     }
 
     function generate_md5($feedback, $quizJSON){
@@ -80,7 +82,7 @@ class MobileActivityFeedback extends MobileActivity {
         }
         
         $nameJSON = extractLangs($cm->name, true);
-        $descJSON = extractLangs($this->summary, true);
+        $descJSON = extractLangs($this->summary, true, !$this->keep_html);
         
         $quizJsonQuestions = array();
         $quizMaxScore = 0;
@@ -94,7 +96,7 @@ class MobileActivityFeedback extends MobileActivity {
                 $title = $q->name;
             }
             $required = $q->required == 1;
-            $questionTitle = extractLangs(cleanHTMLEntities($title, true), true, true);
+            $questionTitle = extractLangs(cleanHTMLEntities($title, true), true, !$this->keep_html);
             $type = null;
             
             // multichoice multi
@@ -106,11 +108,12 @@ class MobileActivityFeedback extends MobileActivity {
                 $resps = explode('|', $respstr);
                 $j = 1;
                 foreach($resps as $resp){
+                     $respTitle = extractLangs($resp, true, !$this->keep_html, true);
                     array_push($responses, array(
                         'order' => $j,
                         'id'    => rand(1,1000),
                         'props' => json_decode ("{}"),
-                        'title' => trim($resp),
+                        'title' => json_decode($respTitle),
                         'score' => "0"
                     ));
                     $j++;
@@ -121,7 +124,7 @@ class MobileActivityFeedback extends MobileActivity {
             } elseif($q->typ == "label"){
                 // label
                 $type = "description";
-                $questionTitle = extractLangs(cleanHTMLEntities($q->presentation, true), true, true);
+                $questionTitle = extractLangs($q->presentation, true, !$this->keep_html);
             } elseif($q->typ == "textarea"){
                 // long answer
                 $type = "essay";
@@ -135,11 +138,12 @@ class MobileActivityFeedback extends MobileActivity {
                     preg_match('/([0-9]+)#### (.*)/', $resp, $matches);
                     $score = $matches[1];
                     $respTitle = $matches[2];
+                    $respTitle = extractLangs($respTitle, true, !$this->keep_html, true);
                     array_push($responses, array(
                         'order' => $j,
                         'id'    => rand(1,1000),
                         'props' => json_decode ("{}"),
-                        'title' => $respTitle,
+                        'title' => json_decode($respTitle),
                         'score' => $score
                     ));
                     $j++;
@@ -157,11 +161,12 @@ class MobileActivityFeedback extends MobileActivity {
                 $resps = explode('|', $respstr);
                 $j = 1;
                 foreach($resps as $resp){
+                    $respTitle = extractLangs($resp, true, !$this->keep_html, true);
                     array_push($responses, array(
                         'order' => $j,
                         'id'    => rand(1,1000),
                         'props' => json_decode ("{}"),
-                        'title' => trim($resp),
+                        'title' => json_decode($respTitle),
                         'score' => "0"
                     ));
                     $j++;
