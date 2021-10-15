@@ -30,6 +30,7 @@ $stylesheet = required_param('stylesheet', PARAM_TEXT);
 $priority = required_param('coursepriority', PARAM_INT);
 $sequencing = required_param('coursesequencing', PARAM_TEXT);
 $DEFAULT_LANG = required_param('default_lang', PARAM_TEXT);
+$keep_html = optional_param('keep_html', false, PARAM_BOOL);
 $server = required_param('server', PARAM_TEXT);
 $course_export_status = required_param('course_export_status', PARAM_TEXT);
 $tags = required_param('coursetags', PARAM_TEXT);
@@ -129,6 +130,7 @@ add_or_update_oppiaconfig($id, 'coursepriority', $priority, $server);
 add_or_update_oppiaconfig($id, 'coursetags', $tags, $server);
 add_or_update_oppiaconfig($id, 'coursesequencing', $sequencing, $server);
 add_or_update_oppiaconfig($id, 'default_lang', $DEFAULT_LANG, $server);
+add_or_update_oppiaconfig($id, 'keep_html', $keep_html, $server);
 
 add_publishing_log($server_connection->url, $USER->id, $id, "export_start", "Export process starting");
 
@@ -222,7 +224,7 @@ foreach ($sectionmods as $modnumber) {
 								'showfeedback'=>$showfeedback,
 								'passthreshold'=>$passthreshold,
 								'maxattempts'=>$maxattempts);
-		$quiz->init($course->shortname,"Pre-test",$configArray,$versionid);
+		$quiz->init($course->shortname, "Pre-test", $configArray, $versionid, $keep_html);
 		$quiz->courseroot = $course_root;
 		$quiz->id = $mod->id;
 		$quiz->section = 0;
@@ -240,7 +242,7 @@ foreach ($sectionmods as $modnumber) {
 		    'passthreshold'=>0,
 		    'maxattempts'=>0);
 		
-		$feedback->init($server_connection, $course->shortname,$mod->name,$versionid, $configArray);
+		$feedback->init($server_connection, $course->shortname,$mod->name, $versionid, $configArray);
 		$feedback->courseroot = $course_root;
 		$feedback->id = $mod->id;
 		$feedback->section = 0;
@@ -370,7 +372,7 @@ foreach($sections as $sect) {
 									'passthreshold'=>$passthreshold,
 									'maxattempts'=>$maxattempts);
 				
-				$quiz->init($course->shortname,$sect->summary,$configArray,$versionid);
+				$quiz->init($course->shortname, $sect->summary, $configArray, $versionid, $keep_html);
 				$quiz->courseroot = $course_root;
 				$quiz->id = $mod->id;
 				$quiz->section = $sect_orderno;
@@ -407,7 +409,7 @@ foreach($sections as $sect) {
 				    'showfeedback'=>false,
 				    'passthreshold'=>0,
 				    'maxattempts'=>0);
-				$feedback->init($course->shortname,$sect->summary,$versionid, $configArray);
+				$feedback->init($course->shortname,$sect->summary,$versionid, $configArray, $keep_html);
 				$feedback->courseroot = $course_root;
 				$feedback->id = $mod->id;
 				$feedback->section = $sect_orderno;

@@ -81,7 +81,7 @@ foreach($sections as $sect) {
 			
 			if($mod->modname == 'quiz' && $mod->visible == 1){
 			    $quiz = new MobileActivityQuiz();
-				$quiz->init($course->shortname,$sect->summary,0,0);
+				$quiz->init($course->shortname, $sect->summary, 0, 0);
 				$quiz->id = $mod->id;
 				$quiz->section = $orderno;
 				$quiz->preprocess();
@@ -137,12 +137,15 @@ $priorities = [];
 for ($i=0; $i<=PRIORITY_LEVELS; $i++){
 	$priorities[$i] = array ("idx" => $i, "selected" => $i == $priority );
 }
+
 $sequencing = get_oppiaconfig($id,'coursesequencing','',$server);
+$keep_html = get_oppiaconfig($id,'keep_html','',$server);
 
 $base_settings = array(
 	'priorities' 	=> $priorities,
 	'tags' 			=> get_oppiaconfig($id,'coursetags','', $server),
 	'default_lang' 	=> get_oppiaconfig($id,'default_lang', $CFG->block_oppia_mobile_export_default_lang, $server),
+	'keep_html'		=> $keep_html,
 	'sequencing_none' 	 => $sequencing == '' || $sequencing == 'none',
 	'sequencing_section' => $sequencing == 'section',
 	'sequencing_section' => $sequencing == 'course',
