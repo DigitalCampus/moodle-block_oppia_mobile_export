@@ -47,10 +47,13 @@ $string['default_server'] = 'Default server';
 $string['default_lang'] = 'Default language';
 $string['default_lang_info'] = 'Language code in ISO-639 format';
 
-$string['thumbheight'] = 'Icon height';
-$string['thumbwidth'] = 'Icon width';
+$string['thumbheight'] = 'Activity thumbnail height';
+$string['thumbwidth'] = 'Activity thumbnail width';
 $string['thumbcrop'] = 'Crop Icon';
 $string['thumbcrop_info'] = 'Whether to crop the icon, untick to just scale the icon (which may leave borders around the image)';
+
+$string['section_icon_width'] = 'Section icon width';
+$string['section_icon_height'] = 'Section icon height';
 
 $string['thumb_bg_r'] = 'Background colour for images (red channel)';
 $string['thumb_bg_g'] = 'Background colour for images (green channel)';

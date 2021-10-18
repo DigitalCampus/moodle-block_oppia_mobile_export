@@ -327,6 +327,27 @@ foreach($sections as $sect) {
 			$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
 			$section->appendChild($temp);
 		}
+
+		// get section image (from summary)
+		$filename = extractImageFile($sect->summary,
+									'course',
+									'section',
+									$sect->id,
+									$context->id,
+									$course_root, 0);
+
+		if($filename){
+			$resizedFilename = resizeImage($course_root."/".$filename,
+			    $course_root."/images/".$sect->id.'_'.$context->id,
+								$CFG->block_oppia_mobile_export_section_icon_width,
+								$CFG->block_oppia_mobile_export_section_icon_height,
+								true);
+			unlink($course_root."/".$filename) or die('Unable to delete the file');
+			$temp = $xmlDoc->createElement("image");
+			$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode("/images/".$resizedFilename));
+			$section->appendChild($temp);
+		}
+
 		$act_orderno = 1;
 		$activities = $xmlDoc->createElement("activities");
 		foreach ($sectionmods as $modnumber) {

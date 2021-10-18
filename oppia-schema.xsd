@@ -73,6 +73,7 @@
 				<xs:complexType>
 					<xs:sequence>
 						<xs:element name="title" minOccurs="1" maxOccurs="unbounded" type="LangType" />
+						<xs:element name="image" minOccurs="0" maxOccurs="1" />
 						<xs:element name="activities" minOccurs="1" maxOccurs="1">
 							<xs:complexType>
 								<xs:sequence>
