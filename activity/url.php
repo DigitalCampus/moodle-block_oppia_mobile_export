@@ -5,7 +5,8 @@ class MobileActivityUrl extends MobileActivity {
 	private $url;
 
 
-	public function __construct(){ 
+	public function __construct($params=array()){ 
+		parent::__construct($params);
 		$this->component_name = 'mod_url';
     }
 	

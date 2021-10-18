@@ -13,11 +13,11 @@ class MobileActivityFeedback extends MobileActivity {
     private $keep_html = false; //Should the HTML of questions and answers be stripped out or not
 
 
-    public function __construct(){ 
+    public function __construct($params=array()){ 
+        parent::__construct($params);
         $this->component_name = 'mod_feedback';
     }
-
-
+    
     function init($shortname, $summary, $courseversion, $configArray, $keep_html=false){
         $this->shortname = strip_tags($shortname);
         $this->summary = $summary;

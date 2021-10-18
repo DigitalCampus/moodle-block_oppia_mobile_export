@@ -134,6 +134,13 @@ $string['export_sequencing_course'] = 'Sequencing through whole course';
 $string['export_sequencing_section'] = 'Sequencing within a section';
 $string['export_sequencing_label'] = 'Sequencing mode';
 
+$string['export_thumbnail_sizes_title'] = 'Thumbnail icon sizes';
+$string['export_thumbnail_sizes_desc'] = 'Specify the dimensions for the thumbnail images for activities and sections';
+$string['export_thumbnail_sizes_section'] = 'Section';
+$string['export_thumbnail_sizes_activity'] = 'Activity';
+$string['export_thumbnail_sizes_width'] = 'Width';
+$string['export_thumbnail_sizes_height'] = 'Height';
+
 $string['export_sections_start'] = 'Exporting course Sections...';
 $string['export_section_title'] = 'Exporting Section: {$a}';
 $string['export_sections_finish'] = 'Finished exporting activities and sections';

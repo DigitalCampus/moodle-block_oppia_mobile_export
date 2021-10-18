@@ -4,11 +4,22 @@ abstract class MobileActivity {
 	
 	public $courseroot;
 	public $id;
+	public $course_id;
+	public $server_id;
 	public $section;
 	public $md5;
 	
 	public $thumbnail_image = null;
 	public $component_name;
+
+	
+	public function __construct($params=array()){ 
+		if (isset($params['id'])) { $this->id = $params['id']; }
+		if (isset($params['courseroot'])) { $this->courseroot = $params['courseroot']; }
+		if (isset($params['server_id'])) { $this->server_id = $params['server_id']; }
+		if (isset($params['course_id'])) { $this->course_id = $params['course_id']; }
+		if (isset($params['section'])) { $this->section = $params['section']; }	
+    }
 
 	abstract function process();
 	abstract function getXML($mod,$counter,&$node,&$xmlDoc,$activity=true);
@@ -37,11 +48,13 @@ abstract class MobileActivity {
 	public function saveResizedThumbnail($thumbnail, $module_id, $keep_original=false){
 		global $CFG;
 
+		$thumb_height = get_oppiaconfig($this->course_id, 'thumb_height', $CFG->block_oppia_mobile_export_thumb_height, $this->server_id);
+		$thumb_width = get_oppiaconfig($this->course_id, 'thumb_width', $CFG->block_oppia_mobile_export_thumb_width, $this->server_id);
+
 		$this->thumbnail_image = $thumbnail;
 		$imageResized = resizeImage($this->courseroot . "/". $this->thumbnail_image,
 									$this->courseroot."/images/".$module_id,
-									$CFG->block_oppia_mobile_export_thumb_width,
-									$CFG->block_oppia_mobile_export_thumb_height);
+									$thumb_width, $thumb_height);
 
 		if ($imageResized){
 			$this->thumbnail_image = "/images/" . $imageResized;

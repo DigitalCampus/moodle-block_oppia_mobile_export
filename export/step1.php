@@ -138,14 +138,22 @@ for ($i=0; $i<=PRIORITY_LEVELS; $i++){
 	$priorities[$i] = array ("idx" => $i, "selected" => $i == $priority );
 }
 
-$sequencing = get_oppiaconfig($id,'coursesequencing','',$server);
-$keep_html = get_oppiaconfig($id,'keep_html','',$server);
+$sequencing = get_oppiaconfig($id, 'coursesequencing', '', $server);
+$keep_html = get_oppiaconfig($id, 'keep_html', '', $server);
+$thumb_height = get_oppiaconfig($id, 'thumb_height', $CFG->block_oppia_mobile_export_thumb_height, $server);
+$thumb_width = get_oppiaconfig($id, 'thumb_width', $CFG->block_oppia_mobile_export_thumb_width, $server);
+$section_height = get_oppiaconfig($id, 'section_height', $CFG->block_oppia_mobile_export_section_icon_height, $server);
+$section_width = get_oppiaconfig($id, 'section_width', $CFG->block_oppia_mobile_export_section_icon_width, $server);
 
 $base_settings = array(
 	'priorities' 	=> $priorities,
 	'tags' 			=> get_oppiaconfig($id,'coursetags','', $server),
 	'default_lang' 	=> get_oppiaconfig($id,'default_lang', $CFG->block_oppia_mobile_export_default_lang, $server),
 	'keep_html'		=> $keep_html,
+	'thumb_height'	=> $thumb_height,
+	'thumb_width'	=> $thumb_width,
+	'section_height'=> $section_height,
+	'section_width'	=> $section_width,
 	'sequencing_none' 	 => $sequencing == '' || $sequencing == 'none',
 	'sequencing_section' => $sequencing == 'section',
 	'sequencing_section' => $sequencing == 'course',
