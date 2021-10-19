@@ -233,7 +233,7 @@ foreach ($sectionmods as $modnumber) {
 			'course_id' => $id,
 			'shortname' => $course->shortname,
 			'summary' => 'Pre-test',
-			'versionid' => $versionid,
+			'courseversion' => $versionid,
 			'keep_html' => $keep_html,
 			'config_array' => array(
 				'randomselect'=>$random, 
@@ -263,7 +263,7 @@ foreach ($sectionmods as $modnumber) {
 			'course_id' => $id,
 			'shortname' => $course->shortname,
 			'summary' => 'Pre-test',
-			'versionid' => $versionid,
+			'courseversion' => $versionid,
 			'keep_html' => $keep_html,
 			'config_array' => array(
 				'showfeedback'=>false, 
@@ -425,7 +425,7 @@ foreach($sections as $sect) {
 					'course_id' => $id,
 					'shortname' => $course->shortname,
 					'summary' => $sect->summary,
-					'versionid' => $versionid,
+					'courseversion' => $versionid,
 					'keep_html' => $keep_html,
 					'config_array' => array(
 						'randomselect'=>$random, 
@@ -477,7 +477,7 @@ foreach($sections as $sect) {
 					'course_id' => $id,
 					'shortname' => $course->shortname,
 					'summary' => 'Pre-test',
-					'versionid' => $versionid,
+					'courseversion' => $versionid,
 					'keep_html' => $keep_html,
 					'config_array' => array(
 						'showfeedback'=>false, 
