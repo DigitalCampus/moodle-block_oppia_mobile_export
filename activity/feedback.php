@@ -135,7 +135,7 @@ class MobileActivityFeedback extends MobileActivity {
                 $j = 1;
                 foreach($resps as $resp){
                     preg_match('/([0-9]+)#### (.*)/', $resp, $matches);
-                    $score = $matches[1];
+                    $score = is_null($matches[1]) ? "0" : $matches[1];
                     $respTitle = $matches[2];
                     $respTitle = extractLangs($respTitle, true, !$this->keep_html, true);
                     array_push($responses, array(
