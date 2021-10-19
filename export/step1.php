@@ -80,10 +80,15 @@ foreach($sections as $sect) {
 			$mod = $mods[$modnumber];
 			
 			if($mod->modname == 'quiz' && $mod->visible == 1){
-			    $quiz = new MobileActivityQuiz();
-				$quiz->init($course->shortname, $sect->summary, 0, 0);
-				$quiz->id = $mod->id;
-				$quiz->section = $orderno;
+			    $quiz = new MobileActivityQuiz(array(
+			    	'id' => $mod->id,
+					'section' =>  $orderno,
+					'server_id' => $server,
+					'course_id' => $id,
+					'shortname' => $course->shortname,
+					'summary' => $sect->summary,
+					'versionid' => 0
+				));
 				$quiz->preprocess();
 				if ($quiz->get_is_valid() && $quiz->get_no_questions()> 0){
 					array_push($quizzes, array(

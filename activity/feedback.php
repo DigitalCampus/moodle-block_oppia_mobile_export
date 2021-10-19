@@ -15,16 +15,15 @@ class MobileActivityFeedback extends MobileActivity {
 
     public function __construct($params=array()){ 
         parent::__construct($params);
+        if (isset($params['shortname'])) { $this->shortname = strip_tags($params['shortname']); }
+        if (isset($params['summary'])) { $this->summary = $params['summary']; }
+        if (isset($params['config_array'])) { $this->configArray = $params['config_array']; }
+        if (isset($params['courseversion'])) { $this->courseversion = $params['courseversion']; }
+        if (isset($params['keep_html'])) { $this->keep_html = $params['keep_html']; }   
+
         $this->component_name = 'mod_feedback';
     }
-    
-    function init($shortname, $summary, $courseversion, $configArray, $keep_html=false){
-        $this->shortname = strip_tags($shortname);
-        $this->summary = $summary;
-        $this->courseversion = $courseversion;
-        $this->configArray = $configArray;
-        $this->keep_html = $keep_html;
-    }
+
 
     function generate_md5($feedback, $quizJSON){
         $md5postfix = "";
