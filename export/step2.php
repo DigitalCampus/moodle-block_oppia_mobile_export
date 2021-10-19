@@ -24,7 +24,7 @@ require_once($pluginroot . 'activity/url.php');
 
 require_once($CFG->libdir.'/componentlib.class.php');
 
-
+// We get all the params from the previous step form
 $id = required_param('id', PARAM_INT);
 $stylesheet = required_param('stylesheet', PARAM_TEXT);
 $priority = required_param('coursepriority', PARAM_INT);
@@ -33,6 +33,10 @@ $DEFAULT_LANG = required_param('default_lang', PARAM_TEXT);
 $keep_html = optional_param('keep_html', false, PARAM_BOOL);
 $server = required_param('server', PARAM_TEXT);
 $course_export_status = required_param('course_export_status', PARAM_TEXT);
+$thumb_height = required_param('thumb_height', PARAM_INT);
+$thumb_width = required_param('thumb_width', PARAM_INT);
+$section_height = required_param('section_height', PARAM_INT);
+$section_width = required_param('section_width', PARAM_INT);
 $tags = required_param('coursetags', PARAM_TEXT);
 $tags = cleanTagList($tags);
 
@@ -85,6 +89,17 @@ if ($server == "default"){
 	$server_connection->apikey = $CFG->block_oppia_mobile_export_default_api_key;
 }
 
+// Save new export configurations for this server
+add_or_update_oppiaconfig($id, 'coursepriority', $priority, $server);
+add_or_update_oppiaconfig($id, 'coursetags', $tags, $server);
+add_or_update_oppiaconfig($id, 'coursesequencing', $sequencing, $server);
+add_or_update_oppiaconfig($id, 'default_lang', $DEFAULT_LANG, $server);
+add_or_update_oppiaconfig($id, 'keep_html', $keep_html, $server);
+add_or_update_oppiaconfig($id, 'thumb_height', $thumb_height, $server);
+add_or_update_oppiaconfig($id, 'thumb_width', $thumb_width, $server);
+add_or_update_oppiaconfig($id, 'section_height', $section_height, $server);
+add_or_update_oppiaconfig($id, 'section_width', $section_width, $server);
+
 //make course dir etc for output
 deleteDir($pluginroot.OPPIA_OUTPUT_DIR.$USER->id."/temp");
 deleteDir($pluginroot.OPPIA_OUTPUT_DIR.$USER->id);
@@ -125,12 +140,6 @@ $meta->appendChild($xmlDoc->createElement("server", $server_connection->url));
 $meta->appendChild($xmlDoc->createElement("sequencing", $sequencing));
 $meta->appendChild($xmlDoc->createElement("tags", $tags));
 $meta->appendChild($xmlDoc->createElement("exportversion", $plugin_version));
-
-add_or_update_oppiaconfig($id, 'coursepriority', $priority, $server);
-add_or_update_oppiaconfig($id, 'coursetags', $tags, $server);
-add_or_update_oppiaconfig($id, 'coursesequencing', $sequencing, $server);
-add_or_update_oppiaconfig($id, 'default_lang', $DEFAULT_LANG, $server);
-add_or_update_oppiaconfig($id, 'keep_html', $keep_html, $server);
 
 add_publishing_log($server_connection->url, $USER->id, $id, "export_start", "Export process starting");
 
@@ -206,25 +215,34 @@ foreach ($sectionmods as $modnumber) {
 	if($mod->modname == 'quiz' && $mod->visible == 1){
 		echo "<p>".$mod->name."</p>";
 
-		$quiz = new MobileActivityQuiz();
-		
 		$random = optional_param('quiz_'.$mod->id.'_randomselect',0,PARAM_INT);
-		add_or_update_oppiaconfig($mod->id, 'randomselect', $random);
-		
-		$showfeedback = optional_param('quiz_'.$mod->id.'_showfeedback',2,PARAM_INT);
-		add_or_update_oppiaconfig($mod->id, 'showfeedback', $showfeedback);
-		
 		$passthreshold = optional_param('quiz_'.$mod->id.'_passthreshold',0,PARAM_INT);
-		add_or_update_oppiaconfig($mod->id, 'passthreshold', $passthreshold);
-
+		$showfeedback = optional_param('quiz_'.$mod->id.'_showfeedback',2,PARAM_INT);
 		$maxattempts = optional_param('quiz_'.$mod->id.'_maxattempts','unlimited',PARAM_INT);
+
+		add_or_update_oppiaconfig($mod->id, 'randomselect', $random);
+		add_or_update_oppiaconfig($mod->id, 'showfeedback', $showfeedback);
+		add_or_update_oppiaconfig($mod->id, 'passthreshold', $passthreshold);
 		add_or_update_oppiaconfig($mod->id, 'maxattempts', $maxattempts);
+
+		$quiz = new MobileActivityQuiz(array(
+	    	'id' => $mod->id,
+	    	'courseroot' => $course_root,
+			'section' => $sect_orderno,
+			'server_id' => $server,
+			'course_id' => $id,
+			'shortname' => $course->shortname,
+			'summary' => 'Pre-test',
+			'courseversion' => $versionid,
+			'keep_html' => $keep_html,
+			'config_array' => array(
+				'randomselect'=>$random, 
+				'showfeedback'=>$showfeedback, 
+				'passthreshold'=>$passthreshold,
+				'maxattempts'=>$maxattempts
+			)
+	    ));
 		
-		$configArray = Array('randomselect'=>$random, 
-								'showfeedback'=>$showfeedback,
-								'passthreshold'=>$passthreshold,
-								'maxattempts'=>$maxattempts);
-		$quiz->init($course->shortname, "Pre-test", $configArray, $versionid, $keep_html);
 		$quiz->courseroot = $course_root;
 		$quiz->id = $mod->id;
 		$quiz->section = 0;
@@ -236,13 +254,24 @@ foreach ($sectionmods as $modnumber) {
 	}
 	if($mod->modname == 'feedback' && $mod->visible == 1){
 	    echo $mod->name.OPPIA_HTML_BR;
-		$feedback = new MobileActivityFeedback();
-		$configArray = Array(
-		    'showfeedback'=>false,
-		    'passthreshold'=>0,
-		    'maxattempts'=>0);
+
+		$feedback = new MobileActivityFeedback(array(
+	    	'id' => $mod->id,
+	    	'courseroot' => $course_root,
+			'section' => $sect_orderno,
+			'server_id' => $server,
+			'course_id' => $id,
+			'shortname' => $course->shortname,
+			'summary' => 'Pre-test',
+			'courseversion' => $versionid,
+			'keep_html' => $keep_html,
+			'config_array' => array(
+				'showfeedback'=>false, 
+				'passthreshold'=>0,
+				'maxattempts'=>'unlimited'
+			)
+	    ));
 		
-		$feedback->init($server_connection, $course->shortname,$mod->name, $versionid, $configArray);
 		$feedback->courseroot = $course_root;
 		$feedback->id = $mod->id;
 		$feedback->section = 0;
@@ -327,6 +356,25 @@ foreach($sections as $sect) {
 			$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
 			$section->appendChild($temp);
 		}
+
+		// get section image (from summary)
+		$filename = extractImageFile($sect->summary,
+									'course',
+									'section',
+									$sect->id,
+									$context->id,
+									$course_root, 0);
+
+		if($filename){
+			$resizedFilename = resizeImage($course_root."/".$filename,
+			    $course_root."/images/".$sect->id.'_'.$context->id,
+								$section_width, $section_height, true);
+			unlink($course_root."/".$filename) or die('Unable to delete the file');
+			$temp = $xmlDoc->createElement("image");
+			$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode("/images/".$resizedFilename));
+			$section->appendChild($temp);
+		}
+
 		$act_orderno = 1;
 		$activities = $xmlDoc->createElement("activities");
 		foreach ($sectionmods as $modnumber) {
@@ -343,10 +391,14 @@ foreach($sections as $sect) {
 			echo '<div class="step"><strong>' . $mod->name . '</strong>'.OPPIA_HTML_BR;
 
 			if($mod->modname == 'page'){
-			    $page = new MobileActivityPage();
-				$page->courseroot = $course_root;
-				$page->id = $mod->id;
-				$page->section = $sect_orderno;
+			    $page = new MobileActivityPage(array(
+			    	'id' => $mod->id,
+			    	'courseroot' => $course_root,
+					'section' => $sect_orderno,
+					'server_id' => $server,
+					'course_id' => $id,
+			    ));
+				
 				$page->process();
 				$page->getXML($mod, $act_orderno, $activities, $xmlDoc, true);
 				$local_media_files = array_merge($local_media_files, $page->getLocalMedia());
@@ -354,28 +406,35 @@ foreach($sections as $sect) {
 				$act_orderno++;
 			}
 			else if($mod->modname == 'quiz'){
-			    $quiz = new MobileActivityQuiz();
-				$random = optional_param('quiz_'.$mod->id.'_randomselect',0,PARAM_INT);
-				add_or_update_oppiaconfig($mod->id, 'randomselect', $random);
-				
-				$showfeedback = optional_param('quiz_'.$mod->id.'_showfeedback',1,PARAM_INT);
-				add_or_update_oppiaconfig($mod->id, 'showfeedback', $showfeedback);
-				
-				$passthreshold = optional_param('quiz_'.$mod->id.'_passthreshold',0,PARAM_INT);
-				add_or_update_oppiaconfig($mod->id, 'passthreshold', $passthreshold);
 
-				$maxattempts = optional_param('quiz_'.$mod->id.'_maxattempts','unlimited',PARAM_INT);
+				$random = optional_param('quiz_'.$mod->id.'_randomselect', 0, PARAM_INT);
+				$showfeedback = optional_param('quiz_'.$mod->id.'_showfeedback', 1, PARAM_INT);
+				$passthreshold = optional_param('quiz_'.$mod->id.'_passthreshold', 0, PARAM_INT);
+				$maxattempts = optional_param('quiz_'.$mod->id.'_maxattempts', 'unlimited', PARAM_INT);
+				
+				add_or_update_oppiaconfig($mod->id, 'randomselect', $random);
+				add_or_update_oppiaconfig($mod->id, 'showfeedback', $showfeedback);
+				add_or_update_oppiaconfig($mod->id, 'passthreshold', $passthreshold);
 				add_or_update_oppiaconfig($mod->id, 'maxattempts', $maxattempts);
-				
-				$configArray = Array('randomselect'=>$random, 
-									'showfeedback'=>$showfeedback, 
-									'passthreshold'=>$passthreshold,
-									'maxattempts'=>$maxattempts);
-				
-				$quiz->init($course->shortname, $sect->summary, $configArray, $versionid, $keep_html);
-				$quiz->courseroot = $course_root;
-				$quiz->id = $mod->id;
-				$quiz->section = $sect_orderno;
+
+			    $quiz = new MobileActivityQuiz(array(
+			    	'id' => $mod->id,
+			    	'courseroot' => $course_root,
+					'section' => $sect_orderno,
+					'server_id' => $server,
+					'course_id' => $id,
+					'shortname' => $course->shortname,
+					'summary' => $sect->summary,
+					'courseversion' => $versionid,
+					'keep_html' => $keep_html,
+					'config_array' => array(
+						'randomselect'=>$random, 
+						'showfeedback'=>$showfeedback, 
+						'passthreshold'=>$passthreshold,
+						'maxattempts'=>$maxattempts
+					)
+			    ));
+
 				$quiz->preprocess();
 				if ($quiz->get_is_valid()){
 					$quiz->process();
@@ -386,33 +445,47 @@ foreach($sections as $sect) {
 				}
 			}
 			else if($mod->modname == 'resource'){
-			    $resource = new MobileActivityResource();
-				$resource->courseroot = $course_root;
-				$resource->id = $mod->id;
-				$resource->section = $sect_orderno;
+			    $resource = new MobileActivityResource(array(
+			    	'id' => $mod->id,
+			    	'courseroot' => $course_root,
+					'section' => $sect_orderno,
+					'server_id' => $server,
+					'course_id' => $id,
+			    ));
 				$resource->process();
 				$resource->getXML($mod, $act_orderno, $activities, $xmlDoc, true);
 				$act_orderno++;
 			}
 			else if($mod->modname == 'url'){
-			    $url = new MobileActivityUrl();
-				$url->courseroot = $course_root;
-				$url->id = $mod->id;
-				$url->section = $sect_orderno;
+			    $url = new MobileActivityUrl(array(
+			    	'id' => $mod->id,
+			    	'courseroot' => $course_root,
+					'section' => $sect_orderno,
+					'server_id' => $server,
+					'course_id' => $id,
+			    ));
 				$url->process();
 				$url->getXML($mod, $act_orderno, $activities, $xmlDoc, true);
 				$act_orderno++;
 			}
 			else if($mod->modname == 'feedback'){
-			    $feedback = new MobileActivityFeedback();
-				$configArray = Array(
-				    'showfeedback'=>false,
-				    'passthreshold'=>0,
-				    'maxattempts'=>0);
-				$feedback->init($course->shortname,$sect->summary,$versionid, $configArray, $keep_html);
-				$feedback->courseroot = $course_root;
-				$feedback->id = $mod->id;
-				$feedback->section = $sect_orderno;
+			    $feedback = new MobileActivityFeedback(array(
+			    	'id' => $mod->id,
+			    	'courseroot' => $course_root,
+					'section' => $sect_orderno,
+					'server_id' => $server,
+					'course_id' => $id,
+					'shortname' => $course->shortname,
+					'summary' => 'Pre-test',
+					'courseversion' => $versionid,
+					'keep_html' => $keep_html,
+					'config_array' => array(
+						'showfeedback'=>false, 
+						'passthreshold'=>0,
+						'maxattempts'=>'unlimited'
+					)
+			    ));
+			    
 				$feedback->preprocess();
 				if ($feedback->get_is_valid()){
 					$feedback->process();

@@ -13,18 +13,17 @@ class MobileActivityFeedback extends MobileActivity {
     private $keep_html = false; //Should the HTML of questions and answers be stripped out or not
 
 
-    public function __construct(){ 
+    public function __construct($params=array()){ 
+        parent::__construct($params);
+        if (isset($params['shortname'])) { $this->shortname = strip_tags($params['shortname']); }
+        if (isset($params['summary'])) { $this->summary = $params['summary']; }
+        if (isset($params['config_array'])) { $this->configArray = $params['config_array']; }
+        if (isset($params['courseversion'])) { $this->courseversion = $params['courseversion']; }
+        if (isset($params['keep_html'])) { $this->keep_html = $params['keep_html']; }   
+
         $this->component_name = 'mod_feedback';
     }
 
-
-    function init($shortname, $summary, $courseversion, $configArray, $keep_html=false){
-        $this->shortname = strip_tags($shortname);
-        $this->summary = $summary;
-        $this->courseversion = $courseversion;
-        $this->configArray = $configArray;
-        $this->keep_html = $keep_html;
-    }
 
     function generate_md5($feedback, $quizJSON){
         $md5postfix = "";
@@ -136,7 +135,7 @@ class MobileActivityFeedback extends MobileActivity {
                 $j = 1;
                 foreach($resps as $resp){
                     preg_match('/([0-9]+)#### (.*)/', $resp, $matches);
-                    $score = $matches[1];
+                    $score = is_null($matches[1]) ? "0" : $matches[1];
                     $respTitle = $matches[2];
                     $respTitle = extractLangs($respTitle, true, !$this->keep_html, true);
                     array_push($responses, array(

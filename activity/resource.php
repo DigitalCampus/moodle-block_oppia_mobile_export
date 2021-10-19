@@ -7,7 +7,8 @@ class MobileActivityResource extends MobileActivity {
 	private $resource_type = null;
     
 
-    public function __construct(){ 
+    public function __construct($params=array()){ 
+    	parent::__construct($params);
 		$this->component_name = 'mod_resource';
     }
     

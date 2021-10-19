@@ -8,10 +8,10 @@ class MobileActivityPage extends MobileActivity {
 	private $page_local_media = array();
 
 
-	public function __construct(){ 
+	public function __construct($params=array()){ 
+		parent::__construct($params);
 		$this->component_name = 'mod_page';
     }
-
 	
 	function generate_md5($page){
 		$contents = $page->name . $page->intro . $page->content;

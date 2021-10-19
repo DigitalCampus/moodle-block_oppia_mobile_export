@@ -23,6 +23,9 @@ if ($ADMIN->fulltree) {
 	$settings->add(new admin_setting_configtext(PLUGINNAME.'_course_icon_width', get_string('course_icon_width', PLUGINNAME),'', 500, PARAM_INT));
 	$settings->add(new admin_setting_configtext(PLUGINNAME.'_course_icon_height', get_string('course_icon_height', PLUGINNAME),'', 500, PARAM_INT));
 	
+	$settings->add(new admin_setting_configtext(PLUGINNAME.'_section_icon_width', get_string('section_icon_width', PLUGINNAME),'', 256, PARAM_INT));
+	$settings->add(new admin_setting_configtext(PLUGINNAME.'_section_icon_height', get_string('section_icon_height', PLUGINNAME),'', 256, PARAM_INT));
+
 	$settings->add(new admin_setting_configcheckbox(PLUGINNAME.'_thumb_crop', get_string('thumbcrop', PLUGINNAME),
 			get_string('thumbcrop_info', PLUGINNAME), 1));
 	

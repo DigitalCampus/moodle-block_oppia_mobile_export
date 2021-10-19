@@ -47,10 +47,13 @@ $string['default_server'] = 'Default server';
 $string['default_lang'] = 'Default language';
 $string['default_lang_info'] = 'Language code in ISO-639 format';
 
-$string['thumbheight'] = 'Icon height';
-$string['thumbwidth'] = 'Icon width';
+$string['thumbheight'] = 'Activity thumbnail height';
+$string['thumbwidth'] = 'Activity thumbnail width';
 $string['thumbcrop'] = 'Crop Icon';
 $string['thumbcrop_info'] = 'Whether to crop the icon, untick to just scale the icon (which may leave borders around the image)';
+
+$string['section_icon_width'] = 'Section icon width';
+$string['section_icon_height'] = 'Section icon height';
 
 $string['thumb_bg_r'] = 'Background colour for images (red channel)';
 $string['thumb_bg_g'] = 'Background colour for images (green channel)';
@@ -130,6 +133,13 @@ $string['export_sequencing_none'] = 'None';
 $string['export_sequencing_course'] = 'Sequencing through whole course';
 $string['export_sequencing_section'] = 'Sequencing within a section';
 $string['export_sequencing_label'] = 'Sequencing mode';
+
+$string['export_thumbnail_sizes_title'] = 'Thumbnail icon sizes';
+$string['export_thumbnail_sizes_desc'] = 'Specify the dimensions for the thumbnail images for activities and sections';
+$string['export_thumbnail_sizes_section'] = 'Section';
+$string['export_thumbnail_sizes_activity'] = 'Activity';
+$string['export_thumbnail_sizes_width'] = 'Width';
+$string['export_thumbnail_sizes_height'] = 'Height';
 
 $string['export_sections_start'] = 'Exporting course Sections...';
 $string['export_section_title'] = 'Exporting Section: {$a}';

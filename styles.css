@@ -145,7 +145,7 @@
     margin-top: -5px;
     margin-left: 10px;
 }
-
+.d-inline{ display: inline-block; margin-right:3px; }
 .status.loading {
 
   border: 3px solid #dadada;

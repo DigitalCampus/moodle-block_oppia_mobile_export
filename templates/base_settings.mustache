@@ -102,3 +102,46 @@
 	</div>
 </div>
 <br/>
+
+<div class='pure-g'>
+	<div class="pure-u-1-5 pure-u-md-1-8">
+		<div class='export-section-icon'>
+			{{# pix }} ic_aspectratio, block_oppia_mobile_export {{/ pix }}
+		</div>
+	</div>
+	<div class="pure-u-4-5 pure-u-md-7-8">
+		<p>
+		<b>{{# str }}export_thumbnail_sizes_title,block_oppia_mobile_export{{/ str }}</b><br/>
+		{{# str }}export_thumbnail_sizes_desc,block_oppia_mobile_export{{/ str }}<br/>
+		
+		<div class="pure-g">
+			<div class="pure-u-md-9-24 pure-u-1">
+				<div class="pure-md-center lead">
+				{{# str }} export_thumbnail_sizes_section,block_oppia_mobile_export{{/ str }}<br>
+				</div>
+
+				<strong style="width:50px;display:inline-block;">{{# str }} export_thumbnail_sizes_width,block_oppia_mobile_export{{/ str }}:</strong>
+				<input class="form-control d-inline" type="text" name="section_width" id="section_width" size="4" value="{{section_width}}" />px<br>
+
+				<strong style="width:50px;display:inline-block;">{{# str }} export_thumbnail_sizes_height,block_oppia_mobile_export{{/ str }}:</strong>
+				<input class="form-control d-inline" type="text" name="section_height" id="section_height" size="4" value="{{section_height}}" />px
+			</div>
+
+			<div class="pure-u-md-11-24 pure-u-1">
+				<div class="pure-md-center lead">
+				{{# str }} export_thumbnail_sizes_activity,block_oppia_mobile_export{{/ str }}<br>
+				</div>
+
+				<strong style="width:50px;display:inline-block;">{{# str }} export_thumbnail_sizes_width,block_oppia_mobile_export{{/ str }}:</strong>
+				<input class="form-control d-inline" type="text" name="thumb_width" id="thumb_width" size="4" value="{{thumb_width}}" />px<br>
+
+				<strong style="width:50px;display:inline-block;">{{# str }} export_thumbnail_sizes_height,block_oppia_mobile_export{{/ str }}:</strong>
+				<input class="form-control d-inline" type="text" name="thumb_height" id="thumb_height" size="4" value="{{thumb_height}}" />px
+			</div>
+			
+		</div>
+
+		</p>
+	</div>
+</div>
+<br/>
