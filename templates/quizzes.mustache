@@ -60,7 +60,7 @@
 
 		<div class="pure-u-lg-3-24 pure-u-md-1-2 pure-u-1">
 			<span class="pure-hidden-lg pure-hidden-xl">{{# str }}export_quiz_max_attempts,block_oppia_mobile_export{{/ str }}</span>
-			<select class="form-control" name='quiz_".$quiz->id."_maxattempts' id='id_maxattempts_quiz_".$quiz->id."'>
+			<select class="form-control" name='quiz_{{id}}_maxattempts' id='id_maxattempts_quiz_{{id}}'>
 				<option value='unlimited' {{# attempts_unlimited }} selected="selected" {{/ attempts_unlimited }}>
 					{{# str }}export_quiz_maxattempts_unlimited,block_oppia_mobile_export{{/ str }}
 				</option>

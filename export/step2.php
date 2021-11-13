@@ -220,6 +220,9 @@ foreach ($sectionmods as $modnumber) {
 		$showfeedback = optional_param('quiz_'.$mod->id.'_showfeedback',2,PARAM_INT);
 		$maxattempts = optional_param('quiz_'.$mod->id.'_maxattempts','unlimited',PARAM_INT);
 
+		if($maxattempts == 0){
+		    $maxattempts = 'unlimited';
+		}
 		add_or_update_oppiaconfig($mod->id, 'randomselect', $random);
 		add_or_update_oppiaconfig($mod->id, 'showfeedback', $showfeedback);
 		add_or_update_oppiaconfig($mod->id, 'passthreshold', $passthreshold);
@@ -412,6 +415,9 @@ foreach($sections as $sect) {
 				$passthreshold = optional_param('quiz_'.$mod->id.'_passthreshold', 0, PARAM_INT);
 				$maxattempts = optional_param('quiz_'.$mod->id.'_maxattempts', 'unlimited', PARAM_INT);
 				
+				if($maxattempts == 0){
+				    $maxattempts = 'unlimited';
+				}
 				add_or_update_oppiaconfig($mod->id, 'randomselect', $random);
 				add_or_update_oppiaconfig($mod->id, 'showfeedback', $showfeedback);
 				add_or_update_oppiaconfig($mod->id, 'passthreshold', $passthreshold);
