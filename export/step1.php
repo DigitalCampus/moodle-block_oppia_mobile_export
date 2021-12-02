@@ -95,7 +95,8 @@ foreach($sections as $sect) {
 						'section' => $sectionTitle,
 						'name' => $mod->name,
 						'noquestions' => $quiz->get_no_questions(),
-						'id' => $mod->id
+						'id' => $mod->id,
+					    'password' => $quiz->has_password()
 					));
 				}
 			}
@@ -133,6 +134,8 @@ for ($qid=0; $qid<count($quizzes); $qid++){
 		for ($i=0; $i<MAX_ATTEMPTS; $i++){
 			$quiz['max_attempts'][$i] = array ("num" => $i+1, "selected" => $current_maxattempts == $i+1); 
 		}
+		
+		
 
 	 $quizzes[$qid] = $quiz;
 }

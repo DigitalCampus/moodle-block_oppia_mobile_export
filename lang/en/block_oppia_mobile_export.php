@@ -97,7 +97,7 @@ $string['error_parsing_html'] = 'Error parsing HTML contents';
 $string['error_exporting_no_sections'] = 'The course cannot be exported as there are no sections. This can happen if the section has the summary field empty or if none of the sections contain any supported activities, that is usually because of them not having the summary field completed too. Please check your activities\' summaries and try again.';
 
 $string['export_title'] = 'Export - step {$a->stepno}: {$a->coursename}';
-$string['export_contains_quizzes'] = 'Since this course contains quizzes, please select which quizzes (if any) should be a random selection of the questions available';
+$string['export_contains_quizzes'] = 'Since this course contains quizzes, please configure the quizzes';
 
 $string['export_quiz_sectionname'] = 'Section Name';
 $string['export_quiz_title'] = 'Quiz Title';
@@ -105,6 +105,7 @@ $string['export_quiz_norandom'] = 'No random questions';
 $string['export_quiz_feedback'] = 'Show feedback';
 $string['export_quiz_passthreshold'] = 'Pass Threshold (%)';
 $string['export_quiz_max_attempts'] = 'Max number of attempts';
+$string['export_quiz_password_protected'] = 'Password protected';
 
 $string['export_quiz_norandom_all'] = 'Use all questions (don\'t randomise)';
 $string['export_quiz_norandom_selectx'] = 'Select {$a} random questions';

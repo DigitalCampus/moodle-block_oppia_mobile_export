@@ -64,6 +64,18 @@ class MobileActivityQuiz extends MobileActivity {
 		}
 	}
 
+	function has_password(){
+	    global $DB, $USER;
+	    
+	    $cm = get_coursemodule_from_id('quiz', $this->id);
+	    $quiz = $DB->get_record('quiz', array('id'=>$cm->instance), '*', MUST_EXIST);
+	    
+	    if($quiz->password != ""){
+	        return true;
+	    } else {
+	        return false;
+	    }
+	}
 
 	function process(){
 		global $DB, $USER;
@@ -237,6 +249,8 @@ class MobileActivityQuiz extends MobileActivity {
 		
 		$quizprops["maxscore"] = $quizMaxScore;
 
+		
+		
 		$quizJson = array(
 			'id' 		 => rand(1,1000),
 			'title' 	 => json_decode($nameJSON),
@@ -246,6 +260,12 @@ class MobileActivityQuiz extends MobileActivity {
 
 		$this->generate_md5($quiz, $quizJson);
 		$quizJson['props']['digest'] = $this->md5;
+
+		// check for password protection
+		// done after md5 is created so password can be changed without it being a new quiz
+		if($quiz->password != "") {
+		    $quizJson['props']['password'] = $quiz->password;
+		}
 		$this->content = json_encode($quizJson);
 		
 	}
