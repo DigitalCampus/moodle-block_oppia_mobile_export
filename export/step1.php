@@ -164,7 +164,7 @@ $base_settings = array(
 	'section_width'	=> $section_width,
 	'sequencing_none' 	 => $sequencing == '' || $sequencing == 'none',
 	'sequencing_section' => $sequencing == 'section',
-	'sequencing_section' => $sequencing == 'course',
+	'sequencing_course' => $sequencing == 'course',
 );
 
 echo "<form name='courseconfig' method='post' action='".$CFG->wwwroot.PLUGINPATH."export/step2.php'>";
