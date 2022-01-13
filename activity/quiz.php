@@ -35,6 +35,16 @@ class MobileActivityQuiz extends MobileActivity {
 		$contents = json_encode($quizJSON);
 		$this->md5 = md5( $quiz->intro . removeIDsFromJSON($contents) . $md5postfix);
 	}
+
+	// Bit masks for the quiz review options (copied from Moodle's internal class `mod_quiz_display_options`)
+	const IMMEDIATELY_AFTER = 0x01000;
+	const LATER_WHILE_OPEN  = 0x00100;	
+	const AFTER_CLOSE       = 0x00010;
+
+	function get_review_availability($quiz, $when){
+		return boolval(($when & intval($quiz->reviewcorrectness)) == $when);
+	}
+
 	
 	function preprocess(){
 		global $DB,$USER;
@@ -46,6 +56,18 @@ class MobileActivityQuiz extends MobileActivity {
 			$this->is_valid = false;
 			return;
 		}
+
+		$quiz = $DB->get_record('quiz', array('id'=>$cm->instance), '*', MUST_EXIST);
+		$allow_review_after = $this->get_review_availability($quiz, self::IMMEDIATELY_AFTER);
+		$allow_review_later = $this->get_review_availability($quiz, self::LATER_WHILE_OPEN);
+		// Only include the config values if they are set to false
+		if (!$allow_review_after){
+			$this->configArray['immediate_whether_correct'] = false;
+		}
+		if (!$allow_review_later){
+			$this->configArray['later_whether_correct'] = false;
+		}
+
 		$quizobj->preload_questions();
 		$quizobj->load_questions();
 		$qs = $quizobj->get_questions();
@@ -249,8 +271,6 @@ class MobileActivityQuiz extends MobileActivity {
 		
 		$quizprops["maxscore"] = $quizMaxScore;
 
-		
-		
 		$quizJson = array(
 			'id' 		 => rand(1,1000),
 			'title' 	 => json_decode($nameJSON),
