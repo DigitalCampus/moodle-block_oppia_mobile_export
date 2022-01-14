@@ -1,0 +1,69 @@
+$theme-extra-color: #1155cc;
+$theme-extra-color-dark: #1C4587;
+
+body { margin: 5px 0; }
+p { margin:10px 20px; } 
+ul { margin: 10px; }
+table th { font-size: 110%; }
+
+h1, h2, h3, h4 {
+    padding: 10px;
+    text-align:left;
+    color: white;
+    background-color: $primary-color;
+    margin: 10px 0;
+    font-weight: bold;
+}
+
+h1 {
+    font-size: 130%;
+
+    &.unit {
+        background-color: white;
+        color: $theme-extra-color;
+        font-size: 150%;
+    }
+
+    &.session {
+        background-color: white;
+        color: $theme-extra-color;
+        font-size: 140%;
+    }
+}
+
+h2 {
+    font-size: 120%;
+}
+
+h3, h4 {
+    font-size: 110%;
+}
+
+div.activity, div.case-study, div.subsession {
+    color: $theme-extra-color;
+    background-color: #d9d9d9;
+
+    & > h1, & > h2, & > h3, & > h4{
+        color: $theme-extra-color;
+        font-size: 110%;
+        background-color: #d9d9d9;
+    }
+}
+
+div.key-takeaway, div.remember {
+    color: $theme-extra-color-dark;
+    background-color: #efefef;
+
+    & > h1, & > h2, & > h3, & > h4{
+        color: $theme-extra-color-dark;
+        font-size: 110%;
+        background-color: #efefef;
+    }
+}
+
+div.instructions > * {
+    color: black;
+    font-weight: bold;
+        background-color: white;
+    font-size: 110%;
+}

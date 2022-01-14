@@ -1,12 +1,3 @@
-/*
-Covid ET
-#31849b - steel blue
-#f79646 - mustard orange
-#597725 - DC dark green
-#77A240 - DC mid green
-#a5c727 - DC light green
-*/
-
 * { 
 	padding:0px;
     margin:0px;
@@ -20,7 +11,7 @@ body {
 h1,h2,h3,h4 {
 	margin: 10px 5px;
 	text-align:center;
-	color: #597725;
+	color: $primary-color-dark;
 	font-size: 120%;
 }
 p {
@@ -28,39 +19,45 @@ p {
 }
 ul {
 	margin: 10px 0;
+
+	li {
+		margin-left:25px;
+		list-style: none;	
+
+		&:before {
+			/* For a round bullet */
+			content:'\2022';
+			/* For a square bullet */
+			/*content:'\25A0';*/
+			display: block;
+			position: relative;
+			max-width: 0px;
+			max-height: 0px;
+			left: -20px;
+			top: 2px;
+			color: $primary-color;
+			font-size: 30px;
+			text-shadow: 0 2px 1px rgba(0,0,0,0.2);
+		}
+	}
+
+	& > ul{
+		margin-left:20px;
+	}
+
+	ul {
+		margin-top:0;
+
+		li { 
+			line-height: 1.4em;
+			&:before {
+				color: $secondary-color;
+				font-size: 24px;	
+			}
+		}
+	}
 }
-ul li {
-	margin-left:25px;
-	list-style: none;	
-}
-ul li:before {
-	/* For a round bullet */
-	content:'\2022';
-	/* For a square bullet */
-	/*content:'\25A0';*/
-	display: block;
-	position: relative;
-	max-width: 0px;
-	max-height: 0px;
-	left: -20px;
-	top: 2px;
-	color: #a5c727;
-	font-size: 30px;
-	text-shadow: 0 2px 1px rgba(0,0,0,0.2);
-}
-ul ul{
-	margin-top:0;
-}
-ul > ul{
-	margin-left:20px;
-}
-ul ul li:before{
-	color: #77A240;
-	font-size: 24px;
-}
-ul ul li{
-	line-height: 1.4em;
-}
+
 ol {
 	margin: 10px 0;
 }
@@ -68,40 +65,44 @@ ol li {
 	margin-left:25px;
 }
 a {
-	color: #597725;
+	color: $primary-color-dark;
 	text-decoration: underline;
 }
 table {
-	border:1px solid #000;
+	border:1px solid $table-border-color;
 	width:100%;
 	border-collapse: collapse;
+
+	th {
+		font-weight: bold;
+		background: $table-header-bg-color;
+		padding: 0.5em;
+		border-bottom: 1px solid $table-border-color;
+		border-right: 1px solid $table-border-color;
+	}
+
+	td {
+		padding: 0.5em;
+		border-bottom: 1px solid $table-border-color;
+		border-right: 1px solid $table-border-color;
+		vertical-align: top;
+	
+		& > ul > li:before {
+		      /* For a round bullet */
+		      content:'\2022';
+		      /* For a square bullet */
+		      /*content:'\25A0';*/
+		      display: block;
+		      position: relative;
+		      max-width: 0px;
+		      max-height: 0px;
+		      left: -20px;
+		      top: -0px;
+		      color: $table-border-color;
+		}
+	}
 }
-table th {
-	font-weight: bold;
-	background: #77A240;
-	padding: 0.5em;
-	border-bottom: 1px solid #000;
-	border-right: 1px solid #000;
-}
-table td {
-	padding: 0.5em;
-	border-bottom: 1px solid #000;
-	border-right: 1px solid #000;
-	vertical-align: top;
-}
-td > ul > li:before {
-        /* For a round bullet */
-      content:'\2022';
-      /* For a square bullet */
-      /*content:'\25A0';*/
-      display: block;
-      position: relative;
-      max-width: 0px;
-      max-height: 0px;
-      left: -20px;
-      top: -0px;
-      color: #000;
-}
+
 .box {
 	margin:10px 5px;
 	padding: 4px 4px 4px 4px;
@@ -150,7 +151,7 @@ div.question p {
 }
 .reveal {
 	text-decoration: underline;
-	color: #597725;
+	color: $primary-color-dark;
 	cursor: pointer;
 }
 img {

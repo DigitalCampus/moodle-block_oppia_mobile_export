@@ -9,6 +9,11 @@ define('OPPIA_PUBLISH_LOG_TABLE', 'block_oppia_publish_log');
 define('OPPIA_OUTPUT_DIR', 'output/');
 define('OPPIA_MODULE_XML', '/module.xml');
 
+// Constants for style compiling
+define('STYLES_DIR', 'styles/');
+define('STYLES_THEMES_DIR', 'themes/');
+define('STYLES_BASE_SCSS', 'base.scss');
+define('STYLES_EXTRA_SUFFIX', '_extra');
 
 // constants for html output
 define('OPPIA_HTML_SPAN_ERROR_START', '<span class="export-error">');
