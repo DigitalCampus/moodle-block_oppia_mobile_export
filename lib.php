@@ -517,6 +517,7 @@ function recurse_copy($src,$dst) {
 	closedir($dir);
 }
 
+
 function createDOMElemFromTemplate($doc, $template_name, $params){
 	global $OUTPUT;
 
@@ -525,5 +526,26 @@ function createDOMElemFromTemplate($doc, $template_name, $params){
 	$dom->loadHTML($elemHTML, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
 	return $doc->importNode($dom->documentElement, true);
 }
+
+
+function getCompiledCSSTheme($pluginroot, $theme){
+	$styles_root = $pluginroot.STYLES_DIR;
+	$theme_scss = file_get_contents($styles_root.STYLES_THEMES_DIR.$theme.".scss");
+	$scss_path = $styles_root.STYLES_BASE_SCSS;
+
+	$compiler = new core_scss();
+	$compiler->prepend_raw_scss($theme_scss);
+	$compiler->set_file($scss_path);
+
+	$extra_filename = $styles_root.STYLES_THEMES_DIR.$theme.STYLES_EXTRA_SUFFIX .'.scss';
+	if (file_exists($extra_filename)){
+		$extra_scss = file_get_contents($extra_filename);
+		$compiler->append_raw_scss($extra_scss);
+	}
+
+	$css = $compiler->to_css();
+	return $css;
+}
+
 
 ?>

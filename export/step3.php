@@ -146,14 +146,15 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
 	$xml->save($course_root.OPPIA_MODULE_XML);
 
 	echo '<p class="step">'. get_string('export_style_start', PLUGINNAME) . ' - ' . $stylesheet. '</p>';
-	
-	if (!copy($pluginroot."styles/".$stylesheet, $course_root."/style.css")) {
+
+	$styles = getCompiledCSSTheme($pluginroot, $stylesheet);
+	if (!file_put_contents($course_root."/style.css", $styles)){
 		echo "<p>".get_string('error_style_copy', PLUGINNAME)."</p>";
 	}
 	
 	echo '<p class="step">'. get_string('export_style_resources', PLUGINNAME) . '</p>';
-	list($filename, $extn) = explode('.', $stylesheet);
-	recurse_copy($pluginroot."styles/".$filename."-style-resources/", $course_root."/style_resources/");
+	
+	recurse_copy($pluginroot."styles/".$stylesheet."-style-resources/", $course_root."/style_resources/");
 	
 	recurse_copy($pluginroot."js/", $course_root."/js/");
 	

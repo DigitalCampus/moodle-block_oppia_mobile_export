@@ -68,12 +68,21 @@ class block_oppia_mobile_export extends block_base {
     
     
     private function getStyles(){
+
+        $styles_dir = dirname(__FILE__).'/'.STYLES_DIR.STYLES_THEMES_DIR;
         $styles = array();
-        if ($handle = opendir(dirname(__FILE__).'/styles/')) {
+        if ($handle = opendir($styles_dir)) {
             while (false !== ($file = readdir($handle))) {
-                if($file!="." && $file!=".." && !is_dir(dirname(__FILE__).'/styles/'.$file)){
-                    array_push($styles, $file);
+                if ($file == "." || $file == ".." || is_dir($styles_dir.$file)){
+                    continue;
                 }
+
+                list($theme, $extn) = explode('.', $file);
+                $ends_extra_suffix = substr($theme, -strlen(STYLES_EXTRA_SUFFIX)) === STYLES_EXTRA_SUFFIX;
+                if ($extn == 'scss' && !$ends_extra_suffix){
+                    array_push($styles, $theme);    
+                }
+                
             }
         }
         return $styles;
