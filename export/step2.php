@@ -153,9 +153,13 @@ foreach($sections as $sect) {
 		}
 
 		if ($activity_count > 0){
+
+			$password = get_oppiaconfig($sect->id, 'password', '', $server);
+
 			array_push($config_sections, array(
 				'sect_orderno' => $sect_orderno,
 				'sect_id' => $sect->id,
+				'password' => $password,
 				'activity_count' => $activity_count,
 				'title' => $sectionTitle
 			));
@@ -186,6 +190,5 @@ echo $OUTPUT->render_from_template(
 		'wwwroot' => $CFG->wwwroot));
 
 echo $OUTPUT->footer();
-
 
 ?>

@@ -19,7 +19,7 @@
 			{{activity_count}} activities
 		</div>
 		<div class="pure-u-lg-7-24 pure-u-1">
-			<input class="form-control pure-u-1" type="text" name="section_{{sect_id}}_password" id="id_s_section_password_{{sect_orderno}}" />
+			<input class="form-control pure-u-1" type="text" name="section_{{sect_id}}_password" {{#password}}value="{{.}}"{{/password}} "id="id_s_section_password_{{sect_orderno}}" />
 		</div>
 	</div>
 	{{/sections}}

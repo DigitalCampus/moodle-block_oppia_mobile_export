@@ -202,18 +202,10 @@ foreach ($sectionmods as $modnumber) {
 	if($mod->modname == 'quiz' && $mod->visible == 1){
 		echo "<p>".$mod->name."</p>";
 
-		$random = optional_param('quiz_'.$mod->id.'_randomselect',0,PARAM_INT);
-		$passthreshold = optional_param('quiz_'.$mod->id.'_passthreshold',0,PARAM_INT);
-		$showfeedback = optional_param('quiz_'.$mod->id.'_showfeedback',2,PARAM_INT);
-		$maxattempts = optional_param('quiz_'.$mod->id.'_maxattempts','unlimited',PARAM_INT);
-
-		if($maxattempts == 0){
-		    $maxattempts = 'unlimited';
-		}
-		add_or_update_oppiaconfig($mod->id, 'randomselect', $random);
-		add_or_update_oppiaconfig($mod->id, 'showfeedback', $showfeedback);
-		add_or_update_oppiaconfig($mod->id, 'passthreshold', $passthreshold);
-		add_or_update_oppiaconfig($mod->id, 'maxattempts', $maxattempts);
+		$randomselect = get_oppiaconfig($id, 'randomselect', 0, $server);
+		$passthreshold = get_oppiaconfig($id, 'passthreshold', 0, $server);
+		$showfeedback = get_oppiaconfig($id, 'showfeedback', 2, $server);
+		$maxattempts = get_oppiaconfig($id, 'maxattempts', 'unlimited', $server);
 
 		$quiz = new MobileActivityQuiz(array(
 	    	'id' => $mod->id,
@@ -226,7 +218,7 @@ foreach ($sectionmods as $modnumber) {
 			'courseversion' => $versionid,
 			'keep_html' => $keep_html,
 			'config_array' => array(
-				'randomselect'=>$random, 
+				'randomselect'=>$randomselect, 
 				'showfeedback'=>$showfeedback, 
 				'passthreshold'=>$passthreshold,
 				'maxattempts'=>$maxattempts
@@ -351,6 +343,8 @@ foreach($sections as $sect) {
 		if ($sect_password != ''){
 			echo '<span class="export-results warning">'. get_string('section_password_added', PLUGINNAME) .'</span>'.OPPIA_HTML_BR;
 			$section->appendChild($xmlDoc->createAttribute("password"))->appendChild($xmlDoc->createTextNode($sect_password));
+			// We store the section's password for future exports 
+			add_or_update_oppiaconfig($sect->id, 'password', $sect_password, $server);
 		}
 
 		// get section image (from summary)
@@ -403,18 +397,10 @@ foreach($sections as $sect) {
 			}
 			else if($mod->modname == 'quiz'){
 
-				$random = optional_param('quiz_'.$mod->id.'_randomselect', 0, PARAM_INT);
-				$showfeedback = optional_param('quiz_'.$mod->id.'_showfeedback', 1, PARAM_INT);
-				$passthreshold = optional_param('quiz_'.$mod->id.'_passthreshold', 0, PARAM_INT);
-				$maxattempts = optional_param('quiz_'.$mod->id.'_maxattempts', 'unlimited', PARAM_INT);
-				
-				if($maxattempts == 0){
-				    $maxattempts = 'unlimited';
-				}
-				add_or_update_oppiaconfig($mod->id, 'randomselect', $random);
-				add_or_update_oppiaconfig($mod->id, 'showfeedback', $showfeedback);
-				add_or_update_oppiaconfig($mod->id, 'passthreshold', $passthreshold);
-				add_or_update_oppiaconfig($mod->id, 'maxattempts', $maxattempts);
+				$randomselect = get_oppiaconfig($id, 'randomselect', 0, $server);
+				$passthreshold = get_oppiaconfig($id, 'passthreshold', 0, $server);
+				$showfeedback = get_oppiaconfig($id, 'showfeedback', 2, $server);
+				$maxattempts = get_oppiaconfig($id, 'maxattempts', 'unlimited', $server);
 
 			    $quiz = new MobileActivityQuiz(array(
 			    	'id' => $mod->id,
@@ -427,7 +413,7 @@ foreach($sections as $sect) {
 					'courseversion' => $versionid,
 					'keep_html' => $keep_html,
 					'config_array' => array(
-						'randomselect'=>$random, 
+						'randomselect'=>$randomselect, 
 						'showfeedback'=>$showfeedback, 
 						'passthreshold'=>$passthreshold,
 						'maxattempts'=>$maxattempts
@@ -502,7 +488,7 @@ foreach($sections as $sect) {
 			flush_buffers();
 		}
 
-		if ($act_orderno>1){
+		if ($act_orderno > 1){
 			$section->appendChild($activities);
 			$structure->appendChild($section);
 			$sect_orderno++;
