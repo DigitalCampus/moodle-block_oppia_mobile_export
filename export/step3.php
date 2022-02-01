@@ -347,6 +347,12 @@ foreach($sections as $sect) {
 			$section->appendChild($temp);
 		}
 
+		$sect_password =  optional_param('section_'.$sect->id.'_password', '', PARAM_TEXT);
+		if ($sect_password != ''){
+			echo 'Section protected by password';
+			$section->appendChild($xmlDoc->createAttribute("password"))->appendChild($xmlDoc->createTextNode($sect_password));
+		}
+
 		// get section image (from summary)
 		$filename = extractImageFile($sect->summary,
 									'course',

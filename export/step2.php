@@ -92,8 +92,8 @@ $a = new stdClass();
 $a->stepno = 2;
 $a->coursename = strip_tags($course->fullname);
 echo "<h2>".get_string('export_title', PLUGINNAME, $a)."</h2>";
-echo "<h3>".get_string('export_sections_start', PLUGINNAME)."</h3>";
 
+$config_sections = array();
 $sect_orderno = 1;
 foreach($sections as $sect) {
 	flush_buffers();
@@ -101,6 +101,7 @@ foreach($sections as $sect) {
 	if ($sect->section == 0) {
 	    continue;
 	}
+
 	$sectionmods = explode(",", $sect->sequence);
 	$defaultSectionTitle = false;
 	$sectionTitle = strip_tags($sect->summary);
@@ -113,7 +114,6 @@ foreach($sections as $sect) {
 		$sectionTitle = get_string('sectionname', 'format_topics') . ' ' . $sect->section;
 		$defaultSectionTitle = true;
 	}
-	$sectionTitle = extractLangs($sect->summary);
 
 	if(count($sectionmods)>0){
 		$activity_count = 0;
@@ -152,8 +152,13 @@ foreach($sections as $sect) {
 			}
 		}
 
-		if ($activity_count >= 1){
-			echo "<h4>".get_string('export_section_title', PLUGINNAME, $sectionTitle)."</h4>";
+		if ($activity_count > 0){
+			array_push($config_sections, array(
+				'sect_orderno' => $sect_orderno,
+				'sect_id' => $sect->id,
+				'activity_count' => $activity_count,
+				'title' => $sectionTitle
+			));
 			$sect_orderno++;
 		} 
 		else{
@@ -177,6 +182,7 @@ echo $OUTPUT->render_from_template(
 		'server_id' => $server,
 		'stylesheet' => $stylesheet,
 		'course_export_status' => $course_export_status,
+		'sections' => $config_sections,
 		'wwwroot' => $CFG->wwwroot));
 
 echo $OUTPUT->footer();

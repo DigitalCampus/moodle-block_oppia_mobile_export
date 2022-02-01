@@ -1,6 +1,29 @@
 
 <form name="courseconfig" method="post" action="{{wwwroot}}/blocks/oppia_mobile_export/export/step3.php">
+	
+	<h4>Password protection</h4>
+	<p>
+	If you want to lock a topic with password, please introduce it in the table below.
+	</p>
 
+	<div class="quizzes-table">
+	<div class="pure-g titles">
+		<div class="pure-u-lg-17-24 pl-3 pure-u-1 text-left">{{# str }}export_quiz_sectionname,block_oppia_mobile_export{{/ str }}</div>
+		<div class="pure-u-lg-7-24 pure-u-1 text-left">Password</div>
+	</div>
+
+	{{#sections}}
+	<div class="pure-g">
+		<div class="pure-u-lg-17-24 pure-u-1 step text-left pl-3">
+			<h5 style="margin-bottom:0;">{{title}}</h5>
+			{{activity_count}} activities
+		</div>
+		<div class="pure-u-lg-7-24 pure-u-1">
+			<input class="form-control pure-u-1" type="text" name="section_{{sect_id}}_password" id="id_s_section_password_{{sect_orderno}}" />
+		</div>
+	</div>
+	{{/sections}}
+	</div>
 
 	<input type="hidden" name="id" value="{{id}}">
 	<input type="hidden" name="sesskey" value="{{sesskey}}">
@@ -11,7 +34,7 @@
 	<input type="hidden" name="server_id" value="{{server_id}}">
 	<input type="hidden" name="coursetags" value="{{coursetags}}">
 
-	<p style="margin-left:2em;">
+	<p>
 		<button type="submit" name="submit" class="btn btn-primary" value="{{.}}">
 			{{# str }}continue,block_oppia_mobile_export{{/ str }}	
 		</button>
