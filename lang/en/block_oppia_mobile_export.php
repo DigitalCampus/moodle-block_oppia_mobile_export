@@ -113,7 +113,7 @@ $string['export_quiz_maxattempts_unlimited'] = 'Unlimited';
 
 $string['export_priority_title'] = 'Course Priority';
 $string['export_priority_label'] = 'Priority';
-$string['export_priority_desc'] = 'This is the relative weight given to a course to help determine the ordering in which it will appear on the mobile (10 = highest priority)';
+$string['export_priority_desc']  = 'This is the relative weight given to a course to help determine the ordering in which it will appear on the mobile (10 = highest priority)';
 
 $string['export_keep_tags_title'] = 'Quiz Question Formatting';
 $string['export_keep_tags_desc'] = 'support use of HTML tags (&lt;em&gt;, &lt;b&gt;, &lt;strong&gt;, etc) in quiz question/response options. <br/><strong>Important</strong>:This is only supported for users with v7.3.2 or higher of the Oppia app';
@@ -135,12 +135,12 @@ $string['export_sequencing_course'] = 'Sequencing through whole course';
 $string['export_sequencing_section'] = 'Sequencing within a section';
 $string['export_sequencing_label'] = 'Sequencing mode';
 
-$string['export_thumbnail_sizes_title'] = 'Thumbnail icon sizes';
-$string['export_thumbnail_sizes_desc'] = 'Specify the dimensions for the thumbnail images for activities and sections';
-$string['export_thumbnail_sizes_section'] = 'Section';
-$string['export_thumbnail_sizes_activity'] = 'Activity';
-$string['export_thumbnail_sizes_width'] = 'Width';
-$string['export_thumbnail_sizes_height'] = 'Height';
+$string['export_thumbnail_sizes_title'] 	= 'Thumbnail icon sizes';
+$string['export_thumbnail_sizes_desc'] 		= 'Specify the dimensions for the thumbnail images for activities and sections';
+$string['export_thumbnail_sizes_section'] 	= 'Section';
+$string['export_thumbnail_sizes_activity'] 	= 'Activity';
+$string['export_thumbnail_sizes_width'] 	= 'Width';
+$string['export_thumbnail_sizes_height'] 	= 'Height';
 
 $string['export_sections_start'] = 'Exporting course Sections...';
 $string['export_section_title'] = 'Exporting Section: {$a}';
@@ -162,8 +162,8 @@ $string['export_advice_desc'] = 'Although your course has been exported you may 
 $string['export_preview_download'] = 'Download exported course preview at <a href="{$a->zip}">{$a->coursename}</a>';
 $string['export_preview_quiz'] = '<a href="{$a->link}" target="_blank">View all quiz questions</a>';
 
-$string['export_file_trying'] = 'Trying file: <code>{$a}</code>';
-$string['export_file_success'] = 'File: <code>{$a}</code> successfully exported';
+$string['export_file_trying']   = 'Trying file: <code>{$a}</code>';
+$string['export_file_success']  = 'File: <code>{$a}</code> successfully exported';
 $string['export_image_success'] = 'Image: <code>{$a}</code> successfully exported';
 
 $string['export_media_missing'] = 'Some media files included in your course have not been uploaded to the OppiaMobile server yet. To be able to upload the contents on OppiaMobile ({$a}), please complete your OppiaMobile server login details below:';
@@ -171,6 +171,11 @@ $string['export_media_missing'] = 'Some media files included in your course have
 $string['export_quiz_skip'] = 'Skipping quiz since contains no questions';
 $string['export_quiz_skip_essay'] = 'Skipping essay question';
 $string['export_quiz_skip_random'] = 'Skipping random question';
+
+$string['section_password_title'] = 'Password protection';
+$string['section_password_added'] = '✓ Section protected by password'; 
+$string['section_password_desc']  = 'If you want to lock a topic with password, please introduce it in the table below.'; 
+$string['section_password_label'] = 'Password'; 
 
 $string['true'] = 'True';
 $string['false'] = 'False';
@@ -199,7 +204,7 @@ $string['publish_heading_draft'] = 'Push draft course to OppiaMobile server';
 $string['publish_text_draft'] = 'To push your draft course directly on OppiaMobile ({$a}), please complete your OppiaMobile server login details below.<br/>Check with your OppiaMobile administrator if you are unsure whether you have permissions to publish on the server';
 
 $string['publish_btn'] = "Publish";
-$string['publishing_header_live'] = "Publishing Course";
+$string['publishing_header_live']  = "Publishing Course";
 $string['publishing_header_draft'] = "Pushing Draft Course";
 
 $string['settings_avoid_push_quizzes'] = 'Don\'t push quizzes info to the Oppia server in the export process';
@@ -208,12 +213,12 @@ $string['settings_avoid_push_quizzes_info'] = 'Avoid pushing quizzes info to the
 $string['missing_video_poster'] = 'Warning: Missing "poster" image for media element.';
 $string['video_included'] = 'Video included:';
 
-$string['media_files_size'] = 'Size';
+$string['media_files_size']   = 'Size';
 $string['media_files_digest'] = 'Digest';
 $string['media_files_length'] = 'Length';
-$string['media_files_not_uploaded'] = 'Not uploaded to the server yet.';
+$string['media_files_title']  = 'Pushing local media files';
+$string['media_files_not_uploaded']  = 'Not uploaded to the server yet.';
 $string['media_files_request_error'] = 'Error processing request.';
-$string['media_files_title'] = 'Pushing local media files';
 
 $string['duplicated_digest_title'] = 'Error: Duplicated digests';
 $string['duplicated_digest_description'] = 'There are identical activities in your course that have the same digest:';
