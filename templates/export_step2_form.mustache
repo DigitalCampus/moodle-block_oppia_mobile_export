@@ -1,15 +1,15 @@
 
 <form name="courseconfig" method="post" action="{{wwwroot}}/blocks/oppia_mobile_export/export/step3.php">
 	
-	<h4>Password protection</h4>
+	<h4>{{# str }}section_password_title,block_oppia_mobile_export{{/ str }}</h4>
 	<p>
-	If you want to lock a topic with password, please introduce it in the table below.
+	{{# str }}section_password_desc,block_oppia_mobile_export{{/ str }}
 	</p>
 
 	<div class="quizzes-table">
 	<div class="pure-g titles">
 		<div class="pure-u-lg-17-24 pl-3 pure-u-1 text-left">{{# str }}export_quiz_sectionname,block_oppia_mobile_export{{/ str }}</div>
-		<div class="pure-u-lg-7-24 pure-u-1 text-left">Password</div>
+		<div class="pure-u-lg-7-24 pure-u-1 text-left">{{# str }}section_password_label,block_oppia_mobile_export{{/ str }}</div>
 	</div>
 
 	{{#sections}}

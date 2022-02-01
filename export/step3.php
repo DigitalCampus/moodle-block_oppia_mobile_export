@@ -349,7 +349,7 @@ foreach($sections as $sect) {
 
 		$sect_password =  optional_param('section_'.$sect->id.'_password', '', PARAM_TEXT);
 		if ($sect_password != ''){
-			echo 'Section protected by password';
+			echo '<span class="export-results warning">'. get_string('section_password_added', PLUGINNAME) .'</span>'.OPPIA_HTML_BR;
 			$section->appendChild($xmlDoc->createAttribute("password"))->appendChild($xmlDoc->createTextNode($sect_password));
 		}
 
