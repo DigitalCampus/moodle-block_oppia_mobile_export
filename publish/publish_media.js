@@ -3,7 +3,7 @@ require(['jquery'], function($) { $(function(){
 	var filenames = $('.media_files .media_file');
 	var publishURL = $('.media_files').attr('data-publish');
 	var server = $('.media_files').attr('data-server');
-	var form = $('#step2_form');
+	var form = $('#step3_form');
 
 	var pendingFiles = false;
 	var pendingCount;

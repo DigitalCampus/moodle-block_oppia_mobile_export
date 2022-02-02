@@ -92,6 +92,7 @@ $a = new stdClass();
 $a->stepno = 2;
 $a->coursename = strip_tags($course->fullname);
 echo "<h2>".get_string('export_title', PLUGINNAME, $a)."</h2>";
+echo '<div class="oppia_export_section py-3">';
 
 $config_sections = array();
 $sect_orderno = 1;
@@ -166,11 +167,13 @@ foreach($sections as $sect) {
 			$sect_orderno++;
 		} 
 		else{
-			echo get_string('error_section_no_activities', PLUGINNAME).OPPIA_HTML_BR;
+			echo '<div class="step">'.get_string('section_password_invalid', PLUGINNAME, $sectionTitle).'</div>';
+			
 		}
 		flush_buffers();
 	}
 }
+echo '</div>';
 
 if ($sect_orderno <= 1){
 	echo '<h3>'.get_string('error_exporting', PLUGINNAME).'</h3>';
