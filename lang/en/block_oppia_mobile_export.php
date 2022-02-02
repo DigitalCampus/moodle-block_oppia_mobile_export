@@ -176,6 +176,7 @@ $string['section_password_title'] = 'Password protection';
 $string['section_password_added'] = '✓ Section protected by password'; 
 $string['section_password_desc']  = 'If you want to lock a topic with password, please introduce it in the table below.'; 
 $string['section_password_label'] = 'Password'; 
+$string['section_password_invalid'] = '<strong>{$a}</strong>: Section doesn\'t contain any supported activities.';
 
 $string['true'] = 'True';
 $string['false'] = 'False';
