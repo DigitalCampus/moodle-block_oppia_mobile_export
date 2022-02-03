@@ -1,13 +1,24 @@
 <?php 
 
-class QuizHelper{
+require_once(dirname(__FILE__) . '/constants.php');
+
+class ApiHelper{
 	private $connection;
 	private $curl;
+	public $version;
 	
 	function init($connection){
 		$this->connection = $connection;
 		$this->curl = curl_init();
 		curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, 1 );
+	}
+
+
+	function fetchServerVersion($server_connection){
+		$this->init($server_connection);
+		$server_info = $this->exec('server', array(),'get', false, false);
+		$this->version = $server_info->version;
+
 	}
 	
 	function exec($object, $data_array, $type='post', $api_path=true, $print_error_msg=true){
@@ -19,9 +30,6 @@ class QuizHelper{
 		} else {
 			$temp_url = $this->connection->url."/".($api_path ? "api/v1/" : "").$object."/";
 		}
-		$temp_url .= "?format=json";
-		$temp_url .= "&username=".$this->connection->username;
-		$temp_url .= "&api_key=".$this->connection->apikey;
 		curl_setopt($this->curl, CURLOPT_URL, $temp_url );
 		if($type == 'post'){
 			curl_setopt($this->curl, CURLOPT_POSTFIELDS, $json);
@@ -34,7 +42,7 @@ class QuizHelper{
 		$json = json_decode($data);
 		$http_status = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
 		if ($http_status != 200 && $http_status != 201 && $print_error_msg){
-			echo "<p style='color:red'>".get_string('error_creating_quiz','block_oppia_mobile_export')." ( status code: " . $http_status . ")</p>";
+			echo '<p style="color:red">'.get_string('error_creating_quiz', PLUGINNAME).' ( status code: ' . $http_status . ')</p>';
 		}
 		return $json;
 			

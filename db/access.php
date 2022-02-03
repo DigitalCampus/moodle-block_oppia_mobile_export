@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Blog tags block caps.
+ * block_oppia_mobile_export.
  *
- * @package    block_blog_tags
- * @copyright  Mark Nelson <markn@moodle.com>
+ * @package    block_oppia_mobile_export
+ * @copyright  admin@digital-campus.org
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

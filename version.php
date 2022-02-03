@@ -17,6 +17,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2020040401;
+$plugin = new StdClass;
+$plugin->version = 2022013000;
 $plugin->requires = 2016052300;
 $plugin->component = 'block_oppia_mobile_export';
+$plugin->release = "v1.2.13";
+$plugin->cron = 0; // Cron interval in seconds. 0 means no cron.

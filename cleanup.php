@@ -1,11 +1,13 @@
 <?php 
 require_once(dirname(__FILE__) . '/../../config.php');
-require_once($CFG->dirroot . '/blocks/oppia_mobile_export/lib.php');
+require_once(dirname(__FILE__) . '/constants.php');
+
+require_once($CFG->dirroot . PLUGINPATH . 'lib.php');
 
 $id = required_param('id',PARAM_INT);
 $course = $DB->get_record('course', array('id'=>$id));
 
-$PAGE->set_url('/blocks/oppia_mobile_export/cleanup.php', array('id' => $id));
+$PAGE->set_url(PLUGINPATH . 'cleanup.php', array('id' => $id));
 context_helper::preload_course($id);
 $context = context_course::instance($course->id);
 if (!$context) {
@@ -21,8 +23,8 @@ $PAGE->set_title(get_string('course') . ': ' . $course->fullname);
 $PAGE->set_heading($course->fullname);
 echo $OUTPUT->header();
 
-echo "<p>".get_string('cleanup_start','block_oppia_mobile_export')."</p>";
-deleteDir("output/".$USER->id);
-echo "<p>".get_string('cleanup_end','block_oppia_mobile_export')."</p>";
+echo "<p>".get_string('cleanup_start', PLUGINNAME)."</p>";
+deleteDir(OPPIA_OUTPUT_DIR.$USER->id);
+echo "<p>".get_string('cleanup_end', PLUGINNAME)."</p>";
 
 echo $OUTPUT->footer();
