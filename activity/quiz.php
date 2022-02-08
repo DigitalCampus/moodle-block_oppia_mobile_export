@@ -109,7 +109,6 @@ class MobileActivityQuiz extends MobileActivity {
 		$quizobj->load_questions();
 		$qs = $quizobj->get_questions();
 
-
 		// get the image from the intro section
 		$this->extractThumbnailFromIntro($quiz->intro, $cm->id);
 		
@@ -132,7 +131,9 @@ class MobileActivityQuiz extends MobileActivity {
 
 			$questionMaxScore = intval($q->maxmark);
 			$quizMaxScore += $questionMaxScore;
-			$questionprops = array("maxscore" => $questionMaxScore);
+			$questionprops = array(
+				"moodle_question_id" => $q->id,
+				"maxscore" => $questionMaxScore);
 
 			// skip any essay questions
 			if($q->qtype == 'essay'){
@@ -280,6 +281,8 @@ class MobileActivityQuiz extends MobileActivity {
 
 		$this->generate_md5($quiz, $quizJson);
 		$quizJson['props']['digest'] = $this->md5;
+		$quizJson['props']['moodle_quiz_id'] = $this->id;
+			
 
 		// check for password protection
 		// done after md5 is created so password can be changed without it being a new quiz

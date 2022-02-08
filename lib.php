@@ -186,6 +186,7 @@ function cleanShortname($shortname){
 
 function removeIDsFromJSON($jsonString){
 	$jsonString = preg_replace("(\"courseversion\":\"[0-9]+\",?)", "", $jsonString);
+	$jsonString = preg_replace("(\"moodle_question_id\":\"[0-9]+\",?)", "", $jsonString);
 	return preg_replace("(\"id\":[0-9]+,?)", "", $jsonString);
 }
 
