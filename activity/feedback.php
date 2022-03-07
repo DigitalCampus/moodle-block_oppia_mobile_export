@@ -87,13 +87,11 @@ class MobileActivityFeedback extends MobileActivity {
         $quizMaxScore = 0;
         
         $i = 1;
+
         foreach($feedbackitems as $q){            
 
             $responses = array();
-            $title = $q->label;
-            if ($title == "" || $title == null){
-                $title = $q->name;
-            }
+            $title = $q->name;
             $required = $q->required == 1;
             $questionTitle = extractLangs(cleanHTMLEntities($title, true), true, !$this->keep_html);
             $type = null;
@@ -171,10 +169,27 @@ class MobileActivityFeedback extends MobileActivity {
                     $j++;
                 }
             }
+            
             $questionprops = array(
                 "maxscore" => 0,
-                "required"  => $required
+                "required"  => $required,
+                "label" => $q->label
             );
+            
+            // add any dependency props (skip logic)
+            if ($q->dependitem != 0){
+                // find dependitem label
+                $dependitem = "";
+                foreach($feedbackitems as $q_depend){
+                    if($q->dependitem == $q_depend->id){
+                        $dependitem = $q_depend->label;
+                    }
+                }
+                $questionprops["dependvalue"] = $q->dependvalue;
+                $questionprops["dependitemlabel"] = $dependitem;
+            }
+            
+            
             $questionJson = array(
                 "id"        => rand(1,1000),
                 "type"      => $type,
