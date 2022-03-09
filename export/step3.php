@@ -397,10 +397,10 @@ foreach($sections as $sect) {
 			}
 			else if($mod->modname == 'quiz'){
 
-				$randomselect = get_oppiaconfig($id, 'randomselect', 0, $server);
-				$passthreshold = get_oppiaconfig($id, 'passthreshold', 0, $server);
-				$showfeedback = get_oppiaconfig($id, 'showfeedback', 2, $server);
-				$maxattempts = get_oppiaconfig($id, 'maxattempts', 'unlimited', $server);
+			    $randomselect = get_oppiaconfig($mod->id, 'randomselect', 0, $server);
+			    $passthreshold = get_oppiaconfig($mod->id, 'passthreshold', 0, $server);
+				$showfeedback = get_oppiaconfig($mod->id, 'showfeedback', 1, $server);
+				$maxattempts = get_oppiaconfig($mod->id, 'maxattempts', 'unlimited', $server);
 
 			    $quiz = new MobileActivityQuiz(array(
 			    	'id' => $mod->id,

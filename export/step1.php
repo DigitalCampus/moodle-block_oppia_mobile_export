@@ -134,8 +134,6 @@ for ($qid=0; $qid<count($quizzes); $qid++){
 		for ($i=0; $i<MAX_ATTEMPTS; $i++){
 			$quiz['max_attempts'][$i] = array ("num" => $i+1, "selected" => $current_maxattempts == $i+1); 
 		}
-		
-		
 
 	 $quizzes[$qid] = $quiz;
 }
