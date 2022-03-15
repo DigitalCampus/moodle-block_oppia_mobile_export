@@ -551,6 +551,7 @@ if ($sect_orderno <= 1){
 echo $OUTPUT->render_from_template(
 	PLUGINNAME.'/export_step3_form', 
 	array(
+		'id' => $id,
 		'server_connection' =>$server_connection->url,
 		'media_files' => $local_media_files,
 		'server_id' => $server,
