@@ -244,7 +244,6 @@ foreach ($sectionmods as $modnumber) {
 			'server_id' => $server,
 			'course_id' => $id,
 			'shortname' => $course->shortname,
-			'summary' => 'Pre-test',
 			'courseversion' => $versionid,
 			'keep_html' => $keep_html,
 			'config_array' => array(
@@ -461,7 +460,6 @@ foreach($sections as $sect) {
 					'server_id' => $server,
 					'course_id' => $id,
 					'shortname' => $course->shortname,
-					'summary' => 'Pre-test',
 					'courseversion' => $versionid,
 					'keep_html' => $keep_html,
 					'config_array' => array(
