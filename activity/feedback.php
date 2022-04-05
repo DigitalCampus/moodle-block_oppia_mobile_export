@@ -81,7 +81,7 @@ class MobileActivityFeedback extends MobileActivity {
         }
         
         $nameJSON = extractLangs($cm->name, true);
-        $descJSON = extractLangs($this->summary, true, !$this->keep_html);
+        $descJSON = extractLangs($feedback->intro, true, !$this->keep_html);
         
         $quizJsonQuestions = array();
         $quizMaxScore = 0;
