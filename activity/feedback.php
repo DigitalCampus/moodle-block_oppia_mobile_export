@@ -2,7 +2,13 @@
 
 class MobileActivityFeedback extends MobileActivity {
     
-    private $supported_types = array('multichoicerated', 'textarea', 'multichoice', 'numeric', 'textfield');
+    private $supported_types = array('multichoicerated',
+                                     'textarea',
+                                     'multichoice', 
+                                     'numeric',
+                                     'textfield',
+                                     'info',
+                                     'label');
     private $courseversion;
     private $summary;
     private $shortname;
@@ -90,6 +96,9 @@ class MobileActivityFeedback extends MobileActivity {
 
         foreach($feedbackitems as $q){            
 
+            if(!in_array($q->typ,$this->supported_types)){
+                continue;
+            }
             $responses = array();
             $title = $q->name;
             $required = $q->required == 1;
