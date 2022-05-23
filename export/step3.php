@@ -305,13 +305,16 @@ foreach($sections as $sect) {
 
 	$defaultSectionTitle = false;
 	$sectionTitle = strip_tags($sect->summary);
+	$title = extractLangs($sect->summary);
 	// If the course has no summary, we try to use the section name
 	if ($sectionTitle == "") {
 		$sectionTitle = strip_tags($sect->name);
+		$title = extractLangs($sect->name);
 	}
 	// If the course has neither summary nor name, use the default topic title
 	if ($sectionTitle == "") {
 		$sectionTitle = get_string('sectionname', 'format_topics') . ' ' . $sect->section;
+		$title = null;
 		$defaultSectionTitle = true;
 	}
 
@@ -322,7 +325,6 @@ foreach($sections as $sect) {
 		
 		$section = $xmlDoc->createElement("section");
 		$section->appendChild($xmlDoc->createAttribute("order"))->appendChild($xmlDoc->createTextNode($sect_orderno));
-		$title = extractLangs($sect->summary);
 		if(!$defaultSectionTitle && is_array($title) && count($title)>0){
 			foreach($title as $l=>$t){
 				$temp = $xmlDoc->createElement("title");
