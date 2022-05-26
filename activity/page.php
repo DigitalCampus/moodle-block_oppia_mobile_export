@@ -228,9 +228,17 @@ class MobileActivityPage extends MobileActivity {
 
 	private function extractAndReplaceLocalMedia($content, $component, $filearea, $itemid, $contextid){
 
-		$html = new DOMDocument();
+		
 		$contents_to_parse = '<div>'.$content.'</div>'; // We add a fake root element to avoid problems with libxml 
+		$contents_to_parse = mb_convert_encoding($contents_to_parse, 'HTML-ENTITIES', 'UTF-8');
+		$contents_to_parse = utf8_decode($contents_to_parse);
+		
+		$html = new DOMDocument('1.0', 'utf-8');
+		libxml_use_internal_errors(true);
 		$parsed = $html->loadHTML($contents_to_parse, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+		libxml_use_internal_errors(false);
+		$html->encoding = 'utf-8';
+
 		if (!$parsed){
 		    echo OPPIA_HTML_SPAN_ERROR_START.get_string('error_parsing_html', PLUGINNAME).OPPIA_HTML_SPAN_END.OPPIA_HTML_BR;
 			return null;
@@ -280,7 +288,7 @@ class MobileActivityPage extends MobileActivity {
         } 
 
         if (count($this->page_local_media) > 0){
-			$content = $html->saveHTML();		
+			$content = $html->saveHTML($html->documentElement);	
 		}
 
 		return $content;
