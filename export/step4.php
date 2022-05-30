@@ -154,6 +154,7 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
 	
 	echo '<p class="step">'. get_string('export_style_resources', PLUGINNAME) . '</p>';
 	
+	recurse_copy($pluginroot."styles/common-resources/", $course_root."/style_resources/");
 	recurse_copy($pluginroot."styles/".$stylesheet."-style-resources/", $course_root."/style_resources/");
 	
 	recurse_copy($pluginroot."js/", $course_root."/js/");

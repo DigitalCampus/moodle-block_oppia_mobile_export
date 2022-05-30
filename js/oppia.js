@@ -1,10 +1,12 @@
 
 $( document ).ready(function() {
 	$('[name=reveal]').each(function(i){
-		$('#answer'+$(this).attr('id')).toggle();
-		$(this).click(function() {
-			$('#answer'+$(this).attr('id')).toggle("blind", 1000 );
-			$(this).hide();
+		var revealBtn = $(this).addClass('showmore revealed');
+		var target = $('#answer'+$(this).attr('id'));
+		target.addClass('showmore').show();
+		revealBtn.click(function() {
+			target.addClass('revealed');
+			revealBtn.removeClass('revealed');
 		});
 		}
 	);
