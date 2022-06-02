@@ -4,9 +4,11 @@
 .suggestion, 
 .info,
 .question {
+	position: relative;
 	padding: 10px 10px 8px 65px;
 	background-repeat: no-repeat;
 	min-height: 60px;
+	margin-top: 22px;
 
 	&:before{
 		content:"";
@@ -21,7 +23,7 @@
 		background-size: 66%;
 		background-position: 50% 40%;
 		box-shadow: 0 2px 4px 0 rgba(0,0,0,0.24);
-	};
+	}
 }
 .box.definition:before{
   background-image: url('style_resources/ic_book.svg');
