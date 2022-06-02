@@ -117,32 +117,35 @@ table {
 .pause {
 	
 }
+
 .definition,
 .action,
 .warning,
 .suggestion, 
 .info,
 .question {
-	padding: 10px 10px 5px 60px;
-	background-repeat: no-repeat;
-	min-height: 60px;
+    padding: 10px 10px 5px 60px;
+    background-repeat: no-repeat;
+    min-height: 60px;
 }
 .definition{
-	background-image: url('style_resources/book.png'); 
+    background-image: url('style_resources/book.png'); 
 }
 .action {
-	background-image: url('style_resources/tick.png'); 
+    background-image: url('style_resources/tick.png'); 
 }
 .warning {
-	background-image: url('style_resources/warning.png'); 
-	font-weight:bold;
+    background-image: url('style_resources/warning.png'); 
+    font-weight:bold;
 }
 .suggestion, .info {
-	background-image: url('style_resources/info.png'); 
+    background-image: url('style_resources/info.png'); 
 }
 .question {
-	background-image: url('style_resources/question.png'); 
+    background-image: url('style_resources/question.png'); 
 }
+
+
 div.question > p:first-child {
 	font-weight:bold;
 }
@@ -153,6 +156,34 @@ div.question p {
 	text-decoration: underline;
 	color: $primary-color-dark;
 	cursor: pointer;
+
+	button,input{
+		box-sizing: border-box;
+	    height:30px;
+	    border: none;
+	    vertical-align: middle;
+    	outline: 0;
+	}
+	button{
+		background-color: $primary-color;
+		vertical-align: middle;
+		-webkit-tap-highlight-color: transparent;
+		border-top-right-radius: 3px;
+  		border-bottom-right-radius: 3px;
+		padding:5px;
+		color: #fff;
+	}
+	input{
+		padding-left: 5px;
+	    border:1px solid #999;
+	}
+
+	.error-msg{
+		text-decoration: none;
+		color: #dd4444;
+		font-weight: bold;
+		font-size:0.8em;
+	}
 }
 img {
 	text-align:center;
@@ -168,4 +199,16 @@ img {
 	line-height: 1.2em;
 	color:#666;
 	font-style:italic;
+}
+
+.showmore{
+	opacity: 0;
+	transition:all 1100ms;
+	overflow: hidden;
+	max-height:0;
+
+	&.revealed{
+		opacity:1;
+		max-height: 50vh;
+	}
 }
