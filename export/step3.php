@@ -21,6 +21,7 @@ require_once($pluginroot . 'activity/quiz.php');
 require_once($pluginroot . 'activity/resource.php');
 require_once($pluginroot . 'activity/feedback.php');
 require_once($pluginroot . 'activity/url.php');
+require_once($pluginroot . 'activity/processor.php');
 
 require_once($CFG->libdir.'/componentlib.class.php');
 
@@ -294,6 +295,16 @@ $local_media_files = array();
 
 echo "<h3>".get_string('export_sections_start', PLUGINNAME)."</h3>";
 
+$processor = new ActivityProcessor(array(
+			'course_root' => $course_root,
+			'server_id' => $server,
+			'course_id' => $id,
+			'course_shortname' => $course->shortname,
+			'versionid' => $versionid,
+			'keep_html' => $keep_html,
+			'local_media_files' => $local_media_files
+));
+
 $sect_orderno = 1;
 foreach($sections as $sect) {
 	flush_buffers();
@@ -368,6 +379,8 @@ foreach($sections as $sect) {
 
 		$act_orderno = 1;
 		$activities = $xmlDoc->createElement("activities");
+		$processor->set_current_section($sect_orderno);
+
 		foreach ($sectionmods as $modnumber) {
 			
 			if ($modnumber == "" || $modnumber === false){
@@ -380,108 +393,9 @@ foreach($sections as $sect) {
 			}
 			
 			echo '<div class="step"><strong>' . $mod->name . '</strong>'.OPPIA_HTML_BR;
-
-			if($mod->modname == 'page'){
-			    $page = new MobileActivityPage(array(
-			    	'id' => $mod->id,
-			    	'courseroot' => $course_root,
-					'section' => $sect_orderno,
-					'server_id' => $server,
-					'course_id' => $id,
-			    ));
-				
-				$page->process();
-				$page->getXML($mod, $act_orderno, $activities, $xmlDoc, true);
-				$local_media_files = array_merge($local_media_files, $page->getLocalMedia());
-
+			$activity = $processor->process_activity($mod, $sect, $act_orderno, $activities, $xmlDoc);
+			if ($activity != null){
 				$act_orderno++;
-			}
-			else if($mod->modname == 'quiz'){
-
-			    $randomselect = get_oppiaconfig($mod->id, 'randomselect', 0, $server);
-			    $passthreshold = get_oppiaconfig($mod->id, 'passthreshold', 0, $server);
-				$showfeedback = get_oppiaconfig($mod->id, 'showfeedback', 1, $server);
-				$maxattempts = get_oppiaconfig($mod->id, 'maxattempts', 'unlimited', $server);
-
-			    $quiz = new MobileActivityQuiz(array(
-			    	'id' => $mod->id,
-			    	'courseroot' => $course_root,
-					'section' => $sect_orderno,
-					'server_id' => $server,
-					'course_id' => $id,
-					'shortname' => $course->shortname,
-					'summary' => $sect->summary,
-					'courseversion' => $versionid,
-					'keep_html' => $keep_html,
-					'config_array' => array(
-						'randomselect'=>$randomselect, 
-						'showfeedback'=>$showfeedback, 
-						'passthreshold'=>$passthreshold,
-						'maxattempts'=>$maxattempts
-					)
-			    ));
-
-				$quiz->preprocess();
-				if ($quiz->get_is_valid()){
-					$quiz->process();
-					$quiz->getXML($mod, $act_orderno, $activities, $xmlDoc, true);
-					$act_orderno++;
-				} else {
-				    echo get_string('error_quiz_no_questions', PLUGINNAME).OPPIA_HTML_BR;
-				}
-			}
-			else if($mod->modname == 'resource'){
-			    $resource = new MobileActivityResource(array(
-			    	'id' => $mod->id,
-			    	'courseroot' => $course_root,
-					'section' => $sect_orderno,
-					'server_id' => $server,
-					'course_id' => $id,
-			    ));
-				$resource->process();
-				$resource->getXML($mod, $act_orderno, $activities, $xmlDoc, true);
-				$act_orderno++;
-			}
-			else if($mod->modname == 'url'){
-			    $url = new MobileActivityUrl(array(
-			    	'id' => $mod->id,
-			    	'courseroot' => $course_root,
-					'section' => $sect_orderno,
-					'server_id' => $server,
-					'course_id' => $id,
-			    ));
-				$url->process();
-				$url->getXML($mod, $act_orderno, $activities, $xmlDoc, true);
-				$act_orderno++;
-			}
-			else if($mod->modname == 'feedback'){
-			    $feedback = new MobileActivityFeedback(array(
-			    	'id' => $mod->id,
-			    	'courseroot' => $course_root,
-					'section' => $sect_orderno,
-					'server_id' => $server,
-					'course_id' => $id,
-					'shortname' => $course->shortname,
-					'courseversion' => $versionid,
-					'keep_html' => $keep_html,
-					'config_array' => array(
-						'showfeedback'=>false, 
-						'passthreshold'=>0,
-						'maxattempts'=>'unlimited'
-					)
-			    ));
-			    
-				$feedback->preprocess();
-				if ($feedback->get_is_valid()){
-					$feedback->process();
-					$feedback->getXML($mod, $act_orderno, $activities, $xmlDoc, true);
-					$act_orderno++;
-				} else {
-				    echo get_string('error_feedback_no_questions', PLUGINNAME).OPPIA_HTML_BR;
-				}
-			}
-			else {
-				echo get_string('error_not_supported', PLUGINNAME);
 			}
 			echo '</div>';
 
@@ -515,6 +429,7 @@ if(count($MOBILE_LANGS) == 0){
 	$langs->appendChild($temp);
 }
 $meta->appendChild($langs);
+$local_media_files = $processor->local_media_files;
 
 // add media includes
 if(count($MEDIA) > 0 || count($local_media_files) > 0){
