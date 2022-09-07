@@ -1,6 +1,7 @@
 <?php 
 
 require_once(dirname(__FILE__) . '/../constants.php');
+require_once(dirname(__FILE__) . '/../migrations/populate_digests.php');
 
 // This file keeps track of upgrades to
 // the oppia_mobile_export block
@@ -151,6 +152,12 @@ function xmldb_block_oppia_mobile_export_upgrade($oldversion) {
 		upgrade_plugin_savepoint(true, 2022090400, 'error', 'blocks');
 	}
 	
+
+	if ($oldversion < 2022090716){
+		populate_digests_published_courses();
+		// Blocks savepoint reached.
+		upgrade_plugin_savepoint(true, 2022090716, 'error', 'blocks');
+	}
 	return true;
 	
 }
