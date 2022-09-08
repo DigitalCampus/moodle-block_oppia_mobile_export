@@ -10,6 +10,7 @@ require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 require_once($CFG->dirroot . '/mod/feedback/lib.php');
 require_once($CFG->dirroot . '/question/format/gift/format.php');
 
+$dataroot = $CFG->dataroot . "/";
 $pluginroot = $CFG->dirroot . PLUGINPATH;
 
 require_once($pluginroot . 'lib.php');
@@ -161,17 +162,38 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
 	recurse_copy($pluginroot."js/", $course_root."/js/");
 	
 	echo '<p class="step">'. get_string('export_export_complete', PLUGINNAME) . '</p>';
-	$dir2zip = $pluginroot.OPPIA_OUTPUT_DIR.$USER->id."/temp";
+	$dir2zip = $dataroot.OPPIA_OUTPUT_DIR.$USER->id."/temp";
 
 	$zipname = strtolower($course->shortname).'-'.$versionid.'.zip';
 	$ziprelativepath = OPPIA_OUTPUT_DIR.$USER->id."/".$zipname;
-	$outputzip = $pluginroot.$ziprelativepath;
-	Zip($dir2zip, $outputzip);
+	$outputpath = $dataroot.$ziprelativepath;
+	Zip($dir2zip, $outputpath);
 
-	$outputpath =  $CFG->wwwroot.PLUGINPATH.$ziprelativepath;
-	
+ 	$filerecord = array(
+ 	    'contextid'=> $context->id,
+ 	    'component' => PLUGINNAME,
+ 	    'filearea' => 'course_export',
+ 	    'itemid' => $COURSE->id,
+ 	    'filepath' => '/',
+ 	    'filename' => $zipname
+ 	);
+
+	$fs = get_file_storage();
+	$file = $fs->create_file_from_pathname($filerecord, $outputpath);
+	unlink($outputpath);
+
+    $url = moodle_url::make_pluginfile_url(
+		$file->get_contextid(),
+		$file->get_component(),
+		$file->get_filearea(),
+		$file->get_itemid(),
+		$file->get_filepath(),
+		$file->get_filename(),
+	    false // Do not force download of the file.
+	);
+
 	echo '<p class="step">'. get_string('export_export_compressed', PLUGINNAME) . '</p>';
-	deleteDir($pluginroot.OPPIA_OUTPUT_DIR.$USER->id."/temp");
+	deleteDir($dataroot.OPPIA_OUTPUT_DIR.$USER->id."/temp");
 	
 	$form_values = array(
 		'server_connection' =>$server_connection->url,
@@ -183,7 +205,7 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
 		'is_draft' => $is_draft,
 		'tags' => $tags,
 		'course_export_status' => $course_export_status,
-		'export_url' => $outputpath,
+		'export_url' => $url,
 		'course_name' => strip_tags($course->fullname)
 	);
 

@@ -11,6 +11,7 @@ require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 require_once($CFG->dirroot . '/question/format/gift/format.php');
 
 $pluginroot = $CFG->dirroot . PLUGINPATH;
+$dataroot = $CFG->dataroot . "/";
 
 require_once($pluginroot . 'lib.php');
 require_once($pluginroot . 'langfilter.php');
@@ -111,7 +112,7 @@ if ($course_status == 'draft'){
     $is_draft = "false";
 }
 
-$filepath = $pluginroot.OPPIA_OUTPUT_DIR.$USER->id."/".$file;
+$filepath = $dataroot.OPPIA_OUTPUT_DIR.$USER->id."/".$file;
 $curlfile = new CurlFile($filepath, 'application/zip', $file);
 
 $post = array(
