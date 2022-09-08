@@ -56,7 +56,7 @@ class ActivityProcessor {
 
 	public function process_activity($mod, $sect, $act_orderno, $xmlnode=null, $xmlDoc=null){
 
-		if($mod->modname == 'page'){
+		if ($mod->modname == 'page'){
 		    $page = new MobileActivityPage(array(
 		    	'id' => $mod->id,
 		    	'courseroot' => $this->course_root,
@@ -73,10 +73,10 @@ class ActivityProcessor {
 				$media_files = $this->local_media_files;
 				$this->local_media_files = array_merge($media_files, $local_media);
 			}
-			return $page->md5;
+			return $page;
 
 		}
-		else if($mod->modname == 'quiz'){
+		else if ($mod->modname == 'quiz'){
 
 		    $randomselect = get_oppiaconfig($mod->id, 'randomselect', 0, $this->server_id);
 		    $passthreshold = get_oppiaconfig($mod->id, 'passthreshold', 0, $this->server_id);
@@ -107,13 +107,13 @@ class ActivityProcessor {
 				if ($xmlnode != null){
 					$quiz->getXML($mod, $act_orderno, $xmlnode, $xmlDoc, true);
 				}
-				return $quiz->md5;
+				return $quiz;
 			} else {
 			    echo get_string('error_quiz_no_questions', PLUGINNAME).OPPIA_HTML_BR;
 			    return null;
 			}
 		}
-		else if($mod->modname == 'resource'){
+		else if ($mod->modname == 'resource'){
 		    $resource = new MobileActivityResource(array(
 		    	'id' => $mod->id,
 		    	'courseroot' => $this->course_root,
@@ -125,9 +125,9 @@ class ActivityProcessor {
 			if ($xmlnode != null){
 				$resource->getXML($mod, $act_orderno, $xmlnode, $xmlDoc, true);
 			}
-			return $resource->md5;
+			return $resource;
 		}
-		else if($mod->modname == 'url'){
+		else if ($mod->modname == 'url'){
 		    $url = new MobileActivityUrl(array(
 		    	'id' => $mod->id,
 		    	'courseroot' => $this->course_root,
@@ -139,9 +139,9 @@ class ActivityProcessor {
 			if ($xmlnode != null){
 				$url->getXML($mod, $act_orderno, $xmlnode, $xmlDoc, true);
 			}
-			return $url->md5;
+			return $url;
 		}
-		else if($mod->modname == 'feedback'){
+		else if ($mod->modname == 'feedback'){
 		    $feedback = new MobileActivityFeedback(array(
 		    	'id' => $mod->id,
 		    	'courseroot' => $this->course_root,
@@ -164,7 +164,7 @@ class ActivityProcessor {
 				if ($xmlnode != null){
 					$feedback->getXML($mod, $act_orderno, $xmlnode, $xmlDoc, true);
 				}
-				return $feedback->md5;
+				return $feedback;
 
 			} else {
 			    echo get_string('error_feedback_no_questions', PLUGINNAME).OPPIA_HTML_BR;

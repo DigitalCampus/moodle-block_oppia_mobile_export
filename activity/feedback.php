@@ -246,6 +246,10 @@ class MobileActivityFeedback extends MobileActivity {
     function get_is_valid(){
         return $this->is_valid;
     }
+
+    function get_no_questions(){
+        return $this->no_questions;
+    }
 }
 
 ?>

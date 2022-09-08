@@ -114,7 +114,12 @@ function populate_digests_for_course($course, $course_id, $server_id){
 			echo '<div class="step"><strong>'.$mod->name.'</strong>'.OPPIA_HTML_BR;
 			$activity = $processor->process_activity($mod, $sect, $act_orderno);
 			if ($activity != null){
-				echo 'Digest: <span class="alert alert-warning mt-3 py-1">' . $activity . '</span>';
+				$nquestions = null;
+				if (($mod->modname == 'quiz') || ($mod->modname == 'feedback')){
+					$nquestions = $activity->get_no_questions();
+				}
+				echo 'Digest: <span class="alert alert-warning mt-3 py-1">' . $activity->md5 . '</span>';
+				save_activity_digest($course_id, $mod->id, $activity->md5, $server_id, $nquestions);
 				$act_orderno++;
 			}
 			echo '</div>';
@@ -125,4 +130,19 @@ function populate_digests_for_course($course, $course_id, $server_id){
 	
 	}
 	echo '</div>';
+}
+
+function save_activity_digest($courseid, $modid, $digest, $serverid, $nquestions=null){
+	global $DB;
+    $date = new DateTime();
+    $timestamp = $date->getTimestamp();
+    $DB->insert_record(OPPIA_DIGEST_TABLE,
+        array(
+                'courseid'=>$courseid,
+                'modid'=>$modid,
+                'digest'=>$digest,
+                'updated'=>$timestamp,
+                'serverid'=>$serverid,
+                'nquestions'=>$nquestions)
+        );
 }
