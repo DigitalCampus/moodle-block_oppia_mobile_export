@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__) . '/constants.php');
 
-const REGEX_FORBIDDEN_DIR_CHARS = '([\\/?%*:|"<>\.[:space:]]+)'; //Catches any sequence of forbidden UNIX dir chars
+const REGEX_FORBIDDEN_DIR_CHARS = '([\\/?%*:|"<>\. ]+)'; //Catches any sequence of forbidden UNIX dir chars
 const REGEX_FORBIDDEN_TAG_CHARS = '([^a-zA-z0-9\_]+)'; //Catches any character not allowed inside an XML tag
 const REGEX_HTML_ENTITIES = '(&nbsp;|&amp;|&quot;)'; //Catches HTML entities after urlencoding text contents
 const REGEX_RESOURCE_EXTENSIONS = '/\.(mp3|mp4|avi)/'; //Catches media resource supported extensions

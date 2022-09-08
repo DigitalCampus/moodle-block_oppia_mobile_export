@@ -161,8 +161,9 @@ if(is_array($title) && count($title)>0){
 	$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
 	$meta->appendChild($temp);
 }
-
-$meta->appendChild($xmlDoc->createElement("shortname",strtolower($course->shortname)));
+$temp = $xmlDoc->createElement("shortname");
+$temp->appendChild($xmlDoc->createCDATASection(strtolower($course->shortname)));
+$meta->appendChild($temp);
 
 $summary = extractLangs($course->summary);
 if(is_array($summary) && count($summary)>0){
