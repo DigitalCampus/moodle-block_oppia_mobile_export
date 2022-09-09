@@ -1,6 +1,7 @@
 <?php 
 
 require_once(dirname(__FILE__) . '/../constants.php');
+require_once(dirname(__FILE__) . '/../migrations/populate_digests.php');
 
 // This file keeps track of upgrades to
 // the oppia_mobile_export block
@@ -123,6 +124,41 @@ function xmldb_block_oppia_mobile_export_upgrade($oldversion) {
 	    // Blocks savepoint reached.
 	    upgrade_plugin_savepoint(true, 2020082701, 'error', 'blocks');
 	}
-	 
+
+	if ($oldversion < 2022090400){
+
+		// Define table block_oppia_mobile_server to be created.
+		$table = new xmldb_table(OPPIA_DIGEST_TABLE);
+	
+		// Adding fields to table block_oppia_mobile_server.
+		$table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+		$table->add_field('courseid', XMLDB_TYPE_INTEGER, '18', null, XMLDB_NOTNULL, null, '0');
+		$table->add_field('modid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+		$table->add_field('digest', XMLDB_TYPE_CHAR, '100', null, XMLDB_NOTNULL, null, '');
+		$table->add_field('updated', XMLDB_TYPE_INTEGER, '10', null, null, null, '');
+		$table->add_field('serverid', XMLDB_TYPE_CHAR, '200', null, null, null, '');
+		$table->add_field('status', XMLDB_TYPE_CHAR, '20', null, null, null, '');
+		$table->add_field('nquestions', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+
+		// Adding keys to table block_oppia_mobile_server.
+		$table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+	
+		// Conditionally launch create table for block_oppia_mobile_server.
+		if (!$dbman->table_exists($table)) {
+			$dbman->create_table($table);
+		}
+
+		// Blocks savepoint reached.
+		upgrade_plugin_savepoint(true, 2022090400, 'error', 'blocks');
+	}
+	
+
+	if ($oldversion < 2022090722){
+		populate_digests_published_courses();
+
+		// Blocks savepoint reached.
+		upgrade_plugin_savepoint(true, 2022090722, 'error', 'blocks');
+	}
 	return true;
+	
 }

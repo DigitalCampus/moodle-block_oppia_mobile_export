@@ -62,3 +62,25 @@
 	&.showmore{ height:0; margin-bottom: 0;}
 	&.revealed{ height: 36px; margin-bottom:1em; }
 }
+
+.intro-section{
+	margin: -5px;
+	padding: 20px 12px;
+	background-color: #eaeaea;
+	position: relative;
+	margin-bottom:40px;
+
+	&:after{
+		position: absolute;
+		content: '';
+		pointer-events: none;
+		left: 50%;
+		width: 30px;
+		height: 30px;
+		-webkit-transform: translateX(-50%) rotate(45deg);
+		transform: translateX(-50%) rotate(45deg);
+		bottom: -15px;
+		z-index: 10;
+		background: inherit;
+	}
+}

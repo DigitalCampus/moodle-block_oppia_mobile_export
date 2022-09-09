@@ -5,6 +5,7 @@ define('PLUGINNAME', 'block_oppia_mobile_export');
 define('OPPIA_SERVER_TABLE', 'block_oppia_mobile_server');
 define('OPPIA_CONFIG_TABLE', 'block_oppia_mobile_config');
 define('OPPIA_PUBLISH_LOG_TABLE', 'block_oppia_publish_log');
+define('OPPIA_DIGEST_TABLE', 'block_oppia_activity_digest');
 
 define('OPPIA_OUTPUT_DIR', 'output/');
 define('OPPIA_MODULE_XML', '/module.xml');
