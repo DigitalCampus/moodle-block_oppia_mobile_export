@@ -172,7 +172,7 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
  	$filerecord = array(
  	    'contextid'=> $context->id,
  	    'component' => PLUGINNAME,
- 	    'filearea' => 'course_export',
+ 	    'filearea' => COURSE_EXPORT_FILEAREA,
  	    'itemid' => $COURSE->id,
  	    'filepath' => '/',
  	    'filename' => $zipname
