@@ -23,6 +23,7 @@ require_once($pluginroot . 'activity/feedback.php');
 require_once($pluginroot . 'activity/url.php');
 
 require_once($CFG->libdir.'/componentlib.class.php');
+require_once(dirname(__FILE__) . '/../migrations/populate_digests.php');
 
 $id = required_param('id', PARAM_INT);
 $file = required_param('file', PARAM_TEXT);
@@ -156,6 +157,7 @@ switch ($http_status){
 	case "201":
 		$msgtext = get_string('publish_message_201', PLUGINNAME);
 		show_and_log_message($msgtext, false, "api_publish_success", false);
+		populate_digests_for_course($course, $course->id, $server);
 		break;
 	default:
 		

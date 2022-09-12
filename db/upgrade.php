@@ -127,10 +127,10 @@ function xmldb_block_oppia_mobile_export_upgrade($oldversion) {
 
 	if ($oldversion < 2022091501){
 
-		// Define table block_oppia_mobile_server to be created.
+		// Define table block_oppia_activity_digest to be created.
 		$table = new xmldb_table(OPPIA_DIGEST_TABLE);
 	
-		// Adding fields to table block_oppia_mobile_server.
+		// Adding fields to table block_oppia_activity_digest.
 		$table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
 		$table->add_field('courseid', XMLDB_TYPE_INTEGER, '18', null, XMLDB_NOTNULL, null, '0');
 		$table->add_field('modid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
@@ -140,10 +140,10 @@ function xmldb_block_oppia_mobile_export_upgrade($oldversion) {
 		$table->add_field('status', XMLDB_TYPE_CHAR, '20', null, null, null, '');
 		$table->add_field('nquestions', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
 
-		// Adding keys to table block_oppia_mobile_server.
+		// Adding keys to table block_oppia_activity_digest.
 		$table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
 	
-		// Conditionally launch create table for block_oppia_mobile_server.
+		// Conditionally launch create table for block_oppia_activity_digest.
 		if (!$dbman->table_exists($table)) {
 			$dbman->create_table($table);
 		}

@@ -14,7 +14,7 @@ const SELECT_COURSES_DIGEST = 'name="coursepriority"';
 
 
 function populate_digests_published_courses(){
-	global $DB, $CFG, $DEFAULT_LANG;
+	global $DB;
 
 	$courses_count = $DB->count_records_select(OPPIA_CONFIG_TABLE,
 				SELECT_COURSES_DIGEST, null,
@@ -45,7 +45,6 @@ function populate_digests_published_courses(){
 			foreach ($course_servers as $s) {
 
 				$serverid = $s->serverid;
-				$DEFAULT_LANG = get_oppiaconfig($course_id,'default_lang', $CFG->block_oppia_mobile_export_default_lang, $serverid);
 				
 				echo '<strong>Server ID:' . $serverid . '</strong><br>';
 				populate_digests_for_course($course, $course_id, $serverid);
@@ -61,6 +60,8 @@ function populate_digests_published_courses(){
 }
 
 function populate_digests_for_course($course, $course_id, $server_id){
+    global $CFG, $DEFAULT_LANG;
+    $DEFAULT_LANG = get_oppiaconfig($course_id,'default_lang', $CFG->block_oppia_mobile_export_default_lang, $server_id);
 
 	$modinfo = course_modinfo::instance($course_id);
 	$sections = $modinfo->get_section_info_all();
@@ -108,7 +109,7 @@ function populate_digests_for_course($course, $course_id, $server_id){
 			}
 		}
 
-		echo "<h4>".get_string('export_section_title', PLUGINNAME, $sectionTitle)."</h4>";	
+		echo "<h4>".get_string('export_updating_digests_in_section', PLUGINNAME, $sectionTitle)."</h4>";
 
 		$sectionmods = explode(",", $sect->sequence);
 		$act_orderno = 1;
@@ -126,8 +127,20 @@ function populate_digests_for_course($course, $course_id, $server_id){
 				if (($mod->modname == 'quiz') || ($mod->modname == 'feedback')){
 					$nquestions = $activity->get_no_questions();
 				}
-				echo 'Digest: <span class="alert alert-warning mt-3 py-1">' . $activity->md5 . '</span>';
-				save_activity_digest($course_id, $mod->id, $activity->md5, $server_id, $nquestions);
+                $digest = $activity->md5;
+                
+                // 'digests_to_preserve' is an array of digests that where marked to be preserved in step 4 of the export process.
+                // The array's key is the digest based on the latest modifications to the activity content.
+                // The array's value is the previously stored digest that is going to be preserved.
+                global $SESSION;
+                if (isset($SESSION->digests_to_preserve)) {
+                    $preserve_digest = $SESSION->digests_to_preserve[$digest];
+                    if ($preserve_digest != null) {
+                        $digest = $preserve_digest;
+                    }
+                }
+                echo 'Digest: <span class="alert alert-warning mt-3 py-1">' . $digest . '</span>';
+				save_activity_digest($course_id, $mod->id, $digest, $server_id, $nquestions);
 				$act_orderno++;
 			}
 			echo '</div>';
@@ -144,13 +157,31 @@ function save_activity_digest($courseid, $modid, $digest, $serverid, $nquestions
 	global $DB;
     $date = new DateTime();
     $timestamp = $date->getTimestamp();
-    $DB->insert_record(OPPIA_DIGEST_TABLE,
+    $record_exists = $DB->get_record(OPPIA_DIGEST_TABLE,
         array(
-                'courseid'=>$courseid,
-                'modid'=>$modid,
-                'digest'=>$digest,
-                'updated'=>$timestamp,
-                'serverid'=>$serverid,
-                'nquestions'=>$nquestions)
+            'courseid' => $courseid,
+            'modid' => $modid,
+            'serverid' => $serverid,
+        ),
+    );
+
+    if($record_exists) {
+        $record_exists->digest = $digest;
+        $record_exists->updated = $timestamp;
+        $record_exists->nquestions = $nquestions;
+
+        $DB->update_record(OPPIA_DIGEST_TABLE,
+            $record_exists
         );
+    } else {
+        $DB->insert_record(OPPIA_DIGEST_TABLE,
+            array(
+                'courseid' => $courseid,
+                'modid' => $modid,
+                'digest' => $digest,
+                'updated' => $timestamp,
+                'serverid' => $serverid,
+                'nquestions' => $nquestions)
+        );
+    }
 }
