@@ -15,7 +15,8 @@ require_once($pluginroot . 'lib.php');
 
 require_once($CFG->libdir.'/componentlib.class.php');
 
-$temp_media = $pluginroot.OPPIA_OUTPUT_DIR.$USER->id."/temp_media/";
+$dataroot = $CFG->dataroot . "/";
+$temp_media = $dataroot.OPPIA_OUTPUT_DIR.$USER->id."/temp_media/";
 mkdir($temp_media, 0777, true);
 
 $server = required_param('server', PARAM_TEXT);

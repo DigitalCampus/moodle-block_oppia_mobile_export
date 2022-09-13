@@ -102,16 +102,17 @@ else{
 }
 
 //make course dir etc for output
-deleteDir($pluginroot.OPPIA_OUTPUT_DIR.$USER->id."/temp");
-deleteDir($pluginroot.OPPIA_OUTPUT_DIR.$USER->id);
-if(!is_dir($pluginroot."output")){
-	if (!mkdir($pluginroot."output",0777)){
+$dataroot = $CFG->dataroot . "/";
+deleteDir($dataroot.OPPIA_OUTPUT_DIR.$USER->id."/temp");
+deleteDir($dataroot.OPPIA_OUTPUT_DIR.$USER->id);
+if(!is_dir($dataroot."output")){
+	if (!mkdir($dataroot."output",0777)){
 		echo "<h3>Failed to create the output directory, please check your server permissions to allow the webserver user to create the output directory under " . __DIR__ . "</h3>";
 		die;
 	}
 }
-mkdir($pluginroot.OPPIA_OUTPUT_DIR.$USER->id."/temp/",0777, true);
-$course_root = $pluginroot.OPPIA_OUTPUT_DIR.$USER->id."/temp/".strtolower($course->shortname);
+mkdir($dataroot.OPPIA_OUTPUT_DIR.$USER->id."/temp/",0777, true);
+$course_root = $dataroot.OPPIA_OUTPUT_DIR.$USER->id."/temp/".strtolower($course->shortname);
 mkdir($course_root,0777);
 mkdir($course_root."/images",0777);
 $fh = fopen($course_root."/images/.nomedia", 'w');

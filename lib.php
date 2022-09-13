@@ -19,6 +19,7 @@ const SPACES_REGEX = '([[:space:]]|\<br\/?[[:space:]]*\>|\<\/?p\>)*';
 const EMBED_MEDIA_REGEX = '((\[\['.SPACES_REGEX . 'media'.SPACES_REGEX.'object=[\"|\'](?P<mediaobject>[\{\}\'\"\:a-zA-Z0-9\._\-\/,[:space:]]*)([[:space:]]|\<br\/?[[:space:]]*\>)*[\"|\']'.SPACES_REGEX.'\]\]))';
 // Captures the filename of images inside old media embed method code ( [[media object="..."]])
 const EMBED_MEDIA_IMAGE_REGEX = '(\]\]'.SPACES_REGEX.'\<img[[:space:]]src=[\"|\\\']images/(?P<filenames>[\w\W_-.]*?)[\"|\\\'])';
+const COURSE_EXPORT_FILEAREA = 'course_export';
 
 function deleteDir($dirPath) {
 	if (! is_dir($dirPath)) {
@@ -546,6 +547,61 @@ function getCompiledCSSTheme($pluginroot, $theme){
 
 	$css = $compiler->to_css();
 	return $css;
+}
+
+/**
+ * Serve the files from the block file areas
+ *
+ * @param stdClass $course the course object
+ * @param stdClass $cm the course module object
+ * @param stdClass $context the context
+ * @param string $filearea the name of the file area
+ * @param array $args extra arguments (itemid, path)
+ * @param bool $forcedownload whether or not force download
+ * @param array $options additional options affecting the file serving
+ * @return bool false if the file not found, just send the file otherwise and do not return anything
+ */
+function block_oppia_mobile_export_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
+	if ($context->contextlevel != CONTEXT_COURSE) {
+		return false;
+	}
+
+	// Make sure the filearea is one of those used by the block.
+	if ($filearea !== COURSE_EXPORT_FILEAREA) {
+		return false;
+	}
+
+	require_login($course, true, $cm);
+
+	$itemid = array_shift($args); // The first item in the $args array.
+
+	// Use the itemid to retrieve any relevant data records and perform any security checks to see if the
+	// user really does have access to the file in question.
+
+	$filename = array_pop($args); // The last item in the $args array.
+	if (!$args) {
+		$filepath = '/'; // $args is empty => the path is '/'
+	} else {
+		$filepath = '/'.implode('/', $args).'/'; // $args contains elements of the filepath
+	}
+
+	// Retrieve the file from the Files API.
+	$fs = get_file_storage();
+	$file = $fs->get_file($context->id, PLUGINNAME, $filearea, $itemid, $filepath, $filename);
+	if (!$file) {
+		return false; // The file does not exist.
+	}
+
+	// We can now send the file back to the browser - in this case with a cache lifetime of 1 day and no filtering.
+	send_stored_file($file, 86400, 0, $forcedownload, $options);
+}
+
+function cleanUpExportedFiles($context, $itemid) {
+	$fs = get_file_storage();
+	$files = $fs->get_area_files($context->id, PLUGINNAME, COURSE_EXPORT_FILEAREA, $itemid);
+	foreach($files as $file) {
+		$file->delete();
+	}
 }
 
 
