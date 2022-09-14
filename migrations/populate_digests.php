@@ -28,8 +28,12 @@ function populate_digests_published_courses(){
 		
 		foreach ($courses_result as $r) {
 			$course_id = $r->modid;
-			$course = $DB->get_record('course', array('id'=>$course_id));
+			$course = $DB->get_record('course', array('id'=>$course_id), '*', $strictness=IGNORE_MISSING);
 
+			if ($course == false){
+				// The course was deleted but there are still some rows in the course_info table
+				continue;
+			}
 			echo '<br>';
 			echo '<h3>' . strip_tags($course->fullname) . '</h3>';
 
