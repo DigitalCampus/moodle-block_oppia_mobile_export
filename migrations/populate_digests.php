@@ -12,8 +12,9 @@ require_once($pluginroot . 'activity/processor.php');
 
 const SELECT_COURSES_DIGEST = 'name="coursepriority"';
 
+
 function populate_digests_published_courses(){
-	global $DB, $CFG;
+	global $DB, $CFG, $DEFAULT_LANG;
 
 	$courses_count = $DB->count_records_select(OPPIA_CONFIG_TABLE,
 				SELECT_COURSES_DIGEST, null,
@@ -42,8 +43,11 @@ function populate_digests_published_courses(){
 				"DISTINCT serverid");
 
 			foreach ($course_servers as $s) {
+
 				$serverid = $s->serverid;
-				echo '<h4>Server ID:' . $serverid . '</h4>';
+				$DEFAULT_LANG = get_oppiaconfig($course_id,'default_lang', $CFG->block_oppia_mobile_export_default_lang, $serverid);
+				
+				echo '<strong>Server ID:' . $serverid . '</strong><br>';
 				populate_digests_for_course($course, $course_id, $serverid);
 			}
 		}
