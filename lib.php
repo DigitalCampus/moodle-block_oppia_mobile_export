@@ -573,7 +573,7 @@ function block_oppia_mobile_export_pluginfile($course, $cm, $context, $filearea,
 
 	require_login($course, true, $cm);
 
-	$itemid = array_shift($args); // The first item in the $args array.
+	$userid = array_shift($args); // The first item in the $args array.
 
 	// Use the itemid to retrieve any relevant data records and perform any security checks to see if the
 	// user really does have access to the file in question.
@@ -587,7 +587,7 @@ function block_oppia_mobile_export_pluginfile($course, $cm, $context, $filearea,
 
 	// Retrieve the file from the Files API.
 	$fs = get_file_storage();
-	$file = $fs->get_file($context->id, PLUGINNAME, $filearea, $itemid, $filepath, $filename);
+	$file = $fs->get_file($context->id, PLUGINNAME, $filearea, $userid, $filepath, $filename);
 	if (!$file) {
 		return false; // The file does not exist.
 	}
@@ -596,11 +596,17 @@ function block_oppia_mobile_export_pluginfile($course, $cm, $context, $filearea,
 	send_stored_file($file, 86400, 0, $forcedownload, $options);
 }
 
-function cleanUpExportedFiles($context, $itemid) {
+function cleanUpExportedFiles($context, $userid) {
 	$fs = get_file_storage();
-	$files = $fs->get_area_files($context->id, PLUGINNAME, COURSE_EXPORT_FILEAREA, $itemid);
+	$files = $fs->get_area_files(
+		$context->id,
+		PLUGINNAME,
+		COURSE_EXPORT_FILEAREA,
+		$userid
+	);
 	foreach($files as $file) {
 		$file->delete();
+		unlink($file->get_filepath());
 	}
 }
 
