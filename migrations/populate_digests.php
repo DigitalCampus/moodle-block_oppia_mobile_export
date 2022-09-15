@@ -12,8 +12,9 @@ require_once($pluginroot . 'activity/processor.php');
 
 const SELECT_COURSES_DIGEST = 'name="coursepriority"';
 
+
 function populate_digests_published_courses(){
-	global $DB, $CFG;
+	global $DB, $CFG, $DEFAULT_LANG;
 
 	$courses_count = $DB->count_records_select(OPPIA_CONFIG_TABLE,
 				SELECT_COURSES_DIGEST, null,
@@ -28,8 +29,12 @@ function populate_digests_published_courses(){
 		
 		foreach ($courses_result as $r) {
 			$course_id = $r->modid;
-			$course = $DB->get_record('course', array('id'=>$course_id));
+			$course = $DB->get_record('course', array('id'=>$course_id), '*', $strictness=IGNORE_MISSING);
 
+			if ($course == false){
+				// The course was deleted but there are still some rows in the course_info table
+				continue;
+			}
 			echo '<br>';
 			echo '<h3>' . strip_tags($course->fullname) . '</h3>';
 
@@ -38,8 +43,11 @@ function populate_digests_published_courses(){
 				"DISTINCT serverid");
 
 			foreach ($course_servers as $s) {
+
 				$serverid = $s->serverid;
-				echo '<h4>Server ID:' . $serverid . '</h4>';
+				$DEFAULT_LANG = get_oppiaconfig($course_id,'default_lang', $CFG->block_oppia_mobile_export_default_lang, $serverid);
+				
+				echo '<strong>Server ID:' . $serverid . '</strong><br>';
 				populate_digests_for_course($course, $course_id, $serverid);
 			}
 		}
