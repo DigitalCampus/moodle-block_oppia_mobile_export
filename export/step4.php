@@ -173,14 +173,13 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
  	    'contextid'=> $context->id,
  	    'component' => PLUGINNAME,
  	    'filearea' => COURSE_EXPORT_FILEAREA,
- 	    'itemid' => $COURSE->id,
+ 	    'itemid' => $USER->id,
  	    'filepath' => '/',
  	    'filename' => $zipname
  	);
 
 	$fs = get_file_storage();
 	$file = $fs->create_file_from_pathname($filerecord, $outputpath);
-	unlink($outputpath);
 
     $url = moodle_url::make_pluginfile_url(
 		$file->get_contextid(),

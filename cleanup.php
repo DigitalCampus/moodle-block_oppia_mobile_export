@@ -25,7 +25,7 @@ echo $OUTPUT->header();
 
 echo "<p>".get_string('cleanup_start', PLUGINNAME)."</p>";
 deleteDir($CFG->dataroot."/".OPPIA_OUTPUT_DIR.$USER->id);
-cleanUpExportedFiles($context, $course->id);
+cleanUpExportedFiles($context, $USER->id);
 echo "<p>".get_string('cleanup_end', PLUGINNAME)."</p>";
 
 echo $OUTPUT->footer();
