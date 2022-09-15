@@ -125,7 +125,7 @@ function xmldb_block_oppia_mobile_export_upgrade($oldversion) {
 	    upgrade_plugin_savepoint(true, 2020082701, 'error', 'blocks');
 	}
 
-	if ($oldversion < 2022091000){
+	if ($oldversion < 2022091501){
 
 		// Define table block_oppia_mobile_server to be created.
 		$table = new xmldb_table(OPPIA_DIGEST_TABLE);
@@ -149,15 +149,15 @@ function xmldb_block_oppia_mobile_export_upgrade($oldversion) {
 		}
 
 		// Blocks savepoint reached.
-		upgrade_plugin_savepoint(true, 2022091000, 'error', 'blocks');
+		upgrade_plugin_savepoint(true, 2022091501, 'error', 'blocks');
 	}
 	
 
-	if ($oldversion < 2022091400){
+	if ($oldversion < 2022091502){
 		populate_digests_published_courses();
 
 		// Blocks savepoint reached.
-		upgrade_plugin_savepoint(true, 2022091400, 'error', 'blocks');
+		upgrade_plugin_savepoint(true, 2022091502, 'error', 'blocks');
 	}
 	return true;
 	
