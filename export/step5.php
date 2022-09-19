@@ -138,7 +138,6 @@ if (count($duplicated) > 0){
 	echo $OUTPUT->footer();
 	die();
 }
-$SESSION->digests_to_preserve = $digests_to_preserve;
 
 $versionid = $xml->getElementsByTagName('versionid')->item(0)->textContent;
 
@@ -214,6 +213,7 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
 		'course_export_status' => $course_export_status,
 		'export_url' => $url,
 		'course_name' => strip_tags($course->fullname),
+		'digests_to_preserve' => json_encode($digests_to_preserve)
 	);
 
 	echo $OUTPUT->render_from_template(PLUGINNAME.'/export_step5_form', $form_values);

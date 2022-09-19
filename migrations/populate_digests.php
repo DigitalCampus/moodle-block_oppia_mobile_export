@@ -59,7 +59,7 @@ function populate_digests_published_courses(){
 
 }
 
-function populate_digests_for_course($course, $course_id, $server_id){
+function populate_digests_for_course($course, $course_id, $server_id, $digests_to_preserve = null){
     global $CFG, $DEFAULT_LANG;
     $DEFAULT_LANG = get_oppiaconfig($course_id,'default_lang', $CFG->block_oppia_mobile_export_default_lang, $server_id);
 
@@ -132,13 +132,13 @@ function populate_digests_for_course($course, $course_id, $server_id){
                 // 'digests_to_preserve' is an array of digests that where marked to be preserved in step 4 of the export process.
                 // The array's key is the digest based on the latest modifications to the activity content.
                 // The array's value is the previously stored digest that is going to be preserved.
-                global $SESSION;
-                if (isset($SESSION->digests_to_preserve)) {
-                    $preserve_digest = $SESSION->digests_to_preserve[$digest];
+                if ($digests_to_preserve != null){
+                    $preserve_digest = $digests_to_preserve[$digest];
                     if ($preserve_digest != null) {
                         $digest = $preserve_digest;
                     }
                 }
+
                 echo 'Digest: <span class="alert alert-warning mt-3 py-1">' . $digest . '</span>';
 				save_activity_digest($course_id, $mod->id, $digest, $server_id, $nquestions);
 				$act_orderno++;
