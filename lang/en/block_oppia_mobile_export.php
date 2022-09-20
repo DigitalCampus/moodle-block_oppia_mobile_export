@@ -172,6 +172,13 @@ $string['export_quiz_skip'] = 'Skipping quiz since contains no questions';
 $string['export_quiz_skip_essay'] = 'Skipping essay question';
 $string['export_quiz_skip_random'] = 'Skipping random question';
 
+$string['export_preserve_activity_id_title'] = 'Preserve activity IDs';
+$string['export_preserve_activity_id_desc'] = 'By selecting the \'Preserve ID\' option for an activity you indicate the OppiaMobile server to not create a new version of that activity.';
+$string['export_preserve_activity_id_header'] = 'Preserve ID';
+$string['export_no_content_changes_message'] = 'No content changes detected, moving to the next step. If nothing is happening please use the continue link below.';
+
+$string['export_updating_digests_in_section'] = 'Updating digests in section: {$a}';
+
 $string['section_password_title'] = 'Password protection';
 $string['section_password_added'] = '✓ Section protected by password'; 
 $string['section_password_desc']  = 'If you want to lock a topic with password, please introduce it in the table below.'; 

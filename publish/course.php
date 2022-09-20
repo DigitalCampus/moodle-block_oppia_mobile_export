@@ -23,6 +23,7 @@ require_once($pluginroot . 'activity/feedback.php');
 require_once($pluginroot . 'activity/url.php');
 
 require_once($CFG->libdir.'/componentlib.class.php');
+require_once(dirname(__FILE__) . '/../migrations/populate_digests.php');
 
 $id = required_param('id', PARAM_INT);
 $file = required_param('file', PARAM_TEXT);
@@ -31,6 +32,7 @@ $server = required_param('server_id', PARAM_TEXT);
 $username = required_param('username', PARAM_TEXT);
 $password = required_param('password', PARAM_TEXT);
 $course_status = required_param('course_export_status', PARAM_TEXT);
+$digests_to_preserve = required_param('digests_to_preserve', PARAM_TEXT);
 
 $course = $DB->get_record('course', array('id'=>$id));
 
@@ -156,6 +158,7 @@ switch ($http_status){
 	case "201":
 		$msgtext = get_string('publish_message_201', PLUGINNAME);
 		show_and_log_message($msgtext, false, "api_publish_success", false);
+		populate_digests_for_course($course, $course->id, $server, json_decode($digests_to_preserve, true));
 		break;
 	default:
 		
