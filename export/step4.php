@@ -8,6 +8,7 @@ require_once($pluginroot . 'lib.php');
 require_once($pluginroot . 'activity/processor.php');
 
 $id = required_param('id', PARAM_INT);
+$media_files = required_param('media_files', PARAM_TEXT);
 $stylesheet = required_param('stylesheet', PARAM_TEXT);
 $tags = required_param('coursetags', PARAM_TEXT);
 $server = required_param('server_id',PARAM_TEXT);
@@ -50,7 +51,8 @@ $processor = new ActivityProcessor(array(
     'course_id' => $course->id,
     'course_shortname' => $course->shortname,
     'versionid' => '0',
-    'keep_html' => $keep_html
+    'keep_html' => $keep_html,
+    'print_logs' => false
 ));
 
 $config_sections = array();
@@ -79,9 +81,6 @@ foreach($sections as $sect) {
 
     $sectionmods = explode(",", $sect->sequence);
     foreach ($sectionmods as $modnumber) {
-        if (empty($modinfo->sections[0])) {
-            continue;
-        }
 
         $mod = $mods[$modnumber];
         if ($mod != null) {
@@ -138,17 +137,32 @@ foreach($sections as $sect) {
 $form_values = array(
     'id' => $id,
     'server_id' => $server,
+    'media_files' => json_decode($media_files, true),
     'stylesheet' => $stylesheet,
     'coursetags' => $tags,
     'course_export_status' => $course_export_status,
     'course_root' => $course_root,
     'sections' => $config_sections,
-    'wwwroot' => $CFG->wwwroot
+    'wwwroot' => $CFG->wwwroot,
+    'resolve' => resolve(),
 );
+
+// The next step expect in the form parameters the media_url and the media_length for every media file.
+foreach($form_values['media_files'] as $media_file){
+    $digest = $media_file['digest'];
+
+    $media_url = optional_param($digest, null, PARAM_TEXT);
+    $media_length = optional_param($digest.'_length', null, PARAM_INT);
+
+    $form_values[$digest] = $media_url;
+    $form_values[$digest.'_length'] = $media_length;
+}
 
 // If there are no activities for preserving the ids, redirect to the following step.
 if (count($config_sections) == 0) {
     unset($form_values['sections']);
+    unset($form_values['media_files']);
+    unset($form_values['resolve']);
     $step5_url = new moodle_url(PLUGINPATH . 'export/step5.php', $form_values);
     $redirect_message = get_string('export_no_content_changes_message', PLUGINNAME);
     redirect($step5_url, $redirect_message);
@@ -158,4 +172,14 @@ echo $OUTPUT->render_from_template(PLUGINNAME.'/export_step4_form', $form_values
 
 echo $OUTPUT->footer();
 
+// This function allows to resolve the value of a mustache variable when the variable name depends on another variable.
+// Is equivalent as doing {{{{variable_name}}}}, where we first resolve the value of {{variable_name}},
+// which gives us variable_value, and then we do {{variable_value}}.
+function resolve() {
+    return function ($text, $render) {
+        return $render->render("{{" . $render->render($text) . "}}");
+    };
+}
+
 ?>
+

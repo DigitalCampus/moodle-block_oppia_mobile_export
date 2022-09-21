@@ -12,13 +12,15 @@ abstract class MobileActivity {
 	public $thumbnail_image = null;
 	public $component_name;
 
+    public $print_logs = true;
 	
 	public function __construct($params=array()){ 
 		if (isset($params['id'])) { $this->id = $params['id']; }
 		if (isset($params['courseroot'])) { $this->courseroot = $params['courseroot']; }
 		if (isset($params['server_id'])) { $this->server_id = $params['server_id']; }
 		if (isset($params['course_id'])) { $this->course_id = $params['course_id']; }
-		if (isset($params['section'])) { $this->section = $params['section']; }	
+		if (isset($params['section'])) { $this->section = $params['section']; }
+        if (isset($params['print_logs'])) { $this->print_logs = $params['print_logs']; }
     }
 
 	abstract function process();
