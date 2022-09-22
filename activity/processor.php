@@ -24,6 +24,7 @@ require_once($pluginroot . 'activity/processor.php');
 
 require_once($CFG->libdir.'/componentlib.class.php');
 
+
 class ActivityProcessor {
 	
 	public $course_root;
@@ -44,6 +45,7 @@ class ActivityProcessor {
 		if (isset($params['server_id'])) { $this->server_id = $params['server_id']; }
 		if (isset($params['course_id'])) { $this->course_id = $params['course_id']; }
 		if (isset($params['section'])) { $this->section = $params['section']; }	
+		if (isset($params['versionid'])) { $this->versionid = $params['versionid']; }
 		if (isset($params['local_media_files'])) { 
 			$this->local_media_files = $params['local_media_files']; 
 		}
@@ -166,6 +168,7 @@ class ActivityProcessor {
                 'print_logs' =>$this->print_logs,
 		    ));
 		    
+
 			$feedback->preprocess();
 			if ($feedback->get_is_valid()){
 				$feedback->process();

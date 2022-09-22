@@ -71,21 +71,25 @@ class MobileActivityFeedback extends MobileActivity {
         $feedback = $DB->get_record('feedback', array('id'=>$cm->instance), '*', MUST_EXIST);
         $select = 'feedback = ?';
         $params = array($feedback->id);
-        $feedbackitems = $DB->get_records_select('feedback_item', $select, $params, 'position');
-        
-
+        $feedbackitems = $DB->get_records_select('feedback_item', $select, $params, 'position');    
 
         // get the image from the intro section
         $this->extractThumbnailFromIntro($feedback->intro, $cm->id);
         
         $quizprops = array("courseversion" => $this->courseversion);
-        
+
         foreach($this->configArray as $k=>$v){
             if ($k != 'randomselect' || $v != 0){
                 $quizprops[$k] = $v;
             }
         }
-        
+
+        $multiple_submit = intval($feedback->multiple_submit) == 1;
+
+        if (!$multiple_submit){
+            $quizprops['maxattempts'] = 1;    
+        }
+
         $nameJSON = extractLangs($cm->name, true);
         $descJSON = extractLangs($feedback->intro, true, !$this->keep_html);
         
