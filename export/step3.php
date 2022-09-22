@@ -471,6 +471,7 @@ echo $OUTPUT->render_from_template(
 		'id' => $id,
 		'server_connection' =>$server_connection->url,
 		'media_files' => $local_media_files,
+		'media_files_str' => json_encode($local_media_files),
 		'server_id' => $server,
 		'stylesheet' => $stylesheet,
 		'coursetags' => $tags,

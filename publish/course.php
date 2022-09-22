@@ -158,7 +158,7 @@ switch ($http_status){
 	case "201":
 		$msgtext = get_string('publish_message_201', PLUGINNAME);
 		show_and_log_message($msgtext, false, "api_publish_success", false);
-		populate_digests_for_course($course, $course->id, $server, json_decode($digests_to_preserve, true));
+		populate_digests_for_course($course, $course->id, $server, json_decode($digests_to_preserve, true), false);
 		break;
 	default:
 		

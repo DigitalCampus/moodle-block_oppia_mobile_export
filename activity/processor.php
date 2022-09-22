@@ -36,6 +36,8 @@ class ActivityProcessor {
 	public $current_section;
 	public $local_media_files;
 
+    public $print_logs = true;
+
 	public function __construct($params=array()){ 
 		if (isset($params['id'])) { $this->id = $params['id']; }
 		if (isset($params['courseroot'])) { $this->courseroot = $params['courseroot']; }
@@ -47,7 +49,8 @@ class ActivityProcessor {
 		}
 		else{
 			$this->local_media_files = array();
-		}	
+		}
+        if (isset($params['print_logs'])) { $this->print_logs = $params['print_logs']; }
     }
 
 	public function set_current_section($section){
@@ -63,6 +66,7 @@ class ActivityProcessor {
 				'section' => $this->current_section,
 				'server_id' => $this->server_id,
 				'course_id' => $this->course_id,
+                'print_logs' =>$this->print_logs,
 		    ));
 			
 			$page->process();
@@ -98,7 +102,8 @@ class ActivityProcessor {
 					'showfeedback'=>$showfeedback, 
 					'passthreshold'=>$passthreshold,
 					'maxattempts'=>$maxattempts
-				)
+				),
+                'print_logs' =>$this->print_logs,
 		    ));
 
 			$quiz->preprocess();
@@ -120,6 +125,7 @@ class ActivityProcessor {
 				'section' => $this->current_section,
 				'server_id' => $this->server_id,
 				'course_id' => $this->course_id,
+                'print_logs' =>$this->print_logs,
 		    ));
 			$resource->process();
 			if ($xmlnode != null){
@@ -134,6 +140,7 @@ class ActivityProcessor {
 				'section' => $this->current_section,
 				'server_id' => $this->server_id,
 				'course_id' => $this->course_id,
+                'print_logs' =>$this->print_logs,
 		    ));
 			$url->process();
 			if ($xmlnode != null){
@@ -155,7 +162,8 @@ class ActivityProcessor {
 					'showfeedback'=>false, 
 					'passthreshold'=>0,
 					'maxattempts'=>'unlimited'
-				)
+				),
+                'print_logs' =>$this->print_logs,
 		    ));
 		    
 			$feedback->preprocess();

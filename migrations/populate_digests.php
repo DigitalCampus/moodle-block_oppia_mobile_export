@@ -59,7 +59,7 @@ function populate_digests_published_courses(){
 
 }
 
-function populate_digests_for_course($course, $course_id, $server_id, $digests_to_preserve = null){
+function populate_digests_for_course($course, $course_id, $server_id, $digests_to_preserve = null, $print_logs=true){
     global $CFG, $DEFAULT_LANG;
     $DEFAULT_LANG = get_oppiaconfig($course_id,'default_lang', $CFG->block_oppia_mobile_export_default_lang, $server_id);
 
@@ -89,7 +89,8 @@ function populate_digests_for_course($course, $course_id, $server_id, $digests_t
 		'course_id' => $course_id,
 		'course_shortname' => $course->shortname,
 		'versionid' => '0',
-		'keep_html' => $keep_html
+		'keep_html' => $keep_html,
+        'print_logs' => $print_logs,
 	));
 
 	echo '<div class="oppia_export_section py-3">';
