@@ -117,6 +117,9 @@ foreach ($xml->getElementsByTagName('activity') as $activity) {
 	if ($preserve_digest != '') {
 		$digests_to_preserve[$digest] = $preserve_digest;
 		$activity->setAttribute('digest', $preserve_digest);
+		foreach ($activity->getElementsByTagName('content') as $content) {
+			$content->firstChild->nodeValue = str_replace($digest, $preserve_digest, $content->nodeValue);
+		}
 	}
 	if (isset($activities[$digest])){
 		foreach ($activity->childNodes as $node){
