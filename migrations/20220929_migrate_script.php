@@ -13,7 +13,7 @@ $starttime = microtime(true);
 echo 'Starting populate digest function';
 populate_digests_published_courses(null, false);
 
-$timediff = $starttime - microtime(true);
+$timediff = microtime(true) - $starttime;
 echo 'Completed in ' . $timediff . ' seconds.';
 
 ?>
