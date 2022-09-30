@@ -152,13 +152,6 @@ function xmldb_block_oppia_mobile_export_upgrade($oldversion) {
 		upgrade_plugin_savepoint(true, 2022091501, 'error', 'blocks');
 	}
 	
-
-	if ($oldversion < 2022091502){
-		populate_digests_published_courses();
-
-		// Blocks savepoint reached.
-		upgrade_plugin_savepoint(true, 2022091502, 'error', 'blocks');
-	}
 	return true;
 	
 }

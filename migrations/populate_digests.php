@@ -13,7 +13,7 @@ require_once($pluginroot . 'activity/processor.php');
 const SELECT_COURSES_DIGEST = 'name="coursepriority"';
 
 
-function populate_digests_published_courses(){
+function populate_digests_published_courses($digests_to_preserve = null, $print_logs=true){
 	global $DB;
 
 	$courses_count = $DB->count_records_select(OPPIA_CONFIG_TABLE,
@@ -47,7 +47,7 @@ function populate_digests_published_courses(){
 				$serverid = $s->serverid;
 				
 				echo '<strong>Server ID:' . $serverid . '</strong><br>';
-				populate_digests_for_course($course, $course_id, $serverid);
+				populate_digests_for_course($course, $course_id, $serverid, null, true);
 			}
 		}
 	}
@@ -59,6 +59,13 @@ function populate_digests_published_courses(){
 
 }
 
+
+/* 
+	'digests_to_preserve' is an array of digests that where marked to be preserved in step 4 of the export process.
+	  The array's key is the digest based on the latest modifications to the activity content.
+	  The array's value is the previously stored digest that is going to be preserved. 
+*/
+	  
 function populate_digests_for_course($course, $course_id, $server_id, $digests_to_preserve = null, $print_logs=true){
     global $CFG, $DEFAULT_LANG;
     $DEFAULT_LANG = get_oppiaconfig($course_id,'default_lang', $CFG->block_oppia_mobile_export_default_lang, $server_id);
@@ -130,9 +137,6 @@ function populate_digests_for_course($course, $course_id, $server_id, $digests_t
 				}
                 $digest = $activity->md5;
                 
-                // 'digests_to_preserve' is an array of digests that where marked to be preserved in step 4 of the export process.
-                // The array's key is the digest based on the latest modifications to the activity content.
-                // The array's value is the previously stored digest that is going to be preserved.
                 if ($digests_to_preserve != null){
                     $preserve_digest = $digests_to_preserve[$digest];
                     if ($preserve_digest != null) {
