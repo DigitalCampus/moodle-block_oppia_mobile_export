@@ -44,13 +44,16 @@ class block_oppia_mobile_export extends block_base {
             array_push($servers, $s);
         }
 
+        $current_style = get_oppiaconfig($COURSE->id, 'stylesheet', STYLESHEET_DEFAULT);
+
         $settings = array(
             'id' => $COURSE->id,
             'sesskey' => sesskey(),
             'wwwplugin' => $CFG->wwwroot.PLUGINPATH,
             'servers' => $servers,
-            'styles' => $this->getStyles(),
-            'default_server' => $CFG->block_oppia_mobile_export_default_server
+            'styles' => $this->getStyles($current_style),
+            'default_server' => $CFG->block_oppia_mobile_export_default_server,
+            'current_style' => $current_style,
         );
         
         $this->content->text = $OUTPUT->render_from_template(PLUGINNAME.'/block', $settings);
@@ -67,7 +70,7 @@ class block_oppia_mobile_export extends block_base {
     }
     
     
-    private function getStyles(){
+    private function getStyles($current_style){
 
         $styles_dir = dirname(__FILE__).'/'.STYLES_DIR.STYLES_THEMES_DIR;
         $styles = array();
@@ -80,7 +83,12 @@ class block_oppia_mobile_export extends block_base {
                 list($theme, $extn) = explode('.', $file);
                 $ends_extra_suffix = substr($theme, -strlen(STYLES_EXTRA_SUFFIX)) === STYLES_EXTRA_SUFFIX;
                 if ($extn == 'scss' && !$ends_extra_suffix){
-                    array_push($styles, $theme);    
+
+                    array_push($styles, array(
+                        'theme' => $theme,
+                        'name' => ucwords($theme, " -"),
+                        'selected' => ($theme == $current_style)
+                    ));    
                 }
                 
             }
