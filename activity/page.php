@@ -72,9 +72,11 @@ class MobileActivityPage extends MobileActivity {
 		$page_filename = $this->makePageFilename($this->section, $mod_id, $lang);
 		$index = $this->courseroot."/".$page_filename;
 		$fh = fopen($index, 'w');
-		fwrite($fh, $webpage);
-		fclose($fh);
-
+		if ($fh !== false){
+			fwrite($fh, $webpage);
+			fclose($fh);
+		}
+		
 		$o = new stdClass();
 		$o->lang = $lang;
 		$o->filename = $page_filename;
@@ -288,7 +290,7 @@ class MobileActivityPage extends MobileActivity {
 				$video_params['poster'] = $video->getAttribute('poster');
 			}
 
-			$embed = createDOMElemFromTemplate($html, block_oppia_mobile_export.'/video_embed', $video_params);
+			$embed = createDOMElemFromTemplate($html, PLUGINNAME.'/video_embed', $video_params);
 			$video->parentNode->replaceChild($embed, $video);
         } 
 

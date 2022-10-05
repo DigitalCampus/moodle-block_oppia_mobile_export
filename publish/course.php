@@ -100,8 +100,6 @@ if(!$server_connection && $server != "default"){
 if ($server == "default"){
 	$server_connection = new stdClass();
 	$server_connection->url = $CFG->block_oppia_mobile_export_default_server;
-	$server_connection->username = $CFG->block_oppia_mobile_export_default_username;
-	$server_connection->apikey = $CFG->block_oppia_mobile_export_default_api_key;
 }
 
 if (substr($server_connection->url, -strlen('/'))!=='/'){
