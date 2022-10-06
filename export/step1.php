@@ -1,4 +1,9 @@
 <?php 
+/**
+ * Oppia Mobile Export
+ * Step 1: Main course export configuration and quiz setup
+ */
+
 require_once(dirname(__FILE__) . '/../../../config.php');
 require_once(dirname(__FILE__) . '/../constants.php');
 

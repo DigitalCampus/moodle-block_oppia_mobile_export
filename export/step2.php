@@ -1,4 +1,9 @@
 <?php 
+/**
+ * Oppia Mobile Export
+ * Step 2: Configure password protection (for sections and feedback activities)
+ */
+
 require_once(dirname(__FILE__) . '/../../../config.php');
 require_once(dirname(__FILE__) . '/../constants.php');
 
