@@ -71,7 +71,6 @@ $orderno = 1;
 foreach($sections as $sect) {
 	$sectionmods = explode(",", $sect->sequence);
 	
-	$sectionTitle = strip_tags($sect->summary);
 	$sectionTitle = format_string($sect->summary);
 	if ($sectionTitle == "") {
 		$sectionTitle = get_string('sectionname', 'format_topics') . ' ' . $sect->section;
@@ -99,7 +98,7 @@ foreach($sections as $sect) {
 				if ($quiz->get_is_valid() && $quiz->get_no_questions()> 0){
 					array_push($quizzes, array(
 						'section' => $sectionTitle,
-						'name' => $mod->name,
+						'name' => format_string($mod->name),
 						'noquestions' => $quiz->get_no_questions(),
 						'id' => $mod->id,
 					    'password' => $quiz->has_password()
