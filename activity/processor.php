@@ -59,18 +59,24 @@ class ActivityProcessor {
 		$this->current_section = $section;
 	}
 
-	public function process_activity($mod, $sect, $act_orderno, $xmlnode=null, $xmlDoc=null){
+	public function process_activity($mod, $sect, $act_orderno, $xmlnode=null, $xmlDoc=null, $password=''){
+
+		$params = array(
+			'id' => $mod->id,
+	    	'courseroot' => $this->course_root,
+			'section' => $this->current_section,
+			'server_id' => $this->server_id,
+			'course_id' => $this->course_id,
+            'print_logs' =>$this->print_logs,
+            'courseversion' => $this->versionid,
+            'shortname' => $this->course_shortname,
+			'summary' => $sect->summary,	
+			'keep_html' => $this->$keep_html,
+			'password' => $password,
+		);
 
 		if ($mod->modname == 'page'){
-		    $page = new MobileActivityPage(array(
-		    	'id' => $mod->id,
-		    	'courseroot' => $this->course_root,
-				'section' => $this->current_section,
-				'server_id' => $this->server_id,
-				'course_id' => $this->course_id,
-                'print_logs' =>$this->print_logs,
-		    ));
-			
+		    $page = new MobileActivityPage($params);
 			$page->process();
 			
 			if ($xmlnode != null){
@@ -89,24 +95,14 @@ class ActivityProcessor {
 			$showfeedback = get_oppiaconfig($mod->id, 'showfeedback', 1, $this->server_id);
 			$maxattempts = get_oppiaconfig($mod->id, 'maxattempts', 'unlimited', $this->server_id);
 
-		    $quiz = new MobileActivityQuiz(array(
-		    	'id' => $mod->id,
-		    	'courseroot' => $this->course_root,
-				'section' => $this->current_section,
-				'server_id' => $this->server_id,
-				'course_id' => $this->course_id,
-				'shortname' => $this->course_shortname,
-				'summary' => $sect->summary,
-				'courseversion' => $this->versionid,
-				'keep_html' => $this->$keep_html,
-				'config_array' => array(
-					'randomselect'=>$randomselect, 
-					'showfeedback'=>$showfeedback, 
-					'passthreshold'=>$passthreshold,
-					'maxattempts'=>$maxattempts
-				),
-                'print_logs' =>$this->print_logs,
-		    ));
+			$params['config_array'] =  array(
+				'randomselect'=>$randomselect, 
+				'showfeedback'=>$showfeedback, 
+				'passthreshold'=>$passthreshold,
+				'maxattempts'=>$maxattempts
+			);	
+
+		    $quiz = new MobileActivityQuiz($params);
 
 			$quiz->preprocess();
 			if ($quiz->get_is_valid()){
@@ -121,14 +117,7 @@ class ActivityProcessor {
 			}
 		}
 		else if ($mod->modname == 'resource'){
-		    $resource = new MobileActivityResource(array(
-		    	'id' => $mod->id,
-		    	'courseroot' => $this->course_root,
-				'section' => $this->current_section,
-				'server_id' => $this->server_id,
-				'course_id' => $this->course_id,
-                'print_logs' =>$this->print_logs,
-		    ));
+		    $resource = new MobileActivityResource($params);
 			$resource->process();
 			if ($xmlnode != null){
 				$resource->getXML($mod, $act_orderno, $xmlnode, $xmlDoc, true);
@@ -136,14 +125,7 @@ class ActivityProcessor {
 			return $resource;
 		}
 		else if ($mod->modname == 'url'){
-		    $url = new MobileActivityUrl(array(
-		    	'id' => $mod->id,
-		    	'courseroot' => $this->course_root,
-				'section' => $this->current_section,
-				'server_id' => $this->server_id,
-				'course_id' => $this->course_id,
-                'print_logs' =>$this->print_logs,
-		    ));
+		    $url = new MobileActivityUrl($params);
 			$url->process();
 			if ($xmlnode != null){
 				$url->getXML($mod, $act_orderno, $xmlnode, $xmlDoc, true);
@@ -151,23 +133,14 @@ class ActivityProcessor {
 			return $url;
 		}
 		else if ($mod->modname == 'feedback'){
-		    $feedback = new MobileActivityFeedback(array(
-		    	'id' => $mod->id,
-		    	'courseroot' => $this->course_root,
-				'section' => $this->current_section,
-				'server_id' => $this->server_id,
-				'course_id' => $this->course_id,
-				'shortname' => $this->course_shortname,
-				'courseversion' => $this->versionid,
-				'keep_html' => $this->$keep_html,
-				'config_array' => array(
-					'showfeedback'=>false, 
-					'passthreshold'=>0,
-					'maxattempts'=>'unlimited'
-				),
-                'print_logs' =>$this->print_logs,
-		    ));
-		    
+
+			$params['config_array'] = array(
+				'showfeedback'=>false, 
+				'passthreshold'=>0,
+				'maxattempts'=>'unlimited'
+			);
+
+		    $feedback = new MobileActivityFeedback($params);
 
 			$feedback->preprocess();
 			if ($feedback->get_is_valid()){

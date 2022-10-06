@@ -135,11 +135,21 @@ foreach($sections as $sect) {
 				continue;
 			}
 			if ( ($mod->modname == 'page') ||
-					($mod->modname == 'feedback') ||
 					($mod->modname == 'resource') || 
 					($mod->modname == 'url')) {
 				$activity_count++;
 			}
+			else if ($mod->modname == 'feedback'){
+				$activity_count++;
+
+				$password = get_oppiaconfig($mod->id, 'password', '', $server);
+
+				array_push($activities, array(
+					'modid' => $mod->id,
+					'title' => format_string($mod->name),
+					'password' => $password
+				));
+			} 
 			else if($mod->modname == 'quiz'){
 				$activity_count++;
 				// For the quizzes, we save the configuration entered
@@ -167,7 +177,8 @@ foreach($sections as $sect) {
 				'sect_id' => $sect->id,
 				'password' => $password,
 				'activity_count' => $activity_count,
-				'title' => $sectionTitle
+				'title' => $sectionTitle,
+				'activities' => $activities
 			));
 			$sect_orderno++;
 		} 

@@ -22,6 +22,22 @@
 			<input class="form-control pure-u-1" type="text" name="section_{{sect_id}}_password" {{#password}}value="{{.}}"{{/password}} "id="id_s_section_password_{{sect_orderno}}" />
 		</div>
 	</div>
+
+		{{#activities.0}}
+		<div>
+			{{#activities}}
+
+			<div class="pure-g secondary">
+				<div class="pure-u-lg-17-24 pure-u-1 text-left pl-3 oppia_export_section">
+					<div class="step">{{title}}</div>
+				</div>
+				<div class="pure-u-lg-7-24 pure-u-1">
+					<input class="form-control pure-u-1" type="text" name="mod_{{modid}}_password" {{#password}}value="{{.}}"{{/password}} "id="id_s_mod_password_{{modid}}" />
+				</div>
+			</div>
+			{{/activities}}
+		</div>
+		{{/activities.0}}
 	{{/sections}}
 	</div>
 

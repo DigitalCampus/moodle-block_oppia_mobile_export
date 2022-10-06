@@ -8,6 +8,7 @@ abstract class MobileActivity {
 	public $server_id;
 	public $section;
 	public $md5;
+	public $password;
 	
 	public $thumbnail_image = null;
 	public $component_name;
@@ -20,6 +21,7 @@ abstract class MobileActivity {
 		if (isset($params['server_id'])) { $this->server_id = $params['server_id']; }
 		if (isset($params['course_id'])) { $this->course_id = $params['course_id']; }
 		if (isset($params['section'])) { $this->section = $params['section']; }
+        if (isset($params['password'])) { $this->password = $params['password']; }
         if (isset($params['print_logs'])) { $this->print_logs = $params['print_logs']; }
     }
 
@@ -69,6 +71,9 @@ abstract class MobileActivity {
 		}
 	}
 
+	function has_password(){
+		return ($this->password !== '');
+	}
 
 	protected function getActivityNode($xmlDoc, $module, $counter){
 		$act = $xmlDoc->createElement("activity");

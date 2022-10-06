@@ -86,7 +86,7 @@ class MobileActivityQuiz extends MobileActivity {
 		}
 	}
 
-	function has_password(){
+	public function has_password(){
 	    global $DB, $USER;
 	    
 	    $cm = get_coursemodule_from_id('quiz', $this->id);
@@ -95,7 +95,7 @@ class MobileActivityQuiz extends MobileActivity {
 	    if($quiz->password != ""){
 	        return true;
 	    } else {
-	        return false;
+	        return parent::has_password();
 	    }
 	}
 

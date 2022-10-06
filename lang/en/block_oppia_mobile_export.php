@@ -180,10 +180,14 @@ $string['export_no_content_changes_message'] = 'No content changes detected in p
 $string['export_updating_digests_in_section'] = 'Updating digests in section: {$a}';
 
 $string['section_password_title'] = 'Password protection';
-$string['section_password_added'] = '✓ Section protected by password'; 
-$string['section_password_desc']  = 'If you want to lock a topic with password, please enter it in the table below.'; 
+$string['section_password_added'] = '🔒 Section protected by password'; 
+$string['section_password_desc']  = 'If you want to lock a topic or activity with password, please enter it in the table below.'; 
 $string['section_password_label'] = 'Password'; 
 $string['section_password_invalid'] = '<strong>{$a}</strong>: Section doesn\'t contain any supported activities.';
+
+$string['activity_password_added'] = '🔒 Activity protected by password'; 
+
+
 
 $string['true'] = 'True';
 $string['false'] = 'False';

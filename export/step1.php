@@ -72,6 +72,7 @@ foreach($sections as $sect) {
 	$sectionmods = explode(",", $sect->sequence);
 	
 	$sectionTitle = strip_tags($sect->summary);
+	$sectionTitle = format_string($sect->summary);
 	if ($sectionTitle == "") {
 		$sectionTitle = get_string('sectionname', 'format_topics') . ' ' . $sect->section;
 	}
