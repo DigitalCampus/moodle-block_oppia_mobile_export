@@ -119,8 +119,11 @@ $string['export_keep_tags_title'] = 'Quiz Question Formatting';
 $string['export_keep_tags_desc'] = 'support use of HTML tags (&lt;em&gt;, &lt;b&gt;, &lt;strong&gt;, etc) in quiz question/response options. <br/><strong>Important</strong>:This is only supported for users with v7.3.2 or higher of the Oppia app';
 
 $string['export_server_error'] ='Unable to get server info (is it correctly configured and running?)';
-$string['export_server_version'] = '<strong>Current server version:</strong> <code>{$a}</code>' ;
-$string['export_method'] = 'Quiz export method';
+
+$string['server_info_name'] = 'Server name';
+$string['server_info_version'] = 'Current server version';
+$string['server_info_max_upload'] = 'Max. upload size';
+
 
 $string['export_course_tags_title'] = 'Course Categories';
 $string['export_course_tags_desc'] = 'Categories that will be used to classify the course on the OppiaMobile server, separate each category by a comma';

@@ -66,8 +66,6 @@ if(!$server_connection && $server != "default"){
 if ($server == "default"){
 	$server_connection = new stdClass();
 	$server_connection->url = $CFG->block_oppia_mobile_export_default_server;
-	$server_connection->username = $CFG->block_oppia_mobile_export_default_username;
-	$server_connection->apikey = $CFG->block_oppia_mobile_export_default_api_key;
 }
 
 echo '<div class="oppia_export_section">';
@@ -178,6 +176,8 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
 	$ziprelativepath = OPPIA_OUTPUT_DIR.$USER->id."/".$zipname;
 	$outputpath = $dataroot.$ziprelativepath;
 	Zip($dir2zip, $outputpath);
+
+	add_or_update_oppiaconfig($id, 'stylesheet', $stylesheet, null);
 
  	$filerecord = array(
  	    'contextid'=> $context->id,

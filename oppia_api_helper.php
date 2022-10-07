@@ -3,21 +3,25 @@
 require_once(dirname(__FILE__) . '/constants.php');
 
 class ApiHelper{
-	private $connection;
+	private $url;
 	private $curl;
 	public $version;
+	public $name;
+	public $max_upload;
 	
-	function init($connection){
-		$this->connection = $connection;
+	function init($url){
+		$this->url = $url;
 		$this->curl = curl_init();
 		curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, 1 );
 	}
 
 
-	function fetchServerVersion($server_connection){
-		$this->init($server_connection);
+	function fetch_server_info($url){
+		$this->init($url);
 		$server_info = $this->exec('server', array(),'get', false, false);
 		$this->version = $server_info->version;
+		$this->name = $server_info->name;
+		$this->max_upload = $server_info->max_upload;
 
 	}
 	
@@ -25,10 +29,10 @@ class ApiHelper{
 		
 		$json = json_encode($data_array);
 		// Check if the url already has trailing '/' or not
-		if (substr($this->connection->url, -strlen('/'))==='/'){ 
-			$temp_url = $this->connection->url.($api_path ? "api/v1/" : "").$object."/";
+		if (substr($this->url, -strlen('/'))==='/'){ 
+			$temp_url = $this->url.($api_path ? "api/v2/" : "").$object."/";
 		} else {
-			$temp_url = $this->connection->url."/".($api_path ? "api/v1/" : "").$object."/";
+			$temp_url = $this->url."/".($api_path ? "api/v2/" : "").$object."/";
 		}
 		curl_setopt($this->curl, CURLOPT_URL, $temp_url );
 		if($type == 'post'){

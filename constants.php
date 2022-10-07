@@ -17,6 +17,7 @@ define('STYLES_BASE_SCSS', 'base.scss');
 define('STYLES_EXTRA_SUFFIX', '_extra');
 define('COMMON_STYLES_RESOURCES_DIR', 'common-resources/');
 define('COURSE_STYLES_RESOURCES_DIR', '/style_resources/');
+define('STYLESHEET_DEFAULT', 'default');
 
 // constants for html output
 define('OPPIA_HTML_SPAN_ERROR_START', '<span class="export-error">');

@@ -86,7 +86,7 @@ $modinfo = get_fast_modinfo($course);
 $sections = $modinfo->get_section_info_all();
 $mods = $modinfo->get_cms();
 
-add_publishing_log($server_connection->url, $USER->id, $id, "export_start", "Export process starting");
+add_publishing_log($server, $USER->id, $id, "export_start", "Export process starting");
 
 $a = new stdClass();
 $a->stepno = 2;

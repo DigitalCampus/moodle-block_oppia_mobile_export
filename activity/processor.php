@@ -98,7 +98,7 @@ class ActivityProcessor {
 				'shortname' => $this->course_shortname,
 				'summary' => $sect->summary,
 				'courseversion' => $this->versionid,
-				'keep_html' => $this->$keep_html,
+				'keep_html' => $this->keep_html,
 				'config_array' => array(
 					'randomselect'=>$randomselect, 
 					'showfeedback'=>$showfeedback, 
@@ -159,7 +159,7 @@ class ActivityProcessor {
 				'course_id' => $this->course_id,
 				'shortname' => $this->course_shortname,
 				'courseversion' => $this->versionid,
-				'keep_html' => $this->$keep_html,
+				'keep_html' => $this->keep_html,
 				'config_array' => array(
 					'showfeedback'=>false, 
 					'passthreshold'=>0,

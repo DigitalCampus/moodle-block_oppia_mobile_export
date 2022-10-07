@@ -86,19 +86,19 @@ if(!$server_connection && $server != "default"){
 if ($server == "default"){
 	$server_connection = new stdClass();
 	$server_connection->url = $CFG->block_oppia_mobile_export_default_server;
-	$server_connection->username = $CFG->block_oppia_mobile_export_default_username;
-	$server_connection->apikey = $CFG->block_oppia_mobile_export_default_api_key;
 }
-$apiHelper = new ApiHelper();
-$apiHelper->fetchServerVersion($server_connection);
+$api_helper = new ApiHelper();
+$api_helper->fetch_server_info($server_connection->url);
 
 echo '<p>';
-if ($apiHelper->version == null || $apiHelper->version==''){
+if ($api_helper->version == null || $api_helper->version==''){
 	echo '<span class="export-error">'. get_string('export_server_error', PLUGINNAME).OPPIA_HTML_BR;
 	add_publishing_log($server_connection->url, $USER->id, $id, "server_unavailable", "Unable to get server info");
 }
 else{
-	echo get_string('export_server_version', PLUGINNAME, $apiHelper->version).OPPIA_HTML_BR;
+	echo $OUTPUT->render_from_template(
+		PLUGINNAME.'/server_info', array('server_info' => $api_helper)
+	);
 }
 
 //make course dir etc for output
