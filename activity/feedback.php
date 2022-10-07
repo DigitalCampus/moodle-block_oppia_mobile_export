@@ -85,6 +85,12 @@ class MobileActivityFeedback extends MobileActivity {
                 $quizprops[$k] = $v;
             }
         }
+
+        $multiple_submit = intval($feedback->multiple_submit) == 1;
+
+        if (!$multiple_submit){
+            $quizprops['maxattempts'] = 1;    
+        }
         
         $nameJSON = extractLangs($cm->name, true);
         $descJSON = extractLangs($feedback->intro, true, !$this->keep_html);
@@ -141,9 +147,9 @@ class MobileActivityFeedback extends MobileActivity {
                 $resps = explode('|', $respstr);
                 $j = 1;
                 foreach($resps as $resp){
-                    preg_match('/([0-9]+)#### (.*)/', $resp, $matches);
+                    preg_match('/([0-9]+)####(.*)/', $resp, $matches);
                     $score = is_null($matches[1]) ? "0" : $matches[1];
-                    $respTitle = $matches[2];
+                    $respTitle = trim($matches[2]);
                     $respTitle = extractLangs($respTitle, true, !$this->keep_html, true);
                     array_push($responses, array(
                         'order' => $j,

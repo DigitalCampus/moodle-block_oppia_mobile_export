@@ -162,7 +162,9 @@ if(is_array($title) && count($title)>0){
 	$meta->appendChild($temp);
 }
 
-$meta->appendChild($xmlDoc->createElement("shortname",strtolower($course->shortname)));
+$temp = $xmlDoc->createElement("shortname");
+$temp->appendChild($xmlDoc->createCDATASection(strtolower($course->shortname)));
+$meta->appendChild($temp);
 
 $summary = extractLangs($course->summary);
 if(is_array($summary) && count($summary)>0){
