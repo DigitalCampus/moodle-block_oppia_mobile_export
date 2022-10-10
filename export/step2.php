@@ -1,4 +1,9 @@
 <?php 
+/**
+ * Oppia Mobile Export
+ * Step 2: Configure password protection (for sections and feedback activities)
+ */
+
 require_once(dirname(__FILE__) . '/../../../config.php');
 require_once(dirname(__FILE__) . '/../constants.php');
 
@@ -105,10 +110,10 @@ foreach($sections as $sect) {
 
 	$sectionmods = explode(",", $sect->sequence);
 	$defaultSectionTitle = false;
-	$sectionTitle = strip_tags($sect->summary);
+	$sectionTitle = format_string($sect->summary);
 	// If the course has no summary, we try to use the section name
 	if ($sectionTitle == "") {
-		$sectionTitle = strip_tags($sect->name);
+		$sectionTitle = format_string($sect->name);
 	}
 	// If the course has neither summary nor name, use the default topic title
 	if ($sectionTitle == "") {
@@ -130,11 +135,21 @@ foreach($sections as $sect) {
 				continue;
 			}
 			if ( ($mod->modname == 'page') ||
-					($mod->modname == 'feedback') ||
 					($mod->modname == 'resource') || 
 					($mod->modname == 'url')) {
 				$activity_count++;
 			}
+			else if ($mod->modname == 'feedback'){
+				$activity_count++;
+
+				$password = get_oppiaconfig($mod->id, 'password', '', $server);
+
+				array_push($activities, array(
+					'modid' => $mod->id,
+					'title' => format_string($mod->name),
+					'password' => $password
+				));
+			} 
 			else if($mod->modname == 'quiz'){
 				$activity_count++;
 				// For the quizzes, we save the configuration entered
@@ -162,7 +177,8 @@ foreach($sections as $sect) {
 				'sect_id' => $sect->id,
 				'password' => $password,
 				'activity_count' => $activity_count,
-				'title' => $sectionTitle
+				'title' => $sectionTitle,
+				'activities' => $activities
 			));
 			$sect_orderno++;
 		} 

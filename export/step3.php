@@ -1,4 +1,9 @@
 <?php 
+/**
+ * Oppia Mobile Export
+ * Step 3: Activities export and local media management
+ */
+
 require_once(dirname(__FILE__) . '/../../../config.php');
 require_once(dirname(__FILE__) . '/../constants.php');
 
@@ -317,11 +322,11 @@ foreach($sections as $sect) {
 	$sectionmods = explode(",", $sect->sequence);
 
 	$defaultSectionTitle = false;
-	$sectionTitle = strip_tags($sect->summary);
+	$sectionTitle = format_string($sect->summary);
 	$title = extractLangs($sect->summary);
 	// If the course has no summary, we try to use the section name
 	if ($sectionTitle == "") {
-		$sectionTitle = strip_tags($sect->name);
+		$sectionTitle = format_string($sect->name);
 		$title = extractLangs($sect->name);
 	}
 	// If the course has neither summary nor name, use the default topic title
@@ -348,7 +353,7 @@ foreach($sections as $sect) {
 			}
 		} else {
 			$temp = $xmlDoc->createElement("title");
-			$temp->appendChild($xmlDoc->createCDATASection($sectionTitle));
+			$temp->appendChild($xmlDoc->createCDATASection($title));
 			$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
 			$section->appendChild($temp);
 		}
@@ -394,10 +399,17 @@ foreach($sections as $sect) {
 				continue;
 			}
 			
-			echo '<div class="step"><strong>' . $mod->name . '</strong>'.OPPIA_HTML_BR;
-			$activity = $processor->process_activity($mod, $sect, $act_orderno, $activities, $xmlDoc);
+			echo '<div class="step"><strong>' . format_string($mod->name) . '</strong>'.OPPIA_HTML_BR;
+			$password =  optional_param('mod_'.$mod->id.'_password', '', PARAM_TEXT);
+			$activity = $processor->process_activity($mod, $sect, $act_orderno, $activities, $xmlDoc, $password);
 			if ($activity != null){
 				$act_orderno++;
+				if ($activity->has_password()){
+					echo '<span class="export-results info">'. get_string('activity_password_added', PLUGINNAME) .'</span>'.OPPIA_HTML_BR;
+					if ($password !== ''){
+						add_or_update_oppiaconfig($mod->id, 'password', $password, $server);
+					}
+				}
 			}
 			echo '</div>';
 

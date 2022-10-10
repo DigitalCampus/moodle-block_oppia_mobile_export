@@ -228,6 +228,13 @@ class MobileActivityFeedback extends MobileActivity {
         
         $this->generate_md5($feedback, $quizJson);
         $quizJson['props']['digest'] = $this->md5;
+
+        // check for password protection
+        // done after md5 is created so password can be changed without it being a new quiz
+        if($this->password !== '') {
+            $quizJson['props']['password'] = $this->password;
+        }
+
         $this->content = json_encode($quizJson);
     }
     

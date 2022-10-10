@@ -32,6 +32,9 @@
 	box-sizing: border-box;
 	text-align: center;
 }
+.quizzes-table .secondary{
+	border-bottom: 1px solid #dadada;
+}
 .pure-g input, .pure-g select{
 	font-size: 13px;
 	max-width: 100%;
@@ -79,6 +82,11 @@ span.export-results{ display: inline-block; }
 .export-results.info{
 	background-color: #e3f1fc;
 	border-color:#d5e2fb;
+}
+.step .export-results{
+	padding: 0 10px;
+	margin-top: -5px;
+	margin-bottom: 0;
 }
 .pure-md-right{ box-sizing: border-box; text-align: right; padding-right: 2em; }
 @media screen and (max-width:48em){

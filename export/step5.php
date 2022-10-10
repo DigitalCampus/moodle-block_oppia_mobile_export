@@ -1,4 +1,9 @@
 <?php 
+/**
+ * Oppia Mobile Export
+ * Step 5: Final step, XML validation and create the course package ready to publish
+ */
+
 require_once(dirname(__FILE__) . '/../../../config.php');
 require_once(dirname(__FILE__) . '/../constants.php');
 
