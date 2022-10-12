@@ -317,11 +317,11 @@ foreach($sections as $sect) {
 	$sectionmods = explode(",", $sect->sequence);
 
 	$defaultSectionTitle = false;
-	$sectionTitle = strip_tags($sect->summary);
+	$sectionTitle = strip_tags(format_string($sect->summary));
 	$title = extractLangs($sect->summary);
 	// If the course has no summary, we try to use the section name
 	if ($sectionTitle == "") {
-		$sectionTitle = strip_tags($sect->name);
+		$sectionTitle = strip_tags(format_string($sect->name));
 		$title = extractLangs($sect->name);
 	}
 	// If the course has neither summary nor name, use the default topic title
