@@ -69,10 +69,10 @@ foreach($sections as $sect) {
         continue;
     }
 
-    $section_title = strip_tags($sect->summary);
+    $section_title = strip_tags(format_string($sect->summary));
     // If the course has no summary, we try to use the section name
     if ($section_title == "") {
-        $section_title = strip_tags($sect->name);
+        $section_title = strip_tags(format_string($sect->name));
     }
     // If the course has neither summary nor name, use the default topic title
     if ($section_title == "") {
@@ -116,7 +116,7 @@ foreach($sections as $sect) {
 
                     $activity_count++;
                     array_push($activities, array(
-                        'name' => $mod->name,
+                        'name' => format_string($mod->name),
                         'act_id' => $mod->id,
                         'current_digest' => $current_digest,
                         'last_published_digest' => $last_published_digest,
