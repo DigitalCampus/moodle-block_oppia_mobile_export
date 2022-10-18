@@ -41,7 +41,7 @@ class ActivityProcessor {
 
 	public function __construct($params=array()){ 
 		if (isset($params['id'])) { $this->id = $params['id']; }
-		if (isset($params['courseroot'])) { $this->courseroot = $params['courseroot']; }
+		if (isset($params['course_root'])) { $this->course_root = $params['course_root']; }
 		if (isset($params['server_id'])) { $this->server_id = $params['server_id']; }
 		if (isset($params['course_id'])) { $this->course_id = $params['course_id']; }
 		if (isset($params['section'])) { $this->section = $params['section']; }	
