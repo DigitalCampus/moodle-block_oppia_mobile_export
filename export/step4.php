@@ -61,6 +61,7 @@ $processor = new ActivityProcessor(array(
 ));
 
 $config_sections = array();
+$unmodified_activities = array();
 $sect_orderno = 1;
 foreach($sections as $sect) {
     flush_buffers();
@@ -79,8 +80,8 @@ foreach($sections as $sect) {
         $section_title = get_string('sectionname', 'format_topics') . ' ' . $sect->section;
     }
 
-    $activity_count = 0;
-    $activities = array();
+    $modified_activities_count = 0;
+    $modified_activities = array();
     $act_orderno = 1;
     $processor->set_current_section($sect_orderno);
 
@@ -99,14 +100,14 @@ foreach($sections as $sect) {
                     'modid' => $mod->id,
                     'serverid' => $server,
                 ),
-                'digest, nquestions',
+                'moodleactivitymd5, oppiaserverdigest, nquestions',
             );
 
             if($last_published_digest_entry) {
-                $last_published_digest = $last_published_digest_entry->digest;
+                $moodle_activity_md5 = $last_published_digest_entry->moodleactivitymd5;
                 $current_digest = $activity->md5;
 
-                if (strcmp($last_published_digest, $current_digest) !== 0) { // The digests are different
+                if (strcmp($moodle_activity_md5, $current_digest) !== 0) { // The activity was modified
 
                     // For 'quiz' and 'feedback' activities, don't show option to preserve digest if the number of questions has changed
                     if (($mod->modname == 'quiz' or $mod->modname == 'feedback') and
@@ -114,14 +115,17 @@ foreach($sections as $sect) {
                        continue;
                     }
 
-                    $activity_count++;
-                    array_push($activities, array(
+                    $modified_activities_count++;
+                    array_push($modified_activities, array(
                         'name' => format_string($mod->name),
                         'act_id' => $mod->id,
                         'current_digest' => $current_digest,
-                        'last_published_digest' => $last_published_digest,
+                        'last_published_digest' => $last_published_digest_entry->oppiaserverdigest,
                         'icon' => $mod->get_icon_url()->out(),
                     ));
+                } else { // The activity wasn't modified
+                    // Include a parameter preserving the value of the digest that is currently in use in the Oppia Server
+                    $unmodified_activities['digest_'.$current_digest] = $last_published_digest_entry->oppiaserverdigest;
                 }
             }
         }
@@ -131,25 +135,28 @@ foreach($sections as $sect) {
         $sect_orderno++;
     }
 
-    if ($activity_count > 0) {
+    if ($modified_activities_count > 0) {
         array_push($config_sections, array(
             'title' => $section_title,
-            'activities' => $activities,
+            'activities' => $modified_activities,
         ));
     }
 }
 
-$form_values = array(
-    'id' => $id,
-    'server_id' => $server,
-    'media_files' => json_decode($media_files, true),
-    'stylesheet' => $stylesheet,
-    'coursetags' => $tags,
-    'course_export_status' => $course_export_status,
-    'course_root' => $course_root,
-    'sections' => $config_sections,
-    'wwwroot' => $CFG->wwwroot,
-    'resolve' => resolve(),
+$form_values = array_merge(
+    $unmodified_activities,
+    array(
+        'id' => $id,
+        'server_id' => $server,
+        'media_files' => json_decode($media_files, true),
+        'stylesheet' => $stylesheet,
+        'coursetags' => $tags,
+        'course_export_status' => $course_export_status,
+        'course_root' => $course_root,
+        'sections' => $config_sections,
+        'wwwroot' => $CFG->wwwroot,
+        'resolve' => resolve(),
+    )
 );
 
 // The next step expect in the form parameters the media_url and the media_length for every media file.

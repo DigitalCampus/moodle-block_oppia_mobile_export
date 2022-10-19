@@ -21,6 +21,9 @@
                         </div>
                     </div>
                     <div class="pure-u-lg-7-24 pure-u-1">
+                        <!-- If uncheck, use the real digest value -->
+                        <input type='hidden' name="digest_{{current_digest}}" value="{{current_digest}}" />
+                        <!-- If check, preserve the last published digest -->
                         <input class="form-checkbox pure-u-1" type="checkbox" name="digest_{{current_digest}}" value="{{last_published_digest}}" />
                     </div>
                 </div>
