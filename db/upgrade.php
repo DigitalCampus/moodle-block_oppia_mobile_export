@@ -151,6 +151,29 @@ function xmldb_block_oppia_mobile_export_upgrade($oldversion) {
 		// Blocks savepoint reached.
 		upgrade_plugin_savepoint(true, 2022091501, 'error', 'blocks');
 	}
+
+    if ($oldversion < 2022101701){
+        // Rename field 'digest' to 'oppiaserverdigest'
+        // Add the field 'moodleactivitymd5' to table 'block_oppia_activity_digest'
+        //
+        // oppiaserverdigest - Digest that is currently in use by the Oppia server
+        // moodleactivitymd5 - Real digest of the last published Moodle activity.
+        $table = new xmldb_table(OPPIA_DIGEST_TABLE);
+
+        $field = new xmldb_field('digest');
+        if ($dbman->field_exists($table, $field)){
+            $field->set_attributes(XMLDB_TYPE_CHAR, '100', null, XMLDB_NOTNULL, null, '', 'digest');
+            $dbman->rename_field($table, $field, 'oppiaserverdigest');
+        }
+
+        if (!$dbman->field_exists($table, 'moodleactivitymd5')){
+            $field = new xmldb_field('moodleactivitymd5', XMLDB_TYPE_CHAR, '100', null, XMLDB_NOTNULL, null, '0');
+            $dbman->add_field($table, $field);
+        }
+
+        // Blocks savepoint reached.
+        upgrade_plugin_savepoint(true, 2022101701, 'error', 'blocks');
+    }
 	
 	return true;
 	

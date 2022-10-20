@@ -61,9 +61,9 @@ function populate_digests_published_courses($digests_to_preserve = null, $print_
 
 
 /* 
-	'digests_to_preserve' is an array of digests that where marked to be preserved in step 4 of the export process.
-	  The array's key is the digest based on the latest modifications to the activity content.
-	  The array's value is the previously stored digest that is going to be preserved. 
+	'digests_to_preserve' is an array containing the value of the digest that we have to preserve.
+	  The array's key is the real digest of the moodle activity.
+	  The array's value is the digest that we want to preserve in the output modules.xml. Might be different from the real digest.
 */
 	  
 function populate_digests_for_course($course, $course_id, $server_id, $digests_to_preserve = null, $print_logs=true){
@@ -135,17 +135,13 @@ function populate_digests_for_course($course, $course_id, $server_id, $digests_t
 				if (($mod->modname == 'quiz') || ($mod->modname == 'feedback')){
 					$nquestions = $activity->get_no_questions();
 				}
-                $digest = $activity->md5;
+                $moodle_activity_md5 = $activity->md5;
                 
                 if ($digests_to_preserve != null){
-                    $preserve_digest = $digests_to_preserve[$digest];
-                    if ($preserve_digest != null) {
-                        $digest = $preserve_digest;
-                    }
+                    $oppia_server_digest = $digests_to_preserve[$moodle_activity_md5];
                 }
 
-                echo 'Digest: <span class="alert alert-warning mt-3 py-1">' . $digest . '</span>';
-				save_activity_digest($course_id, $mod->id, $digest, $server_id, $nquestions);
+				save_activity_digest($course_id, $mod->id, $oppia_server_digest, $moodle_activity_md5, $server_id, $nquestions);
 				$act_orderno++;
 			}
 			echo '</div>';
@@ -158,7 +154,7 @@ function populate_digests_for_course($course, $course_id, $server_id, $digests_t
 	echo '</div>';
 }
 
-function save_activity_digest($courseid, $modid, $digest, $serverid, $nquestions=null){
+function save_activity_digest($courseid, $modid, $oppia_server_digest, $moodle_activity_md5, $serverid, $nquestions=null){
 	global $DB;
     $date = new DateTime();
     $timestamp = $date->getTimestamp();
@@ -171,22 +167,27 @@ function save_activity_digest($courseid, $modid, $digest, $serverid, $nquestions
     );
 
     if($record_exists) {
-        $record_exists->digest = $digest;
+        if ($oppia_server_digest != null) {
+            $record_exists->oppiaserverdigest = $oppia_server_digest;
+        }
+        $record_exists->moodleactivitymd5 = $moodle_activity_md5;
         $record_exists->updated = $timestamp;
         $record_exists->nquestions = $nquestions;
 
-        $DB->update_record(OPPIA_DIGEST_TABLE,
-            $record_exists
-        );
+        $DB->update_record(OPPIA_DIGEST_TABLE, $record_exists);
     } else {
+        $oppia_server_digest = $moodle_activity_md5;
         $DB->insert_record(OPPIA_DIGEST_TABLE,
             array(
                 'courseid' => $courseid,
                 'modid' => $modid,
-                'digest' => $digest,
+                'oppiaserverdigest' => $oppia_server_digest,
+                'moodleactivitymd5' => $moodle_activity_md5,
                 'updated' => $timestamp,
                 'serverid' => $serverid,
                 'nquestions' => $nquestions)
         );
     }
+
+    echo 'Digest: <span class="alert alert-warning mt-3 py-1">' . ($oppia_server_digest ?? $record_exists->oppiaserverdigest) . '</span>';
 }
