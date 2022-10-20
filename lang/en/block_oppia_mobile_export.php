@@ -180,7 +180,7 @@ $string['export_preserve_activity_id_desc'] = 'By selecting the \'Preserve ID\' 
 $string['export_preserve_activity_id_header'] = 'Preserve ID';
 $string['export_no_content_changes_message'] = 'No content changes detected in previously published activities, moving to the next step. If nothing is happening please use the continue link below.';
 
-$string['export_updating_digests_in_section'] = 'Updating digests in section: {$a}';
+$string['export_renewing_digests_in_section'] = 'Renewing digests in section: {$a}';
 
 $string['section_password_title'] = 'Password protection';
 $string['section_password_added'] = '🔒 Section protected by password'; 
