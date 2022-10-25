@@ -117,7 +117,7 @@ function populate_digests_for_course($course, $course_id, $server_id, $digests_t
 			}
 		}
 
-		echo "<h4>".get_string('export_updating_digests_in_section', PLUGINNAME, $sectionTitle)."</h4>";
+		echo "<h4>".get_string('export_renewing_digests_in_section', PLUGINNAME, $sectionTitle)."</h4>";
 
 		$sectionmods = explode(",", $sect->sequence);
 		$act_orderno = 1;
