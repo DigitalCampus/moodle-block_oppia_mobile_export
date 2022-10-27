@@ -1,0 +1,395 @@
+default:
+  formatters:
+    moodle_progress:
+      output_styles:
+        comment:
+          - magenta
+    html:
+      output_path: '%paths.base%/report'
+    pretty: ~
+  suites:
+    default:
+      paths:
+        - '%paths.base%'
+      contexts:
+        - emuse\BehatHTMLFormatter\Context\ScreenshotContext:
+            screenshotDir: build/html/behat/assets/screenshots
+        - behat_accessibility
+        - behat_action_menu
+        - behat_admin
+        - behat_app
+        - behat_assignfeedback_editpdf
+        - behat_auth
+        - behat_auth_email
+        - behat_backup
+        - behat_block_comments
+        - behat_block_site_main_menu
+        - behat_block_social_activities
+        - behat_blocks
+        - behat_calendar
+        - behat_cohort
+        - behat_completion
+        - behat_core_form
+        - behat_core_question
+        - behat_course
+        - behat_data_generators
+        - behat_deprecated
+        - behat_editor_atto
+        - behat_enrol
+        - behat_filepicker
+        - behat_filters
+        - behat_forms
+        - behat_general
+        - behat_grade
+        - behat_gradereport_grader
+        - behat_grading
+        - behat_gradingform_guide
+        - behat_gradingform_rubric
+        - behat_groups
+        - behat_hooks
+        - behat_login
+        - behat_message
+        - behat_message_popup
+        - behat_mod_chat
+        - behat_mod_choice
+        - behat_mod_data
+        - behat_mod_feedback
+        - behat_mod_forum
+        - behat_mod_glossary
+        - behat_mod_quiz
+        - behat_mod_workshop
+        - behat_navigation
+        - behat_permissions
+        - behat_qtype_ddimageortext
+        - behat_qtype_ddmarker
+        - behat_qtype_ddwtos
+        - behat_qtype_gapselect
+        - behat_qtype_multichoice
+        - behat_question
+        - behat_report_outline
+        - behat_repository_upload
+        - behat_search
+        - behat_tool_dataprivacy
+        - behat_tool_langimport
+        - behat_tool_lp
+        - behat_tool_lp_data_generators
+        - behat_tool_policy
+        - behat_tool_task
+        - behat_tool_usertours
+        - behat_transformations
+        - behat_user
+        - behat_workshopallocation_manual
+  extensions:
+    emuse\BehatHTMLFormatter\BehatHTMLFormatterExtension:
+      name: html
+      renderer: Twig,Behat2
+      file_name: index
+      print_args: true
+      print_outp: true
+      loop_break: true
+    DVDoug\Behat\CodeCoverage\Extension:
+            filter:
+                include:
+                    directories:
+                        'src': ~
+            reports:
+                html:
+                    target: '%paths.base%/CodeCoverage'
+                text:
+                    showColors: true
+    Behat\MinkExtension:
+      base_url: 'http://127.0.0.1/moodle'
+      goutte: null
+      webdriver:
+        wd_host: 'http://localhost:4444/wd/hub'
+    Moodle\BehatExtension:
+      moodledirroot: '%env(MOODLE_ROOT)%'
+      steps_definitions:
+        behat_accessibility: 'lib\tests\behat\behat_accessibility.php'
+        behat_action_menu: 'lib\tests\behat\behat_action_menu.php'
+        behat_admin: 'admin\tests\behat\behat_admin.php'
+        behat_app: 'lib\tests\behat\behat_app.php'
+        behat_assignfeedback_editpdf: 'mod\assign\feedback\editpdf\tests\behat\behat_assignfeedback_editpdf.php'
+        behat_auth: 'auth\tests\behat\behat_auth.php'
+        behat_auth_email: 'auth\email\tests\behat\behat_auth_email.php'
+        behat_backup: 'backup\util\ui\tests\behat\behat_backup.php'
+        behat_block_comments: 'blocks\comments\tests\behat\behat_block_comments.php'
+        behat_block_site_main_menu: 'blocks\site_main_menu\tests\behat\behat_block_site_main_menu.php'
+        behat_block_social_activities: 'blocks\social_activities\tests\behat\behat_block_social_activities.php'
+        behat_blocks: 'blocks\tests\behat\behat_blocks.php'
+        behat_calendar: 'calendar\tests\behat\behat_calendar.php'
+        behat_cohort: 'cohort\tests\behat\behat_cohort.php'
+        behat_completion: 'completion\tests\behat\behat_completion.php'
+        behat_core_form: 'lib\form\tests\behat\behat_core_form.php'
+        behat_core_question: 'question\tests\behat\behat_core_question.php'
+        behat_course: 'course\tests\behat\behat_course.php'
+        behat_data_generators: 'lib\tests\behat\behat_data_generators.php'
+        behat_deprecated: 'lib\tests\behat\behat_deprecated.php'
+        behat_editor_atto: 'lib\editor\atto\tests\behat\behat_editor_atto.php'
+        behat_enrol: 'enrol\tests\behat\behat_enrol.php'
+        behat_filepicker: 'repository\tests\behat\behat_filepicker.php'
+        behat_filters: 'lib\tests\behat\behat_filters.php'
+        behat_forms: 'lib\tests\behat\behat_forms.php'
+        behat_general: 'lib\tests\behat\behat_general.php'
+        behat_grade: 'grade\tests\behat\behat_grade.php'
+        behat_gradereport_grader: 'grade\report\grader\tests\behat\behat_gradereport_grader.php'
+        behat_grading: 'grade\grading\tests\behat\behat_grading.php'
+        behat_gradingform_guide: 'grade\grading\form\guide\tests\behat\behat_gradingform_guide.php'
+        behat_gradingform_rubric: 'grade\grading\form\rubric\tests\behat\behat_gradingform_rubric.php'
+        behat_groups: 'group\tests\behat\behat_groups.php'
+        behat_hooks: 'lib\tests\behat\behat_hooks.php'
+        behat_login: 'login\tests\behat\behat_login.php'
+        behat_message: 'message\tests\behat\behat_message.php'
+        behat_message_popup: 'message\output\popup\tests\behat\behat_message_popup.php'
+        behat_mod_chat: 'mod\chat\tests\behat\behat_mod_chat.php'
+        behat_mod_choice: 'mod\choice\tests\behat\behat_mod_choice.php'
+        behat_mod_data: 'mod\data\tests\behat\behat_mod_data.php'
+        behat_mod_feedback: 'mod\feedback\tests\behat\behat_mod_feedback.php'
+        behat_mod_forum: 'mod\forum\tests\behat\behat_mod_forum.php'
+        behat_mod_glossary: 'mod\glossary\tests\behat\behat_mod_glossary.php'
+        behat_mod_quiz: 'mod\quiz\tests\behat\behat_mod_quiz.php'
+        behat_mod_workshop: 'mod\workshop\tests\behat\behat_mod_workshop.php'
+        behat_navigation: 'lib\tests\behat\behat_navigation.php'
+        behat_permissions: 'lib\tests\behat\behat_permissions.php'
+        behat_qtype_ddimageortext: 'question\type\ddimageortext\tests\behat\behat_qtype_ddimageortext.php'
+        behat_qtype_ddmarker: 'question\type\ddmarker\tests\behat\behat_qtype_ddmarker.php'
+        behat_qtype_ddwtos: 'question\type\ddwtos\tests\behat\behat_qtype_ddwtos.php'
+        behat_qtype_gapselect: 'question\type\gapselect\tests\behat\behat_qtype_gapselect.php'
+        behat_qtype_multichoice: 'question\type\multichoice\tests\behat\behat_qtype_multichoice.php'
+        behat_question: 'question\tests\behat\behat_question.php'
+        behat_report_outline: 'report\outline\tests\behat\behat_report_outline.php'
+        behat_repository_upload: 'repository\upload\tests\behat\behat_repository_upload.php'
+        behat_search: 'search\tests\behat\behat_search.php'
+        behat_tool_dataprivacy: 'admin\tool\dataprivacy\tests\behat\behat_tool_dataprivacy.php'
+        behat_tool_langimport: 'admin\tool\langimport\tests\behat\behat_tool_langimport.php'
+        behat_tool_lp: 'admin\tool\lp\tests\behat\behat_tool_lp.php'
+        behat_tool_lp_data_generators: 'admin\tool\lp\tests\behat\behat_tool_lp_data_generators.php'
+        behat_tool_policy: 'admin\tool\policy\tests\behat\behat_tool_policy.php'
+        behat_tool_task: 'admin\tool\task\tests\behat\behat_tool_task.php'
+        behat_tool_usertours: 'admin\tool\usertours\tests\behat\behat_tool_usertours.php'
+        behat_transformations: 'lib\tests\behat\behat_transformations.php'
+        behat_user: 'user\tests\behat\behat_user.php'
+        behat_workshopallocation_manual: 'mod\workshop\allocation\manual\tests\behat\behat_workshopallocation_manual.php'
+        behat_theme_classic_behat_admin: 'theme\classic\tests\behat\behat_theme_classic_behat_admin.php'
+        behat_theme_classic_behat_blocks: 'theme\classic\tests\behat\behat_theme_classic_behat_blocks.php'
+        behat_theme_classic_behat_course: 'theme\classic\tests\behat\behat_theme_classic_behat_course.php'
+        behat_theme_classic_behat_grade: 'theme\classic\tests\behat\behat_theme_classic_behat_grade.php'
+        behat_theme_classic_behat_mod_forum: 'theme\classic\tests\behat\behat_theme_classic_behat_mod_forum.php'
+        behat_theme_classic_behat_mod_quiz: 'theme\classic\tests\behat\behat_theme_classic_behat_mod_quiz.php'
+        behat_theme_classic_behat_navigation: 'theme\classic\tests\behat\behat_theme_classic_behat_navigation.php'
+        behat_theme_classic_behat_repository_upload: 'theme\classic\tests\behat\behat_theme_classic_behat_repository_upload.php'
+chromedriver:
+  extensions:
+    Behat\MinkExtension:
+      webdriver:
+        browser: chrome
+        wd_host: 'http://localhost:9515'
+        capabilities:
+          extra_capabilities:
+            chromeOptions:
+              args:
+                - disable-web-security
+                - unlimited-storage
+          marionette: true
+headlesschromedriver:
+  extensions:
+    Behat\MinkExtension:
+      webdriver:
+        browser: chrome
+        wd_host: 'http://localhost:9515'
+        capabilities:
+          extra_capabilities:
+            chromeOptions:
+              args:
+                - disable-web-security
+                - headless
+                - no-gpu
+                - unlimited-storage
+          marionette: true
+chrome:
+  extensions:
+    Behat\MinkExtension:
+      webdriver:
+        browser: chrome
+        wd_host: 'http://localhost:4444/wd/hub'
+        capabilities:
+          extra_capabilities:
+            chromeOptions:
+              args:
+                - disable-web-security
+                - unlimited-storage
+          marionette: true
+headlesschrome:
+  extensions:
+    Behat\MinkExtension:
+      webdriver:
+        browser: chrome
+        wd_host: 'http://localhost:4444/wd/hub'
+        capabilities:
+          extra_capabilities:
+            chromeOptions:
+              args:
+                - disable-web-security
+                - headless
+                - no-gpu
+                - unlimited-storage
+          marionette: true
+geckodriver:
+  suites:
+    default:
+      filters:
+        tags: ~@app
+  extensions:
+    Behat\MinkExtension:
+      webdriver:
+        browser: firefox
+        wd_host: 'http://localhost:4444'
+        capabilities:
+          extra_capabilities:
+            prefs:
+              devtools.console.stdout.content: true
+            log:
+              level: trace
+            marionette: false
+          marionette: true
+headlessgeckodriver:
+  suites:
+    default:
+      filters:
+        tags: ~@app
+  extensions:
+    Behat\MinkExtension:
+      webdriver:
+        browser: firefox
+        wd_host: 'http://localhost:4444'
+        capabilities:
+          extra_capabilities:
+            prefs:
+              devtools.console.stdout.content: true
+            log:
+              level: trace
+            args:
+              - '-headless'
+            marionette: false
+          marionette: true
+firefox:
+  suites:
+    default:
+      filters:
+        tags: ~@app
+  extensions:
+    Behat\MinkExtension:
+      webdriver:
+        browser: firefox
+        wd_host: 'http://localhost:4444/wd/hub'
+        capabilities:
+          extra_capabilities:
+            prefs:
+              devtools.console.stdout.content: true
+            log:
+              level: trace
+            marionette: false
+          marionette: true
+headlessfirefox:
+  suites:
+    default:
+      filters:
+        tags: ~@app
+  extensions:
+    Behat\MinkExtension:
+      webdriver:
+        browser: firefox
+        wd_host: 'http://localhost:4444/wd/hub'
+        capabilities:
+          extra_capabilities:
+            prefs:
+              devtools.console.stdout.content: true
+            log:
+              level: trace
+            args:
+              - '-headless'
+            marionette: false
+          marionette: true
+edgedriver:
+  suites:
+    default:
+      filters:
+        tags: ~@app
+  extensions:
+    Behat\MinkExtension:
+      webdriver:
+        browser: edge
+        wd_host: 'http://localhost:9515'
+        capabilities:
+          extra_capabilities:
+            browserName: MicrosoftEdge
+            'ms:edgeOptions': {  }
+            'ms:edgeChromium': true
+          marionette: true
+headlessedgedriver:
+  suites:
+    default:
+      filters:
+        tags: ~@app
+  extensions:
+    Behat\MinkExtension:
+      webdriver:
+        browser: edge
+        wd_host: 'http://localhost:9515'
+        capabilities:
+          extra_capabilities:
+            browserName: MicrosoftEdge
+            'ms:edgeOptions':
+              args:
+                - headless
+                - no-gpu
+            'ms:edgeChromium': true
+          marionette: true
+edge:
+  suites:
+    default:
+      filters:
+        tags: ~@app
+  extensions:
+    Behat\MinkExtension:
+      webdriver:
+        browser: edge
+        wd_host: 'http://localhost:4444/wd/hub'
+        capabilities:
+          extra_capabilities:
+            browserName: MicrosoftEdge
+            'ms:edgeOptions': {  }
+            'ms:edgeChromium': true
+          marionette: true
+headlessedge:
+  suites:
+    default:
+      filters:
+        tags: ~@app
+  extensions:
+    Behat\MinkExtension:
+      webdriver:
+        browser: edge
+        wd_host: 'http://localhost:4444/wd/hub'
+        capabilities:
+          extra_capabilities:
+            browserName: MicrosoftEdge
+            'ms:edgeOptions':
+              args:
+                - headless
+                - no-gpu
+            'ms:edgeChromium': true
+          marionette: true
+safaridriver:
+  suites:
+    default:
+      filters:
+        tags: ~@app
+  extensions:
+    Behat\MinkExtension:
+      webdriver:
+        browser: safari
+        wd_host: 'http://localhost:4444'
+        capabilities:
+          extra_capabilities: {  }
+          marionette: true
