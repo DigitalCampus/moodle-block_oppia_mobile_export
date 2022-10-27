@@ -230,7 +230,7 @@ function update_activity_digest($courseid, $modid, $digest, $server){
     );
 
     if ($record_exists) {
-    	$prev_digest = $record_exists->digest;
+    	$prev_digest = $record_exists->oppiaserverdigest;
         $record_exists->oppiaserverdigest = $digest;
         $record_exists->moodleactivitymd5 = $digest;
         $record_exists->updated = $timestamp;
