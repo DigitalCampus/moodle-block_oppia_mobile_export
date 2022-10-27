@@ -231,7 +231,8 @@ function update_activity_digest($courseid, $modid, $digest, $server){
 
     if ($record_exists) {
     	$prev_digest = $record_exists->digest;
-        $record_exists->digest = $digest;
+        $record_exists->oppiaserverdigest = $digest;
+        $record_exists->moodleactivitymd5 = $digest;
         $record_exists->updated = $timestamp;
         $DB->update_record(OPPIA_DIGEST_TABLE, $record_exists);
         return $prev_digest;
@@ -241,7 +242,8 @@ function update_activity_digest($courseid, $modid, $digest, $server){
             array(
                 'courseid' => $courseid,
                 'modid' => $modid,
-                'digest' => $digest,
+                'oppiaserverdigest' => $digest,
+                'moodleactivitymd5' => $digest,
                 'serverid' => $server,
                 'updated' => $timestamp)
         );
