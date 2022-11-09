@@ -109,17 +109,7 @@ foreach($sections as $sect) {
 	}
 
 	$sectionmods = explode(",", $sect->sequence);
-	$defaultSectionTitle = false;
-	$sectionTitle = format_string($sect->summary);
-	// If the course has no summary, we try to use the section name
-	if ($sectionTitle == "") {
-		$sectionTitle = format_string($sect->name);
-	}
-	// If the course has neither summary nor name, use the default topic title
-	if ($sectionTitle == "") {
-		$sectionTitle = get_string('sectionname', 'format_topics') . ' ' . $sect->section;
-		$defaultSectionTitle = true;
-	}
+	$sectTitle = get_section_title($sect);
 
 	if(count($sectionmods)>0){
 		$activity_count = 0;
@@ -177,13 +167,13 @@ foreach($sections as $sect) {
 				'sect_id' => $sect->id,
 				'password' => $password,
 				'activity_count' => $activity_count,
-				'title' => $sectionTitle,
+				'title' => $sectTitle['display_title'],
 				'activities' => $activities
 			));
 			$sect_orderno++;
 		} 
 		else{
-			echo '<div class="step">'.get_string('section_password_invalid', PLUGINNAME, $sectionTitle).'</div>';
+			echo '<div class="step">'.get_string('section_password_invalid', PLUGINNAME, $sectTitle['display_title']).'</div>';
 			
 		}
 		flush_buffers();

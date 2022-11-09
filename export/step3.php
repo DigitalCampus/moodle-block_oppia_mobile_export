@@ -320,31 +320,17 @@ foreach($sections as $sect) {
 	    continue;
 	}
 	$sectionmods = explode(",", $sect->sequence);
-
-	$defaultSectionTitle = false;
-	$sectionTitle = strip_tags(format_string($sect->summary));
-	$title = extractLangs($sect->summary);
-	// If the course has no summary, we try to use the section name
-	if ($sectionTitle == "") {
-		$sectionTitle = strip_tags(format_string($sect->name));
-		$title = extractLangs($sect->name);
-	}
-	// If the course has neither summary nor name, use the default topic title
-	if ($sectionTitle == "") {
-		$sectionTitle = get_string('sectionname', 'format_topics') . ' ' . $sect->section;
-		$title = null;
-		$defaultSectionTitle = true;
-	}
+	$sectTitle = get_section_title($sect);
 
 	if(count($sectionmods)>0){
 		echo '<hr>';
 		echo '<div class="oppia_export_section">';
-		echo "<h4>".get_string('export_section_title', PLUGINNAME, $sectionTitle)."</h4>";
+		echo "<h4>".get_string('export_section_title', PLUGINNAME, $sectTitle['display_title'])."</h4>";
 		
 		$section = $xmlDoc->createElement("section");
 		$section->appendChild($xmlDoc->createAttribute("order"))->appendChild($xmlDoc->createTextNode($sect_orderno));
-		if(!$defaultSectionTitle && is_array($title) && count($title)>0){
-			foreach($title as $l=>$t){
+		if(!$sectTitle['using_default'] && is_array($sectTitle['title']) && count($sectTitle['title'])>0){
+			foreach($sectTitle['title'] as $l=>$t){
 				$temp = $xmlDoc->createElement("title");
 				$temp->appendChild($xmlDoc->createCDATASection(strip_tags($t)));
 				$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($l));
@@ -353,7 +339,7 @@ foreach($sections as $sect) {
 			}
 		} else {
 			$temp = $xmlDoc->createElement("title");
-			$temp->appendChild($xmlDoc->createCDATASection($sectionTitle));
+			$temp->appendChild($xmlDoc->createCDATASection($sectTitle['title']));
 			$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
 			$section->appendChild($temp);
 		}
@@ -375,9 +361,10 @@ foreach($sections as $sect) {
 									$course_root, 0);
 
 		if($filename){
-			$resizedFilename = resizeImage($course_root."/".$filename,
+			$resizedFilename = resizeImage(
+				$course_root."/".$filename,
 			    $course_root."/images/".$sect->id.'_'.$context->id,
-								$section_width, $section_height, true);
+				$section_width, $section_height, true);
 			unlink($course_root."/".$filename) or die('Unable to delete the file');
 			$temp = $xmlDoc->createElement("image");
 			$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode("/images/".$resizedFilename));
