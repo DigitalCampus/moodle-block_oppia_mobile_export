@@ -32,18 +32,8 @@ require_once($CFG->libdir.'/componentlib.class.php');
 // We get all the params from the previous step form
 $id = required_param('id', PARAM_INT);
 $stylesheet = required_param('stylesheet', PARAM_TEXT);
-$priority = required_param('coursepriority', PARAM_INT);
-$sequencing = required_param('coursesequencing', PARAM_TEXT);
-$DEFAULT_LANG = required_param('default_lang', PARAM_TEXT);
-$keep_html = optional_param('keep_html', false, PARAM_BOOL);
 $server = required_param('server', PARAM_TEXT);
 $course_export_status = required_param('course_export_status', PARAM_TEXT);
-$thumb_height = required_param('thumb_height', PARAM_INT);
-$thumb_width = required_param('thumb_width', PARAM_INT);
-$section_height = required_param('section_height', PARAM_INT);
-$section_width = required_param('section_width', PARAM_INT);
-$tags = required_param('coursetags', PARAM_TEXT);
-$tags = cleanTagList($tags);
 
 $course = $DB->get_record('course', array('id'=>$id));
 
@@ -73,17 +63,6 @@ $MOBILE_LANGS = array();
 
 global $MEDIA;
 $MEDIA = array();
-
-// Save new export configurations for this course and server
-add_or_update_oppiaconfig($id, 'coursepriority', $priority, $server);
-add_or_update_oppiaconfig($id, 'coursetags', $tags, $server);
-add_or_update_oppiaconfig($id, 'coursesequencing', $sequencing, $server);
-add_or_update_oppiaconfig($id, 'default_lang', $DEFAULT_LANG, $server);
-add_or_update_oppiaconfig($id, 'keep_html', $keep_html, $server);
-add_or_update_oppiaconfig($id, 'thumb_height', $thumb_height, $server);
-add_or_update_oppiaconfig($id, 'thumb_width', $thumb_width, $server);
-add_or_update_oppiaconfig($id, 'section_height', $section_height, $server);
-add_or_update_oppiaconfig($id, 'section_width', $section_width, $server);
 
 $PAGE->set_context($context);
 context_helper::preload_course($id);

@@ -1,0 +1,177 @@
+<?php
+/**
+ * Oppia Mobile Export
+ * Step 2: Main course export configuration and quiz setup
+ */
+
+require_once(dirname(__FILE__) . '/../../../config.php');
+require_once(dirname(__FILE__) . '/../constants.php');
+
+require_once($CFG->dirroot . '/course/lib.php');
+require_once($CFG->dirroot . '/lib/filestorage/file_storage.php');
+
+require_once($CFG->dirroot . '/question/format.php');
+require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once($CFG->dirroot . '/question/format/gift/format.php');
+
+$pluginroot = $CFG->dirroot . PLUGINPATH;
+
+require_once($pluginroot . 'lib.php');
+require_once($pluginroot . 'langfilter.php');
+require_once($pluginroot . 'activity/activity.class.php');
+require_once($pluginroot . 'activity/page.php');
+require_once($pluginroot . 'activity/quiz.php');
+require_once($pluginroot . 'activity/resource.php');
+require_once($pluginroot . 'activity/feedback.php');
+require_once($pluginroot . 'activity/url.php');
+
+require_once($CFG->libdir.'/componentlib.class.php');
+
+const PRIORITY_LEVELS = 10;
+const MAX_ATTEMPTS = 10;
+// We get all the params from the previous step form
+$id = required_param('id', PARAM_INT);
+$stylesheet = required_param('stylesheet', PARAM_TEXT);
+$priority = required_param('coursepriority', PARAM_INT);
+$sequencing = required_param('coursesequencing', PARAM_TEXT);
+$DEFAULT_LANG = required_param('default_lang', PARAM_TEXT);
+$keep_html = optional_param('keep_html', false, PARAM_BOOL);
+$server = required_param('server', PARAM_TEXT);
+$course_export_status = required_param('course_export_status', PARAM_TEXT);
+$thumb_height = required_param('thumb_height', PARAM_INT);
+$thumb_width = required_param('thumb_width', PARAM_INT);
+$section_height = required_param('section_height', PARAM_INT);
+$section_width = required_param('section_width', PARAM_INT);
+$tags = required_param('coursetags', PARAM_TEXT);
+$tags = cleanTagList($tags);
+
+// Save new export configurations for this course and server
+add_or_update_oppiaconfig($id, 'coursepriority', $priority, $server);
+add_or_update_oppiaconfig($id, 'coursetags', $tags, $server);
+add_or_update_oppiaconfig($id, 'coursesequencing', $sequencing, $server);
+add_or_update_oppiaconfig($id, 'default_lang', $DEFAULT_LANG, $server);
+add_or_update_oppiaconfig($id, 'keep_html', $keep_html, $server);
+add_or_update_oppiaconfig($id, 'thumb_height', $thumb_height, $server);
+add_or_update_oppiaconfig($id, 'thumb_width', $thumb_width, $server);
+add_or_update_oppiaconfig($id, 'section_height', $section_height, $server);
+add_or_update_oppiaconfig($id, 'section_width', $section_width, $server);
+
+$course = $DB->get_record_select('course', "id=$id");
+
+$PAGE->set_url(PLUGINPATH.'export/step2.php', array('id' => $id));
+context_helper::preload_course($id);
+$context = context_course::instance($course->id);
+if (!$context) {
+    print_error('nocontext');
+}
+
+require_login($course);
+
+$PAGE->set_pagelayout('course');
+$PAGE->set_pagetype('course-view-' . $course->format);
+$PAGE->set_other_editing_capability('moodle/course:manageactivities');
+$PAGE->set_title(get_string('course') . ': ' . $course->fullname);
+$PAGE->set_heading($course->fullname);
+$PAGE->set_context($context);
+$modinfo = get_fast_modinfo($course);
+$sections = $modinfo->get_section_info_all();
+$mods = $modinfo->get_cms();
+
+echo $OUTPUT->header();
+
+
+$quizzes = array();
+$orderno = 1;
+foreach($sections as $sect) {
+    $sectionmods = explode(",", $sect->sequence);
+    $sectTitle = get_section_title($sect);
+
+    if(count($sectionmods)>0){
+        foreach ($sectionmods as $modnumber) {
+
+            if(!$modnumber){
+                continue;
+            }
+            $mod = $mods[$modnumber];
+
+            if($mod->modname == 'quiz' && $mod->visible == 1){
+                $quiz = new MobileActivityQuiz(array(
+                    'id' => $mod->id,
+                    'section' =>  $orderno,
+                    'server_id' => $server,
+                    'course_id' => $id,
+                    'shortname' => $course->shortname,
+                    'summary' => $sect->summary,
+                    'versionid' => 0
+                ));
+                $quiz->preprocess();
+                if ($quiz->get_is_valid() && $quiz->get_no_questions() > 0){
+                    array_push($quizzes, array(
+                        'section' => $sectTitle['display_title'],
+                        'name' => format_string($mod->name),
+                        'noquestions' => $quiz->get_no_questions(),
+                        'id' => $mod->id,
+                        'password' => $quiz->has_password()
+                    ));
+                }
+            }
+        }
+        $orderno++;
+    }
+}
+
+for ($qid=0; $qid<count($quizzes); $qid++){
+    $quiz = $quizzes[$qid];
+
+    $current_random = get_oppiaconfig($quiz['id'],'randomselect', 0);
+    $quiz['random_all'] = $current_random == 0;
+    $quiz['randomselect'] = [];
+    if ($quiz['noquestions']>1){
+        for ($i=0; $i<$quiz['noquestions']; $i++){
+            $quiz['randomselect'][$i] = array ("idx" => $i+1, "selected" => $current_random == $i+1);
+        }
+    }
+
+    $showfeedback = get_oppiaconfig($quiz['id'], 'showfeedback', 2);
+    $quiz['feedback_never'] = $showfeedback == 0;
+    $quiz['feedback_always'] = $showfeedback == 1;
+    $quiz['feedback_endonly'] = $showfeedback == 2;
+
+    $current_threshold = get_oppiaconfig($quiz['id'], 'passthreshold', 80);
+    $quiz['passthreshold'] = [];
+    for ($t=0; $t<21; $t++){
+        $quiz['passthreshold'][$t] = array ("threshold" => $t*5, "selected" => $current_threshold == $t*5);
+    }
+
+    $current_maxattempts = get_oppiaconfig($quiz['id'], 'maxattempts', 'unlimited');
+    $quiz['attempts_unlimited'] = 'unlimited';
+    $quiz['max_attempts'] = [];
+    for ($i=0; $i<MAX_ATTEMPTS; $i++){
+        $quiz['max_attempts'][$i] = array ("num" => $i+1, "selected" => $current_maxattempts == $i+1);
+    }
+
+    $quizzes[$qid] = $quiz;
+}
+
+if (empty($quizzes)){
+
+}
+
+$a = new stdClass();
+$a->stepno = 2;
+$a->coursename = strip_tags($course->fullname);
+echo "<h2>".get_string('export_title', PLUGINNAME, $a)."</h2>";
+
+echo $OUTPUT->render_from_template(
+    PLUGINNAME.'/export_step2_form',
+    array(
+        'id' => $id,
+        'stylesheet' => $stylesheet,
+        'server' => $server,
+        'course_export_status' => $course_export_status,
+        'wwwroot' => $CFG->wwwroot,
+        'quizzes' => $quizzes
+    )
+);
+
+echo $OUTPUT->footer();
