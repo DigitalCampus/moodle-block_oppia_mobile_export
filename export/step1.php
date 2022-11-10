@@ -166,7 +166,7 @@ $base_settings = array(
 	'sequencing_course' => $sequencing == 'course',
 );
 
-echo "<form name='courseconfig' method='post' action='".$CFG->wwwroot.PLUGINPATH."export/step2.php'>";
+echo "<form name='courseconfig' method='post' action='".$CFG->wwwroot.PLUGINPATH."export/step3.php'>";
 
 $a = new stdClass();
 $a->stepno = 1;

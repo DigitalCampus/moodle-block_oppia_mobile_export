@@ -1,50 +1,33 @@
-<?php 
+<?php
 /**
  * Oppia Mobile Export
- * Step 5: Final step, XML validation and create the course package ready to publish
+ * Step 4: Configure preserving digests for each activity
  */
 
 require_once(dirname(__FILE__) . '/../../../config.php');
 require_once(dirname(__FILE__) . '/../constants.php');
 
-require_once($CFG->dirroot . '/course/lib.php');
-require_once($CFG->dirroot . '/lib/filestorage/file_storage.php');
-
-require_once($CFG->dirroot . '/question/format.php');
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-require_once($CFG->dirroot . '/mod/feedback/lib.php');
-require_once($CFG->dirroot . '/question/format/gift/format.php');
-
-$dataroot = $CFG->dataroot . "/";
 $pluginroot = $CFG->dirroot . PLUGINPATH;
 
 require_once($pluginroot . 'lib.php');
-require_once($pluginroot . 'langfilter.php');
-require_once($pluginroot . 'oppia_api_helper.php');
-require_once($pluginroot . 'activity/activity.class.php');
-require_once($pluginroot . 'activity/page.php');
-require_once($pluginroot . 'activity/quiz.php');
-require_once($pluginroot . 'activity/resource.php');
-require_once($pluginroot . 'activity/feedback.php');
-require_once($pluginroot . 'activity/url.php');
-
-require_once($CFG->libdir.'/componentlib.class.php');
-
+require_once($pluginroot . 'activity/processor.php');
 
 $id = required_param('id', PARAM_INT);
+$media_files = required_param('media_files', PARAM_TEXT);
 $stylesheet = required_param('stylesheet', PARAM_TEXT);
 $tags = required_param('coursetags', PARAM_TEXT);
 $server = required_param('server_id',PARAM_TEXT);
 $course_export_status = required_param('course_export_status', PARAM_TEXT);
 $course_root = required_param('course_root', PARAM_TEXT);
 $is_draft = ($course_export_status == 'draft');
-$course = $DB->get_record('course', array('id'=>$id));
+$DEFAULT_LANG = get_oppiaconfig($id,'default_lang', $CFG->block_oppia_mobile_export_default_lang, $server);
 
-$PAGE->set_url(PLUGINPATH.'export/step5.php', array('id' => $id));
+$course = $DB->get_record('course', array('id'=>$id));
+$PAGE->set_url(PLUGINPATH.'export/step4.php', array('id' => $id));
 context_helper::preload_course($id);
 $context = context_course::instance($course->id);
 if (!$context) {
-	print_error('nocontext');
+    print_error('nocontext');
 }
 $PAGE->set_context($context);
 context_helper::preload_course($id);
@@ -62,175 +45,145 @@ $a->stepno = 5;
 $a->coursename = strip_tags($course->fullname);
 echo "<h2>".get_string('export_title', PLUGINNAME, $a)."</h2>";
 
-$server_connection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid'=>$USER->id,'id'=>$server));
-if(!$server_connection && $server != "default"){
-	echo "<p>".get_string('server_not_owner', PLUGINNAME)."</p>";
-	echo $OUTPUT->footer();
-	die();
+$modinfo = get_fast_modinfo($course);
+$sections = $modinfo->get_section_info_all();
+$mods = $modinfo->get_cms();
+$keep_html = get_oppiaconfig($course->id, 'keep_html', '', $server);
+
+$processor = new ActivityProcessor(array(
+    'course_root' => $course_root,
+    'server_id' => $server,
+    'course_id' => $course->id,
+    'course_shortname' => $course->shortname,
+    'versionid' => '0',
+    'keep_html' => $keep_html,
+    'print_logs' => false
+));
+
+$config_sections = array();
+$unmodified_activities = array();
+$sect_orderno = 1;
+foreach($sections as $sect) {
+    flush_buffers();
+    // We avoid the topic0 as is not a section as the rest
+    if ($sect->section == 0) {
+        continue;
+    }
+
+    $sectTitle = get_section_title($sect);
+
+    $modified_activities_count = 0;
+    $modified_activities = array();
+    $act_orderno = 1;
+    $processor->set_current_section($sect_orderno);
+
+    $sectionmods = explode(",", $sect->sequence);
+    foreach ($sectionmods as $modnumber) {
+
+        $mod = $mods[$modnumber];
+        if ($mod != null) {
+            $activity = $processor->process_activity($mod, $sect, $act_orderno);
+            if ($activity != null){
+                $act_orderno++;
+            }
+            $last_published_digest_entry = $DB->get_record(OPPIA_DIGEST_TABLE,
+                array(
+                    'courseid' => $course->id,
+                    'modid' => $mod->id,
+                    'serverid' => $server,
+                ),
+                'moodleactivitymd5, oppiaserverdigest, nquestions',
+            );
+
+            if($last_published_digest_entry) {
+                $moodle_activity_md5 = $last_published_digest_entry->moodleactivitymd5;
+                $current_digest = $activity->md5;
+
+                if (strcmp($moodle_activity_md5, $current_digest) !== 0) { // The activity was modified
+
+                    // For 'quiz' and 'feedback' activities, don't show option to preserve digest if the number of questions has changed
+                    if (($mod->modname == 'quiz' or $mod->modname == 'feedback') and
+                        $last_published_digest_entry->nquestions != $activity->get_no_questions()) {
+                       continue;
+                    }
+
+                    $modified_activities_count++;
+                    array_push($modified_activities, array(
+                        'name' => format_string($mod->name),
+                        'act_id' => $mod->id,
+                        'current_digest' => $current_digest,
+                        'last_published_digest' => $last_published_digest_entry->oppiaserverdigest,
+                        'icon' => $mod->get_icon_url()->out(),
+                    ));
+                } else { // The activity wasn't modified
+                    // Include a parameter preserving the value of the digest that is currently in use in the Oppia Server
+                    $unmodified_activities['digest_'.$current_digest] = $last_published_digest_entry->oppiaserverdigest;
+                }
+            }
+        }
+    }
+
+    if ($act_orderno > 1){
+        $sect_orderno++;
+    }
+
+    if ($modified_activities_count > 0) {
+        array_push($config_sections, array(
+            'title' => $sectTitle['display_title'],
+            'activities' => $modified_activities,
+        ));
+    }
 }
-if ($server == "default"){
-	$server_connection = new stdClass();
-	$server_connection->url = $CFG->block_oppia_mobile_export_default_server;
+
+$form_values = array_merge(
+    $unmodified_activities,
+    array(
+        'id' => $id,
+        'server_id' => $server,
+        'media_files' => json_decode($media_files, true),
+        'stylesheet' => $stylesheet,
+        'coursetags' => $tags,
+        'course_export_status' => $course_export_status,
+        'course_root' => $course_root,
+        'sections' => $config_sections,
+        'wwwroot' => $CFG->wwwroot,
+        'resolve' => resolve(),
+    )
+);
+
+// The next step expect in the form parameters the media_url and the media_length for every media file.
+foreach($form_values['media_files'] as $media_file){
+    $digest = $media_file['digest'];
+
+    $media_url = optional_param($digest, null, PARAM_TEXT);
+    $media_length = optional_param($digest.'_length', null, PARAM_INT);
+
+    $form_values[$digest] = $media_url;
+    $form_values[$digest.'_length'] = $media_length;
 }
 
-echo '<div class="oppia_export_section">';
-
-echo '<p class="step">'. get_string('export_xml_valid_start', PLUGINNAME);
-
-if (!file_exists($course_root.OPPIA_MODULE_XML)){
-	echo "<p>".get_string('error_xml_notfound', PLUGINNAME)."</p>";
-	echo $OUTPUT->footer();
-	die();
+// If there are no activities for preserving the ids, redirect to the following step.
+if (count($config_sections) == 0) {
+    unset($form_values['sections']);
+    unset($form_values['media_files']);
+    unset($form_values['resolve']);
+    $step6_url = new moodle_url(PLUGINPATH . 'export/step6.php', $form_values);
+    $redirect_message = get_string('export_no_content_changes_message', PLUGINNAME);
+    redirect($step6_url, $redirect_message);
 }
 
-
-libxml_use_internal_errors(true);
-$xml = new DOMDocument();
-$xml->load($course_root.OPPIA_MODULE_XML);
-
-// We update the local media URLs from the results of the previous step
-foreach ($xml->getElementsByTagName('file') as $mediafile) {
-	if ($mediafile->hasAttribute('download_url')){
-		// If it already has the url set, we don't need to do anything
-		continue;
-	}
-	if ($mediafile->hasAttribute('moodlefile')){
-		// We remove the moodlefile attribute (it's only a helper to publish media)
-		$mediafile->removeAttribute('moodlefile');
-	}
-
-	$digest = $mediafile->getAttribute('digest');
-	$medialength = optional_param($digest.'_length', null, PARAM_INT);
-	$url = optional_param($digest, null, PARAM_TEXT);
-	if ($url !== null){
-		$mediafile->setAttribute('download_url', $url);
-		$mediafile->setAttribute('length', $medialength);
-	}
-}
-
-
-$activities = array();
-$duplicated = array();
-$digests_to_preserve = array();
-// Check that we don't have duplicated digests in the course
-foreach ($xml->getElementsByTagName('activity') as $activity) {
-	$digest = $activity->getAttribute('digest');
-	// Get digest from previous step if the 'Preserve ID' option was selected
-	$preserve_digest = optional_param('digest_'.$digest, '', PARAM_TEXT);
-	if ($preserve_digest != '') {
-		$digests_to_preserve[$digest] = $preserve_digest;
-		$activity->setAttribute('digest', $preserve_digest);
-		foreach ($activity->getElementsByTagName('content') as $content) {
-			$content->firstChild->nodeValue = str_replace($digest, $preserve_digest, $content->nodeValue);
-		}
-	}
-	if (isset($activities[$digest])){
-		foreach ($activity->childNodes as $node){
-	    	if ($node->nodeName == "title"){
-	    		$title = $node->nodeValue;
-	    		break;
-	    	}
-		}
-		array_push($duplicated, array(
-			'title' => $title, 
-			'digest' => $digest));
-	}
-	else{
-		$activities[$digest] = true;
-	}
-}
-if (count($duplicated) > 0){
-	echo $OUTPUT->render_from_template(PLUGINNAME.'/export_error_duplicated_digest', array('duplicated'=>$duplicated));
-	echo $OUTPUT->footer();
-	die();
-}
-
-$versionid = $xml->getElementsByTagName('versionid')->item(0)->textContent;
-
-if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
-	print '<p><strong>'.get_string('error_xml_invalid', PLUGINNAME).'</strong></p>';
-	libxml_display_errors();
-	add_publishing_log($server_connection->url, $USER->id, $id, "error_xml_invalid", "Invalid course XML");
-} else {
-	echo get_string('export_xml_validated', PLUGINNAME)  . '</p>';
-	echo '<p class="step">'. get_string('export_course_xml_created', PLUGINNAME)  . '</p>';
-	
-	$xml->preserveWhiteSpace = false;
-	$xml->formatOutput = true;
-	$xml->save($course_root.OPPIA_MODULE_XML);
-
-	echo '<p class="step">'. get_string('export_style_start', PLUGINNAME) . ' - ' . $stylesheet. '</p>';
-
-	$styles = getCompiledCSSTheme($pluginroot, $stylesheet);
-	if (!file_put_contents($course_root."/style.css", $styles)){
-		echo "<p>".get_string('error_style_copy', PLUGINNAME)."</p>";
-	}
-	
-	echo '<p class="step">'. get_string('export_style_resources', PLUGINNAME) . '</p>';
-	
-	$style_resources_dir = $course_root.COURSE_STYLES_RESOURCES_DIR;
-	recurse_copy($pluginroot."styles/".COMMON_STYLES_RESOURCES_DIR, $style_resources_dir);
-	recurse_copy($pluginroot."styles/".$stylesheet."-style-resources/", $style_resources_dir);
-
-	recurse_copy($pluginroot."js/", $course_root."/js/");
-	
-	echo '<p class="step">'. get_string('export_export_complete', PLUGINNAME) . '</p>';
-	$dir2zip = $dataroot.OPPIA_OUTPUT_DIR.$USER->id."/temp";
-
-	$zipname = strtolower($course->shortname).'-'.$versionid.'.zip';
-	$ziprelativepath = OPPIA_OUTPUT_DIR.$USER->id."/".$zipname;
-	$outputpath = $dataroot.$ziprelativepath;
-	Zip($dir2zip, $outputpath);
-
-	add_or_update_oppiaconfig($id, 'stylesheet', $stylesheet, null);
-
- 	$filerecord = array(
- 	    'contextid'=> $context->id,
- 	    'component' => PLUGINNAME,
- 	    'filearea' => COURSE_EXPORT_FILEAREA,
- 	    'itemid' => $USER->id,
- 	    'filepath' => '/',
- 	    'filename' => $zipname
- 	);
-
-	$fs = get_file_storage();
-	$file = $fs->create_file_from_pathname($filerecord, $outputpath);
-
-    $url = moodle_url::make_pluginfile_url(
-		$file->get_contextid(),
-		$file->get_component(),
-		$file->get_filearea(),
-		$file->get_itemid(),
-		$file->get_filepath(),
-		$file->get_filename(),
-	    false // Do not force download of the file.
-	);
-
-	echo '<p class="step">'. get_string('export_export_compressed', PLUGINNAME) . '</p>';
-	deleteDir($dataroot.OPPIA_OUTPUT_DIR.$USER->id."/temp");
-	
-	$form_values = array(
-		'server_connection' =>$server_connection->url,
-		'wwwroot' => $CFG->wwwroot,
-		'server_id' => $server,
-		'sesskey' => sesskey(),
-		'course_id' => $COURSE->id,
-		'file' => $zipname,
-		'is_draft' => $is_draft,
-		'tags' => $tags,
-		'course_export_status' => $course_export_status,
-		'export_url' => $url,
-		'course_name' => strip_tags($course->fullname),
-		'digests_to_preserve' => json_encode($digests_to_preserve)
-	);
-
-	echo $OUTPUT->render_from_template(PLUGINNAME.'/export_step5_form', $form_values);
-	
-	add_publishing_log($server_connection->url, $USER->id, $id,  "export_file_created", strtolower($course->shortname)."-".$versionid.".zip");
-	add_publishing_log($server_connection->url, $USER->id, $id,  "export_end", "Export process completed");
-}
+echo $OUTPUT->render_from_template(PLUGINNAME.'/export_step5_form', $form_values);
 
 echo $OUTPUT->footer();
 
+// This function allows to resolve the value of a mustache variable when the variable name depends on another variable.
+// Is equivalent as doing {{{{variable_name}}}}, where we first resolve the value of {{variable_name}},
+// which gives us variable_value, and then we do {{variable_value}}.
+function resolve() {
+    return function ($text, $render) {
+        return $render->render("{{" . $render->render($text) . "}}");
+    };
+}
 
 ?>
+

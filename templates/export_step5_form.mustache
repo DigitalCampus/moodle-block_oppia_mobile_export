@@ -1,50 +1,53 @@
-<form 
-	class="oppia_export" 
-	style="padding:20px; margin:20px 0;"
-	action="{{wwwroot}}/blocks/oppia_mobile_export/publish/course.php" method="POST">
+<form name="courseconfig" method="post" action="{{wwwroot}}/blocks/oppia_mobile_export/export/step6.php">
 
-	<input type="hidden" name="id" value="{{course_id}}">
-	<input type="hidden" name="sesskey" value="{{sesskey}}">
-	<input type="hidden" name="server_id" value="{{server_id}}">
-	<input type="hidden" name="file" value="{{file}}">
-	<input type="hidden" name="course_export_status" value="{{course_export_status}}">
-    <input type="hidden" name="digests_to_preserve" value="{{digests_to_preserve}}">
+    <h4>{{# str }}export_preserve_activity_id_title,block_oppia_mobile_export{{/ str }}</h4>
+    <p>
+        {{# str }}export_preserve_activity_id_desc,block_oppia_mobile_export{{/ str }}
+    </p>
 
-	{{# is_draft }}
-    	<h2>{{# str }}publish_heading_draft,block_oppia_mobile_export{{/ str }}</h2>
-    	<p>{{# str }}publish_text_draft,block_oppia_mobile_export,{{server_connection}}{{/ str }}</p>
-	{{/ is_draft }}
+    <div class="quizzes-table">
+        {{#sections}}
+            <div class="pure-g titles">
+                <div class="pure-u-lg-17-24 pl-3 pure-u-1 text-left">{{title}}</div>
+                <div class="pure-u-lg-7-24 pure-u-1">{{# str }}export_preserve_activity_id_header,block_oppia_mobile_export{{/ str }}</div>
+            </div>
+            {{#activities}}
+                <div class="pure-g">
+                    <div class="pure-u-lg-17-24 pure-u-1 step text-left pl-3">
+                        <div class="pure-g">
+                            <img class="pure-u-md-1-24 pure-u-1" src={{icon}} />
+                            <div class="pure-u-md-1-24 pure-u-1"></div>
+                            <div class="pure-u-md-20-24 pure-u-1 text-left">{{name}}</div>
+                        </div>
+                    </div>
+                    <div class="pure-u-lg-7-24 pure-u-1">
+                        <!-- If uncheck, use the real digest value -->
+                        <input type='hidden' name="digest_{{current_digest}}" value="{{current_digest}}" />
+                        <!-- If check, preserve the last published digest -->
+                        <input class="form-checkbox pure-u-1" type="checkbox" name="digest_{{current_digest}}" value="{{last_published_digest}}" />
+                    </div>
+                </div>
+            {{/activities}}
+        {{/sections}}
+    </div>
 
-	{{^is_draft }}
-	    <h2>{{# str }}publish_heading,block_oppia_mobile_export{{/ str }}</h2>
-	    <p>{{# str }}publish_text,block_oppia_mobile_export, {{server_connection}}{{/ str }}</p>
-	{{/ is_draft }}
-	
-	<div class="pure-g">
-		<div class="pure-u-1 pure-u-md-1-2 input-label">{{# str }}publish_field_username,block_oppia_mobile_export{{/ str }}</div>
-		<div class="pure-u-1 pure-u-md-1-2"> <input type="text" class="form-control" name="username" value=""></div>
+    <input type="hidden" name="id" value="{{id}}">
+    <input type="hidden" name="sesskey" value="{{sesskey}}">
+    <input type="hidden" name="stylesheet" value="{{stylesheet}}">
+    <input type="hidden" name="course_export_status" value="{{course_export_status}}">
+    <input type="hidden" name="server_id" value="{{server_id}}">
+    <input type="hidden" name="course_root" value="{{course_root}}">
+    <input type="hidden" name="coursetags" value="{{coursetags}}">
 
-		<div class="pure-u-1 pure-u-md-1-2 input-label">{{# str }}publish_field_password,block_oppia_mobile_export{{/ str }}</div>
-		<div class="pure-u-1 pure-u-md-1-2"> <input type="password" class="form-control" name="password" value=""></div>
+    {{#media_files}}
+        <input type="hidden" name="{{digest}}_length" value="{{#resolve}}{{digest}}_length{{/resolve}}">
+        <input type="hidden" name="{{digest}}" value="{{#resolve}}{{digest}}{{/resolve}}">
+    {{/media_files}}
 
-		<div class="pure-u-1 pure-u-md-1-2 input-label"><label>{{# str }}publish_field_tags,block_oppia_mobile_export{{/ str }} </div>
-		<div class="pure-u-1 pure-u-md-1-2"> <input type="text" class="form-control" name="tags" value="{{tags}}"> </div>
-		<div class="pure-u-1 pure-u-md-1-2"></div>
-		<div class="pure-u-1 pure-u-md-1-2">
-			<input class="btn btn-primary" type="submit" name="submit" value="{{# str }}publish_btn, block_oppia_mobile_export{{/ str }}">
-		</div>
-	</div>
+    <p>
+        <button type="submit" name="submit" class="btn btn-primary" value="{{.}}">
+            {{# str }}continue,block_oppia_mobile_export{{/ str }}
+        </button>
+    </p>
+
 </form>
-
-<div class="export-results warning" style="display:block;padding:20px">
-	{{# str }}export_download_intro, block_oppia_mobile_export{{/ str }}<br/><br/>
-
-	<strong>{{course_name}}</strong><br/>
-	<a class="btn" href="{{export_url}}">
-		{{# str }} export_download, block_oppia_mobile_export{{/ str }}
-	</a>
-
-	<a class="btn btn-danger" href="{{wwwroot}}/blocks/oppia_mobile_export/cleanup.php?id={{course_id}}">
-		{{# str }}export_cleanup, block_oppia_mobile_export{{/ str }}
-	</a>
-</div>
