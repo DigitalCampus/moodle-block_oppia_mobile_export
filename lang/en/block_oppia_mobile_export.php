@@ -96,7 +96,12 @@ $string['error_not_supported'] = 'Activity not supported';
 $string['error_parsing_html'] = 'Error parsing HTML contents';
 $string['error_exporting_no_sections'] = 'The course cannot be exported as there are no sections. This can happen if the section has the summary field empty or if none of the sections contain any supported activities, that is usually because of them not having the summary field completed too. Please check your activities\' summaries and try again.';
 
-$string['export_title'] = 'Export - step {$a->stepno}: {$a->coursename}';
+$string['export_step1_title'] = 'Export - step 1: Course configuration';
+$string['export_step2_title'] = 'Export - step 2: Quizzes and Feedback configuration';
+$string['export_step3_title'] = 'Export - step 3: Configure password protection';
+$string['export_step4_title'] = 'Export - step 4: Activities export and local media management';
+$string['export_step5_title'] = 'Export - step 5: Preserve activity identifiers';
+$string['export_step6_title'] = 'Export - step 6: XML validation and create the course package';
 $string['export_contains_quizzes'] = 'Since this course contains quizzes, please configure the quizzes';
 
 $string['export_quiz_sectionname'] = 'Section Name';

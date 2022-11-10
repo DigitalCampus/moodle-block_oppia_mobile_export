@@ -1,7 +1,7 @@
 <?php 
 /**
  * Oppia Mobile Export
- * Step 2: Configure password protection (for sections and feedback activities)
+ * Step 3: Configure password protection (for sections and feedback activities)
  */
 
 require_once(dirname(__FILE__) . '/../../../config.php');
@@ -72,10 +72,8 @@ $mods = $modinfo->get_cms();
 
 add_publishing_log($server, $USER->id, $id, "export_start", "Export process starting");
 
-$a = new stdClass();
-$a->stepno = 3;
-$a->coursename = strip_tags($course->fullname);
-echo "<h2>".get_string('export_title', PLUGINNAME, $a)."</h2>";
+
+echo "<h2>".get_string('export_step3_title', PLUGINNAME)."</h2>";
 echo '<div class="oppia_export_section py-3">';
 
 $config_sections = array();

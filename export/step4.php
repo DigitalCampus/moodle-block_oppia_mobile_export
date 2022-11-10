@@ -1,7 +1,7 @@
 <?php 
 /**
  * Oppia Mobile Export
- * Step 3: Activities export and local media management
+ * Step 4: Activities export and local media management
  */
 
 require_once(dirname(__FILE__) . '/../../../config.php');
@@ -82,6 +82,8 @@ $MOBILE_LANGS = array();
 global $MEDIA;
 $MEDIA = array();
 
+echo "<h2>".get_string('export_step4_title', PLUGINNAME)."</h2>";
+
 $server_connection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid'=>$USER->id,'id'=>$server));
 if(!$server_connection && $server != "default"){
 	echo "<p>".get_string('server_not_owner', PLUGINNAME)."</p>";
@@ -150,10 +152,6 @@ $meta->appendChild($xmlDoc->createElement("exportversion", $plugin_version));
 
 add_publishing_log($server_connection->url, $USER->id, $id, "export_start", "Export process starting");
 
-$a = new stdClass();
-$a->stepno = 4;
-$a->coursename = strip_tags($course->fullname);
-echo "<h2>".get_string('export_title', PLUGINNAME, $a)."</h2>";
 $title = extractLangs($course->fullname);
 if(is_array($title) && count($title)>0){
 	foreach($title as $l=>$t){

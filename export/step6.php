@@ -1,7 +1,7 @@
 <?php 
 /**
  * Oppia Mobile Export
- * Step 5: Final step, XML validation and create the course package ready to publish
+ * Step 6: Final step, XML validation and create the course package ready to publish
  */
 
 require_once(dirname(__FILE__) . '/../../../config.php');
@@ -57,10 +57,7 @@ $PAGE->set_title(get_string('course') . ': ' . $course->fullname);
 $PAGE->set_heading($course->fullname);
 echo $OUTPUT->header();
 
-$a = new stdClass();
-$a->stepno = 6;
-$a->coursename = strip_tags($course->fullname);
-echo "<h2>".get_string('export_title', PLUGINNAME, $a)."</h2>";
+echo "<h2>".get_string('export_step6_title', PLUGINNAME)."</h2>";
 
 $server_connection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid'=>$USER->id,'id'=>$server));
 if(!$server_connection && $server != "default"){

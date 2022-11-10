@@ -1,7 +1,7 @@
 <?php 
 /**
  * Oppia Mobile Export
- * Step 1: Main course export configuration and quiz setup
+ * Step 1: Main course export configuration
  */
 
 require_once(dirname(__FILE__) . '/../../../config.php');
@@ -91,12 +91,6 @@ $base_settings = array(
 	'sequencing_section' => $sequencing == 'section',
 	'sequencing_course' => $sequencing == 'course',
 );
-
-
-$a = new stdClass();
-$a->stepno = 1;
-$a->coursename = strip_tags($course->fullname);
-echo "<h2>".get_string('export_title', PLUGINNAME, $a)."</h2>";
 
 echo $OUTPUT->render_from_template(
 	PLUGINNAME.'/export_step1_form',

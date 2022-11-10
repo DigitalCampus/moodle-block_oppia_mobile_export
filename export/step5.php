@@ -1,7 +1,7 @@
 <?php
 /**
  * Oppia Mobile Export
- * Step 4: Configure preserving digests for each activity
+ * Step 5: Configure preserving digests for each activity
  */
 
 require_once(dirname(__FILE__) . '/../../../config.php');
@@ -40,10 +40,7 @@ $PAGE->set_title(get_string('course') . ': ' . $course->fullname);
 $PAGE->set_heading($course->fullname);
 echo $OUTPUT->header();
 
-$a = new stdClass();
-$a->stepno = 5;
-$a->coursename = strip_tags($course->fullname);
-echo "<h2>".get_string('export_title', PLUGINNAME, $a)."</h2>";
+echo "<h2>".get_string('export_step5_title', PLUGINNAME)."</h2>";
 
 $modinfo = get_fast_modinfo($course);
 $sections = $modinfo->get_section_info_all();

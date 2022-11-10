@@ -1,7 +1,7 @@
 <?php
 /**
  * Oppia Mobile Export
- * Step 2: Main course export configuration and quiz setup
+ * Step 2: Quizzes and feeback setup
  */
 
 require_once(dirname(__FILE__) . '/../../../config.php');
@@ -156,11 +156,6 @@ for ($qid=0; $qid<count($quizzes); $qid++){
 if (empty($quizzes)){
 
 }
-
-$a = new stdClass();
-$a->stepno = 2;
-$a->coursename = strip_tags($course->fullname);
-echo "<h2>".get_string('export_title', PLUGINNAME, $a)."</h2>";
 
 echo $OUTPUT->render_from_template(
     PLUGINNAME.'/export_step2_form',
