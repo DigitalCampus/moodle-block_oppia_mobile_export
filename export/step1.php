@@ -70,11 +70,7 @@ $quizzes = array();
 $orderno = 1;
 foreach($sections as $sect) {
 	$sectionmods = explode(",", $sect->sequence);
-	
-	$sectionTitle = format_string($sect->summary);
-	if ($sectionTitle == "") {
-		$sectionTitle = get_string('sectionname', 'format_topics') . ' ' . $sect->section;
-	}
+	$sectTitle = get_section_title($sect);
 	
 	if(count($sectionmods)>0){
 		foreach ($sectionmods as $modnumber) {
@@ -95,9 +91,9 @@ foreach($sections as $sect) {
 					'versionid' => 0
 				));
 				$quiz->preprocess();
-				if ($quiz->get_is_valid() && $quiz->get_no_questions()> 0){
+				if ($quiz->get_is_valid() && $quiz->get_no_questions() > 0){
 					array_push($quizzes, array(
-						'section' => $sectionTitle,
+						'section' => $sectTitle['display_title'],
 						'name' => format_string($mod->name),
 						'noquestions' => $quiz->get_no_questions(),
 						'id' => $mod->id,

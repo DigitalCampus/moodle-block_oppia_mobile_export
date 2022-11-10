@@ -72,7 +72,7 @@ abstract class MobileActivity {
 	}
 
 	function has_password(){
-		return ($this->password !== '');
+		return (($this->password != NULL) && ($this->password != ''));
 	}
 
 	protected function getActivityNode($xmlDoc, $module, $counter){

@@ -102,6 +102,31 @@ function add_publishing_log($server, $userid, $courseid, $action, $data){
         );
 }
 
+function get_section_title($section){
+
+	$defaultSectionTitle = false;
+	$sectionTitle = strip_tags(format_string($section->summary));
+	$title = extractLangs($section->summary);
+
+	// If the course has no summary, we try to use the section name
+	if ($sectionTitle == "") {
+		$sectionTitle = strip_tags(format_string($section->name));
+		$title = extractLangs($section->name);
+	}
+	// If the course has neither summary nor name, use the default topic title
+	if ($sectionTitle == "") {
+		$sectionTitle = get_string('sectionname', 'format_topics') . ' ' . $section->section;
+		$title = $sectionTitle;
+		$defaultSectionTitle = true;
+	}
+
+	return array(
+		'using_default' => $defaultSectionTitle,
+		'display_title' => $sectionTitle,
+		'title' => $title,
+	);
+}
+
 function extractLangs($content, $asJSON = false, $strip_tags = false, $strip_basic_tags = false){
     global $MOBILE_LANGS, $CURRENT_LANG, $DEFAULT_LANG;
 	preg_match_all(REGEX_LANGS, $content, $langs_tmp, PREG_OFFSET_CAPTURE);

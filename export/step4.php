@@ -70,15 +70,7 @@ foreach($sections as $sect) {
         continue;
     }
 
-    $section_title = strip_tags(format_string($sect->summary));
-    // If the course has no summary, we try to use the section name
-    if ($section_title == "") {
-        $section_title = strip_tags(format_string($sect->name));
-    }
-    // If the course has neither summary nor name, use the default topic title
-    if ($section_title == "") {
-        $section_title = get_string('sectionname', 'format_topics') . ' ' . $sect->section;
-    }
+    $sectTitle = get_section_title($sect);
 
     $modified_activities_count = 0;
     $modified_activities = array();
@@ -137,7 +129,7 @@ foreach($sections as $sect) {
 
     if ($modified_activities_count > 0) {
         array_push($config_sections, array(
-            'title' => $section_title,
+            'title' => $sectTitle['display_title'],
             'activities' => $modified_activities,
         ));
     }
