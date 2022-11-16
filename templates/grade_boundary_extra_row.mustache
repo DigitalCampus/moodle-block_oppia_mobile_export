@@ -1,13 +1,14 @@
 
-<div id="{{id}}" class="pure-u-lg-4-24 pure-u-sm-1-2 pure-u-1 px-5">
-    <select class="form-control" style="width:100%" name="quiz_{{id}}_passthreshold" id="id_passthreshold_quiz_{{id}}">
-        {{#passthreshold}}
-            <option value="{{threshold}}" {{# selected }} selected="selected" {{/ selected }}> {{threshold}}%</option>
-        {{/passthreshold}}
+<div class="pure-u-lg-4-24 pure-u-sm-1-2 pure-u-1 px-5">
+    <span>>=</span>
+    <select class="form-control grade-selector" name="grade_{{feedback_id}}[]" id="grade_{{feedback_id}}_{{id}}">
+        {{#grades}}
+            <option value="{{grade}}" {{# selected }} selected="selected" {{/ selected }}> {{grade}}%</option>
+        {{/grades}}
     </select>
 </div>
 <button id="add-row-{{id}}" type="button" class="pure-u-lg-2-24 add-row">+</button>
 <div class="pure-u-lg-16-24 pure-u-1 px-6">
-    <input class="form-control" style="width:100%">
+    <input id="message_{{feedback_id}}_{{id}}" name="message_{{feedback_id}}[]" class="form-control" style="width:100%">
 </div>
 <button id="remove-row-{{id}}" type="button" class="pure-u-lg-2-24 remove-btn" onclick="remove_row()"></button>

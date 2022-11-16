@@ -116,6 +116,10 @@ foreach($sections as $sect) {
 					'title' => format_string($mod->name),
 					'password' => $password
 				));
+
+				$grades = optional_param_array('grade_'.$mod->id, 0, PARAM_INT);
+				$messages = optional_param_array('message_'.$mod->id, 0, PARAM_TEXT);
+
 			} 
 			else if($mod->modname == 'quiz'){
 				$activity_count++;

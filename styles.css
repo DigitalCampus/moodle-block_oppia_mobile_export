@@ -266,6 +266,11 @@ span.export-results{ display: inline-block; }
 	vertical-align: middle;
 }
 
+.grade-selector {
+	display: inline-block !important;
+	padding: 0 !important;
+}
+
 .add-row {
 	position: relative;
 	top: 50%;
