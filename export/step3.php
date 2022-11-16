@@ -120,6 +120,22 @@ foreach($sections as $sect) {
 				$grades = optional_param_array('grade_'.$mod->id, 0, PARAM_INT);
 				$messages = optional_param_array('message_'.$mod->id, 0, PARAM_TEXT);
 
+				for($i = 0; $i < 21; $i++){
+					$value = $i * 5;
+					if(in_array($value, $grades,false)) {
+						$index = array_search($value, $grades);
+						$message = $messages[$index];
+						if($message) {
+							add_or_update_grade_boundary($mod->id, $value, $message, $server);
+						} else {
+							delete_grade_boundary($mod->id, $value, $server);
+						}
+					} else {
+						delete_grade_boundary($mod->id, $value, $server);
+					}
+
+				}
+
 			} 
 			else if($mod->modname == 'quiz'){
 				$activity_count++;

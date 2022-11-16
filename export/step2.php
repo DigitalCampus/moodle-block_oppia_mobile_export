@@ -81,6 +81,7 @@ echo $OUTPUT->header();
 
 
 $quizzes = array();
+$feedbacks = array();
 $orderno = 1;
 foreach($sections as $sect) {
     $sectionmods = explode(",", $sect->sequence);
@@ -112,6 +113,60 @@ foreach($sections as $sect) {
                         'noquestions' => $quiz->get_no_questions(),
                         'id' => $mod->id,
                         'password' => $quiz->has_password()
+                    ));
+                }
+            }
+
+            if($mod->modname == 'feedback' && $mod->visible == 1){
+                $feedback = new MobileActivityFeedback(array(
+                    'id' => $mod->id,
+                    'section' =>  $orderno,
+                    'server_id' => $server,
+                    'course_id' => $id,
+                    'shortname' => $course->shortname,
+                    'summary' => $sect->summary,
+                    'versionid' => 0
+                ));
+                $feedback->preprocess();
+                if ($feedback->get_is_valid() && $feedback->get_no_questions() > 0){
+
+                    $grades = array();
+                    for($i=0; $i<19; $i++) {
+                        array_push($grades,
+                            array('grade' => 95 - $i * 5)
+                        );
+                    }
+
+                    $grade_boundaries = array();
+                    $gb = get_grade_boundaries($mod->id, $server);
+                    rsort($gb);
+                    foreach($gb as $grade_boundary){
+                        switch($grade_boundary->grade) {
+                            case 0:   $grade_0_message = $grade_boundary->message; break;
+                            case 100: $grade_100_message = $grade_boundary->message; break;
+                            default: {
+                                $selected_index = array_search(array('grade' => $grade_boundary->grade), $grades);
+                                $grades[$selected_index]['selected'] = True;
+                                array_push($grade_boundaries, array(
+                                    'id' => $grade_boundary->id,
+                                    'grade' => $grade_boundary->grade,
+                                    'grades' => $grades,
+                                    'message' => $grade_boundary->message
+                                ));
+                                $grades[$selected_index]['selected'] = False;
+                                break;
+                            }
+                        }
+                    }
+
+                    array_push($feedbacks, array(
+                        'section' => $sectTitle['display_title'],
+                        'name' => format_string($mod->name),
+                        'noquestions' => $feedback->get_no_questions(),
+                        'id' => $mod->id,
+                        'gradeBoundaries' => $grade_boundaries,
+                        'grade_100_message' => $grade_100_message,
+                        'grade_0_message' => $grade_0_message,
                     ));
                 }
             }
@@ -165,7 +220,8 @@ echo $OUTPUT->render_from_template(
         'server' => $server,
         'course_export_status' => $course_export_status,
         'wwwroot' => $CFG->wwwroot,
-        'quizzes' => $quizzes
+        'quizzes' => $quizzes,
+        'feedbacks' => $feedbacks,
     )
 );
 

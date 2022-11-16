@@ -1,7 +1,7 @@
 
 <div class="wrap-collabsible">
     <input id="collapsible" class="toggle" type="checkbox">
-    <label for="collapsible" class="lbl-toggle">Feedback 1</label>
+    <label for="collapsible" class="lbl-toggle">{{name}}</label>
     <div class="collapsible-content">
         <div class="content-inner">
             <div class="quizzes-table">
@@ -19,9 +19,17 @@
                     </div>
                     <button type="button" class="pure-u-lg-2-24 add-row">+</button>
                     <div class="pure-u-lg-16-24 pure-u-1 px-6">
-                        <input class="form-control" name="message_{{id}}[]" style="width:100%">
+                        <input class="form-control" name="message_{{id}}[]" style="width:100%" value="{{grade_100_message}}">
                     </div>
                 </div>
+
+                {{# gradeBoundaries }}
+                    <div class="pure-g grade-boundary-row">
+                        {{> block_oppia_mobile_export/grade_boundary_extra_row }}
+                    </div>
+                {{/ gradeBoundaries }}
+
+
 
                 <div class="pure-g grade-boundary-row">
                     <div class="pure-u-lg-4-24 pure-u-sm-1-2 pure-u-1">
@@ -29,43 +37,7 @@
                         >= 0%
                     </div>
                     <div class="pure-u-lg-16-24 pure-u-1 px-6">
-                        <input class="form-control" name="message_{{id}}[]" style="width:100%">
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-</div>
-<div class="wrap-collabsible">
-    <input id="collapsible2" class="toggle" type="checkbox">
-    <label for="collapsible2" class="lbl-toggle">Feedback 2</label>
-    <div class="collapsible-content">
-        <div class="content-inner">
-            <div class="quizzes-table">
-                <div class="pure-g titles">
-                    <div class="pure-u-4-24">Grade</div>
-                    <div class="pure-u-2-24"></div>
-                    <div class="pure-u-16-24">Message</div>
-                    <div class="pure-u-2-24"></div>
-                </div>
-
-                <div id="main-row" class="pure-g grade-boundary-row">
-                    <div class="pure-u-lg-4-24 pure-u-sm-1-2 pure-u-1">
-                        100%
-                    </div>
-                    <button type="button" class="pure-u-lg-2-24 add-row">+</button>
-                    <div class="pure-u-lg-16-24 pure-u-1 px-6">
-                        <input class="form-control" style="width:100%">
-                    </div>
-                </div>
-
-                <div class="pure-g grade-boundary-row">
-                    <div class="pure-u-lg-4-24 pure-u-sm-1-2 pure-u-1">
-                        >= 0%
-                    </div>
-                    <div class="pure-u-lg-16-24 pure-u-1 px-6">
-                        <input class="form-control" style="width:100%">
+                        <input class="form-control" name="message_{{id}}[]" style="width:100%" value="{{grade_0_message}}">
                     </div>
                 </div>
 
@@ -94,7 +66,6 @@
             grades: grades,
             feedback_id: {{id}}
         };
-        console.log(data);
         fetch('../templates/grade_boundary_extra_row.mustache')
                 .then((response) => response.text())
                 .then((template) => {
