@@ -6,11 +6,12 @@ class MobileActivityPage extends MobileActivity {
 	private $page_media = array();
 	private $page_related = array();
 	private $page_local_media = array();
-
+	private $video_overlay = false;
 
 	public function __construct($params=array()){ 
 		parent::__construct($params);
 		$this->component_name = 'mod_page';
+		if (isset($params['video_overlay'])) { $this->video_overlay = $params['video_overlay']; }
     }
 	
 	function generate_md5($page){
@@ -254,7 +255,6 @@ class MobileActivityPage extends MobileActivity {
 
 		for ($i=0; $i<$videos_length; $i++) {
 			$video = $videos->item(0); //We always get the first one, as the previous one would be replaced by now
-			$video_params = array();
 
 			foreach ($video->childNodes as $source){
 				if (($source->nodeName == 'source') && ($source->hasAttribute('src'))){
@@ -274,6 +274,8 @@ class MobileActivityPage extends MobileActivity {
 					
 					$video_params['filename'] = $filename;
 
+
+
                     if($CFG->block_oppia_mobile_export_debug and $this->print_logs){
 					    echo get_string('video_included', PLUGINNAME).'<code>'. $filename .'</code>'.OPPIA_HTML_BR;
                     }
@@ -288,8 +290,13 @@ class MobileActivityPage extends MobileActivity {
 			}
 			else{
 				$video_params['poster'] = $video->getAttribute('poster');
+				$video_params['video_class'] = $this->video_overlay ? 'video-overlay' : '';
+				
 			}
 
+			echo "<pre>";
+					var_dump($video_params);
+					echo "</pre>";
 			$embed = createDOMElemFromTemplate($html, PLUGINNAME.'/video_embed', $video_params);
 			$video->parentNode->replaceChild($embed, $video);
         } 
