@@ -12,12 +12,12 @@
                     <div class="pure-u-2-24"></div>
                 </div>
 
-                <div id="main-row" class="pure-g grade-boundary-row">
+                <div class="pure-g grade-boundary-row">
                     <div class="pure-u-lg-4-24 pure-u-sm-1-2 pure-u-1">
                         <input type="hidden" name="grade_{{id}}[]" value="100" />
                         100%
                     </div>
-                    <button type="button" class="pure-u-lg-2-24 add-row">+</button>
+                    <button type="button" class="pure-u-lg-2-24 add-row-btn">+</button>
                     <div class="pure-u-lg-16-24 pure-u-1 px-6">
                         <input class="form-control" name="message_{{id}}[]" style="width:100%" value="{{grade_100_message}}">
                     </div>
@@ -28,8 +28,6 @@
                         {{> block_oppia_mobile_export/grade_boundary_extra_row }}
                     </div>
                 {{/ gradeBoundaries }}
-
-
 
                 <div class="pure-g grade-boundary-row">
                     <div class="pure-u-lg-4-24 pure-u-sm-1-2 pure-u-1">
@@ -49,7 +47,6 @@
 <script type="module">
 
     import Mustache from '../js/mustache.js';
-    let row_count = 0;
 
     var grades = [];
     for(var i=0; i<19; i++) {
@@ -57,37 +54,42 @@
     }
 
     function add_row(e) {
-        row_count++;
         var btn = e.target;
         var new_row = document.createElement("div");
         new_row.className = "pure-g grade-boundary-row";
         var data = {
-            id: row_count,
+            feedback_id: {{id}},
             grades: grades,
-            feedback_id: {{id}}
         };
         fetch('../templates/grade_boundary_extra_row.mustache')
                 .then((response) => response.text())
                 .then((template) => {
                     new_row.innerHTML = Mustache.render(template, data);
-                    var add_btn = document.getElementById('add-row-' + row_count);
+                    var add_btn = new_row.getElementsByClassName('add-row-btn')[0];
+                    console.log(add_btn);
                     add_btn.addEventListener('click', add_row);
 
-                    var remove_btn = document.getElementById('remove-row-' + row_count);
+                    var remove_btn = new_row.getElementsByClassName('remove-row-btn')[0];
                     remove_btn.addEventListener('click', remove_row);
                 });
         btn.parentNode.parentNode.insertBefore(new_row, btn.parentNode.nextSibling);
     }
 
-    document.querySelectorAll('.add-row').forEach(occurence => {
+    function remove_row(e) {
+        e.target.parentNode.remove();
+    }
+
+    document.querySelectorAll('.add-row-btn').forEach(occurence => {
         occurence.addEventListener('click', (e) => {
             add_row(e);
         });
     });
 
-    export function remove_row() {
-        return this.parentNode.remove();
-    }
+    document.querySelectorAll('.remove-row-btn').forEach(occurence => {
+        occurence.addEventListener('click', (e) => {
+            remove_row(e);
+        });
+    });
 
 
 </script>

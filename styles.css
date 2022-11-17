@@ -271,7 +271,7 @@ span.export-results{ display: inline-block; }
 	padding: 0 !important;
 }
 
-.add-row {
+.add-row-btn {
 	position: relative;
 	top: 50%;
 	background-color: #9ACA3C;
@@ -281,7 +281,7 @@ span.export-results{ display: inline-block; }
 }
 
 
-.remove-btn {
+.remove-row-btn {
 	color: red;
 	width: 25px;
 	height: 25px;
@@ -289,11 +289,11 @@ span.export-results{ display: inline-block; }
 	border-radius: 4px;
 }
 
-.remove-btn:before {
+.remove-row-btn:before {
 	content: 'X';
 }
 
-.remove-btn:hover {
+.remove-row-btn:hover {
 	background-color: red;
 	color: #FFF;
 }

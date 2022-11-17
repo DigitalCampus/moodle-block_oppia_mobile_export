@@ -148,6 +148,7 @@ foreach($sections as $sect) {
                                 $selected_index = array_search(array('grade' => $grade_boundary->grade), $grades);
                                 $grades[$selected_index]['selected'] = True;
                                 array_push($grade_boundaries, array(
+                                    'feedback_id' => $mod->id,
                                     'id' => $grade_boundary->id,
                                     'grade' => $grade_boundary->grade,
                                     'grades' => $grades,
