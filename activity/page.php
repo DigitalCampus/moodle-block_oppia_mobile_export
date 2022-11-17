@@ -290,13 +290,12 @@ class MobileActivityPage extends MobileActivity {
 			}
 			else{
 				$video_params['poster'] = $video->getAttribute('poster');
-				$video_params['video_class'] = $this->video_overlay ? 'video-overlay' : '';
+				if ($this->video_overlay){
+					$video_params['video_class'] = 'video-overlay';
+				}
 				
 			}
 
-			echo "<pre>";
-					var_dump($video_params);
-					echo "</pre>";
 			$embed = createDOMElemFromTemplate($html, PLUGINNAME.'/video_embed', $video_params);
 			$video->parentNode->replaceChild($embed, $video);
         } 
@@ -311,11 +310,11 @@ class MobileActivityPage extends MobileActivity {
 
 	private function isLocalMedia($filename){
 		$exists = false;
-		foreach ($this->page_local_media as $localMedia){
-			if (strpos($localMedia['filename'], $filename) !== false){
+		foreach ($this->page_local_media as $local_media){
+			if (strpos($local_media['filename'], $filename) !== false){
 				$exists = true;
 			}
-			if (strpos($localMedia['filename'], urldecode($filename)) !== false){
+			if (strpos($local_media['filename'], urldecode($filename)) !== false){
 				$exists = true;
 			}
 		}

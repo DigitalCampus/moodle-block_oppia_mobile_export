@@ -285,14 +285,14 @@ $filename = extractImageFile($course->summary,
 							$course_root,0);
 
 if($filename){
-	$resizedFilename = resizeImage($course_root."/".$filename,
+	$resized_filename = resizeImage($course_root."/".$filename,
 	    $course_root."/images/".$course->id.'_'.$context->id,
 						$CFG->block_oppia_mobile_export_course_icon_width,
 						$CFG->block_oppia_mobile_export_course_icon_height,
 						true);
 	unlink($course_root."/".$filename) or die('Unable to delete the file');
 	$temp = $xmlDoc->createElement("image");
-	$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode("/images/".$resizedFilename));
+	$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode("/images/".$resized_filename));
 	$meta->appendChild($temp);
 }
 
@@ -339,7 +339,7 @@ foreach($sections as $sect) {
 			}
 		} else {
 			$temp = $xmlDoc->createElement("title");
-			$temp->appendChild($xmlDoc->createCDATASection($sectTitle['title']));
+			$temp->appendChild($xmlDoc->createCDATASection(strip_tags($sectTitle['title'])));
 			$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
 			$section->appendChild($temp);
 		}
@@ -361,13 +361,13 @@ foreach($sections as $sect) {
 									$course_root, 0);
 
 		if($filename){
-			$resizedFilename = resizeImage(
+			$resized_filename = resizeImage(
 				$course_root."/".$filename,
 			    $course_root."/images/".$sect->id.'_'.$context->id,
 				$section_width, $section_height, true);
 			unlink($course_root."/".$filename) or die('Unable to delete the file');
 			$temp = $xmlDoc->createElement("image");
-			$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode("/images/".$resizedFilename));
+			$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode("/images/".$resized_filename));
 			$section->appendChild($temp);
 		}
 
