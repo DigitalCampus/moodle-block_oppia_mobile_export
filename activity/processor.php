@@ -133,7 +133,6 @@ class ActivityProcessor {
 			return $url;
 		}
 		else if ($mod->modname == 'feedback'){
-
             $grade_boundaries = array();
             foreach(get_grade_boundaries($mod->id, $this->server_id) as $gb) {
                 array_push($grade_boundaries, (object)[
@@ -141,9 +140,6 @@ class ActivityProcessor {
                 ]);
             }
             rsort($grade_boundaries);
-
-            $randomselect = get_oppiaconfig($mod->id, 'randomselect', 0, $this->server_id);
-            $passthreshold = get_oppiaconfig($mod->id, 'passthreshold', 0, $this->server_id);
 
 			$params['config_array'] = array(
 				'showfeedback'=>false, 

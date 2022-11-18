@@ -1,24 +1,22 @@
 
-<div class="wrap-collabsible">
-    <input id="collapsible" class="toggle" type="checkbox">
-    <label for="collapsible" class="lbl-toggle">{{name}}</label>
+<div id="feedback_{{id}}" class="wrap-collabsible">
+    <input id="collapsible_{{id}}" class="toggle" type="checkbox">
+    <label for="collapsible_{{id}}" class="lbl-toggle">{{name}}</label>
     <div class="collapsible-content">
         <div class="content-inner">
             <div class="quizzes-table">
                 <div class="pure-g titles">
-                    <div class="pure-u-4-24">Grade</div>
-                    <div class="pure-u-2-24"></div>
-                    <div class="pure-u-16-24">Message</div>
-                    <div class="pure-u-2-24"></div>
+                    <div class="pure-u-lg-8-24 pure-u-sm-1-3 text-center">Grade</div>
+                    <div class="pure-u-lg-14-24 pure-u-sm-2-3 text-center">Message</div>
                 </div>
 
                 <div class="pure-g grade-boundary-row">
-                    <div class="pure-u-lg-4-24 pure-u-sm-1-2 pure-u-1">
+                    <div class="pure-u-lg-4-24 pure-u-sm-1-4 pure-u-1">
                         <input type="hidden" name="grade_{{id}}[]" value="100" />
                         100%
                     </div>
-                    <button type="button" class="pure-u-lg-2-24 add-row-btn">+</button>
-                    <div class="pure-u-lg-16-24 pure-u-1 px-6">
+                    <button type="button" class="pure-u-lg-2-24 pure-u-sm-1-4 add-row-btn">+</button>
+                    <div class="pure-u-lg-16-24 pure-u-sm-2-3 pure-u-1 px-6">
                         <input class="form-control" name="message_{{id}}[]" style="width:100%" value="{{grade_100_message}}">
                     </div>
                 </div>
@@ -30,11 +28,11 @@
                 {{/ gradeBoundaries }}
 
                 <div class="pure-g grade-boundary-row">
-                    <div class="pure-u-lg-4-24 pure-u-sm-1-2 pure-u-1">
+                    <div class="pure-u-lg-4-24 pure-u-sm-1-4 pure-u-1">
                         <input type="hidden" name="grade_{{id}}[]" value="0" />
                         >= 0%
                     </div>
-                    <div class="pure-u-lg-16-24 pure-u-1 px-6">
+                    <div class="pure-u-lg-16-24 pure-u-sm-2-3 pure-u-1 px-6">
                         <input class="form-control" name="message_{{id}}[]" style="width:100%" value="{{grade_0_message}}">
                     </div>
                 </div>
@@ -66,7 +64,6 @@
                 .then((template) => {
                     new_row.innerHTML = Mustache.render(template, data);
                     var add_btn = new_row.getElementsByClassName('add-row-btn')[0];
-                    console.log(add_btn);
                     add_btn.addEventListener('click', add_row);
 
                     var remove_btn = new_row.getElementsByClassName('remove-row-btn')[0];
@@ -79,13 +76,15 @@
         e.target.parentNode.remove();
     }
 
-    document.querySelectorAll('.add-row-btn').forEach(occurence => {
+    var feedbackRow = document.getElementById("feedback_{{id}}");
+
+    feedbackRow.querySelectorAll('.add-row-btn').forEach(occurence => {
         occurence.addEventListener('click', (e) => {
             add_row(e);
         });
     });
 
-    document.querySelectorAll('.remove-row-btn').forEach(occurence => {
+    feedbackRow.querySelectorAll('.remove-row-btn').forEach(occurence => {
         occurence.addEventListener('click', (e) => {
             remove_row(e);
         });

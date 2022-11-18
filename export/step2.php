@@ -81,7 +81,7 @@ echo $OUTPUT->header();
 
 
 $quizzes = array();
-$feedbacks = array();
+$feedback_activities = array();
 $orderno = 1;
 foreach($sections as $sect) {
     $sectionmods = explode(",", $sect->sequence);
@@ -139,7 +139,7 @@ foreach($sections as $sect) {
 
                     $grade_boundaries = array();
                     $gb = get_grade_boundaries($mod->id, $server);
-                    rsort($gb);
+                    usort($gb, 'sort_grade_boundaries_descending');
                     foreach($gb as $grade_boundary){
                         switch($grade_boundary->grade) {
                             case 0:   $grade_0_message = $grade_boundary->message; break;
@@ -160,7 +160,7 @@ foreach($sections as $sect) {
                         }
                     }
 
-                    array_push($feedbacks, array(
+                    array_push($feedback_activities, array(
                         'section' => $sectTitle['display_title'],
                         'name' => format_string($mod->name),
                         'noquestions' => $feedback->get_no_questions(),
@@ -209,21 +209,30 @@ for ($qid=0; $qid<count($quizzes); $qid++){
     $quizzes[$qid] = $quiz;
 }
 
-if (empty($quizzes)){
 
+$form_data = array(
+    'id' => $id,
+    'stylesheet' => $stylesheet,
+    'server' => $server,
+    'course_export_status' => $course_export_status,
+    'wwwroot' => $CFG->wwwroot,
+    'display_quizzes_section' => !empty($quizzes),
+    'quizzes' => $quizzes,
+    'display_feedback_section' => !empty($feedback_activities),
+    'feedback_activities' => $feedback_activities,
+);
+
+// If there are no quizzes nor feedback activities, redirect to the following step.
+if (empty($quizzes) and empty($feedback_activities)){
+    unset($form_data['quizzes']);
+    unset($form_data['display_quizzes_section']);
+    unset($form_data['feedback_activities']);
+    unset($form_data['display_feedback_section']);
+    $step3_url = new moodle_url(PLUGINPATH . 'export/step3.php', $form_data);
+    $redirect_message = get_string('export_quizzes_nor_feedback_message', PLUGINNAME);
+    redirect($step3_url, $redirect_message);
 }
 
-echo $OUTPUT->render_from_template(
-    PLUGINNAME.'/export_step2_form',
-    array(
-        'id' => $id,
-        'stylesheet' => $stylesheet,
-        'server' => $server,
-        'course_export_status' => $course_export_status,
-        'wwwroot' => $CFG->wwwroot,
-        'quizzes' => $quizzes,
-        'feedbacks' => $feedbacks,
-    )
-);
+echo $OUTPUT->render_from_template(PLUGINNAME.'/export_step2_form', $form_data);
 
 echo $OUTPUT->footer();

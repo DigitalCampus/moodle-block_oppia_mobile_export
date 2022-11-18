@@ -190,6 +190,7 @@ span.export-results{ display: inline-block; }
 @-webkit-keyframes spin {
   to { -webkit-transform: rotate(360deg); }
 }
+
 .wrap-collabsible {
 	margin: 0 0;
 }
@@ -249,7 +250,8 @@ span.export-results{ display: inline-block; }
 
 .collapsible-content .content-inner {
 	background: #fefefe;
-	border: 1px solid #DDD;
+	margin: 0 10px;
+	border: none;
 	border-radius: 4px;
 	box-shadow: 0 3px 6px rgba(0,0,0,0.2);
 }
@@ -279,7 +281,6 @@ span.export-results{ display: inline-block; }
 	width:30px;
 	border-radius: 4px;
 }
-
 
 .remove-row-btn {
 	color: red;

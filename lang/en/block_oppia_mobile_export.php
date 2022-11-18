@@ -184,6 +184,7 @@ $string['export_preserve_activity_id_title'] = 'Preserve activity IDs';
 $string['export_preserve_activity_id_desc'] = 'By selecting the \'Preserve ID\' option for an activity, the OppiaMobile server will not create a new version of that activity.';
 $string['export_preserve_activity_id_header'] = 'Preserve ID';
 $string['export_no_content_changes_message'] = 'No content changes detected in previously published activities, moving to the next step. If nothing is happening please use the continue link below.';
+$string['export_quizzes_nor_feedback_message'] = 'This course does not have any quiz or feedback activities, moving to the next step. If nothing is happening please use the continue link below.';
 
 $string['export_renewing_digests_in_section'] = 'Renewing digests in section: {$a}';
 

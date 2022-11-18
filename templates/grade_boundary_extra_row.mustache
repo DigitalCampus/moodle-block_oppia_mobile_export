@@ -1,5 +1,5 @@
 
-<div class="pure-u-lg-4-24 pure-u-sm-1-2 pure-u-1 px-5">
+<div class="pure-u-lg-4-24 pure-u-6-24">
     <span>>=</span>
     <select class="form-control grade-selector" name="grade_{{feedback_id}}[]">
         {{#grades}}
@@ -7,8 +7,8 @@
         {{/grades}}
     </select>
 </div>
-<button type="button" class="pure-u-lg-2-24 add-row-btn">+</button>
-<div class="pure-u-lg-16-24 pure-u-1 px-6">
+<button type="button" class="pure-u-lg-2-24 pure-u-2-24 add-row-btn">+</button>
+<div class="pure-u-lg-16-24 pure-u-14-24 px-4">
     <input name="message_{{feedback_id}}[]" class="form-control" style="width:100%" value="{{message}}">
 </div>
-<button type="button" class="pure-u-lg-2-24 remove-row-btn" onclick="remove_row()"></button>
+<button type="button" class="pure-u-lg-2-24 pure-u-2-24 remove-row-btn"></button>

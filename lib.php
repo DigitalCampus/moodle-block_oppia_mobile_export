@@ -688,4 +688,7 @@ function get_grade_boundaries($modid, $servid="default"){
 	}
 }
 
+function sort_grade_boundaries_descending($gb1, $gb2) {
+	return $gb2->grade - $gb1->grade;
+}
 ?>

@@ -1,17 +1,24 @@
 
 <h2>{{# str }}export_step2_title,block_oppia_mobile_export{{/ str }}</h2>
 
-<form method="post" action="{{wwwroot}}/blocks/oppia_mobile_export/export/step3.php">
+<form name="quizzes_and_feedback_form" method="post" action="{{wwwroot}}/blocks/oppia_mobile_export/export/step3.php" onsubmit="return validateForm()">
 
-    <p>{{# str }}export_contains_quizzes,block_oppia_mobile_export{{/ str }}</p>
+    {{# display_quizzes_section }}
+        <p>{{# str }}export_contains_quizzes,block_oppia_mobile_export{{/ str }}</p>
 
-    {{# quizzes.0}}
-        {{> block_oppia_mobile_export/quizzes }}
-    {{/ quizzes.0}}
+        {{# quizzes.0}}
+            {{> block_oppia_mobile_export/quizzes }}
+        {{/ quizzes.0}}
+    {{/ display_quizzes_section }}
 
-    {{# feedbacks}}
-        {{> block_oppia_mobile_export/feedback }}
-    {{/ feedbacks}}
+
+    {{# display_feedback_section }}
+        <p>Feedback</p>
+
+        {{# feedback_activities}}
+            {{> block_oppia_mobile_export/feedback }}
+        {{/ feedback_activities}}
+    {{/ display_feedback_section }}
 
 
     <input type="hidden" name="id" value="{{id}}">
@@ -27,3 +34,30 @@
     </p>
 
 </form>
+
+<script>
+    function validateForm() {
+        var previousItem = null;
+        var feedback_activities_with_errors = new Set();
+        {{# feedback_activities}}
+            var nameVal = document.forms["quizzes_and_feedback_form"]["grade_{{id}}[]"];
+            nameVal.forEach((item) => {
+                currentVal = Number(item.value)
+                if(previousItem == null || currentVal < previousItem) {
+                    previousItem = currentVal;
+                } else {
+                    feedback_activities_with_errors.add("{{name}}");
+                }
+            });
+            previousItem = null;
+        {{/ feedback_activities}}
+
+        if (feedback_activities_with_errors.size > 0) {
+            alert("One or more grade boundaries are not correct. Please, make sure the grade boundaries are ordered in a descending order and there are no duplicate grades.\n\n The affected feedback activites are:\n- " + feedback_activities_with_errors.join('\n- '));
+            return false;
+        }
+        return true;
+    }
+
+
+</script>
