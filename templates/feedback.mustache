@@ -1,7 +1,7 @@
 
 <div id="feedback_{{id}}" class="wrap-collabsible">
     <input id="collapsible_{{id}}" class="toggle" type="checkbox">
-    <label for="collapsible_{{id}}" class="lbl-toggle">{{name}}</label>
+    <label for="collapsible_{{id}}" class="lbl-toggle">{{section}} - {{name}}</label>
     <div class="collapsible-content">
         <div class="content-inner">
             <div class="quizzes-table">
@@ -11,12 +11,12 @@
                 </div>
 
                 <div class="pure-g grade-boundary-row">
-                    <div class="pure-u-lg-4-24 pure-u-sm-1-4 pure-u-1">
+                    <div class="pure-u-lg-4-24 pure-u-6-24 text-center">
                         <input type="hidden" name="grade_{{id}}[]" value="100" />
                         100%
                     </div>
-                    <button type="button" class="pure-u-lg-2-24 pure-u-sm-1-4 add-row-btn">+</button>
-                    <div class="pure-u-lg-16-24 pure-u-sm-2-3 pure-u-1 px-6">
+                    <button type="button" class="pure-u-lg-2-24 pure-u-2-24 add-row-btn">+</button>
+                    <div class="pure-u-lg-16-24 pure-u-14-24 px-3">
                         <input class="form-control" name="message_{{id}}[]" style="width:100%" value="{{grade_100_message}}">
                     </div>
                 </div>
@@ -28,11 +28,11 @@
                 {{/ gradeBoundaries }}
 
                 <div class="pure-g grade-boundary-row">
-                    <div class="pure-u-lg-4-24 pure-u-sm-1-4 pure-u-1">
+                    <div class="pure-u-lg-4-24 pure-u-6-24 text-center">
                         <input type="hidden" name="grade_{{id}}[]" value="0" />
                         >= 0%
                     </div>
-                    <div class="pure-u-lg-16-24 pure-u-sm-2-3 pure-u-1 px-6">
+                    <div class="pure-u-lg-16-24 pure-u-14-24 px-3">
                         <input class="form-control" name="message_{{id}}[]" style="width:100%" value="{{grade_0_message}}">
                     </div>
                 </div>
@@ -46,18 +46,13 @@
 
     import Mustache from '../js/mustache.js';
 
-    var grades = [];
-    for(var i=0; i<19; i++) {
-        grades[i] = { grade: 95 - i * 5 };
-    }
-
     function add_row(e) {
-        var btn = e.target;
+        var add_btn_clicked = e.target;
         var new_row = document.createElement("div");
         new_row.className = "pure-g grade-boundary-row";
         var data = {
             feedback_id: {{id}},
-            grades: grades,
+            grades: {{{grades}}},
         };
         fetch('../templates/grade_boundary_extra_row.mustache')
                 .then((response) => response.text())
@@ -69,11 +64,13 @@
                     var remove_btn = new_row.getElementsByClassName('remove-row-btn')[0];
                     remove_btn.addEventListener('click', remove_row);
                 });
-        btn.parentNode.parentNode.insertBefore(new_row, btn.parentNode.nextSibling);
+        add_btn_clicked.parentNode.parentNode.insertBefore(new_row, add_btn_clicked.parentNode.nextSibling);
     }
 
     function remove_row(e) {
-        e.target.parentNode.remove();
+        var remove_btn = e.target;
+        var grade_boundary_row = remove_btn.parentNode;
+        grade_boundary_row.remove();
     }
 
     var feedbackRow = document.getElementById("feedback_{{id}}");

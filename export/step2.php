@@ -79,6 +79,12 @@ $mods = $modinfo->get_cms();
 
 echo $OUTPUT->header();
 
+$grades = array();
+for($i=0; $i<19; $i++) {
+    array_push($grades,
+        array('grade' => 95 - $i * 5)
+    );
+}
 
 $quizzes = array();
 $feedback_activities = array();
@@ -129,14 +135,6 @@ foreach($sections as $sect) {
                 ));
                 $feedback->preprocess();
                 if ($feedback->get_is_valid() && $feedback->get_no_questions() > 0){
-
-                    $grades = array();
-                    for($i=0; $i<19; $i++) {
-                        array_push($grades,
-                            array('grade' => 95 - $i * 5)
-                        );
-                    }
-
                     $grade_boundaries = array();
                     $gb = get_grade_boundaries($mod->id, $server);
                     usort($gb, 'sort_grade_boundaries_descending');
@@ -154,7 +152,7 @@ foreach($sections as $sect) {
                                     'grades' => $grades,
                                     'message' => $grade_boundary->message
                                 ));
-                                $grades[$selected_index]['selected'] = False;
+                                unset($grades[$selected_index]['selected']);
                                 break;
                             }
                         }
@@ -165,6 +163,7 @@ foreach($sections as $sect) {
                         'name' => format_string($mod->name),
                         'noquestions' => $feedback->get_no_questions(),
                         'id' => $mod->id,
+                        'grades' => json_encode($grades),
                         'gradeBoundaries' => $grade_boundaries,
                         'grade_100_message' => $grade_100_message,
                         'grade_0_message' => $grade_0_message,

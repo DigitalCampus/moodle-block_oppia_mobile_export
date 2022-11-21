@@ -13,7 +13,10 @@
 
 
     {{# display_feedback_section }}
-        <p>Feedback</p>
+        <p>{{# str }}export_contains_feedback_activities,block_oppia_mobile_export{{/ str }}</p>
+        <div class="note">
+            <p>{{# str }}export_feedback_config_instructions,block_oppia_mobile_export{{/ str }}</p>
+        </div>
 
         {{# feedback_activities}}
             {{> block_oppia_mobile_export/feedback }}

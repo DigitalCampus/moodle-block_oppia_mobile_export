@@ -206,7 +206,7 @@ span.export-results{ display: inline-block; }
 	font-size: 1.2rem;
 	text-transform: uppercase;
 	text-align: left;
-	padding: 1rem;
+	padding: 0.5rem 1rem;
 	color: #000;
 	background: #9ACA3C;
 	cursor: pointer;
@@ -297,4 +297,13 @@ span.export-results{ display: inline-block; }
 .remove-row-btn:hover {
 	background-color: red;
 	color: #FFF;
+}
+
+.note {
+	background-color: #eaf1ea;
+	border-left: solid 6px #9ACA3C;
+	line-height: 22px;
+	overflow: hidden;
+	padding: 12px;
+	margin: 12px 0;
 }
