@@ -40,12 +40,14 @@ $tags = get_oppiaconfig($id,'coursetags','', $server);
 $priority = (int) get_oppiaconfig($id, 'coursepriority', '0', $server);
 $sequencing = get_oppiaconfig($id, 'coursesequencing', '', $server);
 $keep_html = get_oppiaconfig($id, 'keep_html', '', $server);
+$video_overlay = get_oppiaconfig($id, 'video_overlay', '', $server);
 $DEFAULT_LANG = get_oppiaconfig($id,'default_lang', $CFG->block_oppia_mobile_export_default_lang, $server);
 $thumb_height = get_oppiaconfig($id, 'thumb_height', $CFG->block_oppia_mobile_export_thumb_height, $server);
 $thumb_width = get_oppiaconfig($id, 'thumb_width', $CFG->block_oppia_mobile_export_thumb_width, $server);
 $section_height = get_oppiaconfig($id, 'section_height', $CFG->block_oppia_mobile_export_section_icon_height, $server);
 $section_width = get_oppiaconfig($id, 'section_width', $CFG->block_oppia_mobile_export_section_icon_width, $server);
 
+$local_media_files = array();
 $course = $DB->get_record('course', array('id'=>$id));
 //we clean the shortname of the course (the change doesn't get saved in Moodle)
 $course->shortname = cleanShortname($course->shortname);
@@ -200,10 +202,15 @@ foreach ($sectionmods as $modnumber) {
 	
 	if($mod->modname == 'page' && $mod->visible == 1){
 		echo "<p>".$mod->name."</p>";
-		$page = new MobileActivityPage();
-		$page->courseroot = $course_root;
-		$page->id = $mod->id;
-		$page->section = 0;
+		$page = new MobileActivityPage(array(
+			'id' => $mod->id,
+			'courseroot' => $course_root,
+			'server_id' => $server,
+			'section' => 0,
+			'keep_html' => $keep_html,
+			'video_overlay' => $video_overlay,
+			'local_media_files' => $local_media_files,
+		));
 		$page->process();
 		$page->getXML($mod, $i, $meta, $xmlDoc, false);
 	}
@@ -218,7 +225,7 @@ foreach ($sectionmods as $modnumber) {
 		$quiz = new MobileActivityQuiz(array(
 	    	'id' => $mod->id,
 	    	'courseroot' => $course_root,
-			'section' => $sect_orderno,
+			'section' => 0,
 			'server_id' => $server,
 			'course_id' => $id,
 			'shortname' => $course->shortname,
@@ -232,10 +239,6 @@ foreach ($sectionmods as $modnumber) {
 				'maxattempts'=>$maxattempts
 			)
 	    ));
-		
-		$quiz->courseroot = $course_root;
-		$quiz->id = $mod->id;
-		$quiz->section = 0;
 		$quiz->preprocess();
 		if ($quiz->get_is_valid()){
 			$quiz->process();
@@ -248,7 +251,7 @@ foreach ($sectionmods as $modnumber) {
 		$feedback = new MobileActivityFeedback(array(
 	    	'id' => $mod->id,
 	    	'courseroot' => $course_root,
-			'section' => $sect_orderno,
+			'section' => 0,
 			'server_id' => $server,
 			'course_id' => $id,
 			'shortname' => $course->shortname,
@@ -260,10 +263,6 @@ foreach ($sectionmods as $modnumber) {
 				'maxattempts'=>'unlimited'
 			)
 	    ));
-		
-		$feedback->courseroot = $course_root;
-		$feedback->id = $mod->id;
-		$feedback->section = 0;
 		$feedback->preprocess();
 		if ($feedback->get_is_valid()){
 			$feedback->process();
@@ -286,19 +285,19 @@ $filename = extractImageFile($course->summary,
 							$course_root,0);
 
 if($filename){
-	$resizedFilename = resizeImage($course_root."/".$filename,
+	$resized_filename = resizeImage($course_root."/".$filename,
 	    $course_root."/images/".$course->id.'_'.$context->id,
 						$CFG->block_oppia_mobile_export_course_icon_width,
 						$CFG->block_oppia_mobile_export_course_icon_height,
 						true);
 	unlink($course_root."/".$filename) or die('Unable to delete the file');
 	$temp = $xmlDoc->createElement("image");
-	$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode("/images/".$resizedFilename));
+	$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode("/images/".$resized_filename));
 	$meta->appendChild($temp);
 }
 
 $structure = $xmlDoc->createElement("structure");
-$local_media_files = array();
+
 
 echo "<h3>".get_string('export_sections_start', PLUGINNAME)."</h3>";
 
@@ -309,6 +308,7 @@ $processor = new ActivityProcessor(array(
 			'course_shortname' => $course->shortname,
 			'versionid' => $versionid,
 			'keep_html' => $keep_html,
+			'video_overlay' => $video_overlay,
 			'local_media_files' => $local_media_files
 ));
 
@@ -339,7 +339,7 @@ foreach($sections as $sect) {
 			}
 		} else {
 			$temp = $xmlDoc->createElement("title");
-			$temp->appendChild($xmlDoc->createCDATASection($sectTitle['title']));
+			$temp->appendChild($xmlDoc->createCDATASection(strip_tags($sectTitle['title'])));
 			$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
 			$section->appendChild($temp);
 		}
@@ -361,13 +361,13 @@ foreach($sections as $sect) {
 									$course_root, 0);
 
 		if($filename){
-			$resizedFilename = resizeImage(
+			$resized_filename = resizeImage(
 				$course_root."/".$filename,
 			    $course_root."/images/".$sect->id.'_'.$context->id,
 				$section_width, $section_height, true);
 			unlink($course_root."/".$filename) or die('Unable to delete the file');
 			$temp = $xmlDoc->createElement("image");
-			$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode("/images/".$resizedFilename));
+			$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode("/images/".$resized_filename));
 			$section->appendChild($temp);
 		}
 

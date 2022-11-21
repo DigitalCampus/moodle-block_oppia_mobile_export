@@ -32,6 +32,7 @@ class ActivityProcessor {
 	public $server_id;
 	public $versionid;
 	public $keep_html;
+	public $video_overlay;
 	public $course_shortname;
 
 	public $current_section;
@@ -46,6 +47,8 @@ class ActivityProcessor {
 		if (isset($params['course_id'])) { $this->course_id = $params['course_id']; }
 		if (isset($params['section'])) { $this->section = $params['section']; }	
 		if (isset($params['versionid'])) { $this->versionid = $params['versionid']; }
+		if (isset($params['keep_html'])) { $this->keep_html = $params['keep_html']; }
+		if (isset($params['video_overlay'])) { $this->video_overlay = $params['video_overlay']; }
 		if (isset($params['local_media_files'])) { 
 			$this->local_media_files = $params['local_media_files']; 
 		}
@@ -72,6 +75,7 @@ class ActivityProcessor {
             'shortname' => $this->course_shortname,
 			'summary' => $sect->summary,	
 			'keep_html' => $this->$keep_html,
+			'video_overlay' => $this->video_overlay,
 			'password' => $password,
 		);
 
