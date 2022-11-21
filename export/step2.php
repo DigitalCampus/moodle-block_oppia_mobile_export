@@ -229,6 +229,7 @@ if (empty($quizzes) and empty($feedback_activities)){
     unset($form_data['display_quizzes_section']);
     unset($form_data['feedback_activities']);
     unset($form_data['display_feedback_section']);
+    echo "<h2>".get_string('export_step2_title', PLUGINNAME)."</h2>";
     $step3_url = new moodle_url(PLUGINPATH . 'export/step3.php', $form_data);
     $redirect_message = get_string('export_quizzes_nor_feedback_message', PLUGINNAME);
     redirect($step3_url, $redirect_message);
