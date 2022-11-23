@@ -191,6 +191,10 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
  	);
 
 	$fs = get_file_storage();
+	$file = $fs->get_file($filerecord['contextid'], $filerecord['component'], $filerecord['filearea'], $filerecord['itemid'], $filerecord['filepath'], $filerecord['filename']);
+	if ($file) {
+		$file->delete();
+	}
 	$file = $fs->create_file_from_pathname($filerecord, $outputpath);
 
     $url = moodle_url::make_pluginfile_url(
@@ -204,7 +208,6 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
 	);
 
 	echo '<p class="step">'. get_string('export_export_compressed', PLUGINNAME) . '</p>';
-	deleteDir($dataroot.OPPIA_OUTPUT_DIR.$USER->id."/temp");
 	
 	$form_values = array(
 		'server_connection' =>$server_connection->url,
