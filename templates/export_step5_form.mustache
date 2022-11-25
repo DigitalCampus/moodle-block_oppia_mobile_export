@@ -1,35 +1,43 @@
 <form name="courseconfig" method="post" action="{{wwwroot}}/blocks/oppia_mobile_export/export/step6.php">
 
-    <h4>{{# str }}export_preserve_activity_id_title,block_oppia_mobile_export{{/ str }}</h4>
-    <p>
-        {{# str }}export_preserve_activity_id_desc,block_oppia_mobile_export{{/ str }}
-    </p>
+    {{# has_modified_sections}}
+        <h4>{{# str }}export_preserve_activity_id_title,block_oppia_mobile_export{{/ str }}</h4>
+        <p>
+            {{# str }}export_preserve_activity_id_desc,block_oppia_mobile_export{{/ str }}
+        </p>
 
-    <div class="quizzes-table">
-        {{#sections}}
-            <div class="pure-g titles">
-                <div class="pure-u-lg-17-24 pl-3 pure-u-1 text-left">{{title}}</div>
-                <div class="pure-u-lg-7-24 pure-u-1">{{# str }}export_preserve_activity_id_header,block_oppia_mobile_export{{/ str }}</div>
-            </div>
-            {{#activities}}
-                <div class="pure-g">
-                    <div class="pure-u-lg-17-24 pure-u-1 step text-left pl-3">
-                        <div class="pure-g">
-                            <img class="pure-u-md-1-24 pure-u-1" src={{icon}} />
-                            <div class="pure-u-md-1-24 pure-u-1"></div>
-                            <div class="pure-u-md-20-24 pure-u-1 text-left">{{name}}</div>
+        <div class="quizzes-table">
+            {{#sections}}
+                <div class="pure-g titles">
+                    <div class="pure-u-lg-17-24 pl-3 pure-u-1 text-left">{{title}}</div>
+                    <div class="pure-u-lg-7-24 pure-u-1">{{# str }}export_preserve_activity_id_header,block_oppia_mobile_export{{/ str }}</div>
+                </div>
+                {{#activities}}
+                    <div class="pure-g">
+                        <div class="pure-u-lg-17-24 pure-u-1 step text-left pl-3">
+                            <div class="pure-g">
+                                <img class="pure-u-md-1-24 pure-u-1" src={{icon}} />
+                                <div class="pure-u-md-1-24 pure-u-1"></div>
+                                <div class="pure-u-md-20-24 pure-u-1 text-left">{{name}}</div>
+                            </div>
+                        </div>
+                        <div class="pure-u-lg-7-24 pure-u-1">
+                            <!-- If uncheck, use the real digest value -->
+                            <input type='hidden' name="digest_{{current_digest}}" value="{{current_digest}}" />
+                            <!-- If check, preserve the last published digest -->
+                            <input class="form-checkbox pure-u-1" type="checkbox" name="digest_{{current_digest}}" value="{{last_published_digest}}" />
                         </div>
                     </div>
-                    <div class="pure-u-lg-7-24 pure-u-1">
-                        <!-- If uncheck, use the real digest value -->
-                        <input type='hidden' name="digest_{{current_digest}}" value="{{current_digest}}" />
-                        <!-- If check, preserve the last published digest -->
-                        <input class="form-checkbox pure-u-1" type="checkbox" name="digest_{{current_digest}}" value="{{last_published_digest}}" />
-                    </div>
-                </div>
-            {{/activities}}
-        {{/sections}}
-    </div>
+                {{/activities}}
+            {{/sections}}
+        </div>
+    {{/ has_modified_sections}}
+
+    {{^ has_modified_sections}}
+        <div class="note">
+            <p>{{# str }}export_no_content_changes_message,block_oppia_mobile_export{{/ str }}</p>
+        </div>
+    {{/ has_modified_sections}}
 
     <input type="hidden" name="id" value="{{id}}">
     <input type="hidden" name="sesskey" value="{{sesskey}}">
