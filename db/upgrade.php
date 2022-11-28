@@ -172,6 +172,31 @@ function xmldb_block_oppia_mobile_export_upgrade($oldversion) {
         // Blocks savepoint reached.
         upgrade_plugin_savepoint(true, 2022102700, 'error', 'blocks');
     }
+
+    if ($oldversion < 2022113100){
+
+        // Define table block_oppia_grade_boundary to be created.
+        $table = new xmldb_table(OPPIA_GRADE_BOUNDARY_TABLE);
+
+        // Adding fields to table block_oppia_grade_boundary.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('courseid', XMLDB_TYPE_INTEGER, '18', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('modid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('grade', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('message', XMLDB_TYPE_CHAR, '200', null, null, null, '');
+        $table->add_field('serverid', XMLDB_TYPE_CHAR, '200', null, null, null, '');
+
+        // Adding keys to table block_oppia_grade_boundary.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+
+        // Conditionally launch create table for block_oppia_grade_boundary.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Blocks savepoint reached.
+        upgrade_plugin_savepoint(true, 2022113100, 'error', 'blocks');
+    }
 	
 	return true;
 	

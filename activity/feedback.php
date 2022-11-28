@@ -144,9 +144,11 @@ class MobileActivityFeedback extends MobileActivity {
                 $respstr = substr($q->presentation, 6);
                 $resps = explode('|', $respstr);
                 $j = 1;
+                $max_question_score = 0;
                 foreach($resps as $resp){
                     preg_match('/([0-9]+)####(.*)/', $resp, $matches);
                     $score = is_null($matches[1]) ? "0" : $matches[1];
+                    $max_question_score = max($max_question_score, $score);
                     $respTitle = trim($matches[2]);
                     $respTitle = extractLangs($respTitle, true, !$this->keep_html, true);
                     array_push($responses, array(
@@ -158,6 +160,7 @@ class MobileActivityFeedback extends MobileActivity {
                     ));
                     $j++;
                 }
+                $quizMaxScore += $max_question_score;
             } elseif($q->typ == "numeric"){
                 // numeric
                 $type = "numerical";
@@ -184,7 +187,7 @@ class MobileActivityFeedback extends MobileActivity {
             }
             
             $questionprops = array(
-                "maxscore" => 0,
+                "maxscore" => $max_question_score,
                 "required"  => $required,
                 "label" => $q->label
             );

@@ -1,7 +1,7 @@
 <?php 
 /**
  * Oppia Mobile Export
- * Step 1: Main course export configuration and quiz setup
+ * Step 1: Main course export configuration
  */
 
 require_once(dirname(__FILE__) . '/../../../config.php');
@@ -65,80 +65,6 @@ if(!$server_connection && $server != "default"){
 	die();
 }
 
-
-$quizzes = array();
-$orderno = 1;
-foreach($sections as $sect) {
-	$sectionmods = explode(",", $sect->sequence);
-	$sectTitle = get_section_title($sect);
-	
-	if(count($sectionmods)>0){
-		foreach ($sectionmods as $modnumber) {
-
-			if(!$modnumber){
-				continue;
-			}
-			$mod = $mods[$modnumber];
-			
-			if($mod->modname == 'quiz' && $mod->visible == 1){
-			    $quiz = new MobileActivityQuiz(array(
-			    	'id' => $mod->id,
-					'section' =>  $orderno,
-					'server_id' => $server,
-					'course_id' => $id,
-					'shortname' => $course->shortname,
-					'summary' => $sect->summary,
-					'versionid' => 0
-				));
-				$quiz->preprocess();
-				if ($quiz->get_is_valid() && $quiz->get_no_questions() > 0){
-					array_push($quizzes, array(
-						'section' => $sectTitle['display_title'],
-						'name' => format_string($mod->name),
-						'noquestions' => $quiz->get_no_questions(),
-						'id' => $mod->id,
-					    'password' => $quiz->has_password()
-					));
-				}
-			}
-		}
-		$orderno++;
-	}
-}
-
-for ($qid=0; $qid<count($quizzes); $qid++){
-	$quiz = $quizzes[$qid];
-		
-		$current_random = get_oppiaconfig($quiz['id'],'randomselect', 0);
-		$quiz['random_all'] = $current_random == 0;
-		$quiz['randomselect'] = [];
-		if ($quiz['noquestions']>1){
-			for ($i=0; $i<$quiz['noquestions']; $i++){
-				$quiz['randomselect'][$i] = array ("idx" => $i+1, "selected" => $current_random == $i+1); 
-			}
-		}
-		
-		$showfeedback = get_oppiaconfig($quiz['id'], 'showfeedback', 2);
-		$quiz['feedback_never'] = $showfeedback == 0;
-		$quiz['feedback_always'] = $showfeedback == 1;
-		$quiz['feedback_endonly'] = $showfeedback == 2;
-
-		$current_threshold = get_oppiaconfig($quiz['id'], 'passthreshold', 80);
-		$quiz['passthreshold'] = [];
-		for ($t=0; $t<21; $t++){
-			  $quiz['passthreshold'][$t] = array ("threshold" => $t*5, "selected" => $current_threshold == $t*5);
-		}
-
-		$current_maxattempts = get_oppiaconfig($quiz['id'], 'maxattempts', 'unlimited');
-		$quiz['attempts_unlimited'] = 'unlimited';
-		$quiz['max_attempts'] = [];
-		for ($i=0; $i<MAX_ATTEMPTS; $i++){
-			$quiz['max_attempts'][$i] = array ("num" => $i+1, "selected" => $current_maxattempts == $i+1); 
-		}
-
-	 $quizzes[$qid] = $quiz;
-}
-
 $priority = (int) get_oppiaconfig($id, 'coursepriority', '0', $server);
 $priorities = [];
 for ($i=0; $i<=PRIORITY_LEVELS; $i++){
@@ -168,27 +94,18 @@ $base_settings = array(
 	'sequencing_course'  => $sequencing == 'course',
 );
 
-echo "<form name='courseconfig' method='post' action='".$CFG->wwwroot.PLUGINPATH."export/step2.php'>";
+echo $OUTPUT->render_from_template(
+	PLUGINNAME.'/export_step1_form',
+	array(
+		'id' => $id,
+		'stylesheet' => $stylesheet,
+		'server' => $server,
+		'course_export_status' => $course_status,
+		'wwwroot' => $CFG->wwwroot,
+		'base_settings' => $base_settings
+	)
+);
 
-$a = new stdClass();
-$a->stepno = 1;
-$a->coursename = strip_tags($course->fullname);
-echo "<h2>".get_string('export_title', PLUGINNAME, $a)."</h2>";
-echo "<input type='hidden' name='id' value='".$COURSE->id."'>";
-echo "<input type='hidden' name='sesskey' value='".sesskey()."'>";
-echo "<input type='hidden' name='stylesheet' value='".$stylesheet."'>";
-echo "<input type='hidden' name='server' value='".$server."'>";
-echo "<input type='hidden' name='course_export_status' value='".$course_status."'>";
-
-if (!empty($quizzes)){
-	echo "<p>".get_string('export_contains_quizzes', PLUGINNAME)."</p>";
-	echo $OUTPUT->render_from_template(PLUGINNAME.'/quizzes', $quizzes);
-}
-
-echo $OUTPUT->render_from_template(PLUGINNAME.'/base_settings', $base_settings);
-echo $OUTPUT->render_from_template(PLUGINNAME.'/submit_btn', get_string('continue', PLUGINNAME));
-
-echo "</form>";
 echo $OUTPUT->footer();
 
 ?>

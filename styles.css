@@ -190,3 +190,120 @@ span.export-results{ display: inline-block; }
 @-webkit-keyframes spin {
   to { -webkit-transform: rotate(360deg); }
 }
+
+.wrap-collabsible {
+	margin: 0 0;
+}
+
+.wrap-collabsible > input[type='checkbox'] {
+	display: none;
+}
+
+.lbl-toggle {
+	display: block;
+	font-weight: bold;
+	font-family: monospace;
+	font-size: 1.2rem;
+	text-transform: uppercase;
+	text-align: left;
+	padding: 0.5rem 1rem;
+	color: #000;
+	background: #9ACA3C;
+	cursor: pointer;
+	transition: all 0.25s ease-out;
+}
+
+.lbl-toggle:hover {
+	color: #FFF;
+}
+
+.lbl-toggle::before {
+	content: ' ';
+	display: inline-block;
+	border-top: 5px solid transparent;
+	border-bottom: 5px solid transparent;
+	border-left: 5px solid currentColor;
+	vertical-align: middle;
+	margin-right: .7rem;
+	transform: translateY(-2px);
+	transition: transform .2s ease-out;
+}
+
+.toggle:checked+ .lbl-toggle::before {
+	transform: rotate(90deg) translateX(-3px);
+}
+
+.collapsible-content {
+	max-height: 0px;
+	overflow: hidden;
+	transition: max-height .25s ease-in-out;
+}
+
+.toggle:checked + .lbl-toggle + .collapsible-content {
+	max-height: 100%;
+}
+
+.toggle:checked+.lbl-toggle {
+	border-bottom-right-radius: 0;
+	border-bottom-left-radius: 0;
+}
+
+.collapsible-content .content-inner {
+	background: #fefefe;
+	margin: 0 10px;
+	border: none;
+	border-radius: 4px;
+	box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+}
+
+.collapsible-content p {
+	margin-bottom: 0;
+}
+
+.grade-boundary-row {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 50px;
+	vertical-align: middle;
+}
+
+.grade-selector {
+	display: inline-block !important;
+	padding: 0 !important;
+}
+
+.add-row-btn {
+	position: relative;
+	top: 50%;
+	background-color: #9ACA3C;
+	height:30px;
+	width:30px;
+	border-radius: 4px;
+}
+
+.remove-row-btn {
+	color: red;
+	width: 25px;
+	height: 25px;
+	border: 1px solid red;
+	border-radius: 4px;
+}
+
+.remove-row-btn:before {
+	content: 'X';
+}
+
+.remove-row-btn:hover {
+	background-color: red;
+	color: #FFF;
+}
+
+.note {
+	background-color: #eaf1ea;
+	border-left: solid 6px #9ACA3C;
+	line-height: 22px;
+	overflow: hidden;
+	padding: 12px;
+	margin: 12px 0;
+}

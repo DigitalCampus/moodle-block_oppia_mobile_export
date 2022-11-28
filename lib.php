@@ -641,4 +641,54 @@ function cleanUpExportedFiles($context, $userid) {
 }
 
 
+function add_or_update_grade_boundary($modid, $grade, $message, $servid="default"){
+	global $DB;
+
+	if ($servid !== null){
+		$record = $DB->get_record_select(OPPIA_GRADE_BOUNDARY_TABLE,
+			"modid=$modid and `grade`='$grade' and serverid='$servid'");
+	}
+	else{
+		$record = $DB->get_record(OPPIA_GRADE_BOUNDARY_TABLE, array('modid'=>$modid,'grade'=>$grade));
+	}
+
+	if ($record){
+		$DB->update_record(OPPIA_GRADE_BOUNDARY_TABLE,
+			array('id'=>$record->id,'message'=>$message));
+	} else {
+		$DB->insert_record(OPPIA_GRADE_BOUNDARY_TABLE,
+			array('modid'=>$modid,'grade'=>$grade,'message'=>$message,'serverid'=>$servid));
+	}
+}
+function delete_grade_boundary($modid, $grade, $servid="default"){
+	global $DB;
+	$DB->delete_records(OPPIA_GRADE_BOUNDARY_TABLE,
+		array(
+			'modid' => $modid,
+			'grade' => $grade,
+			'serverid' => $servid
+		)
+	);
+}
+function get_grade_boundaries($modid, $servid="default"){
+	global $DB;
+	$records = $DB->get_records_select(OPPIA_GRADE_BOUNDARY_TABLE,
+		"modid=$modid and serverid='$servid'");
+	if ($records){
+		return $records;
+	} else {
+		//Try if there is a non-server value saved
+		$records = $DB->get_records(OPPIA_GRADE_BOUNDARY_TABLE,
+			array('modid'=>$modid));
+		if ($records){
+			return $records;
+		} else {
+			return null;
+		}
+	}
+}
+
+function sort_grade_boundaries_descending($gb1, $gb2) {
+	return $gb2->grade - $gb1->grade;
+}
 ?>

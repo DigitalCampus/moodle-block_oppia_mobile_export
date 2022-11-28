@@ -1,19 +1,17 @@
 
+<h2>{{# str }}export_step1_title,block_oppia_mobile_export{{/ str }}</h2>
+
 <form name="courseconfig" method="post" action="{{wwwroot}}/blocks/oppia_mobile_export/export/step2.php">
 
-	{{# str }}export_title,block_oppia_mobile_export,{{course}}{{/ str }}	
+    {{# base_settings }}
+	    {{> block_oppia_mobile_export/base_settings }}
+    {{/ base_settings }}
 
-	<input type="hidden" name="id" value="{{id}}">
-	<input type="hidden" name="sesskey" value="{{sesskey}}">
-	<input type="hidden" name="stylesheet' value="{{stylesheet}}">
-	<input type="hidden" name="server' value="{{server}}">
-	<input type="hidden" name="course_export_status" value="{{course_export_status}}">
-
-	{{# quizzes.0}}
-		{{> block_oppia_mobile_export/quizzes }}
-	{{/ quizzes.0}}
-
-	{{> block_oppia_mobile_export/base_settings }}
+    <input type="hidden" name="id" value="{{id}}">
+    <input type="hidden" name="sesskey" value="{{sesskey}}">
+    <input type="hidden" name="stylesheet" value="{{stylesheet}}">
+    <input type="hidden" name="server" value="{{server}}">
+    <input type="hidden" name="course_export_status" value="{{course_export_status}}">
 
 	<p style="margin-left:2em;">
 		<button type="submit" name="submit" class="btn btn-primary" value="{{.}}">

@@ -1,7 +1,7 @@
-<?php 
+<?php
 /**
  * Oppia Mobile Export
- * Step 2: Configure password protection (for sections and feedback activities)
+ * Step 2: Quizzes and feeback setup
  */
 
 require_once(dirname(__FILE__) . '/../../../config.php');
@@ -12,14 +12,12 @@ require_once($CFG->dirroot . '/lib/filestorage/file_storage.php');
 
 require_once($CFG->dirroot . '/question/format.php');
 require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-require_once($CFG->dirroot . '/mod/feedback/lib.php');
 require_once($CFG->dirroot . '/question/format/gift/format.php');
 
 $pluginroot = $CFG->dirroot . PLUGINPATH;
 
 require_once($pluginroot . 'lib.php');
 require_once($pluginroot . 'langfilter.php');
-require_once($pluginroot . 'oppia_api_helper.php');
 require_once($pluginroot . 'activity/activity.class.php');
 require_once($pluginroot . 'activity/page.php');
 require_once($pluginroot . 'activity/quiz.php');
@@ -29,6 +27,8 @@ require_once($pluginroot . 'activity/url.php');
 
 require_once($CFG->libdir.'/componentlib.class.php');
 
+const PRIORITY_LEVELS = 10;
+const MAX_ATTEMPTS = 10;
 // We get all the params from the previous step form
 $id = required_param('id', PARAM_INT);
 $stylesheet = required_param('stylesheet', PARAM_TEXT);
@@ -46,35 +46,6 @@ $section_width = required_param('section_width', PARAM_INT);
 $tags = required_param('coursetags', PARAM_TEXT);
 $tags = cleanTagList($tags);
 
-$course = $DB->get_record('course', array('id'=>$id));
-
-$PAGE->set_url(PLUGINPATH.'export/step2.php', array('id' => $id));
-context_helper::preload_course($id);
-$context = context_course::instance($course->id);
-if (!$context) {
-	print_error('nocontext');
-}
-
-require_login($course);
-
-$CFG->cachejs = false;
-
-$PAGE->requires->jquery();
-$PAGE->set_pagelayout('course');
-$PAGE->set_pagetype('course-view-' . $course->format);
-$PAGE->set_other_editing_capability('moodle/course:manageactivities');
-$PAGE->set_title(get_string('course') . ': ' . $course->fullname);
-$PAGE->set_heading($course->fullname);
-echo $OUTPUT->header();
-
-$PAGE->requires->js(PLUGINPATH.'publish/publish_media.js');
-
-global $MOBILE_LANGS;
-$MOBILE_LANGS = array();
-
-global $MEDIA;
-$MEDIA = array();
-
 // Save new export configurations for this course and server
 add_or_update_oppiaconfig($id, 'coursepriority', $priority, $server);
 add_or_update_oppiaconfig($id, 'coursetags', $tags, $server);
@@ -87,119 +58,183 @@ add_or_update_oppiaconfig($id, 'thumb_width', $thumb_width, $server);
 add_or_update_oppiaconfig($id, 'section_height', $section_height, $server);
 add_or_update_oppiaconfig($id, 'section_width', $section_width, $server);
 
-$PAGE->set_context($context);
+$course = $DB->get_record_select('course', "id=$id");
+
+$PAGE->set_url(PLUGINPATH.'export/step2.php', array('id' => $id));
 context_helper::preload_course($id);
+$context = context_course::instance($course->id);
+if (!$context) {
+    print_error('nocontext');
+}
+
+require_login($course);
+
+$PAGE->set_pagelayout('course');
+$PAGE->set_pagetype('course-view-' . $course->format);
+$PAGE->set_other_editing_capability('moodle/course:manageactivities');
+$PAGE->set_title(get_string('course') . ': ' . $course->fullname);
+$PAGE->set_heading($course->fullname);
+$PAGE->set_context($context);
 $modinfo = get_fast_modinfo($course);
 $sections = $modinfo->get_section_info_all();
 $mods = $modinfo->get_cms();
 
-add_publishing_log($server, $USER->id, $id, "export_start", "Export process starting");
+echo $OUTPUT->header();
 
-$a = new stdClass();
-$a->stepno = 2;
-$a->coursename = strip_tags($course->fullname);
-echo "<h2>".get_string('export_title', PLUGINNAME, $a)."</h2>";
-echo '<div class="oppia_export_section py-3">';
+$grades = array();
+for($i=0; $i<19; $i++) {
+    array_push($grades,
+        array('grade' => 95 - $i * 5)
+    );
+}
 
-$config_sections = array();
-$sect_orderno = 1;
+$quizzes = array();
+$feedback_activities = array();
+$orderno = 1;
 foreach($sections as $sect) {
-	flush_buffers();
-	// We avoid the topic0 as is not a section as the rest
-	if ($sect->section == 0) {
-	    continue;
-	}
+    $sectionmods = explode(",", $sect->sequence);
+    $sectTitle = get_section_title($sect);
 
-	$sectionmods = explode(",", $sect->sequence);
-	$sectTitle = get_section_title($sect);
+    if(count($sectionmods)>0){
+        foreach ($sectionmods as $modnumber) {
 
-	if(count($sectionmods)>0){
-		$activity_count = 0;
-		$activities = [];
+            if(!$modnumber){
+                continue;
+            }
+            $mod = $mods[$modnumber];
 
-		foreach ($sectionmods as $modnumber) {
-			if ($modnumber == "" || $modnumber === false){
-				continue;
-			}
-			$mod = $mods[$modnumber];
-			
-			if($mod->visible != 1){
-				continue;
-			}
-			if ( ($mod->modname == 'page') ||
-					($mod->modname == 'resource') || 
-					($mod->modname == 'url')) {
-				$activity_count++;
-			}
-			else if ($mod->modname == 'feedback'){
-				$activity_count++;
+            if($mod->modname == 'quiz' && $mod->visible == 1){
+                $quiz = new MobileActivityQuiz(array(
+                    'id' => $mod->id,
+                    'section' =>  $orderno,
+                    'server_id' => $server,
+                    'course_id' => $id,
+                    'shortname' => $course->shortname,
+                    'summary' => $sect->summary,
+                    'versionid' => 0
+                ));
+                $quiz->preprocess();
+                if ($quiz->get_is_valid() && $quiz->get_no_questions() > 0){
+                    array_push($quizzes, array(
+                        'section' => $sectTitle['display_title'],
+                        'name' => format_string($mod->name),
+                        'noquestions' => $quiz->get_no_questions(),
+                        'id' => $mod->id,
+                        'password' => $quiz->has_password()
+                    ));
+                }
+            }
 
-				$password = get_oppiaconfig($mod->id, 'password', '', $server);
+            if($mod->modname == 'feedback' && $mod->visible == 1){
+                $feedback = new MobileActivityFeedback(array(
+                    'id' => $mod->id,
+                    'section' =>  $orderno,
+                    'server_id' => $server,
+                    'course_id' => $id,
+                    'shortname' => $course->shortname,
+                    'summary' => $sect->summary,
+                    'versionid' => 0
+                ));
+                $feedback->preprocess();
+                if ($feedback->get_is_valid() && $feedback->get_no_questions() > 0){
+                    $grade_boundaries = array();
+                    $gb = get_grade_boundaries($mod->id, $server);
+                    usort($gb, 'sort_grade_boundaries_descending');
+                    foreach($gb as $grade_boundary){
+                        switch($grade_boundary->grade) {
+                            case 0:   $grade_0_message = $grade_boundary->message; break;
+                            case 100: $grade_100_message = $grade_boundary->message; break;
+                            default: {
+                                $selected_index = array_search(array('grade' => $grade_boundary->grade), $grades);
+                                $grades[$selected_index]['selected'] = True;
+                                array_push($grade_boundaries, array(
+                                    'feedback_id' => $mod->id,
+                                    'id' => $grade_boundary->id,
+                                    'grade' => $grade_boundary->grade,
+                                    'grades' => $grades,
+                                    'message' => $grade_boundary->message
+                                ));
+                                unset($grades[$selected_index]['selected']);
+                                break;
+                            }
+                        }
+                    }
 
-				array_push($activities, array(
-					'modid' => $mod->id,
-					'title' => format_string($mod->name),
-					'password' => $password
-				));
-			} 
-			else if($mod->modname == 'quiz'){
-				$activity_count++;
-				// For the quizzes, we save the configuration entered
-				$random = optional_param('quiz_'.$mod->id.'_randomselect', 0, PARAM_INT);
-				$showfeedback = optional_param('quiz_'.$mod->id.'_showfeedback', 1, PARAM_INT);
-				$passthreshold = optional_param('quiz_'.$mod->id.'_passthreshold', 0, PARAM_INT);
-				$maxattempts = optional_param('quiz_'.$mod->id.'_maxattempts', 'unlimited', PARAM_INT);
-				
-				if($maxattempts == 0){
-				    $maxattempts = 'unlimited';
-				}
-				add_or_update_oppiaconfig($mod->id, 'randomselect', $random);
-				add_or_update_oppiaconfig($mod->id, 'showfeedback', $showfeedback);
-				add_or_update_oppiaconfig($mod->id, 'passthreshold', $passthreshold);
-				add_or_update_oppiaconfig($mod->id, 'maxattempts', $maxattempts);
-			}
-		}
-
-		if ($activity_count > 0){
-
-			$password = get_oppiaconfig($sect->id, 'password', '', $server);
-
-			array_push($config_sections, array(
-				'sect_orderno' => $sect_orderno,
-				'sect_id' => $sect->id,
-				'password' => $password,
-				'activity_count' => $activity_count,
-				'title' => $sectTitle['display_title'],
-				'activities' => $activities
-			));
-			$sect_orderno++;
-		} 
-		else{
-			echo '<div class="step">'.get_string('section_password_invalid', PLUGINNAME, $sectTitle['display_title']).'</div>';
-			
-		}
-		flush_buffers();
-	}
+                    array_push($feedback_activities, array(
+                        'section' => $sectTitle['display_title'],
+                        'name' => format_string($mod->name),
+                        'noquestions' => $feedback->get_no_questions(),
+                        'id' => $mod->id,
+                        'grades' => json_encode($grades),
+                        'gradeBoundaries' => $grade_boundaries,
+                        'grade_100_message' => $grade_100_message,
+                        'grade_0_message' => $grade_0_message,
+                    ));
+                }
+            }
+        }
+        $orderno++;
+    }
 }
-echo '</div>';
 
-if ($sect_orderno <= 1){
-	echo '<h3>'.get_string('error_exporting', PLUGINNAME).'</h3>';
-	echo '<p>'.get_string('error_exporting_no_sections', PLUGINNAME).'</p>';
-	echo $OUTPUT->footer();
-	die();
+for ($qid=0; $qid<count($quizzes); $qid++){
+    $quiz = $quizzes[$qid];
+
+    $current_random = get_oppiaconfig($quiz['id'],'randomselect', 0);
+    $quiz['random_all'] = $current_random == 0;
+    $quiz['randomselect'] = [];
+    if ($quiz['noquestions']>1){
+        for ($i=0; $i<$quiz['noquestions']; $i++){
+            $quiz['randomselect'][$i] = array ("idx" => $i+1, "selected" => $current_random == $i+1);
+        }
+    }
+
+    $showfeedback = get_oppiaconfig($quiz['id'], 'showfeedback', 2);
+    $quiz['feedback_never'] = $showfeedback == 0;
+    $quiz['feedback_always'] = $showfeedback == 1;
+    $quiz['feedback_endonly'] = $showfeedback == 2;
+
+    $current_threshold = get_oppiaconfig($quiz['id'], 'passthreshold', 80);
+    $quiz['passthreshold'] = [];
+    for ($t=0; $t<21; $t++){
+        $quiz['passthreshold'][$t] = array ("threshold" => $t*5, "selected" => $current_threshold == $t*5);
+    }
+
+    $current_maxattempts = get_oppiaconfig($quiz['id'], 'maxattempts', 'unlimited');
+    $quiz['attempts_unlimited'] = 'unlimited';
+    $quiz['max_attempts'] = [];
+    for ($i=0; $i<MAX_ATTEMPTS; $i++){
+        $quiz['max_attempts'][$i] = array ("num" => $i+1, "selected" => $current_maxattempts == $i+1);
+    }
+
+    $quizzes[$qid] = $quiz;
 }
 
-echo $OUTPUT->render_from_template(
-	PLUGINNAME.'/export_step2_form', 
-	array(
-		'id' => $id,
-		'server_id' => $server,
-		'stylesheet' => $stylesheet,
-		'course_export_status' => $course_export_status,
-		'sections' => $config_sections,
-		'wwwroot' => $CFG->wwwroot));
+
+$form_data = array(
+    'id' => $id,
+    'stylesheet' => $stylesheet,
+    'server' => $server,
+    'course_export_status' => $course_export_status,
+    'wwwroot' => $CFG->wwwroot,
+    'display_quizzes_section' => !empty($quizzes),
+    'quizzes' => $quizzes,
+    'display_feedback_section' => !empty($feedback_activities),
+    'feedback_activities' => $feedback_activities,
+);
+
+// If there are no quizzes nor feedback activities, redirect to the following step.
+if (empty($quizzes) and empty($feedback_activities)){
+    unset($form_data['quizzes']);
+    unset($form_data['display_quizzes_section']);
+    unset($form_data['feedback_activities']);
+    unset($form_data['display_feedback_section']);
+    echo "<h2>".get_string('export_step2_title', PLUGINNAME)."</h2>";
+    $step3_url = new moodle_url(PLUGINPATH . 'export/step3.php', $form_data);
+    $redirect_message = get_string('export_quizzes_nor_feedback_message', PLUGINNAME);
+    redirect($step3_url, $redirect_message);
+}
+
+echo $OUTPUT->render_from_template(PLUGINNAME.'/export_step2_form', $form_data);
 
 echo $OUTPUT->footer();
-
-?>

@@ -137,11 +137,19 @@ class ActivityProcessor {
 			return $url;
 		}
 		else if ($mod->modname == 'feedback'){
+            $grade_boundaries = array();
+            foreach(get_grade_boundaries($mod->id, $this->server_id) as $gb) {
+                array_push($grade_boundaries, (object)[
+                    $gb->grade => $gb->message
+                ]);
+            }
+            rsort($grade_boundaries);
 
 			$params['config_array'] = array(
 				'showfeedback'=>false, 
 				'passthreshold'=>0,
-				'maxattempts'=>'unlimited'
+				'maxattempts'=>'unlimited',
+                'grade_boundaries'=> $grade_boundaries,
 			);
 
 		    $feedback = new MobileActivityFeedback($params);

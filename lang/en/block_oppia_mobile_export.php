@@ -96,8 +96,25 @@ $string['error_not_supported'] = 'Activity not supported';
 $string['error_parsing_html'] = 'Error parsing HTML contents';
 $string['error_exporting_no_sections'] = 'The course cannot be exported as there are no sections. This can happen if the section has the summary field empty or if none of the sections contain any supported activities, that is usually because of them not having the summary field completed too. Please check your activities\' summaries and try again.';
 
-$string['export_title'] = 'Export - step {$a->stepno}: {$a->coursename}';
+$string['export_step1_title'] = 'Export - step 1: Course configuration';
+$string['export_step2_title'] = 'Export - step 2: Quizzes and Feedback configuration';
+$string['export_step3_title'] = 'Export - step 3: Configure password protection';
+$string['export_step4_title'] = 'Export - step 4: Activities export and local media management';
+$string['export_step5_title'] = 'Export - step 5: Preserve activity identifiers';
+$string['export_step6_title'] = 'Export - step 6: XML validation and create the course package';
 $string['export_contains_quizzes'] = 'Since this course contains quizzes, please configure the quizzes';
+$string['export_contains_feedback_activities'] = 'Configure the feedback activities in the following section.';
+$string['export_feedback_config_instructions'] = <<<'NOTE'
+<strong>NOTE:</strong></br>
+- Use the + button to add new rows, and the X button to remove the row.</br>
+- Only the rows containing a message will be saved.</br>
+- The order is important. Grades should be set in descending order for each feedback activity.</br>
+- There can not be two or more rows with the same grade value for each feedback activity.</br>
+- You can use the following placeholders that will be replace with the real value in the app:</br>
+&emsp;·  <strong>{{user_score}}</strong> - Final score the learner obtained in the feedback activity.</br>
+&emsp;·  <strong>{{max_score}}</strong> - Maximum score possible for the feedback activity.</br>
+&emsp;·  <strong>{{score_percentage}}</strong> - Percentage value of the score the learner obtained.</br>
+NOTE;
 
 $string['export_quiz_sectionname'] = 'Section Name';
 $string['export_quiz_title'] = 'Quiz Title';
@@ -181,6 +198,7 @@ $string['export_preserve_activity_id_title'] = 'Preserve activity IDs';
 $string['export_preserve_activity_id_desc'] = 'By selecting the \'Preserve ID\' option for an activity, the OppiaMobile server will not create a new version of that activity.';
 $string['export_preserve_activity_id_header'] = 'Preserve ID';
 $string['export_no_content_changes_message'] = 'No content changes detected in previously published activities, moving to the next step. If nothing is happening please use the continue link below.';
+$string['export_quizzes_nor_feedback_message'] = 'This course does not have any quiz or feedback activities, moving to the next step. If nothing is happening please use the continue link below.';
 
 $string['export_renewing_digests_in_section'] = 'Renewing digests in section: {$a}';
 
