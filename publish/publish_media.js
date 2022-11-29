@@ -27,19 +27,12 @@ require(['jquery'], function($) { $(function(){
 	fetchMediaInfo(0);
 
 	function fetchMediaInfo(mediaElem){
-
-		console.log(mediaElem + " - " + filenames.length);
-		console.log(pendingFiles);
-
 		if (mediaElem >= filenames.length){
 			if (pendingFiles){
 				publishForm.show();
 			}
 			else{
-				console.log("AAAAA");
-				console.log(form);
 				var btn = form.find('[type="submit"]');
-				console.log(btn);
 				form.find('[type="submit"]').removeAttr('disabled');
 			}
 			return;
@@ -70,8 +63,6 @@ require(['jquery'], function($) { $(function(){
 
 	function publishMedia(mediaElem, username, password){
 
-		console.log(mediaElem + " - " + pendingCount);
-		console.log(pendingFiles);
 		if (mediaElem >= pendingCount){
 			if (pendingFiles){
 				publishForm.show();
