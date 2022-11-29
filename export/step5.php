@@ -23,7 +23,7 @@ $is_draft = ($course_export_status == 'draft');
 $DEFAULT_LANG = get_oppiaconfig($id,'default_lang', $CFG->block_oppia_mobile_export_default_lang, $server);
 
 $course = $DB->get_record('course', array('id'=>$id));
-$PAGE->set_url(PLUGINPATH.'export/step4.php', array('id' => $id));
+$PAGE->set_url(PLUGINPATH.'export/step5.php', array('id' => $id));
 context_helper::preload_course($id);
 $context = context_course::instance($course->id);
 if (!$context) {

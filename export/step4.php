@@ -57,7 +57,7 @@ if ($is_draft){
     $course->shortname = $course->shortname."-draft";
 }
 
-$PAGE->set_url(PLUGINPATH.'export/step3.php', array('id' => $id));
+$PAGE->set_url(PLUGINPATH.'export/step4.php', array('id' => $id));
 context_helper::preload_course($id);
 $context = context_course::instance($course->id);
 if (!$context) {
