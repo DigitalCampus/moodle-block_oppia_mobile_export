@@ -24,6 +24,16 @@
     {{/ display_feedback_section }}
 
 
+    <!-- Display info message if there are no quizzes or feedback activities in the course. -->
+    {{^ display_quizzes_section }}
+        {{^ display_feedback_section }}
+            <div class="note">
+                <p>{{# str }}export_quizzes_nor_feedback_message,block_oppia_mobile_export{{/ str }}</p>
+            </div>
+        {{/ display_feedback_section }}
+    {{/ display_quizzes_section }}
+
+
     <input type="hidden" name="id" value="{{id}}">
     <input type="hidden" name="sesskey" value="{{sesskey}}">
     <input type="hidden" name="stylesheet" value="{{stylesheet}}">

@@ -144,6 +144,7 @@ $form_values = array_merge(
         'coursetags' => $tags,
         'course_export_status' => $course_export_status,
         'course_root' => $course_root,
+        'has_modified_sections' => count($config_sections) > 0,
         'sections' => $config_sections,
         'wwwroot' => $CFG->wwwroot,
         'resolve' => resolve(),
@@ -159,16 +160,6 @@ foreach($form_values['media_files'] as $media_file){
 
     $form_values[$digest] = $media_url;
     $form_values[$digest.'_length'] = $media_length;
-}
-
-// If there are no activities for preserving the ids, redirect to the following step.
-if (count($config_sections) == 0) {
-    unset($form_values['sections']);
-    unset($form_values['media_files']);
-    unset($form_values['resolve']);
-    $step6_url = new moodle_url(PLUGINPATH . 'export/step6.php', $form_values);
-    $redirect_message = get_string('export_no_content_changes_message', PLUGINNAME);
-    redirect($step6_url, $redirect_message);
 }
 
 echo $OUTPUT->render_from_template(PLUGINNAME.'/export_step5_form', $form_values);
