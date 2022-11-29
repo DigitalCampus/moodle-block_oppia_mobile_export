@@ -136,7 +136,9 @@ foreach($sections as $sect) {
                     'versionid' => 0
                 ));
                 $feedback->preprocess();
-                if ($feedback->get_is_valid() && $feedback->get_no_questions() > 0){
+                if ($feedback->get_is_valid() && $feedback->get_no_rated_questions() > 0){
+                    $grade_0_message = '';
+                    $grade_100_message = '';
                     $grade_boundaries = array();
                     $gb = get_grade_boundaries($mod->id, $server);
                     usort($gb, 'sort_grade_boundaries_descending');
