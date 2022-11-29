@@ -15,6 +15,7 @@ class MobileActivityFeedback extends MobileActivity {
     private $content = "";
     private $is_valid = true; //i.e. doesn't only contain essay or random questions.
     private $no_questions = 0; // total no of valid questions
+    private $no_rated_questions = 0; // total no of questions of type multichoicerated
     private $configArray = array(); // config (quiz props) array
     private $keep_html = false; //Should the HTML of questions and answers be stripped out or not
 
@@ -53,6 +54,9 @@ class MobileActivityFeedback extends MobileActivity {
         foreach($feedbackitems as $fi){
             if(in_array($fi->typ,$this->supported_types)){
                 $this->no_questions++;
+                if($fi->typ == 'multichoicerated'){
+                    $this->no_rated_questions++;
+                }
             } else {
                 $count_omitted++;
             }
@@ -263,6 +267,10 @@ class MobileActivityFeedback extends MobileActivity {
 
     function get_no_questions(){
         return $this->no_questions;
+    }
+
+    function get_no_rated_questions() {
+        return $this->no_rated_questions;
     }
 }
 
