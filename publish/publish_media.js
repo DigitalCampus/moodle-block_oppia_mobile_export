@@ -3,7 +3,7 @@ require(['jquery'], function($) { $(function(){
 	var filenames = $('.media_files .media_file');
 	var publishURL = $('.media_files').attr('data-publish');
 	var server = $('.media_files').attr('data-server');
-	var form = $('#step3_form');
+	var form = $('#step_form');
 
 	var pendingFiles = false;
 	var pendingCount;
@@ -28,11 +28,18 @@ require(['jquery'], function($) { $(function(){
 
 	function fetchMediaInfo(mediaElem){
 
+		console.log(mediaElem + " - " + filenames.length);
+		console.log(pendingFiles);
+
 		if (mediaElem >= filenames.length){
 			if (pendingFiles){
 				publishForm.show();
 			}
 			else{
+				console.log("AAAAA");
+				console.log(form);
+				var btn = form.find('[type="submit"]');
+				console.log(btn);
 				form.find('[type="submit"]').removeAttr('disabled');
 			}
 			return;
@@ -63,6 +70,8 @@ require(['jquery'], function($) { $(function(){
 
 	function publishMedia(mediaElem, username, password){
 
+		console.log(mediaElem + " - " + pendingCount);
+		console.log(pendingFiles);
 		if (mediaElem >= pendingCount){
 			if (pendingFiles){
 				publishForm.show();
