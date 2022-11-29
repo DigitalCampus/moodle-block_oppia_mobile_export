@@ -112,6 +112,7 @@ class MobileActivityFeedback extends MobileActivity {
             $required = $q->required == 1;
             $questionTitle = extractLangs(cleanHTMLEntities($title, true), true, !$this->keep_html);
             $type = null;
+            $max_question_score = 0;
             
             // multichoice multi
             if($q->typ == "multichoice" 
@@ -148,7 +149,6 @@ class MobileActivityFeedback extends MobileActivity {
                 $respstr = substr($q->presentation, 6);
                 $resps = explode('|', $respstr);
                 $j = 1;
-                $max_question_score = 0;
                 foreach($resps as $resp){
                     preg_match('/([0-9]+)####(.*)/', $resp, $matches);
                     $score = is_null($matches[1]) ? "0" : $matches[1];

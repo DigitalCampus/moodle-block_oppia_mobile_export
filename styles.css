@@ -202,9 +202,7 @@ span.export-results{ display: inline-block; }
 .lbl-toggle {
 	display: block;
 	font-weight: bold;
-	font-family: monospace;
 	font-size: 1.2rem;
-	text-transform: uppercase;
 	text-align: left;
 	padding: 0.5rem 1rem;
 	color: #000;
