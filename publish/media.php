@@ -20,6 +20,7 @@ $temp_media = $dataroot.OPPIA_OUTPUT_DIR.$USER->id."/temp_media/";
 mkdir($temp_media, 0777, true);
 
 $server = required_param('server', PARAM_TEXT);
+
 $server_connection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid'=>$USER->id,'id'=>$server));
 if(!$server_connection && $server != "default"){
 	echo "<p>".get_string('server_not_owner', PLUGINNAME)."</p>";
@@ -103,8 +104,17 @@ function publish_media($server, $moodlefile, $username, $password, $temp_media){
 	//We remove the temporary copied file
 	unlink($temppath);
 
-	return process_response($http_status, $response);
-
+	if ($http_status == 400){
+		// if the server returned a 400 error, it is probably because the file already exists
+		// so we try to fetch the info if it was already published in the server
+		$digest = required_param('digest', PARAM_TEXT);
+		return get_media_info($server, $digest);
+	}
+	else{
+		return process_response($http_status, $response);
+	}
+	
+	
 }
 
 function process_response($http_status, $response){
