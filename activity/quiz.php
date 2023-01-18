@@ -132,7 +132,8 @@ class MobileActivityQuiz extends MobileActivity {
 			$questionMaxScore = intval($q->maxmark);
 			$quizMaxScore += $questionMaxScore;
 			$questionprops = array(
-				"moodle_question_id" => $q->id,
+				"moodle_question_id" => $q->questionbankentryid,
+                "moodle_question_latest_version_id" => $q->id,
 				"maxscore" => $questionMaxScore);
 
 			// skip any essay questions
