@@ -683,7 +683,7 @@ function get_grade_boundaries($modid, $servid="default"){
 		if ($records){
 			return $records;
 		} else {
-			return null;
+			return array();
 		}
 	}
 }

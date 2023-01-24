@@ -117,12 +117,12 @@ foreach($sections as $sect) {
 					'password' => $password
 				));
 
-				$grades = optional_param_array('grade_'.$mod->id, 0, PARAM_INT);
-				$messages = optional_param_array('message_'.$mod->id, 0, PARAM_TEXT);
+				$grades = optional_param_array('grade_'.$mod->id, array(), PARAM_INT);
+				$messages = optional_param_array('message_'.$mod->id, array(), PARAM_TEXT);
 
 				for($i = 0; $i < 21; $i++){
 					$value = $i * 5;
-					if(in_array($value, $grades,false)) {
+					if(in_array($value, $grades, false)) {
 						$index = array_search($value, $grades);
 						$message = $messages[$index];
 						if($message) {
