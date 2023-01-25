@@ -9,8 +9,8 @@ Feature: Adding oppia_mobile_export_block to course
       | fullname | shortname  | format |
       | Course 1 |   course_1 | topics |
     And the following "activities" exist:
-      | activity |   name   |        intro        |  course  | idnumber | section |
-      |   page   |  Page 1  |  Page 1 description | course_1 |   page1  |    1    |
+      |   id     | activity |   name   |        intro        |  course  | idnumber | section |
+      |    1     |   page   |  Page 1  |  Page 1 description | course_1 |   1      |    1    |
     And the following "course enrolments" exist:
       |  user   |   course    |       role      |
       |  user1  |  course_1   |  editingteacher |
@@ -30,5 +30,7 @@ Feature: Adding oppia_mobile_export_block to course
     Then I should see "Export - step 3:"
     And I click on "Continue" "button"
     Then I should see "Export - step 4:"
-    And I wait to be redirected
+    And I click on "Continue" "button"
     Then I should see "Export - step 5:"
+    And I click on "Continue" "button"
+    Then I should see "Export - step 6:"
