@@ -30,5 +30,7 @@ Feature: Adding oppia_mobile_export_block to course
     Then I should see "Export - step 3:"
     And I click on "Continue" "button"
     Then I should see "Export - step 4:"
-    And I wait to be redirected
+    And I click on "Continue" "button"
     Then I should see "Export - step 5:"
+    And I click on "Continue" "button"
+    Then I should see "Export - step 6:"
