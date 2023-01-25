@@ -74,10 +74,11 @@ class ActivityProcessor {
             'courseversion' => $this->versionid,
             'shortname' => $this->course_shortname,
 			'summary' => $sect->summary,	
-			'keep_html' => $this->$keep_html,
+			'keep_html' => $this->keep_html,
 			'video_overlay' => $this->video_overlay,
 			'password' => $password,
 		);
+
 
 		if ($mod->modname == 'page'){
 		    $page = new MobileActivityPage($params);
