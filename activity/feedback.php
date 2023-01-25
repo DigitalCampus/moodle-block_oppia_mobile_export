@@ -193,7 +193,8 @@ class MobileActivityFeedback extends MobileActivity {
             $questionprops = array(
                 "maxscore" => $max_question_score,
                 "required"  => $required,
-                "label" => $q->label
+                "label" => $q->label,
+                "moodle_question_id" => $q->id,
             );
             
             // add any dependency props (skip logic)
@@ -235,6 +236,7 @@ class MobileActivityFeedback extends MobileActivity {
         
         $this->generate_md5($feedback, $quizJson);
         $quizJson['props']['digest'] = $this->md5;
+        $quizJson['props']['moodle_quiz_id'] = $this->id;
 
         // check for password protection
         // done after md5 is created so password can be changed without it being a new quiz
