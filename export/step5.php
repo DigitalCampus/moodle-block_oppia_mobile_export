@@ -79,6 +79,10 @@ foreach($sections as $sect) {
     $sectionmods = explode(",", $sect->sequence);
     foreach ($sectionmods as $modnumber) {
 
+        if (!array_key_exists($modnumber, $mods)){
+            continue;
+        }
+
         $mod = $mods[$modnumber];
         if ($mod != null) {
             $activity = $processor->process_activity($mod, $sect, $act_orderno);
