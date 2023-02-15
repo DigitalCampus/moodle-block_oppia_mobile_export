@@ -350,6 +350,10 @@ foreach($sections as $sect) {
 			// We store the section's password for future exports 
 			add_or_update_oppiaconfig($sect->id, 'password', $sect_password, $server);
 		}
+		else{
+			// If the password was empty, we remove possible previous ones
+			remove_oppiaconfig_if_exists($sect->id, 'password', $server);
+		}
 
 		// get section image (from summary)
 		$filename = extractImageFile($sect->summary,
@@ -394,6 +398,10 @@ foreach($sections as $sect) {
 					echo '<span class="export-results info">'. get_string('activity_password_added', PLUGINNAME) .'</span>'.OPPIA_HTML_BR;
 					if ($password !== ''){
 						add_or_update_oppiaconfig($mod->id, 'password', $password, $server);
+					}
+					else{
+						// If the password was empty, we remove possible previous ones
+						remove_oppiaconfig_if_exists($mod->id, 'password', $server);
 					}
 				}
 			}

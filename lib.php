@@ -65,21 +65,33 @@ function add_or_update_oppiaconfig($modid, $name, $value, $servid="default"){
 	}
 }
 
-function get_oppiaconfig($modid, $name, $default, $servid="default"){
+function remove_oppiaconfig_if_exists($modid, $name, $servid="default"){
+	global $DB;
+
+	if ($servid !== null){
+		$record = $DB->delete_records_select(OPPIA_CONFIG_TABLE,
+	    "modid=$modid and `name`='$name' and serverid='$servid'");	
+	}
+	else{
+		$record = $DB->delete_records(OPPIA_CONFIG_TABLE, array('modid'=>$modid,'name'=>$name));
+	}
+}
+
+function get_oppiaconfig($modid, $name, $default, $servid="default", $use_non_server_value=true){
 	global $DB;
 	$record = $DB->get_record_select(OPPIA_CONFIG_TABLE, 
 		"modid=$modid and `name`='$name' and serverid='$servid'");
 	if ($record){
 		return $record->value;
 	} else {
-		//Try if there is a non-server value saved
-		$record = $DB->get_record(OPPIA_CONFIG_TABLE, 
-			array('modid'=>$modid,'name'=>$name));
-		if ($record){
-			return $record->value;
-		} else {
-			return $default;	
+		if ($use_non_server_value){
+			//Try if there is a non-server value saved
+			$record = $DB->get_record(OPPIA_CONFIG_TABLE, array('modid'=>$modid,'name'=>$name));
+			if ($record){
+				return $record->value;
+			} 
 		}
+		return $default;
 	}
 }
 
