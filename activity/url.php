@@ -45,6 +45,9 @@ class MobileActivityUrl extends MobileActivity {
 		$this->addThumbnailXMLNode($xmlDoc, $act);
 		$node->appendChild($act);
 	}
-	
+
+	function get_no_questions() {
+		return null;
+	}
 }
 ?>

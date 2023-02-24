@@ -8,8 +8,7 @@ class MobileActivityQuiz extends MobileActivity {
 	private $shortname;
 	private $content = "";
 	private $MATCHING_SEPERATOR = "|";
-	private $is_valid = true; //i.e. doesn't only contain essay or random questions.
-	private $no_questions = 0; // total no of valid questions
+	private $is_valid = true; //i.e. doesn't only contain essay or random questions
 	private $configArray = array(); // config (quiz props) array
 	private $quiz_media = array();
 	private $keep_html = false; //Should the HTML of questions and answers be stripped out or not

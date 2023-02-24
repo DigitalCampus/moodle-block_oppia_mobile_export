@@ -84,6 +84,9 @@ class MobileActivityResource extends MobileActivity {
 	        ~x',
         	'_', $filename);
 	}
-	
+
+    function get_no_questions() {
+        return null;
+    }
 }
 ?>

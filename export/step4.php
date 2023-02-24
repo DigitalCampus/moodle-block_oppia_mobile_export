@@ -312,6 +312,7 @@ $processor = new ActivityProcessor(array(
 ));
 
 $sect_orderno = 1;
+$activity_summaries = array();
 foreach($sections as $sect) {
 	flush_buffers();
 	// We avoid the topic0 as is not a section as the rest
@@ -377,7 +378,6 @@ foreach($sections as $sect) {
 		$act_orderno = 1;
 		$activities = $xmlDoc->createElement("activities");
 		$processor->set_current_section($sect_orderno);
-
 		foreach ($sectionmods as $modnumber) {
 			
 			if ($modnumber == "" || $modnumber === false){
@@ -392,6 +392,10 @@ foreach($sections as $sect) {
 			echo '<div class="step"><strong>' . format_string($mod->name) . '</strong>'.OPPIA_HTML_BR;
 			$password =  optional_param('mod_'.$mod->id.'_password', '', PARAM_TEXT);
 			$activity = $processor->process_activity($mod, $sect, $act_orderno, $activities, $xmlDoc, $password);
+			$activity_summaries[$activity->id] = array(
+				'digest'=>$activity->md5,
+				'no_questions'=>$activity->get_no_questions(),
+			);
 			if ($activity != null){
 				$act_orderno++;
 				if ($activity->has_password()){
@@ -483,6 +487,7 @@ echo $OUTPUT->render_from_template(
 		'coursetags' => $tags,
 		'course_export_status' => $course_export_status,
 		'course_root' => $course_root,
+		'activity_summaries' => json_encode($activity_summaries),
 		'wwwroot' => $CFG->wwwroot));
 
 echo $OUTPUT->footer();

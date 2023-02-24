@@ -366,4 +366,8 @@ class MobileActivityPage extends MobileActivity {
 	private function makePageFilename($sectionno, $name, $lang){
 		return sprintf('%02d',$sectionno)."_".strtolower(preg_replace("/[^A-Za-z0-9]/i", "_", $name))."_".strtolower($lang).".html";
 	}
+
+    function get_no_questions(){
+        return null;
+    }
 }
