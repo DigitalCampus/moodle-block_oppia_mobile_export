@@ -139,23 +139,23 @@ add_publishing_log($server_connection->url, $USER->id, $id, "api_file_posted", $
 switch ($http_status){
 	case "405":
 		$msgtext = get_string('publish_message_405', PLUGINNAME);
-		show_and_log_message($msgtext, false, "api_publish_invalid_request", false);
+		show_and_log_message($server_connection, $id, $msgtext, false, "api_publish_invalid_request", false);
 		break;
 	case "400":
 		$msgtext = get_string('publish_message_400', PLUGINNAME);
-		show_and_log_message($msgtext, false, "api_publish_bad_request", false);
+		show_and_log_message($server_connection, $id, $msgtext, false, "api_publish_bad_request", false);
 		break;
 	case "401":
 		$msgtext = get_string('publish_message_401', PLUGINNAME);
-		show_and_log_message($msgtext, false, "api_publish_unauthorised", false);
+		show_and_log_message($server_connection, $id, $msgtext, false, "api_publish_unauthorised", false);
 		break;
 	case "500":
 		$msgtext = get_string('publish_message_500', PLUGINNAME);
-		show_and_log_message($msgtext, false, "api_publish_server_error", false);
+		show_and_log_message($server_connection, $id, $msgtext, false, "api_publish_server_error", false);
 		break;
 	case "201":
 		$msgtext = get_string('publish_message_201', PLUGINNAME);
-		show_and_log_message($msgtext, false, "api_publish_success", false);
+		show_and_log_message($server_connection, $id, $msgtext, false, "api_publish_success", false);
 		populate_digests_for_course($course, $course->id, $server, json_decode($digests_to_preserve, true), false);
 		deleteDir($dataroot.OPPIA_OUTPUT_DIR.$USER->id."/temp");
 		break;
@@ -170,18 +170,18 @@ if (is_null($json_response)){
 else{
 
 	if (array_key_exists('message', $json_response)){
-		show_and_log_message($json_response['message'], false, "api_publish_response", false);
+		show_and_log_message($server_connection, $id, $json_response['message'], false, "api_publish_response", false);
 	}
 	if (array_key_exists('messages', $json_response)){
 		$messages = $json_response['messages'];
 		foreach($messages as $msg){
-			show_and_log_message($msg['message'], $msg['tags'], "api_publish_bad_request", true);
+			show_and_log_message($server_connection, $id, $msg['message'], $msg['tags'], "api_publish_bad_request", true);
 		}
 	}
 	if (array_key_exists('errors', $json_response)){
 		$errors = $json_response['errors'];
 		foreach($errors as $err){
-			show_and_log_message($err, 'warning', "api_publish_response_message", true);
+			show_and_log_message($server_connection, $id, $err, 'warning', "api_publish_response_message", true);
 		}
 	}
 	
@@ -195,10 +195,10 @@ echo $OUTPUT->footer();
 
 
 // Function to show on screen the message and save it in the publishing log
-function show_and_log_message($message, $tags, $log_action, $show_dialog=false){
+function show_and_log_message($server_connection, $course_id, $message, $tags, $log_action, $show_dialog=false){
     global $USER;
 	echo '<div class="' . ($show_dialog ? 'export-results' : '') . ' ' .$tags.'">'.$message.'</div>';
-	add_publishing_log($server_connection->url, $USER->id, $id, $log_action, ($tags ? $tags.':' : '').$message);
+	add_publishing_log($server_connection->url, $USER->id, $course_id, $log_action, ($tags ? $tags.':' : '').$message);
 }
 
 ?>

@@ -18,7 +18,7 @@ const SPACES_REGEX = '([[:space:]]|\<br\/?[[:space:]]*\>|\<\/?p\>)*';
 // Captures the old media embed method code ( [[media object="..."]])
 const EMBED_MEDIA_REGEX = '((\[\['.SPACES_REGEX . 'media'.SPACES_REGEX.'object=[\"|\'](?P<mediaobject>[\{\}\'\"\:a-zA-Z0-9\._\-\/,[:space:]]*)([[:space:]]|\<br\/?[[:space:]]*\>)*[\"|\']'.SPACES_REGEX.'\]\]))';
 // Captures the filename of images inside old media embed method code ( [[media object="..."]])
-const EMBED_MEDIA_IMAGE_REGEX = '(\]\]'.SPACES_REGEX.'\<img[[:space:]]src=[\"|\\\']images/(?P<filenames>[\w\W_-.]*?)[\"|\\\'])';
+const EMBED_MEDIA_IMAGE_REGEX = '(\]\]'.SPACES_REGEX.'\<img[[:space:]]src=[\"|\\\']images/(?P<filenames>[\w\W_\-.]*?)[\"|\\\'])';
 const COURSE_EXPORT_FILEAREA = 'course_export';
 
 function deleteDir($dirPath) {
