@@ -40,7 +40,7 @@ function xmldb_block_oppia_mobile_export_upgrade($oldversion) {
 		}
 	
 		// Blocks savepoint reached.
-		upgrade_plugin_savepoint(true, 2014032100, 'error', 'blocks');
+		upgrade_plugin_savepoint(true, 2014032100, 'block', 'oppia_mobile_export');
 	}
 	
 	if ($oldversion < 2015021802) {
@@ -53,7 +53,7 @@ function xmldb_block_oppia_mobile_export_upgrade($oldversion) {
 		$dbman->change_field_type($table, $field);
 	
 		// Blocks savepoint reached.
-		upgrade_plugin_savepoint(true, 2015021802, 'error', 'blocks');
+		upgrade_plugin_savepoint(true, 2015021802, 'block', 'oppia_mobile_export');
 	}
 
 	if ($oldversion < 2016021500) {
@@ -66,7 +66,7 @@ function xmldb_block_oppia_mobile_export_upgrade($oldversion) {
 		}
 
 		// Blocks savepoint reached.
-		upgrade_plugin_savepoint(true, 2016021500, 'error', 'blocks');
+		upgrade_plugin_savepoint(true, 2016021500, 'block', 'oppia_mobile_export');
 	}
 	if ($oldversion < 2016041301){
 
@@ -78,7 +78,7 @@ function xmldb_block_oppia_mobile_export_upgrade($oldversion) {
 		$dbman->change_field_type($table, $field);
 	
 		// Blocks savepoint reached.
-		upgrade_plugin_savepoint(true, 2016041301, 'error', 'blocks');
+		upgrade_plugin_savepoint(true, 2016041301, 'block', 'oppia_mobile_export');
 	}
 	
 	if ($oldversion < 2019102702) {
@@ -104,7 +104,7 @@ function xmldb_block_oppia_mobile_export_upgrade($oldversion) {
 	    }
 	    
 	    // Blocks savepoint reached.
-	    upgrade_plugin_savepoint(true, 2019102702, 'error', 'blocks');
+	    upgrade_plugin_savepoint(true, 2019102702, 'block', 'oppia_mobile_export');
 	}
 	
 	if ($oldversion < 2020082701) {
@@ -122,7 +122,7 @@ function xmldb_block_oppia_mobile_export_upgrade($oldversion) {
 	    }
 	    
 	    // Blocks savepoint reached.
-	    upgrade_plugin_savepoint(true, 2020082701, 'error', 'blocks');
+	    upgrade_plugin_savepoint(true, 2020082701, 'block', 'oppia_mobile_export');
 	}
 
 	if ($oldversion < 2022091501){
@@ -149,7 +149,7 @@ function xmldb_block_oppia_mobile_export_upgrade($oldversion) {
 		}
 
 		// Blocks savepoint reached.
-		upgrade_plugin_savepoint(true, 2022091501, 'error', 'blocks');
+		upgrade_plugin_savepoint(true, 2022091501, 'block', 'oppia_mobile_export');
 	}
 
     if ($oldversion < 2022102700){
@@ -170,7 +170,7 @@ function xmldb_block_oppia_mobile_export_upgrade($oldversion) {
         }
 
         // Blocks savepoint reached.
-        upgrade_plugin_savepoint(true, 2022102700, 'error', 'blocks');
+        upgrade_plugin_savepoint(true, 2022102700, 'block', 'oppia_mobile_export');
     }
 
     if ($oldversion < 2022113100){
@@ -195,9 +195,23 @@ function xmldb_block_oppia_mobile_export_upgrade($oldversion) {
         }
 
         // Blocks savepoint reached.
-        upgrade_plugin_savepoint(true, 2022113100, 'error', 'blocks');
+        upgrade_plugin_savepoint(true, 2022113100, 'block', 'oppia_mobile_export');
     }
-	
-	return true;
+
+    if ($oldversion < 2023022801){
+
+        $table = new xmldb_table(OPPIA_GRADE_BOUNDARY_TABLE);
+        $field = new xmldb_field('message');
+        if ($dbman->field_exists($table, $field)){
+            $field->set_attributes(XMLDB_TYPE_CHAR, '1000', null, null, null, '',);
+            $dbman->change_field_precision($table, $field);
+        }
+
+        // Blocks savepoint reached.
+        upgrade_plugin_savepoint(true, 2023022801, 'block', 'oppia_mobile_export');
+    }
+
+
+    return true;
 	
 }
