@@ -264,6 +264,7 @@ span.export-results{ display: inline-block; }
 	align-items: center;
 	height: 50px;
 	vertical-align: middle;
+	padding: 0;
 }
 
 .grade-selector {
@@ -272,28 +273,29 @@ span.export-results{ display: inline-block; }
 }
 
 .add-row-btn {
-	position: relative;
-	top: 50%;
 	background-color: #9ACA3C;
-	height:30px;
-	width:30px;
+	border: 0;
+	width: 2rem;
+	height: 2rem;
+	font-weight: bold;
+	font-size: 1.5em;
+	color: white;
 	border-radius: 4px;
+	margin: 2px;
 }
 
 .remove-row-btn {
-	color: red;
-	width: 25px;
-	height: 25px;
-	border: 1px solid red;
+	color: #dd2222;
+	width: 2rem;
+	height: 2rem;
+	border: 1px solid #dd2222;
+	font-size: 1.5em;
 	border-radius: 4px;
-}
-
-.remove-row-btn:before {
-	content: 'X';
+	margin: 2px;
 }
 
 .remove-row-btn:hover {
-	background-color: red;
+	background-color: #dd2222;
 	color: #FFF;
 }
 
