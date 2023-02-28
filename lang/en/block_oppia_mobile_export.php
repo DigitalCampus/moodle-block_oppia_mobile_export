@@ -110,10 +110,12 @@ $string['export_feedback_config_instructions'] = <<<'NOTE'
 - Only the rows containing a message will be saved.</br>
 - The order is important. Grades should be set in descending order for each feedback activity.</br>
 - There can not be two or more rows with the same grade value for each feedback activity.</br>
-- You can use the following placeholders that will be replace with the real value in the app:</br>
+- You can use the following placeholders that will be replaced with the real value in the app:</br>
 &emsp;·  <strong>{{user_score}}</strong> - Final score the learner obtained in the feedback activity.</br>
 &emsp;·  <strong>{{max_score}}</strong> - Maximum score possible for the feedback activity.</br>
 &emsp;·  <strong>{{score_percentage}}</strong> - Percentage value of the score the learner obtained.</br>
+- For multilingual messages use one line for each language and use the following format:</br>
+&emsp;en=Thank you for your feedback!
 NOTE;
 
 $string['export_quiz_sectionname'] = 'Section Name';
