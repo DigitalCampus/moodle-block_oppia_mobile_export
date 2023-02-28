@@ -9,23 +9,24 @@
         <div class="quizzes-table">
             {{#sections}}
                 <div class="pure-g titles">
-                    <div class="pure-u-lg-17-24 pl-3 pure-u-1 text-left">{{title}}</div>
-                    <div class="pure-u-lg-7-24 pure-u-1">{{# str }}export_preserve_activity_id_header,block_oppia_mobile_export{{/ str }}</div>
+                    <div class="pure-u-17-24 pl-3 text-left">{{title}}</div>
+                    <div class="pure-u-7-24">{{# str }}export_preserve_activity_id_header,block_oppia_mobile_export{{/ str }}</div>
                 </div>
                 {{#activities}}
                     <div class="pure-g">
-                        <div class="pure-u-lg-17-24 pure-u-1 step text-left pl-3">
+                        <div class="pure-u-17-24 step text-left pl-3">
                             <div class="pure-g">
-                                <img class="pure-u-md-1-24 pure-u-1" src={{icon}} />
-                                <div class="pure-u-md-1-24 pure-u-1"></div>
-                                <div class="pure-u-md-20-24 pure-u-1 text-left">{{name}}</div>
+                                <img class="pure-u-1-24" src={{icon}} />
+                                <div class="pure-u-24"></div>
+                                <div class="pure-u-20-24 text-left">{{name}}</div>
                             </div>
                         </div>
-                        <div class="pure-u-lg-7-24 pure-u-1">
+                        <div class="pure-u-7-24">
                             <!-- If uncheck, use the real digest value -->
                             <input type='hidden' name="digest_{{current_digest}}" value="{{current_digest}}" />
+                            <input type='hidden' name="digest_{{last_published_digest}}" value="{{current_digest}}" />
                             <!-- If check, preserve the last published digest -->
-                            <input class="form-checkbox pure-u-1" type="checkbox" name="digest_{{current_digest}}" value="{{last_published_digest}}" />
+                            <input class="form-checkbox" type="checkbox" name="digest_{{current_digest}}" value="{{last_published_digest}}" />
                         </div>
                     </div>
                 {{/activities}}

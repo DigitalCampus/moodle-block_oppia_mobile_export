@@ -9,6 +9,7 @@ abstract class MobileActivity {
 	public $section;
 	public $md5;
 	public $password;
+    protected $no_questions = 0; // total no of valid questions
 	
 	public $thumbnail_image = null;
 	public $component_name;
@@ -122,5 +123,7 @@ abstract class MobileActivity {
 			$activity_node->appendChild($temp);
 		}
 	}
+
+    abstract function get_no_questions();
 }
 

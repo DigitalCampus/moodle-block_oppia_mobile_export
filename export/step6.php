@@ -113,14 +113,13 @@ $digests_to_preserve = array();
 foreach ($xml->getElementsByTagName('activity') as $activity) {
 	$digest = $activity->getAttribute('digest');
 	// Get digest from previous step if the 'Preserve ID' option was selected
-	$preserve_digest = optional_param('digest_'.$digest, '', PARAM_TEXT);
-	if ($preserve_digest != '') {
-		$digests_to_preserve[$digest] = $preserve_digest;
-		$activity->setAttribute('digest', $preserve_digest);
-		foreach ($activity->getElementsByTagName('content') as $content) {
-			$content->firstChild->nodeValue = str_replace($digest, $preserve_digest, $content->nodeValue);
-		}
+	$preserve_digest = optional_param('digest_'.$digest, $digest, PARAM_TEXT);
+	$digests_to_preserve[$digest] = $preserve_digest;
+	$activity->setAttribute('digest', $preserve_digest);
+	foreach ($activity->getElementsByTagName('content') as $content) {
+		$content->firstChild->nodeValue = str_replace($digest, $preserve_digest, $content->nodeValue);
 	}
+
 	if (isset($activities[$digest])){
 		foreach ($activity->childNodes as $node){
 	    	if ($node->nodeName == "title"){

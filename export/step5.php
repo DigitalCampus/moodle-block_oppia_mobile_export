@@ -21,6 +21,7 @@ $course_export_status = required_param('course_export_status', PARAM_TEXT);
 $course_root = required_param('course_root', PARAM_TEXT);
 $is_draft = ($course_export_status == 'draft');
 $DEFAULT_LANG = get_oppiaconfig($id,'default_lang', $CFG->block_oppia_mobile_export_default_lang, $server);
+$activity_summaries = json_decode(required_param('activity_summaries', PARAM_TEXT), true);
 
 $course = $DB->get_record('course', array('id'=>$id));
 $PAGE->set_url(PLUGINPATH.'export/step5.php', array('id' => $id));
@@ -85,10 +86,6 @@ foreach($sections as $sect) {
 
         $mod = $mods[$modnumber];
         if ($mod != null) {
-            $activity = $processor->process_activity($mod, $sect, $act_orderno);
-            if ($activity != null){
-                $act_orderno++;
-            }
             $last_published_digest_entry = $DB->get_record(OPPIA_DIGEST_TABLE,
                 array(
                     'courseid' => $course->id,
@@ -99,28 +96,31 @@ foreach($sections as $sect) {
             );
 
             if($last_published_digest_entry) {
-                $moodle_activity_md5 = $last_published_digest_entry->moodleactivitymd5;
-                $current_digest = $activity->md5;
+                $activity_summary = $activity_summaries[$mod->id];
+                if ($activity_summary != null) {
+                    $moodle_activity_md5 = $last_published_digest_entry->moodleactivitymd5;
+                    $current_digest = $activity_summary['digest'];
 
-                if (strcmp($moodle_activity_md5, $current_digest) !== 0) { // The activity was modified
+                    if (strcmp($moodle_activity_md5, $current_digest) !== 0) { // The activity was modified
 
-                    // For 'quiz' and 'feedback' activities, don't show option to preserve digest if the number of questions has changed
-                    if (($mod->modname == 'quiz' or $mod->modname == 'feedback') and
-                        $last_published_digest_entry->nquestions != $activity->get_no_questions()) {
-                       continue;
+                        // For 'quiz' and 'feedback' activities, don't show option to preserve digest if the number of questions has changed
+                        if (($mod->modname == 'quiz' or $mod->modname == 'feedback') and
+                            $last_published_digest_entry->nquestions != $activity_summary['no_questions']) {
+                            continue;
+                        }
+
+                        $modified_activities_count++;
+                        array_push($modified_activities, array(
+                            'name' => format_string($mod->name),
+                            'act_id' => $mod->id,
+                            'current_digest' => $current_digest,
+                            'last_published_digest' => $last_published_digest_entry->oppiaserverdigest,
+                            'icon' => $mod->get_icon_url()->out(),
+                        ));
+                    } else { // The activity wasn't modified
+                        // Include a parameter preserving the value of the digest that is currently in use in the Oppia Server
+                        $unmodified_activities['digest_' . $current_digest] = $last_published_digest_entry->oppiaserverdigest;
                     }
-
-                    $modified_activities_count++;
-                    array_push($modified_activities, array(
-                        'name' => format_string($mod->name),
-                        'act_id' => $mod->id,
-                        'current_digest' => $current_digest,
-                        'last_published_digest' => $last_published_digest_entry->oppiaserverdigest,
-                        'icon' => $mod->get_icon_url()->out(),
-                    ));
-                } else { // The activity wasn't modified
-                    // Include a parameter preserving the value of the digest that is currently in use in the Oppia Server
-                    $unmodified_activities['digest_'.$current_digest] = $last_published_digest_entry->oppiaserverdigest;
                 }
             }
         }
