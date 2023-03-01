@@ -41,7 +41,7 @@ class MobileActivityFeedback extends MobileActivity {
         if (isset($params['courseversion'])) { $this->courseversion = $params['courseversion']; }
         if (isset($params['keep_html'])) { $this->keep_html = $params['keep_html']; }   
 
-        $this->component_name = 'mod_feedback';
+        $this->componentname = 'mod_feedback';
     }
 
 
@@ -66,7 +66,7 @@ class MobileActivityFeedback extends MobileActivity {
         $count_omitted = 0;
         foreach($feedbackitems as $fi) {
             if(in_array($fi->typ,$this->supported_types)) {
-                $this->no_questions++;
+                $this->noquestions++;
                 if($fi->typ == 'multichoicerated'){
                     $this->no_rated_questions++;
                 }
@@ -280,7 +280,7 @@ class MobileActivityFeedback extends MobileActivity {
     }
 
     function get_no_questions() {
-        return $this->no_questions;
+        return $this->noquestions;
     }
 
     function get_no_rated_questions() {

@@ -36,7 +36,7 @@ class MobileActivityQuiz extends MobileActivity {
         if (isset($params['courseversion'])) { $this->courseversion = $params['courseversion']; }
         if (isset($params['keep_html'])) { $this->keep_html = $params['keep_html']; }    
 
-        $this->component_name = 'mod_quiz';
+        $this->componentname = 'mod_quiz';
     } 
     
 
@@ -65,7 +65,7 @@ class MobileActivityQuiz extends MobileActivity {
         
         $quizobj = quiz::create($cm->instance, $USER->id);
         if(!$quizobj->has_questions()){
-            $this->no_questions = 0;
+            $this->noquestions = 0;
             $this->is_valid = false;
             return;
         }
@@ -89,7 +89,7 @@ class MobileActivityQuiz extends MobileActivity {
         $count_omitted = 0;
         foreach($qs as $q){    
             if(in_array($q->qtype,$this->supported_types)){
-                $this->no_questions++;
+                $this->noquestions++;
             } else {
                 $count_omitted++;
             }
@@ -396,6 +396,6 @@ class MobileActivityQuiz extends MobileActivity {
     }
     
     function get_no_questions(){
-        return $this->no_questions;
+        return $this->noquestions;
     }
 }

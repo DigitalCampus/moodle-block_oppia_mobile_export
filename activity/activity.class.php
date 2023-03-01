@@ -19,14 +19,14 @@ abstract class MobileActivity {
     public $courseroot;
     public $id;
     public $courseid;
-    public $server_id;
+    public $serverid;
     public $section;
     public $md5;
     public $password;
-    protected $no_questions = 0; // Total no of valid questions.
+    protected $noquestions = 0; // Total no of valid questions.
     public $thumbnailimage = null;
-    public $component_name;
-    public $print_logs = true;
+    public $componentname;
+    public $printlogs = true;
 
     public function __construct($params=array()) {
         if (isset($params['id'])) {
@@ -36,7 +36,7 @@ abstract class MobileActivity {
             $this->courseroot = $params['courseroot'];
         }
         if (isset($params['server_id'])) {
-            $this->server_id = $params['server_id'];
+            $this->serverid = $params['server_id'];
         }
         if (isset($params['course_id'])) {
             $this->courseid = $params['course_id'];
@@ -48,12 +48,12 @@ abstract class MobileActivity {
             $this->password = $params['password'];
         }
         if (isset($params['print_logs'])) {
-            $this->print_logs = $params['print_logs'];
+            $this->printlogs = $params['print_logs'];
         }
     }
 
     abstract function process();
-    abstract function get_xml($mod, $counter, &$node, &$xmlDoc, $activity=true);
+    abstract function get_xml($mod, $counter, &$node, &$xmldoc, $activity=true);
 
     public function extract_thumbnail_from_intro($content, $moduleid) {
         $this->extract_thumbnail($content, $moduleid, 'intro');
@@ -67,7 +67,7 @@ abstract class MobileActivity {
 
         $context = context_module::instance($moduleid);
         // Get the image from the intro section.
-        $thumbnail = extractImageFile($content, $this->component_name, $filearea,
+        $thumbnail = extractImageFile($content, $this->componentname, $filearea,
                                         0, $context->id, $this->courseroot, $moduleid);
 
         if ($thumbnail) {
@@ -78,8 +78,8 @@ abstract class MobileActivity {
     public function save_resized_thumbnail($thumbnail, $moduleid, $keeporiginal=false) {
         global $CFG;
 
-        $thumbheight = get_oppiaconfig($this->courseid, 'thumb_height', $CFG->block_oppia_mobile_export_thumb_height, $this->server_id);
-        $thumbwidth = get_oppiaconfig($this->courseid, 'thumb_width', $CFG->block_oppia_mobile_export_thumb_width, $this->server_id);
+        $thumbheight = get_oppiaconfig($this->courseid, 'thumb_height', $CFG->block_oppia_mobile_export_thumb_height, $this->serverid);
+        $thumbwidth = get_oppiaconfig($this->courseid, 'thumb_width', $CFG->block_oppia_mobile_export_thumb_width, $this->serverid);
 
         $this->thumbnailimage = $thumbnail;
         $$imageresized = resizeImage($this->courseroot . "/". $this->thumbnailimage,
@@ -98,7 +98,7 @@ abstract class MobileActivity {
     }
 
     function has_password() {
-        return (($this->password != NULL) && ($this->password != ''));
+        return (($this->password != null) && ($this->password != ''));
     }
 
     protected function get_activity_node($xmldoc, $module, $counter) {
@@ -110,15 +110,15 @@ abstract class MobileActivity {
         return $act;
     }
 
-    protected function addTitleXMLNodes($xmldoc, $module, $activitynode) {
-        $this->addLangXMLNodes($xmldoc, $activitynode, $module->name, "title");
+    protected function add_title_xml_nodes($xmldoc, $module, $activitynode) {
+        $this->add_lang_xml_nodes($xmldoc, $activitynode, $module->name, "title");
     }
 
-    protected function addDescriptionXMLNodes($xmldoc, $module, $activitynode) {
-        $this->addLangXMLNodes($xmldoc, $activitynode, $module->intro, "description");
+    protected function add_description_xml_nodes($xmldoc, $module, $activitynode) {
+        $this->add_lang_xml_nodes($xmldoc, $activitynode, $module->intro, "description");
     }
 
-    protected function addLangXMLNodes($xmldoc, $activitynode, $content, $propertyname) {
+    protected function add_lang_xml_nodes($xmldoc, $activitynode, $content, $propertyname) {
         global $DEFAULT_LANG;
 
         $title = extractLangs($content);
@@ -140,7 +140,7 @@ abstract class MobileActivity {
         }
     }
 
-    protected function addThumbnailXMLNode($xmldoc, $activitynode) {
+    protected function add_thumbnail_xml_node($xmldoc, $activitynode) {
 
         if ($this->thumbnailimage) {
             $temp = $xmldoc->createElement("image");
