@@ -27,7 +27,7 @@ require_once($pluginroot . 'activity/processor.php');
 const SELECT_COURSES_DIGEST = 'name="coursepriority"';
 
 
-function populate_digests_published_courses($digests_to_preserve = null, $print_logs=true){
+function populate_digests_published_courses($digests_to_preserve = null, $print_logs=true) {
     global $DB, $pluginroot;
 
     $courses_count = $DB->count_records_select(OPPIA_CONFIG_TABLE,
@@ -38,14 +38,14 @@ function populate_digests_published_courses($digests_to_preserve = null, $print_
                 SELECT_COURSES_DIGEST, null, null,
                 'DISTINCT modid');
 
-    if (($courses_count > 0) && ($courses_result->valid())){
+    if (($courses_count > 0) && ($courses_result->valid())) {
         echo '<p class="lead">' . $courses_count . " courses to process" . '</p>';
         
         foreach ($courses_result as $r) {
             $course_id = $r->modid;
             $course = $DB->get_record('course', array('id'=>$course_id), '*', $strictness=IGNORE_MISSING);
 
-            if ($course == false){
+            if ($course == false) {
                 // The course was deleted but there are still some rows in the course_info table
                 continue;
             }
@@ -80,7 +80,7 @@ function populate_digests_published_courses($digests_to_preserve = null, $print_
       The array's value is the digest that we want to preserve in the output modules.xml. Might be different from the real digest.
 */
       
-function populate_digests_for_course($course, $course_id, $server_id, $digests_to_preserve = null, $print_logs=true){
+function populate_digests_for_course($course, $course_id, $server_id, $digests_to_preserve = null, $print_logs=true) {
     global $CFG, $defaultlang, $pluginroot;
     $defaultlang = get_oppiaconfig($course_id,'defaultlang', $CFG->block_oppia_mobile_export_defaultlang, $server_id);
 
@@ -138,20 +138,20 @@ function populate_digests_for_course($course, $course_id, $server_id, $digests_t
         $processor->set_current_section($sect_orderno);
 
         foreach ($sectionmods as $modnumber) {
-            if ($modnumber == "" || $modnumber === false){
+            if ($modnumber == "" || $modnumber === false) {
                 continue;
             }
             $mod = $mods[$modnumber];
             echo '<div class="step"><strong>'.$mod->name.'</strong>'.OPPIA_HTML_BR;
             $activity = $processor->process_activity($mod, $sect, $act_orderno);
-            if ($activity != null){
+            if ($activity != null) {
                 $nquestions = null;
-                if (($mod->modname == 'quiz') || ($mod->modname == 'feedback')){
+                if (($mod->modname == 'quiz') || ($mod->modname == 'feedback')) {
                     $nquestions = $activity->get_no_questions();
                 }
                 $moodle_activity_md5 = $activity->md5;
                 
-                if ($digests_to_preserve != null){
+                if ($digests_to_preserve != null) {
                     $oppia_server_digest = $digests_to_preserve[$moodle_activity_md5];
                 }
 
@@ -160,7 +160,7 @@ function populate_digests_for_course($course, $course_id, $server_id, $digests_t
             }
             echo '</div>';
         }
-        if ($act_orderno > 1){
+        if ($act_orderno > 1) {
             $sect_orderno++;
         }
     
@@ -168,7 +168,7 @@ function populate_digests_for_course($course, $course_id, $server_id, $digests_t
     echo '</div>';
 }
 
-function save_activity_digest($courseid, $modid, $oppia_server_digest, $moodle_activity_md5, $serverid, $nquestions=null){
+function save_activity_digest($courseid, $modid, $oppia_server_digest, $moodle_activity_md5, $serverid, $nquestions=null) {
     global $DB;
     $date = new DateTime();
     $timestamp = $date->getTimestamp();

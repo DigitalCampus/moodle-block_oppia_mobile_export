@@ -95,7 +95,7 @@ foreach($sections as $sect) {
     $sectionmods = explode(",", $sect->sequence);
     foreach ($sectionmods as $modnumber) {
 
-        if (!array_key_exists($modnumber, $mods)){
+        if (!array_key_exists($modnumber, $mods)) {
             continue;
         }
 
@@ -141,7 +141,7 @@ foreach($sections as $sect) {
         }
     }
 
-    if ($act_orderno > 1){
+    if ($act_orderno > 1) {
         $sect_orderno++;
     }
 
@@ -171,7 +171,7 @@ $form_values = array_merge(
 );
 
 // The next step expect in the form parameters the media_url and the media_length for every media file.
-foreach($form_values['media_files'] as $media_file){
+foreach ($form_values['media_files'] as $media_file) {
     $digest = $media_file['digest'];
 
     $media_url = optional_param($digest, null, PARAM_TEXT);

@@ -103,17 +103,17 @@ foreach($sections as $sect) {
     $sectionmods = explode(",", $sect->sequence);
     $sectTitle = get_section_title($sect);
 
-    if(count($sectionmods)>0){
+    if(count($sectionmods)>0) {
         $activity_count = 0;
         $activities = [];
 
         foreach ($sectionmods as $modnumber) {
-            if ($modnumber == "" || $modnumber === false){
+            if ($modnumber == "" || $modnumber === false) {
                 continue;
             }
             $mod = $mods[$modnumber];
             
-            if($mod->visible != 1){
+            if($mod->visible != 1) {
                 continue;
             }
             if ( ($mod->modname == 'page') ||
@@ -121,7 +121,7 @@ foreach($sections as $sect) {
                     ($mod->modname == 'url')) {
                 $activity_count++;
             }
-            else if ($mod->modname == 'feedback'){
+            else if ($mod->modname == 'feedback') {
                 $activity_count++;
 
                 $password = get_oppiaconfig($mod->id, 'password', '', $server, false);
@@ -135,7 +135,7 @@ foreach($sections as $sect) {
                 $grades = optional_param_array('grade_'.$mod->id, array(), PARAM_INT);
                 $messages = optional_param_array('message_'.$mod->id, array(), PARAM_TEXT);
 
-                for($i = 0; $i < 21; $i++){
+                for($i = 0; $i < 21; $i++) {
                     $value = $i * 5;
                     if(in_array($value, $grades, false)) {
                         $index = array_search($value, $grades);
@@ -152,7 +152,7 @@ foreach($sections as $sect) {
                 }
 
             } 
-            else if($mod->modname == 'quiz'){
+            else if($mod->modname == 'quiz') {
                 $activity_count++;
                 // For the quizzes, we save the configuration entered
                 $random = optional_param('quiz_'.$mod->id.'_randomselect', 0, PARAM_INT);
@@ -160,7 +160,7 @@ foreach($sections as $sect) {
                 $passthreshold = optional_param('quiz_'.$mod->id.'_passthreshold', 0, PARAM_INT);
                 $maxattempts = optional_param('quiz_'.$mod->id.'_maxattempts', 'unlimited', PARAM_INT);
                 
-                if($maxattempts == 0){
+                if($maxattempts == 0) {
                     $maxattempts = 'unlimited';
                 }
                 add_or_update_oppiaconfig($mod->id, 'randomselect', $random);
@@ -170,7 +170,7 @@ foreach($sections as $sect) {
             }
         }
 
-        if ($activity_count > 0){
+        if ($activity_count > 0) {
 
             $password = get_oppiaconfig($sect->id, 'password', '', $server, false);
 
@@ -193,7 +193,7 @@ foreach($sections as $sect) {
 }
 echo '</div>';
 
-if ($sect_orderno <= 1){
+if ($sect_orderno <= 1) {
     echo '<h3>'.get_string('error_exporting', PLUGINNAME).'</h3>';
     echo '<p>'.get_string('error_exporting_no_sections', PLUGINNAME).'</p>';
     echo $OUTPUT->footer();

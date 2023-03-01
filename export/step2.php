@@ -110,15 +110,15 @@ foreach($sections as $sect) {
     $sectionmods = explode(",", $sect->sequence);
     $sectTitle = get_section_title($sect);
 
-    if(count($sectionmods)>0){
+    if(count($sectionmods)>0) {
         foreach ($sectionmods as $modnumber) {
 
-            if(!$modnumber){
+            if(!$modnumber) {
                 continue;
             }
             $mod = $mods[$modnumber];
 
-            if($mod->modname == 'quiz' && $mod->visible == 1){
+            if($mod->modname == 'quiz' && $mod->visible == 1) {
                 $quiz = new MobileActivityQuiz(array(
                     'id' => $mod->id,
                     'section' =>  $orderno,
@@ -129,7 +129,7 @@ foreach($sections as $sect) {
                     'versionid' => 0
                 ));
                 $quiz->preprocess();
-                if ($quiz->get_is_valid() && $quiz->get_no_questions() > 0){
+                if ($quiz->get_is_valid() && $quiz->get_no_questions() > 0) {
                     array_push($quizzes, array(
                         'section' => $sectTitle['display_title'],
                         'name' => format_string($mod->name),
@@ -140,7 +140,7 @@ foreach($sections as $sect) {
                 }
             }
 
-            if($mod->modname == 'feedback' && $mod->visible == 1){
+            if($mod->modname == 'feedback' && $mod->visible == 1) {
                 $feedback = new MobileActivityFeedback(array(
                     'id' => $mod->id,
                     'section' =>  $orderno,
@@ -151,13 +151,13 @@ foreach($sections as $sect) {
                     'versionid' => 0
                 ));
                 $feedback->preprocess();
-                if ($feedback->get_is_valid() && $feedback->get_no_rated_questions() > 0){
+                if ($feedback->get_is_valid() && $feedback->get_no_rated_questions() > 0) {
                     $grade_0_message = '';
                     $grade_100_message = '';
                     $grade_boundaries = array();
                     $gb = get_grade_boundaries($mod->id, $server);
                     usort($gb, 'sort_grade_boundaries_descending');
-                    foreach($gb as $grade_boundary){
+                    foreach($gb as $grade_boundary) {
                         switch($grade_boundary->grade) {
                             case 0:   $grade_0_message = $grade_boundary->message; break;
                             case 100: $grade_100_message = $grade_boundary->message; break;
@@ -194,14 +194,14 @@ foreach($sections as $sect) {
     }
 }
 
-for ($qid=0; $qid<count($quizzes); $qid++){
+for ($qid=0; $qid<count($quizzes); $qid++) {
     $quiz = $quizzes[$qid];
 
     $current_random = get_oppiaconfig($quiz['id'],'randomselect', 0);
     $quiz['random_all'] = $current_random == 0;
     $quiz['randomselect'] = [];
-    if ($quiz['noquestions']>1){
-        for ($i=0; $i<$quiz['noquestions']; $i++){
+    if ($quiz['noquestions']>1) {
+        for ($i=0; $i<$quiz['noquestions']; $i++) {
             $quiz['randomselect'][$i] = array ("idx" => $i+1, "selected" => $current_random == $i+1);
         }
     }
@@ -213,14 +213,14 @@ for ($qid=0; $qid<count($quizzes); $qid++){
 
     $current_threshold = get_oppiaconfig($quiz['id'], 'passthreshold', 80);
     $quiz['passthreshold'] = [];
-    for ($t=0; $t<21; $t++){
+    for ($t=0; $t<21; $t++) {
         $quiz['passthreshold'][$t] = array ("threshold" => $t*5, "selected" => $current_threshold == $t*5);
     }
 
     $current_maxattempts = get_oppiaconfig($quiz['id'], 'maxattempts', 'unlimited');
     $quiz['attempts_unlimited'] = 'unlimited';
     $quiz['max_attempts'] = [];
-    for ($i=0; $i<MAX_ATTEMPTS; $i++){
+    for ($i=0; $i<MAX_ATTEMPTS; $i++) {
         $quiz['max_attempts'][$i] = array ("num" => $i+1, "selected" => $current_maxattempts == $i+1);
     }
 

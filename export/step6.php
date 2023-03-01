@@ -75,12 +75,12 @@ echo $OUTPUT->header();
 echo "<h2>".get_string('export_step6_title', PLUGINNAME)."</h2>";
 
 $server_connection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid'=>$USER->id,'id'=>$server));
-if(!$server_connection && $server != "default"){
+if(!$server_connection && $server != "default") {
     echo "<p>".get_string('server_not_owner', PLUGINNAME)."</p>";
     echo $OUTPUT->footer();
     die();
 }
-if ($server == "default"){
+if ($server == "default") {
     $server_connection = new stdClass();
     $server_connection->url = $CFG->block_oppia_mobile_export_default_server;
 }
@@ -89,7 +89,7 @@ echo '<div class="oppia_export_section">';
 
 echo '<p class="step">'. get_string('export_xml_valid_start', PLUGINNAME);
 
-if (!file_exists($course_root.OPPIA_MODULE_XML)){
+if (!file_exists($course_root.OPPIA_MODULE_XML)) {
     echo "<p>".get_string('error_xml_notfound', PLUGINNAME)."</p>";
     echo $OUTPUT->footer();
     die();
@@ -102,11 +102,11 @@ $xml->load($course_root.OPPIA_MODULE_XML);
 
 // We update the local media URLs from the results of the previous step
 foreach ($xml->getElementsByTagName('file') as $mediafile) {
-    if ($mediafile->hasAttribute('download_url')){
+    if ($mediafile->hasAttribute('download_url')) {
         // If it already has the url set, we don't need to do anything
         continue;
     }
-    if ($mediafile->hasAttribute('moodlefile')){
+    if ($mediafile->hasAttribute('moodlefile')) {
         // We remove the moodlefile attribute (it's only a helper to publish media)
         $mediafile->removeAttribute('moodlefile');
     }
@@ -114,7 +114,7 @@ foreach ($xml->getElementsByTagName('file') as $mediafile) {
     $digest = $mediafile->getAttribute('digest');
     $medialength = optional_param($digest.'_length', null, PARAM_INT);
     $url = optional_param($digest, null, PARAM_TEXT);
-    if ($url !== null){
+    if ($url !== null) {
         $mediafile->setAttribute('download_url', $url);
         $mediafile->setAttribute('length', $medialength);
     }
@@ -135,9 +135,9 @@ foreach ($xml->getElementsByTagName('activity') as $activity) {
         $content->firstChild->nodeValue = str_replace($digest, $preserve_digest, $content->nodeValue);
     }
 
-    if (isset($activities[$digest])){
-        foreach ($activity->childNodes as $node){
-            if ($node->nodeName == "title"){
+    if (isset($activities[$digest])) {
+        foreach ($activity->childNodes as $node) {
+            if ($node->nodeName == "title") {
                 $title = $node->nodeValue;
                 break;
             }
@@ -150,7 +150,7 @@ foreach ($xml->getElementsByTagName('activity') as $activity) {
         $activities[$digest] = true;
     }
 }
-if (count($duplicated) > 0){
+if (count($duplicated) > 0) {
     echo $OUTPUT->render_from_template(PLUGINNAME.'/export_error_duplicated_digest', array('duplicated'=>$duplicated));
     echo $OUTPUT->footer();
     die();
@@ -173,7 +173,7 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
     echo '<p class="step">'. get_string('export_style_start', PLUGINNAME) . ' - ' . $stylesheet. '</p>';
 
     $styles = getCompiledCSSTheme($pluginroot, $stylesheet);
-    if (!file_put_contents($course_root."/style.css", $styles)){
+    if (!file_put_contents($course_root."/style.css", $styles)) {
         echo "<p>".get_string('error_style_copy', PLUGINNAME)."</p>";
     }
     

@@ -55,7 +55,7 @@ class ActivityProcessor {
 
     public $print_logs = true;
 
-    public function __construct($params=array()){ 
+    public function __construct($params=array()) { 
         if (isset($params['id'])) { $this->id = $params['id']; }
         if (isset($params['course_root'])) { $this->course_root = $params['course_root']; }
         if (isset($params['server_id'])) { $this->server_id = $params['server_id']; }
@@ -70,14 +70,16 @@ class ActivityProcessor {
         else{
             $this->local_media_files = array();
         }
-        if (isset($params['print_logs'])) { $this->print_logs = $params['print_logs']; }
+        if (isset($params['print_logs'])) {
+            $this->print_logs = $params['print_logs'];
+        }
     }
 
-    public function set_current_section($section){
+    public function set_current_section($section) {
         $this->current_section = $section;
     }
 
-    public function process_activity($mod, $sect, $act_orderno, $xmlnode=null, $xmldoc=null, $password=''){
+    public function process_activity($mod, $sect, $act_orderno, $xmlnode=null, $xmldoc=null, $password='') {
 
         $params = array(
             'id' => $mod->id,
@@ -95,11 +97,11 @@ class ActivityProcessor {
         );
 
 
-        if ($mod->modname == 'page'){
+        if ($mod->modname == 'page') {
             $page = new MobileActivityPage($params);
             $page->process();
             
-            if ($xmlnode != null){
+            if ($xmlnode != null) {
                 $page->get_xml($mod, $act_orderno, $xmlnode, $xmldoc, true);
                 $local_media = $page->getLocalMedia();
                 $media_files = $this->local_media_files;
@@ -108,7 +110,7 @@ class ActivityProcessor {
             return $page;
 
         }
-        else if ($mod->modname == 'quiz'){
+        else if ($mod->modname == 'quiz') {
 
             $randomselect = get_oppiaconfig($mod->id, 'randomselect', 0, $this->server_id);
             $passthreshold = get_oppiaconfig($mod->id, 'passthreshold', 0, $this->server_id);
@@ -125,9 +127,9 @@ class ActivityProcessor {
             $quiz = new MobileActivityQuiz($params);
 
             $quiz->preprocess();
-            if ($quiz->get_is_valid()){
+            if ($quiz->get_is_valid()) {
                 $quiz->process();
-                if ($xmlnode != null){
+                if ($xmlnode != null) {
                     $quiz->get_xml($mod, $act_orderno, $xmlnode, $xmldoc, true);
                 }
                 return $quiz;
@@ -136,23 +138,23 @@ class ActivityProcessor {
                 return null;
             }
         }
-        else if ($mod->modname == 'resource'){
+        else if ($mod->modname == 'resource') {
             $resource = new MobileActivityResource($params);
             $resource->process();
-            if ($xmlnode != null){
+            if ($xmlnode != null) {
                 $resource->get_xml($mod, $act_orderno, $xmlnode, $xmldoc, true);
             }
             return $resource;
         }
-        else if ($mod->modname == 'url'){
+        else if ($mod->modname == 'url') {
             $url = new MobileActivityUrl($params);
             $url->process();
-            if ($xmlnode != null){
+            if ($xmlnode != null) {
                 $url->get_xml($mod, $act_orderno, $xmlnode, $xmldoc, true);
             }
             return $url;
         }
-        else if ($mod->modname == 'feedback'){
+        else if ($mod->modname == 'feedback') {
             $params['config_array'] = array(
                 'showfeedback'=>false,
                 'passthreshold'=>0,
@@ -174,9 +176,9 @@ class ActivityProcessor {
             $feedback = new MobileActivityFeedback($params);
 
             $feedback->preprocess();
-            if ($feedback->get_is_valid()){
+            if ($feedback->get_is_valid()) {
                 $feedback->process();
-                if ($xmlnode != null){
+                if ($xmlnode != null) {
                     $feedback->get_xml($mod, $act_orderno, $xmlnode, $xmldoc, true);
                 }
                 return $feedback;

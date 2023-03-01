@@ -40,7 +40,7 @@ $digest = required_param('digest', PARAM_TEXT);
 $server_base_url = get_server_url($server);
 $media_info = get_media_info($server_base_url, $digest);
 
-if ((!$media_info) && ($_SERVER['REQUEST_METHOD'] === 'POST')){    
+if ((!$media_info) && ($_SERVER['REQUEST_METHOD'] === 'POST')) {    
     $file = required_param('moodlefile', PARAM_TEXT);
     $username = required_param('username', PARAM_TEXT);
     $password = required_param('password', PARAM_TEXT);
@@ -48,14 +48,14 @@ if ((!$media_info) && ($_SERVER['REQUEST_METHOD'] === 'POST')){
 }
 
 header('Content-Type: application/json');
-if (!$media_info){
+if (!$media_info) {
     echo json_encode(array('error'=>'not_valid_json'));
 } else{
     echo json_encode($media_info);
 }
 
 
-function get_media_info($server_base_url, $digest){
+function get_media_info($server_base_url, $digest) {
     $curl = curl_init();
     curl_setopt($curl, CURLOPT_URL, $server_base_url."api/media/".$digest );
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -67,19 +67,19 @@ function get_media_info($server_base_url, $digest){
 }
 
 
-function publish_media($server_base_url, $moodlefile, $username, $password, $temp_media){
+function publish_media($server_base_url, $moodlefile, $username, $password, $temp_media) {
 
     list($contextid, $component, $filearea, $itemid, $path, $filename) = explode(";", $moodlefile);
     $file = get_file_storage()->get_file($contextid, $component, $filearea, $itemid, $path, $filename);
     
-    if (!$file){
+    if (!$file) {
         http_response_code(500);
         return false;
     }
 
     $temppath = $temp_media . $filename;
     $success = $file->copy_content_to($temppath);
-    if (!$success){
+    if (!$success) {
         http_response_code(500);
         return false;
     }
@@ -104,7 +104,7 @@ function publish_media($server_base_url, $moodlefile, $username, $password, $tem
     //We remove the temporary copied file
     unlink($temppath);
 
-    if ($http_status == 400){
+    if ($http_status == 400) {
         // if the server returned a 400 error, it is probably because the file already exists
         // so we try to fetch the info if it was already published in the server
         $digest = required_param('digest', PARAM_TEXT);
@@ -117,13 +117,13 @@ function publish_media($server_base_url, $moodlefile, $username, $password, $tem
     
 }
 
-function process_response($http_status, $response){
+function process_response($http_status, $response) {
     
     $json_response = json_decode($response, true);
     http_response_code($http_status);
 
-    if (!$http_status || $http_status == 404 || is_null($json_response)){
-        if (!$http_status || !$response){
+    if (!$http_status || $http_status == 404 || is_null($json_response)) {
+        if (!$http_status || !$response) {
             http_response_code(400);
         }
         return false;
@@ -133,35 +133,35 @@ function process_response($http_status, $response){
 }
 
 
-function get_mediainfo_from_response($json_response){
+function get_mediainfo_from_response($json_response) {
     $media_info = array();
-    if (array_key_exists('download_url', $json_response)){
+    if (array_key_exists('download_url', $json_response)) {
         $media_info['download_url'] = $json_response['download_url'];
     }
-    if (array_key_exists('filesize', $json_response)){
+    if (array_key_exists('filesize', $json_response)) {
         $media_info['filesize'] = $json_response['filesize'];
     }
-    if (array_key_exists('length', $json_response)){
+    if (array_key_exists('length', $json_response)) {
         $media_info['length'] = $json_response['length'];
     }
     return $media_info;
 
 }
 
-function get_server_url($server){
+function get_server_url($server) {
     global $DB, $OUTPUT, $USER;
 
     $server_connection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid'=>$USER->id,'id'=>$server));
-    if(!$server_connection && $server != "default"){
+    if(!$server_connection && $server != "default") {
         echo "<p>".get_string('server_not_owner', PLUGINNAME)."</p>";
         echo $OUTPUT->footer();
         die();
     }
-    if ($server == "default"){
+    if ($server == "default") {
         $server_connection = new stdClass();
         $server_connection->url = $CFG->block_oppia_mobile_export_default_server;
     }
-    if (substr($server_connection->url, -strlen('/'))!=='/'){
+    if (substr($server_connection->url, -strlen('/'))!=='/') {
         $server_connection->url .= '/';
     }
 

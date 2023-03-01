@@ -74,7 +74,7 @@ echo $OUTPUT->header();
 
 // Check specified server belongs to current user
 $server_connection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid'=>$USER->id,'id'=>$server));
-if(!$server_connection && $server != "default"){
+if(!$server_connection && $server != "default") {
     echo "<p>".get_string('server_not_owner', PLUGINNAME)."</p>";
     echo $OUTPUT->footer();
     die();
@@ -82,7 +82,7 @@ if(!$server_connection && $server != "default"){
 
 $priority = (int) get_oppiaconfig($id, 'coursepriority', '0', $server);
 $priorities = [];
-for ($i=0; $i<=PRIORITY_LEVELS; $i++){
+for ($i=0; $i<=PRIORITY_LEVELS; $i++) {
     $priorities[$i] = array ("idx" => $i, "selected" => $i == $priority );
 }
 

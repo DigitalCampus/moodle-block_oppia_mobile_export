@@ -68,7 +68,7 @@ $course = $DB->get_record('course', array('id'=>$id));
 $course->shortname = cleanShortname($course->shortname);
 
 $is_draft = ($course_export_status == 'draft');
-if ($is_draft){
+if ($is_draft) {
     $course->shortname = $course->shortname."-draft";
 }
 
@@ -102,12 +102,12 @@ $MEDIA = array();
 echo "<h2>".get_string('export_step4_title', PLUGINNAME)."</h2>";
 
 $server_connection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid'=>$USER->id,'id'=>$server));
-if(!$server_connection && $server != "default"){
+if(!$server_connection && $server != "default") {
     echo "<p>".get_string('server_not_owner', PLUGINNAME)."</p>";
     echo $OUTPUT->footer();
     die();
 }
-if ($server == "default"){
+if ($server == "default") {
     $server_connection = new stdClass();
     $server_connection->url = $CFG->block_oppia_mobile_export_default_server;
 }
@@ -115,7 +115,7 @@ $api_helper = new ApiHelper();
 $api_helper->fetch_server_info($server_connection->url);
 
 echo '<p>';
-if ($api_helper->version == null || $api_helper->version==''){
+if ($api_helper->version == null || $api_helper->version=='') {
     echo '<span class="export-error">'. get_string('export_server_error', PLUGINNAME).OPPIA_HTML_BR;
     add_publishing_log($server_connection->url, $USER->id, $id, "server_unavailable", "Unable to get server info");
 }
@@ -129,8 +129,8 @@ else{
 $dataroot = $CFG->dataroot . "/";
 deleteDir($dataroot.OPPIA_OUTPUT_DIR.$USER->id."/temp");
 deleteDir($dataroot.OPPIA_OUTPUT_DIR.$USER->id);
-if(!is_dir($dataroot."output")){
-    if (!mkdir($dataroot."output",0777)){
+if(!is_dir($dataroot."output")) {
+    if (!mkdir($dataroot."output",0777)) {
         echo "<h3>Failed to create the output directory, please check your server permissions to allow the webserver user to create the output directory under " . __DIR__ . "</h3>";
         die;
     }
@@ -170,8 +170,8 @@ $meta->appendChild($xmldoc->createElement("exportversion", $plugin_version));
 add_publishing_log($server_connection->url, $USER->id, $id, "export_start", "Export process starting");
 
 $title = extractLangs($course->fullname);
-if(is_array($title) && count($title)>0){
-    foreach($title as $l=>$t){
+if(is_array($title) && count($title)>0) {
+    foreach($title as $l=>$t) {
         $temp = $xmldoc->createElement("title");
         $temp->appendChild($xmldoc->createCDATASection(strip_tags($t)));
         $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($l));
@@ -188,8 +188,8 @@ $temp->appendChild($xmldoc->createCDATASection(strtolower($course->shortname)));
 $meta->appendChild($temp);
 
 $summary = extractLangs($course->summary);
-if(is_array($summary) && count($summary)>0){
-    foreach($summary as $l=>$s){
+if(is_array($summary) && count($summary)>0) {
+    foreach($summary as $l=>$s) {
         $temp = $xmldoc->createElement("description");
         $temp->appendChild($xmldoc->createCDATASection(trim(strip_tags($s))));
         $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($l));
@@ -213,7 +213,7 @@ foreach ($sectionmods as $modnumber) {
     }
     $mod = $mods[$modnumber];
     
-    if($mod->modname == 'page' && $mod->visible == 1){
+    if($mod->modname == 'page' && $mod->visible == 1) {
         echo "<p>".$mod->name."</p>";
         $page = new MobileActivityPage(array(
             'id' => $mod->id,
@@ -227,7 +227,7 @@ foreach ($sectionmods as $modnumber) {
         $page->process();
         $page->get_xml($mod, $i, $meta, $xmldoc, false);
     }
-    if($mod->modname == 'quiz' && $mod->visible == 1){
+    if($mod->modname == 'quiz' && $mod->visible == 1) {
         echo "<p>".$mod->name."</p>";
 
         $randomselect = get_oppiaconfig($id, 'randomselect', 0, $server);
@@ -254,12 +254,12 @@ foreach ($sectionmods as $modnumber) {
         ));
 
         $quiz->preprocess();
-        if ($quiz->get_is_valid()){
+        if ($quiz->get_is_valid()) {
             $quiz->process();
             $quiz->get_xml($mod, $i, $meta, $xmldoc, true);
         }
     }
-    if($mod->modname == 'feedback' && $mod->visible == 1){
+    if($mod->modname == 'feedback' && $mod->visible == 1) {
         echo $mod->name.OPPIA_HTML_BR;
 
         $feedback = new MobileActivityFeedback(array(
@@ -279,7 +279,7 @@ foreach ($sectionmods as $modnumber) {
         ));
 
         $feedback->preprocess();
-        if ($feedback->get_is_valid()){
+        if ($feedback->get_is_valid()) {
             $feedback->process();
             $feedback->get_xml($mod, $i, $meta, $xmldoc, true);
         } else {
@@ -299,7 +299,7 @@ $filename = extractImageFile($course->summary,
                             $context->id,
                             $course_root,0);
 
-if($filename){
+if($filename) {
     $resized_filename = resizeImage($course_root."/".$filename,
         $course_root."/images/".$course->id.'_'.$context->id,
                         $CFG->block_oppia_mobile_export_course_icon_width,
@@ -337,15 +337,15 @@ foreach($sections as $sect) {
     $sectionmods = explode(",", $sect->sequence);
     $sectTitle = get_section_title($sect);
 
-    if(count($sectionmods)>0){
+    if(count($sectionmods)>0) {
         echo '<hr>';
         echo '<div class="oppia_export_section">';
         echo "<h4>".get_string('export_section_title', PLUGINNAME, $sectTitle['display_title'])."</h4>";
         
         $section = $xmldoc->createElement("section");
         $section->appendChild($xmldoc->createAttribute("order"))->appendChild($xmldoc->createTextNode($sect_orderno));
-        if(!$sectTitle['using_default'] && is_array($sectTitle['title']) && count($sectTitle['title'])>0){
-            foreach($sectTitle['title'] as $l=>$t){
+        if(!$sectTitle['using_default'] && is_array($sectTitle['title']) && count($sectTitle['title'])>0) {
+            foreach($sectTitle['title'] as $l=>$t) {
                 $temp = $xmldoc->createElement("title");
                 $temp->appendChild($xmldoc->createCDATASection(strip_tags($t)));
                 $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($l));
@@ -360,7 +360,7 @@ foreach($sections as $sect) {
         }
 
         $sect_password =  optional_param('section_'.$sect->id.'_password', '', PARAM_TEXT);
-        if ($sect_password != ''){
+        if ($sect_password != '') {
             echo '<span class="export-results warning">'. get_string('section_password_added', PLUGINNAME) .'</span>'.OPPIA_HTML_BR;
             $section->appendChild($xmldoc->createAttribute("password"))->appendChild($xmldoc->createTextNode($sect_password));
             // We store the section's password for future exports 
@@ -379,7 +379,7 @@ foreach($sections as $sect) {
                                     $context->id,
                                     $course_root, 0);
 
-        if($filename){
+        if($filename) {
             $resized_filename = resizeImage(
                 $course_root."/".$filename,
                 $course_root."/images/".$sect->id.'_'.$context->id,
@@ -395,12 +395,12 @@ foreach($sections as $sect) {
         $processor->set_current_section($sect_orderno);
         foreach ($sectionmods as $modnumber) {
             
-            if ($modnumber == "" || $modnumber === false){
+            if ($modnumber == "" || $modnumber === false) {
                 continue;
             }
             $mod = $mods[$modnumber];
             
-            if($mod->visible != 1){
+            if($mod->visible != 1) {
                 continue;
             }
             
@@ -411,11 +411,11 @@ foreach($sections as $sect) {
                 'digest'=>$activity->md5,
                 'no_questions'=>$activity->get_no_questions(),
             );
-            if ($activity != null){
+            if ($activity != null) {
                 $act_orderno++;
-                if ($activity->has_password()){
+                if ($activity->has_password()) {
                     echo '<span class="export-results info">'. get_string('activity_password_added', PLUGINNAME) .'</span>'.OPPIA_HTML_BR;
-                    if ($password !== ''){
+                    if ($password !== '') {
                         add_or_update_oppiaconfig($mod->id, 'password', $password, $server);
                     }
                     else{
@@ -429,7 +429,7 @@ foreach($sections as $sect) {
             flush_buffers();
         }
 
-        if ($act_orderno > 1){
+        if ($act_orderno > 1) {
             $section->appendChild($activities);
             $structure->appendChild($section);
             $sect_orderno++;
@@ -447,11 +447,11 @@ $root->appendChild($structure);
 
 // add in the langs available here
 $langs = $xmldoc->createElement("langs");
-foreach($MOBILE_LANGS as $k=>$v){
+foreach($MOBILE_LANGS as $k=>$v) {
     $temp = $xmldoc->createElement("lang",$k);
     $langs->appendChild($temp);
 }
-if(count($MOBILE_LANGS) == 0){
+if(count($MOBILE_LANGS) == 0) {
     $temp = $xmldoc->createElement("lang", $defaultlang);
     $langs->appendChild($temp);
 }
@@ -459,16 +459,16 @@ $meta->appendChild($langs);
 $local_media_files = $processor->local_media_files;
 
 // add media includes
-if(count($MEDIA) > 0 || count($local_media_files) > 0){
+if(count($MEDIA) > 0 || count($local_media_files) > 0) {
     $media = $xmldoc->createElement("media");
-    foreach ($MEDIA as $m){
+    foreach ($MEDIA as $m) {
         $temp = $xmldoc->createElement("file");
         foreach($m as $var => $value) {
             $temp->appendChild($xmldoc->createAttribute($var))->appendChild($xmldoc->createTextNode($value));
         }
         $media->appendChild($temp);
     }
-    foreach ($local_media_files as $m){
+    foreach ($local_media_files as $m) {
         $temp = $xmldoc->createElement("file");
         foreach($m as $var => $value) {
             $temp->appendChild($xmldoc->createAttribute($var))->appendChild($xmldoc->createTextNode($value));
@@ -483,7 +483,7 @@ $xmldoc->formatOutput = true;
 $xmldoc->save($course_root.OPPIA_MODULE_XML);
 
 
-if ($sect_orderno <= 1){
+if ($sect_orderno <= 1) {
     echo '<h3>'.get_string('error_exporting', PLUGINNAME).'</h3>';
     echo '<p>'.get_string('error_exporting_no_sections', PLUGINNAME).'</p>';
     echo $OUTPUT->footer();

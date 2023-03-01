@@ -80,7 +80,7 @@ echo $OUTPUT->header();
 flush_buffers();
 
 echo "<h2>";
-if ($course_status == 'draft'){
+if ($course_status == 'draft') {
     echo get_string('publishing_header_draft', PLUGINNAME);
 } else {
     echo get_string('publishing_header_live', PLUGINNAME);
@@ -89,38 +89,38 @@ echo "</h2>";
 
 flush_buffers();
 
-if (trim($username) == ''){
+if (trim($username) == '') {
     echo "<p>".get_string('publish_error_username', PLUGINNAME)."</p>";
     echo $OUTPUT->footer();
     die();
 }
 
-if (trim($password) == ''){
+if (trim($password) == '') {
     echo "<p>".get_string('publish_error_password', PLUGINNAME)."</p>";
     echo $OUTPUT->footer();
     die();
 }
-if (trim($tags) == ''){
+if (trim($tags) == '') {
     echo "<p>".get_string('publish_error_tags', PLUGINNAME)."</p>";
     echo $OUTPUT->footer();
     die();
 }
 
-if(!$server_connection && $server != "default"){
+if(!$server_connection && $server != "default") {
     echo "<p>".get_string('server_not_owner', PLUGINNAME)."</p>";
     echo $OUTPUT->footer();
     die();
 }
-if ($server == "default"){
+if ($server == "default") {
     $server_connection = new stdClass();
     $server_connection->url = $CFG->block_oppia_mobile_export_default_server;
 }
 
-if (substr($server_connection->url, -strlen('/'))!=='/'){
+if (substr($server_connection->url, -strlen('/'))!=='/') {
     $server_connection->url .= '/';
 }
 
-if ($course_status == 'draft'){
+if ($course_status == 'draft') {
     $is_draft = "true";
 } else {
     $is_draft = "false";
@@ -150,7 +150,7 @@ curl_close ($curl);
 add_publishing_log($server_connection->url, $USER->id, $id, "api_publishing_user", $username);
 add_publishing_log($server_connection->url, $USER->id, $id, "api_file_posted", $file);
 
-switch ($http_status){
+switch ($http_status) {
     case "405":
         $msgtext = get_string('publish_message_405', PLUGINNAME);
         show_and_log_message($server_connection, $id, $msgtext, false, "api_publish_invalid_request", false);
@@ -178,23 +178,23 @@ switch ($http_status){
 }
 $json_response = json_decode($result, true);
 
-if (is_null($json_response)){
+if (is_null($json_response)) {
     echo $result;
 }
 else{
 
-    if (array_key_exists('message', $json_response)){
+    if (array_key_exists('message', $json_response)) {
         show_and_log_message($server_connection, $id, $json_response['message'], false, "api_publish_response", false);
     }
-    if (array_key_exists('messages', $json_response)){
+    if (array_key_exists('messages', $json_response)) {
         $messages = $json_response['messages'];
-        foreach($messages as $msg){
+        foreach($messages as $msg) {
             show_and_log_message($server_connection, $id, $msg['message'], $msg['tags'], "api_publish_bad_request", true);
         }
     }
-    if (array_key_exists('errors', $json_response)){
+    if (array_key_exists('errors', $json_response)) {
         $errors = $json_response['errors'];
-        foreach($errors as $err){
+        foreach($errors as $err) {
             show_and_log_message($server_connection, $id, $err, 'warning', "api_publish_response_message", true);
         }
     }
@@ -209,7 +209,7 @@ echo $OUTPUT->footer();
 
 
 // Function to show on screen the message and save it in the publishing log
-function show_and_log_message($server_connection, $course_id, $message, $tags, $log_action, $show_dialog=false){
+function show_and_log_message($server_connection, $course_id, $message, $tags, $log_action, $show_dialog=false) {
     global $USER;
     echo '<div class="' . ($show_dialog ? 'export-results' : '') . ' ' .$tags.'">'.$message.'</div>';
     add_publishing_log($server_connection->url, $USER->id, $course_id, $log_action, ($tags ? $tags.':' : '').$message);
