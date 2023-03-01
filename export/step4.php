@@ -156,49 +156,49 @@ $mods = $modinfo->get_cms();
 
 $plugin_version = get_config(PLUGINNAME, 'version');
 $versionid = date("YmdHis");
-$xmlDoc = new DOMDocument( "1.0", "UTF-8" );
-$root = $xmlDoc->appendChild($xmlDoc->createElement("module"));
-$meta = $root->appendChild($xmlDoc->createElement("meta"));
-$meta->appendChild($xmlDoc->createElement("versionid", $versionid));
-$meta->appendChild($xmlDoc->createElement("priority", $priority));
+$xmldoc = new DOMDocument( "1.0", "UTF-8" );
+$root = $xmldoc->appendChild($xmldoc->createElement("module"));
+$meta = $root->appendChild($xmldoc->createElement("meta"));
+$meta->appendChild($xmldoc->createElement("versionid", $versionid));
+$meta->appendChild($xmldoc->createElement("priority", $priority));
 
-$meta->appendChild($xmlDoc->createElement("server", $server_connection->url));
-$meta->appendChild($xmlDoc->createElement("sequencing", $sequencing));
-$meta->appendChild($xmlDoc->createElement("tags", $tags));
-$meta->appendChild($xmlDoc->createElement("exportversion", $plugin_version));
+$meta->appendChild($xmldoc->createElement("server", $server_connection->url));
+$meta->appendChild($xmldoc->createElement("sequencing", $sequencing));
+$meta->appendChild($xmldoc->createElement("tags", $tags));
+$meta->appendChild($xmldoc->createElement("exportversion", $plugin_version));
 
 add_publishing_log($server_connection->url, $USER->id, $id, "export_start", "Export process starting");
 
 $title = extractLangs($course->fullname);
 if(is_array($title) && count($title)>0){
     foreach($title as $l=>$t){
-        $temp = $xmlDoc->createElement("title");
-        $temp->appendChild($xmlDoc->createCDATASection(strip_tags($t)));
-        $temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($l));
+        $temp = $xmldoc->createElement("title");
+        $temp->appendChild($xmldoc->createCDATASection(strip_tags($t)));
+        $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($l));
         $meta->appendChild($temp);
     }
 } else {
-    $temp = $xmlDoc->createElement("title");
-    $temp->appendChild($xmlDoc->createCDATASection(strip_tags($course->fullname)));
-    $temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($defaultlang));
+    $temp = $xmldoc->createElement("title");
+    $temp->appendChild($xmldoc->createCDATASection(strip_tags($course->fullname)));
+    $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($defaultlang));
     $meta->appendChild($temp);
 }
-$temp = $xmlDoc->createElement("shortname");
-$temp->appendChild($xmlDoc->createCDATASection(strtolower($course->shortname)));
+$temp = $xmldoc->createElement("shortname");
+$temp->appendChild($xmldoc->createCDATASection(strtolower($course->shortname)));
 $meta->appendChild($temp);
 
 $summary = extractLangs($course->summary);
 if(is_array($summary) && count($summary)>0){
     foreach($summary as $l=>$s){
-        $temp = $xmlDoc->createElement("description");
-        $temp->appendChild($xmlDoc->createCDATASection(trim(strip_tags($s))));
-        $temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($l));
+        $temp = $xmldoc->createElement("description");
+        $temp->appendChild($xmldoc->createCDATASection(trim(strip_tags($s))));
+        $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($l));
         $meta->appendChild($temp);
     }
 } else {
-    $temp = $xmlDoc->createElement("description");
-    $temp->appendChild($xmlDoc->createCDATASection(trim(strip_tags($course->summary))));
-    $temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($defaultlang));
+    $temp = $xmldoc->createElement("description");
+    $temp->appendChild($xmldoc->createCDATASection(trim(strip_tags($course->summary))));
+    $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($defaultlang));
     $meta->appendChild($temp);
 }
 
@@ -225,7 +225,7 @@ foreach ($sectionmods as $modnumber) {
             'local_media_files' => $local_media_files,
         ));
         $page->process();
-        $page->getXML($mod, $i, $meta, $xmlDoc, false);
+        $page->get_xml($mod, $i, $meta, $xmldoc, false);
     }
     if($mod->modname == 'quiz' && $mod->visible == 1){
         echo "<p>".$mod->name."</p>";
@@ -256,7 +256,7 @@ foreach ($sectionmods as $modnumber) {
         $quiz->preprocess();
         if ($quiz->get_is_valid()){
             $quiz->process();
-            $quiz->getXML($mod, $i, $meta, $xmlDoc, true);
+            $quiz->get_xml($mod, $i, $meta, $xmldoc, true);
         }
     }
     if($mod->modname == 'feedback' && $mod->visible == 1){
@@ -281,7 +281,7 @@ foreach ($sectionmods as $modnumber) {
         $feedback->preprocess();
         if ($feedback->get_is_valid()){
             $feedback->process();
-            $feedback->getXML($mod, $i, $meta, $xmlDoc, true);
+            $feedback->get_xml($mod, $i, $meta, $xmldoc, true);
         } else {
             echo get_string('error_feedback_no_questions', PLUGINNAME).OPPIA_HTML_BR;
         }
@@ -306,12 +306,12 @@ if($filename){
                         $CFG->block_oppia_mobile_export_course_icon_height,
                         true);
     unlink($course_root."/".$filename) or die('Unable to delete the file');
-    $temp = $xmlDoc->createElement("image");
-    $temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode("/images/".$resized_filename));
+    $temp = $xmldoc->createElement("image");
+    $temp->appendChild($xmldoc->createAttribute("filename"))->appendChild($xmldoc->createTextNode("/images/".$resized_filename));
     $meta->appendChild($temp);
 }
 
-$structure = $xmlDoc->createElement("structure");
+$structure = $xmldoc->createElement("structure");
 
 echo "<h3>".get_string('export_sections_start', PLUGINNAME)."</h3>";
 
@@ -342,27 +342,27 @@ foreach($sections as $sect) {
         echo '<div class="oppia_export_section">';
         echo "<h4>".get_string('export_section_title', PLUGINNAME, $sectTitle['display_title'])."</h4>";
         
-        $section = $xmlDoc->createElement("section");
-        $section->appendChild($xmlDoc->createAttribute("order"))->appendChild($xmlDoc->createTextNode($sect_orderno));
+        $section = $xmldoc->createElement("section");
+        $section->appendChild($xmldoc->createAttribute("order"))->appendChild($xmldoc->createTextNode($sect_orderno));
         if(!$sectTitle['using_default'] && is_array($sectTitle['title']) && count($sectTitle['title'])>0){
             foreach($sectTitle['title'] as $l=>$t){
-                $temp = $xmlDoc->createElement("title");
-                $temp->appendChild($xmlDoc->createCDATASection(strip_tags($t)));
-                $temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($l));
+                $temp = $xmldoc->createElement("title");
+                $temp->appendChild($xmldoc->createCDATASection(strip_tags($t)));
+                $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($l));
                 $section->appendChild($temp);
                 
             }
         } else {
-            $temp = $xmlDoc->createElement("title");
-            $temp->appendChild($xmlDoc->createCDATASection(strip_tags($sectTitle['title'])));
-            $temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($defaultlang));
+            $temp = $xmldoc->createElement("title");
+            $temp->appendChild($xmldoc->createCDATASection(strip_tags($sectTitle['title'])));
+            $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($defaultlang));
             $section->appendChild($temp);
         }
 
         $sect_password =  optional_param('section_'.$sect->id.'_password', '', PARAM_TEXT);
         if ($sect_password != ''){
             echo '<span class="export-results warning">'. get_string('section_password_added', PLUGINNAME) .'</span>'.OPPIA_HTML_BR;
-            $section->appendChild($xmlDoc->createAttribute("password"))->appendChild($xmlDoc->createTextNode($sect_password));
+            $section->appendChild($xmldoc->createAttribute("password"))->appendChild($xmldoc->createTextNode($sect_password));
             // We store the section's password for future exports 
             add_or_update_oppiaconfig($sect->id, 'password', $sect_password, $server);
         }
@@ -385,13 +385,13 @@ foreach($sections as $sect) {
                 $course_root."/images/".$sect->id.'_'.$context->id,
                 $section_width, $section_height, true);
             unlink($course_root."/".$filename) or die('Unable to delete the file');
-            $temp = $xmlDoc->createElement("image");
-            $temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode("/images/".$resized_filename));
+            $temp = $xmldoc->createElement("image");
+            $temp->appendChild($xmldoc->createAttribute("filename"))->appendChild($xmldoc->createTextNode("/images/".$resized_filename));
             $section->appendChild($temp);
         }
 
         $act_orderno = 1;
-        $activities = $xmlDoc->createElement("activities");
+        $activities = $xmldoc->createElement("activities");
         $processor->set_current_section($sect_orderno);
         foreach ($sectionmods as $modnumber) {
             
@@ -406,7 +406,7 @@ foreach($sections as $sect) {
             
             echo '<div class="step"><strong>' . format_string($mod->name) . '</strong>'.OPPIA_HTML_BR;
             $password =  optional_param('mod_'.$mod->id.'_password', '', PARAM_TEXT);
-            $activity = $processor->process_activity($mod, $sect, $act_orderno, $activities, $xmlDoc, $password);
+            $activity = $processor->process_activity($mod, $sect, $act_orderno, $activities, $xmldoc, $password);
             $activity_summaries[$activity->id] = array(
                 'digest'=>$activity->md5,
                 'no_questions'=>$activity->get_no_questions(),
@@ -446,13 +446,13 @@ echo get_string('export_sections_finish', PLUGINNAME).OPPIA_HTML_BR;
 $root->appendChild($structure);
 
 // add in the langs available here
-$langs = $xmlDoc->createElement("langs");
+$langs = $xmldoc->createElement("langs");
 foreach($MOBILE_LANGS as $k=>$v){
-    $temp = $xmlDoc->createElement("lang",$k);
+    $temp = $xmldoc->createElement("lang",$k);
     $langs->appendChild($temp);
 }
 if(count($MOBILE_LANGS) == 0){
-    $temp = $xmlDoc->createElement("lang", $defaultlang);
+    $temp = $xmldoc->createElement("lang", $defaultlang);
     $langs->appendChild($temp);
 }
 $meta->appendChild($langs);
@@ -460,27 +460,27 @@ $local_media_files = $processor->local_media_files;
 
 // add media includes
 if(count($MEDIA) > 0 || count($local_media_files) > 0){
-    $media = $xmlDoc->createElement("media");
+    $media = $xmldoc->createElement("media");
     foreach ($MEDIA as $m){
-        $temp = $xmlDoc->createElement("file");
+        $temp = $xmldoc->createElement("file");
         foreach($m as $var => $value) {
-            $temp->appendChild($xmlDoc->createAttribute($var))->appendChild($xmlDoc->createTextNode($value));
+            $temp->appendChild($xmldoc->createAttribute($var))->appendChild($xmldoc->createTextNode($value));
         }
         $media->appendChild($temp);
     }
     foreach ($local_media_files as $m){
-        $temp = $xmlDoc->createElement("file");
+        $temp = $xmldoc->createElement("file");
         foreach($m as $var => $value) {
-            $temp->appendChild($xmlDoc->createAttribute($var))->appendChild($xmlDoc->createTextNode($value));
+            $temp->appendChild($xmldoc->createAttribute($var))->appendChild($xmldoc->createTextNode($value));
         }
         $media->appendChild($temp);
     }
 
     $root->appendChild($media);
 }
-$xmlDoc->preserveWhiteSpace = false;
-$xmlDoc->formatOutput = true;
-$xmlDoc->save($course_root.OPPIA_MODULE_XML);
+$xmldoc->preserveWhiteSpace = false;
+$xmldoc->formatOutput = true;
+$xmldoc->save($course_root.OPPIA_MODULE_XML);
 
 
 if ($sect_orderno <= 1){

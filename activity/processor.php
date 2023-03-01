@@ -100,7 +100,7 @@ class ActivityProcessor {
             $page->process();
             
             if ($xmlnode != null){
-                $page->getXML($mod, $act_orderno, $xmlnode, $xmldoc, true);
+                $page->get_xml($mod, $act_orderno, $xmlnode, $xmldoc, true);
                 $local_media = $page->getLocalMedia();
                 $media_files = $this->local_media_files;
                 $this->local_media_files = array_merge($media_files, $local_media);
@@ -128,7 +128,7 @@ class ActivityProcessor {
             if ($quiz->get_is_valid()){
                 $quiz->process();
                 if ($xmlnode != null){
-                    $quiz->getXML($mod, $act_orderno, $xmlnode, $xmldoc, true);
+                    $quiz->get_xml($mod, $act_orderno, $xmlnode, $xmldoc, true);
                 }
                 return $quiz;
             } else {
@@ -140,7 +140,7 @@ class ActivityProcessor {
             $resource = new MobileActivityResource($params);
             $resource->process();
             if ($xmlnode != null){
-                $resource->getXML($mod, $act_orderno, $xmlnode, $xmldoc, true);
+                $resource->get_xml($mod, $act_orderno, $xmlnode, $xmldoc, true);
             }
             return $resource;
         }
@@ -148,7 +148,7 @@ class ActivityProcessor {
             $url = new MobileActivityUrl($params);
             $url->process();
             if ($xmlnode != null){
-                $url->getXML($mod, $act_orderno, $xmlnode, $xmldoc, true);
+                $url->get_xml($mod, $act_orderno, $xmlnode, $xmldoc, true);
             }
             return $url;
         }
@@ -177,7 +177,7 @@ class ActivityProcessor {
             if ($feedback->get_is_valid()){
                 $feedback->process();
                 if ($xmlnode != null){
-                    $feedback->getXML($mod, $act_orderno, $xmlnode, $xmldoc, true);
+                    $feedback->get_xml($mod, $act_orderno, $xmlnode, $xmldoc, true);
                 }
                 return $feedback;
 
