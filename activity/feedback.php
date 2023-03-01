@@ -1,5 +1,4 @@
 <?php
-
 class MobileActivityFeedback extends MobileActivity {
     
     private $supported_types = array('multichoicerated',

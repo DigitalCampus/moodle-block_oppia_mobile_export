@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Oppia Mobile Export
  * Step 1: Main course export configuration
@@ -40,7 +40,7 @@ $PAGE->set_url(PLUGINPATH.'export/step1.php', array('id' => $id));
 context_helper::preload_course($id);
 $context = context_course::instance($course->id);
 if (!$context) {
-	print_error('nocontext');
+    print_error('nocontext');
 }
 
 require_login($course);
@@ -60,15 +60,15 @@ echo $OUTPUT->header();
 // Check specified server belongs to current user
 $server_connection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid'=>$USER->id,'id'=>$server));
 if(!$server_connection && $server != "default"){
-	echo "<p>".get_string('server_not_owner', PLUGINNAME)."</p>";
-	echo $OUTPUT->footer();
-	die();
+    echo "<p>".get_string('server_not_owner', PLUGINNAME)."</p>";
+    echo $OUTPUT->footer();
+    die();
 }
 
 $priority = (int) get_oppiaconfig($id, 'coursepriority', '0', $server);
 $priorities = [];
 for ($i=0; $i<=PRIORITY_LEVELS; $i++){
-	$priorities[$i] = array ("idx" => $i, "selected" => $i == $priority );
+    $priorities[$i] = array ("idx" => $i, "selected" => $i == $priority );
 }
 
 $sequencing = get_oppiaconfig($id, 'coursesequencing', '', $server);
@@ -80,32 +80,30 @@ $section_height = get_oppiaconfig($id, 'section_height', $CFG->block_oppia_mobil
 $section_width = get_oppiaconfig($id, 'section_width', $CFG->block_oppia_mobile_export_section_icon_width, $server);
 
 $base_settings = array(
-	'priorities' 	=> $priorities,
-	'tags' 			=> get_oppiaconfig($id,'coursetags','', $server),
-	'default_lang' 	=> get_oppiaconfig($id,'default_lang', $CFG->block_oppia_mobile_export_default_lang, $server),
-	'keep_html'		=> $keep_html,
-	'video_overlay' => $video_overlay,
-	'thumb_height'	=> $thumb_height,
-	'thumb_width'	=> $thumb_width,
-	'section_height'=> $section_height,
-	'section_width'	=> $section_width,
-	'sequencing_none' 	 => $sequencing == '' || $sequencing == 'none',
-	'sequencing_section' => $sequencing == 'section',
-	'sequencing_course'  => $sequencing == 'course',
+    'priorities'     => $priorities,
+    'tags'             => get_oppiaconfig($id,'coursetags','', $server),
+    'default_lang'     => get_oppiaconfig($id,'default_lang', $CFG->block_oppia_mobile_export_default_lang, $server),
+    'keep_html'        => $keep_html,
+    'video_overlay' => $video_overlay,
+    'thumb_height'    => $thumb_height,
+    'thumb_width'    => $thumb_width,
+    'section_height'=> $section_height,
+    'section_width'    => $section_width,
+    'sequencing_none'      => $sequencing == '' || $sequencing == 'none',
+    'sequencing_section' => $sequencing == 'section',
+    'sequencing_course'  => $sequencing == 'course',
 );
 
 echo $OUTPUT->render_from_template(
-	PLUGINNAME.'/export_step1_form',
-	array(
-		'id' => $id,
-		'stylesheet' => $stylesheet,
-		'server' => $server,
-		'course_export_status' => $course_status,
-		'wwwroot' => $CFG->wwwroot,
-		'base_settings' => $base_settings
-	)
+    PLUGINNAME.'/export_step1_form',
+    array(
+        'id' => $id,
+        'stylesheet' => $stylesheet,
+        'server' => $server,
+        'course_export_status' => $course_status,
+        'wwwroot' => $CFG->wwwroot,
+        'base_settings' => $base_settings
+    )
 );
 
 echo $OUTPUT->footer();
-
-?>

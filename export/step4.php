@@ -61,7 +61,7 @@ $PAGE->set_url(PLUGINPATH.'export/step4.php', array('id' => $id));
 context_helper::preload_course($id);
 $context = context_course::instance($course->id);
 if (!$context) {
-	print_error('nocontext');
+    print_error('nocontext');
 }
 
 require_login($course);
@@ -88,26 +88,26 @@ echo "<h2>".get_string('export_step4_title', PLUGINNAME)."</h2>";
 
 $server_connection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid'=>$USER->id,'id'=>$server));
 if(!$server_connection && $server != "default"){
-	echo "<p>".get_string('server_not_owner', PLUGINNAME)."</p>";
-	echo $OUTPUT->footer();
-	die();
+    echo "<p>".get_string('server_not_owner', PLUGINNAME)."</p>";
+    echo $OUTPUT->footer();
+    die();
 }
 if ($server == "default"){
-	$server_connection = new stdClass();
-	$server_connection->url = $CFG->block_oppia_mobile_export_default_server;
+    $server_connection = new stdClass();
+    $server_connection->url = $CFG->block_oppia_mobile_export_default_server;
 }
 $api_helper = new ApiHelper();
 $api_helper->fetch_server_info($server_connection->url);
 
 echo '<p>';
 if ($api_helper->version == null || $api_helper->version==''){
-	echo '<span class="export-error">'. get_string('export_server_error', PLUGINNAME).OPPIA_HTML_BR;
-	add_publishing_log($server_connection->url, $USER->id, $id, "server_unavailable", "Unable to get server info");
+    echo '<span class="export-error">'. get_string('export_server_error', PLUGINNAME).OPPIA_HTML_BR;
+    add_publishing_log($server_connection->url, $USER->id, $id, "server_unavailable", "Unable to get server info");
 }
 else{
-	echo $OUTPUT->render_from_template(
-		PLUGINNAME.'/server_info', array('server_info' => $api_helper)
-	);
+    echo $OUTPUT->render_from_template(
+        PLUGINNAME.'/server_info', array('server_info' => $api_helper)
+    );
 }
 
 //make course dir etc for output
@@ -115,10 +115,10 @@ $dataroot = $CFG->dataroot . "/";
 deleteDir($dataroot.OPPIA_OUTPUT_DIR.$USER->id."/temp");
 deleteDir($dataroot.OPPIA_OUTPUT_DIR.$USER->id);
 if(!is_dir($dataroot."output")){
-	if (!mkdir($dataroot."output",0777)){
-		echo "<h3>Failed to create the output directory, please check your server permissions to allow the webserver user to create the output directory under " . __DIR__ . "</h3>";
-		die;
-	}
+    if (!mkdir($dataroot."output",0777)){
+        echo "<h3>Failed to create the output directory, please check your server permissions to allow the webserver user to create the output directory under " . __DIR__ . "</h3>";
+        die;
+    }
 }
 mkdir($dataroot.OPPIA_OUTPUT_DIR.$USER->id."/temp/",0777, true);
 $course_root = $dataroot.OPPIA_OUTPUT_DIR.$USER->id."/temp/".strtolower($course->shortname);
@@ -156,17 +156,17 @@ add_publishing_log($server_connection->url, $USER->id, $id, "export_start", "Exp
 
 $title = extractLangs($course->fullname);
 if(is_array($title) && count($title)>0){
-	foreach($title as $l=>$t){
-		$temp = $xmlDoc->createElement("title");
-		$temp->appendChild($xmlDoc->createCDATASection(strip_tags($t)));
-		$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($l));
-		$meta->appendChild($temp);
-	}
+    foreach($title as $l=>$t){
+        $temp = $xmlDoc->createElement("title");
+        $temp->appendChild($xmlDoc->createCDATASection(strip_tags($t)));
+        $temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($l));
+        $meta->appendChild($temp);
+    }
 } else {
-	$temp = $xmlDoc->createElement("title");
-	$temp->appendChild($xmlDoc->createCDATASection(strip_tags($course->fullname)));
-	$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
-	$meta->appendChild($temp);
+    $temp = $xmlDoc->createElement("title");
+    $temp->appendChild($xmlDoc->createCDATASection(strip_tags($course->fullname)));
+    $temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
+    $meta->appendChild($temp);
 }
 $temp = $xmlDoc->createElement("shortname");
 $temp->appendChild($xmlDoc->createCDATASection(strtolower($course->shortname)));
@@ -174,17 +174,17 @@ $meta->appendChild($temp);
 
 $summary = extractLangs($course->summary);
 if(is_array($summary) && count($summary)>0){
-	foreach($summary as $l=>$s){
-		$temp = $xmlDoc->createElement("description");
-		$temp->appendChild($xmlDoc->createCDATASection(trim(strip_tags($s))));
-		$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($l));
-		$meta->appendChild($temp);
-	}
+    foreach($summary as $l=>$s){
+        $temp = $xmlDoc->createElement("description");
+        $temp->appendChild($xmlDoc->createCDATASection(trim(strip_tags($s))));
+        $temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($l));
+        $meta->appendChild($temp);
+    }
 } else {
-	$temp = $xmlDoc->createElement("description");
-	$temp->appendChild($xmlDoc->createCDATASection(trim(strip_tags($course->summary))));
-	$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
-	$meta->appendChild($temp);
+    $temp = $xmlDoc->createElement("description");
+    $temp->appendChild($xmlDoc->createCDATASection(trim(strip_tags($course->summary))));
+    $temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
+    $meta->appendChild($temp);
 }
 
 /*-------Get course info pages/about etc----------------------*/
@@ -192,108 +192,108 @@ $thissection = $sections[0];
 $sectionmods = explode(",", $thissection->sequence);
 $i = 1;
 foreach ($sectionmods as $modnumber) {
-		
-	if (empty($modinfo->sections[0])) {
-		continue;
-	}
-	$mod = $mods[$modnumber];
-	
-	if($mod->modname == 'page' && $mod->visible == 1){
-		echo "<p>".$mod->name."</p>";
-		$page = new MobileActivityPage(array(
-			'id' => $mod->id,
-			'courseroot' => $course_root,
-			'server_id' => $server,
-			'section' => 0,
-			'keep_html' => $keep_html,
-			'video_overlay' => $video_overlay,
-			'local_media_files' => $local_media_files,
-		));
-		$page->process();
-		$page->getXML($mod, $i, $meta, $xmlDoc, false);
-	}
-	if($mod->modname == 'quiz' && $mod->visible == 1){
-		echo "<p>".$mod->name."</p>";
+        
+    if (empty($modinfo->sections[0])) {
+        continue;
+    }
+    $mod = $mods[$modnumber];
+    
+    if($mod->modname == 'page' && $mod->visible == 1){
+        echo "<p>".$mod->name."</p>";
+        $page = new MobileActivityPage(array(
+            'id' => $mod->id,
+            'courseroot' => $course_root,
+            'server_id' => $server,
+            'section' => 0,
+            'keep_html' => $keep_html,
+            'video_overlay' => $video_overlay,
+            'local_media_files' => $local_media_files,
+        ));
+        $page->process();
+        $page->getXML($mod, $i, $meta, $xmlDoc, false);
+    }
+    if($mod->modname == 'quiz' && $mod->visible == 1){
+        echo "<p>".$mod->name."</p>";
 
-		$randomselect = get_oppiaconfig($id, 'randomselect', 0, $server);
-		$passthreshold = get_oppiaconfig($id, 'passthreshold', 0, $server);
-		$showfeedback = get_oppiaconfig($id, 'showfeedback', 2, $server);
-		$maxattempts = get_oppiaconfig($id, 'maxattempts', 'unlimited', $server);
+        $randomselect = get_oppiaconfig($id, 'randomselect', 0, $server);
+        $passthreshold = get_oppiaconfig($id, 'passthreshold', 0, $server);
+        $showfeedback = get_oppiaconfig($id, 'showfeedback', 2, $server);
+        $maxattempts = get_oppiaconfig($id, 'maxattempts', 'unlimited', $server);
 
-		$quiz = new MobileActivityQuiz(array(
-	    	'id' => $mod->id,
-	    	'courseroot' => $course_root,
-			'section' => 0,
-			'server_id' => $server,
-			'course_id' => $id,
-			'shortname' => $course->shortname,
-			'summary' => 'Pre-test',
-			'courseversion' => $versionid,
-			'keep_html' => $keep_html,
-			'config_array' => array(
-				'randomselect'=>$randomselect, 
-				'showfeedback'=>$showfeedback, 
-				'passthreshold'=>$passthreshold,
-				'maxattempts'=>$maxattempts
-			)
-	    ));
+        $quiz = new MobileActivityQuiz(array(
+            'id' => $mod->id,
+            'courseroot' => $course_root,
+            'section' => 0,
+            'server_id' => $server,
+            'course_id' => $id,
+            'shortname' => $course->shortname,
+            'summary' => 'Pre-test',
+            'courseversion' => $versionid,
+            'keep_html' => $keep_html,
+            'config_array' => array(
+                'randomselect'=>$randomselect, 
+                'showfeedback'=>$showfeedback, 
+                'passthreshold'=>$passthreshold,
+                'maxattempts'=>$maxattempts
+            )
+        ));
 
-		$quiz->preprocess();
-		if ($quiz->get_is_valid()){
-			$quiz->process();
-			$quiz->getXML($mod, $i, $meta, $xmlDoc, true);
-		}
-	}
-	if($mod->modname == 'feedback' && $mod->visible == 1){
-	    echo $mod->name.OPPIA_HTML_BR;
+        $quiz->preprocess();
+        if ($quiz->get_is_valid()){
+            $quiz->process();
+            $quiz->getXML($mod, $i, $meta, $xmlDoc, true);
+        }
+    }
+    if($mod->modname == 'feedback' && $mod->visible == 1){
+        echo $mod->name.OPPIA_HTML_BR;
 
-		$feedback = new MobileActivityFeedback(array(
-	    	'id' => $mod->id,
-	    	'courseroot' => $course_root,
-			'section' => 0,
-			'server_id' => $server,
-			'course_id' => $id,
-			'shortname' => $course->shortname,
-			'courseversion' => $versionid,
-			'keep_html' => $keep_html,
-			'config_array' => array(
-				'showfeedback'=>false, 
-				'passthreshold'=>0,
-				'maxattempts'=>'unlimited'
-			)
-	    ));
+        $feedback = new MobileActivityFeedback(array(
+            'id' => $mod->id,
+            'courseroot' => $course_root,
+            'section' => 0,
+            'server_id' => $server,
+            'course_id' => $id,
+            'shortname' => $course->shortname,
+            'courseversion' => $versionid,
+            'keep_html' => $keep_html,
+            'config_array' => array(
+                'showfeedback'=>false, 
+                'passthreshold'=>0,
+                'maxattempts'=>'unlimited'
+            )
+        ));
 
-		$feedback->preprocess();
-		if ($feedback->get_is_valid()){
-			$feedback->process();
-			$feedback->getXML($mod, $i, $meta, $xmlDoc, true);
-		} else {
-		    echo get_string('error_feedback_no_questions', PLUGINNAME).OPPIA_HTML_BR;
-		}
-	}
-	$i++;
+        $feedback->preprocess();
+        if ($feedback->get_is_valid()){
+            $feedback->process();
+            $feedback->getXML($mod, $i, $meta, $xmlDoc, true);
+        } else {
+            echo get_string('error_feedback_no_questions', PLUGINNAME).OPPIA_HTML_BR;
+        }
+    }
+    $i++;
 }
 
 /*-----------------------------*/
 
 // get module image (from course summary)
 $filename = extractImageFile($course->summary,
-							'course',
-							'summary',
-							'0',
-							$context->id,
-							$course_root,0);
+                            'course',
+                            'summary',
+                            '0',
+                            $context->id,
+                            $course_root,0);
 
 if($filename){
-	$resized_filename = resizeImage($course_root."/".$filename,
-	    $course_root."/images/".$course->id.'_'.$context->id,
-						$CFG->block_oppia_mobile_export_course_icon_width,
-						$CFG->block_oppia_mobile_export_course_icon_height,
-						true);
-	unlink($course_root."/".$filename) or die('Unable to delete the file');
-	$temp = $xmlDoc->createElement("image");
-	$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode("/images/".$resized_filename));
-	$meta->appendChild($temp);
+    $resized_filename = resizeImage($course_root."/".$filename,
+        $course_root."/images/".$course->id.'_'.$context->id,
+                        $CFG->block_oppia_mobile_export_course_icon_width,
+                        $CFG->block_oppia_mobile_export_course_icon_height,
+                        true);
+    unlink($course_root."/".$filename) or die('Unable to delete the file');
+    $temp = $xmlDoc->createElement("image");
+    $temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode("/images/".$resized_filename));
+    $meta->appendChild($temp);
 }
 
 $structure = $xmlDoc->createElement("structure");
@@ -301,130 +301,130 @@ $structure = $xmlDoc->createElement("structure");
 echo "<h3>".get_string('export_sections_start', PLUGINNAME)."</h3>";
 
 $processor = new ActivityProcessor(array(
-			'course_root' => $course_root,
-			'server_id' => $server,
-			'course_id' => $id,
-			'course_shortname' => $course->shortname,
-			'versionid' => $versionid,
-			'keep_html' => $keep_html,
-			'video_overlay' => $video_overlay,
-			'local_media_files' => $local_media_files
+            'course_root' => $course_root,
+            'server_id' => $server,
+            'course_id' => $id,
+            'course_shortname' => $course->shortname,
+            'versionid' => $versionid,
+            'keep_html' => $keep_html,
+            'video_overlay' => $video_overlay,
+            'local_media_files' => $local_media_files
 ));
 
 $sect_orderno = 1;
 $activity_summaries = array();
 foreach($sections as $sect) {
-	flush_buffers();
-	// We avoid the topic0 as is not a section as the rest
-	if ($sect->section == 0) {
-	    continue;
-	}
-	$sectionmods = explode(",", $sect->sequence);
-	$sectTitle = get_section_title($sect);
+    flush_buffers();
+    // We avoid the topic0 as is not a section as the rest
+    if ($sect->section == 0) {
+        continue;
+    }
+    $sectionmods = explode(",", $sect->sequence);
+    $sectTitle = get_section_title($sect);
 
-	if(count($sectionmods)>0){
-		echo '<hr>';
-		echo '<div class="oppia_export_section">';
-		echo "<h4>".get_string('export_section_title', PLUGINNAME, $sectTitle['display_title'])."</h4>";
-		
-		$section = $xmlDoc->createElement("section");
-		$section->appendChild($xmlDoc->createAttribute("order"))->appendChild($xmlDoc->createTextNode($sect_orderno));
-		if(!$sectTitle['using_default'] && is_array($sectTitle['title']) && count($sectTitle['title'])>0){
-			foreach($sectTitle['title'] as $l=>$t){
-				$temp = $xmlDoc->createElement("title");
-				$temp->appendChild($xmlDoc->createCDATASection(strip_tags($t)));
-				$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($l));
-				$section->appendChild($temp);
-				
-			}
-		} else {
-			$temp = $xmlDoc->createElement("title");
-			$temp->appendChild($xmlDoc->createCDATASection(strip_tags($sectTitle['title'])));
-			$temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
-			$section->appendChild($temp);
-		}
+    if(count($sectionmods)>0){
+        echo '<hr>';
+        echo '<div class="oppia_export_section">';
+        echo "<h4>".get_string('export_section_title', PLUGINNAME, $sectTitle['display_title'])."</h4>";
+        
+        $section = $xmlDoc->createElement("section");
+        $section->appendChild($xmlDoc->createAttribute("order"))->appendChild($xmlDoc->createTextNode($sect_orderno));
+        if(!$sectTitle['using_default'] && is_array($sectTitle['title']) && count($sectTitle['title'])>0){
+            foreach($sectTitle['title'] as $l=>$t){
+                $temp = $xmlDoc->createElement("title");
+                $temp->appendChild($xmlDoc->createCDATASection(strip_tags($t)));
+                $temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($l));
+                $section->appendChild($temp);
+                
+            }
+        } else {
+            $temp = $xmlDoc->createElement("title");
+            $temp->appendChild($xmlDoc->createCDATASection(strip_tags($sectTitle['title'])));
+            $temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
+            $section->appendChild($temp);
+        }
 
-		$sect_password =  optional_param('section_'.$sect->id.'_password', '', PARAM_TEXT);
-		if ($sect_password != ''){
-			echo '<span class="export-results warning">'. get_string('section_password_added', PLUGINNAME) .'</span>'.OPPIA_HTML_BR;
-			$section->appendChild($xmlDoc->createAttribute("password"))->appendChild($xmlDoc->createTextNode($sect_password));
-			// We store the section's password for future exports 
-			add_or_update_oppiaconfig($sect->id, 'password', $sect_password, $server);
-		}
-		else{
-			// If the password was empty, we remove possible previous ones
-			remove_oppiaconfig_if_exists($sect->id, 'password', $server);
-		}
+        $sect_password =  optional_param('section_'.$sect->id.'_password', '', PARAM_TEXT);
+        if ($sect_password != ''){
+            echo '<span class="export-results warning">'. get_string('section_password_added', PLUGINNAME) .'</span>'.OPPIA_HTML_BR;
+            $section->appendChild($xmlDoc->createAttribute("password"))->appendChild($xmlDoc->createTextNode($sect_password));
+            // We store the section's password for future exports 
+            add_or_update_oppiaconfig($sect->id, 'password', $sect_password, $server);
+        }
+        else{
+            // If the password was empty, we remove possible previous ones
+            remove_oppiaconfig_if_exists($sect->id, 'password', $server);
+        }
 
-		// get section image (from summary)
-		$filename = extractImageFile($sect->summary,
-									'course',
-									'section',
-									$sect->id,
-									$context->id,
-									$course_root, 0);
+        // get section image (from summary)
+        $filename = extractImageFile($sect->summary,
+                                    'course',
+                                    'section',
+                                    $sect->id,
+                                    $context->id,
+                                    $course_root, 0);
 
-		if($filename){
-			$resized_filename = resizeImage(
-				$course_root."/".$filename,
-			    $course_root."/images/".$sect->id.'_'.$context->id,
-				$section_width, $section_height, true);
-			unlink($course_root."/".$filename) or die('Unable to delete the file');
-			$temp = $xmlDoc->createElement("image");
-			$temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode("/images/".$resized_filename));
-			$section->appendChild($temp);
-		}
+        if($filename){
+            $resized_filename = resizeImage(
+                $course_root."/".$filename,
+                $course_root."/images/".$sect->id.'_'.$context->id,
+                $section_width, $section_height, true);
+            unlink($course_root."/".$filename) or die('Unable to delete the file');
+            $temp = $xmlDoc->createElement("image");
+            $temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode("/images/".$resized_filename));
+            $section->appendChild($temp);
+        }
 
-		$act_orderno = 1;
-		$activities = $xmlDoc->createElement("activities");
-		$processor->set_current_section($sect_orderno);
-		foreach ($sectionmods as $modnumber) {
-			
-			if ($modnumber == "" || $modnumber === false){
-				continue;
-			}
-			$mod = $mods[$modnumber];
-			
-			if($mod->visible != 1){
-				continue;
-			}
-			
-			echo '<div class="step"><strong>' . format_string($mod->name) . '</strong>'.OPPIA_HTML_BR;
-			$password =  optional_param('mod_'.$mod->id.'_password', '', PARAM_TEXT);
-			$activity = $processor->process_activity($mod, $sect, $act_orderno, $activities, $xmlDoc, $password);
-			$activity_summaries[$activity->id] = array(
-				'digest'=>$activity->md5,
-				'no_questions'=>$activity->get_no_questions(),
-			);
-			if ($activity != null){
-				$act_orderno++;
-				if ($activity->has_password()){
-					echo '<span class="export-results info">'. get_string('activity_password_added', PLUGINNAME) .'</span>'.OPPIA_HTML_BR;
-					if ($password !== ''){
-						add_or_update_oppiaconfig($mod->id, 'password', $password, $server);
-					}
-					else{
-						// If the password was empty, we remove possible previous ones
-						remove_oppiaconfig_if_exists($mod->id, 'password', $server);
-					}
-				}
-			}
-			echo '</div>';
+        $act_orderno = 1;
+        $activities = $xmlDoc->createElement("activities");
+        $processor->set_current_section($sect_orderno);
+        foreach ($sectionmods as $modnumber) {
+            
+            if ($modnumber == "" || $modnumber === false){
+                continue;
+            }
+            $mod = $mods[$modnumber];
+            
+            if($mod->visible != 1){
+                continue;
+            }
+            
+            echo '<div class="step"><strong>' . format_string($mod->name) . '</strong>'.OPPIA_HTML_BR;
+            $password =  optional_param('mod_'.$mod->id.'_password', '', PARAM_TEXT);
+            $activity = $processor->process_activity($mod, $sect, $act_orderno, $activities, $xmlDoc, $password);
+            $activity_summaries[$activity->id] = array(
+                'digest'=>$activity->md5,
+                'no_questions'=>$activity->get_no_questions(),
+            );
+            if ($activity != null){
+                $act_orderno++;
+                if ($activity->has_password()){
+                    echo '<span class="export-results info">'. get_string('activity_password_added', PLUGINNAME) .'</span>'.OPPIA_HTML_BR;
+                    if ($password !== ''){
+                        add_or_update_oppiaconfig($mod->id, 'password', $password, $server);
+                    }
+                    else{
+                        // If the password was empty, we remove possible previous ones
+                        remove_oppiaconfig_if_exists($mod->id, 'password', $server);
+                    }
+                }
+            }
+            echo '</div>';
 
-			flush_buffers();
-		}
+            flush_buffers();
+        }
 
-		if ($act_orderno > 1){
-			$section->appendChild($activities);
-			$structure->appendChild($section);
-			$sect_orderno++;
-		} else {
-		    echo get_string('error_section_no_activities', PLUGINNAME).OPPIA_HTML_BR;
-		}
+        if ($act_orderno > 1){
+            $section->appendChild($activities);
+            $structure->appendChild($section);
+            $sect_orderno++;
+        } else {
+            echo get_string('error_section_no_activities', PLUGINNAME).OPPIA_HTML_BR;
+        }
 
-		echo '</div>';
-		flush_buffers();
-	}
+        echo '</div>';
+        flush_buffers();
+    }
 }
 echo '<hr><br>';
 echo get_string('export_sections_finish', PLUGINNAME).OPPIA_HTML_BR;
@@ -433,35 +433,35 @@ $root->appendChild($structure);
 // add in the langs available here
 $langs = $xmlDoc->createElement("langs");
 foreach($MOBILE_LANGS as $k=>$v){
-	$temp = $xmlDoc->createElement("lang",$k);
-	$langs->appendChild($temp);
+    $temp = $xmlDoc->createElement("lang",$k);
+    $langs->appendChild($temp);
 }
 if(count($MOBILE_LANGS) == 0){
-	$temp = $xmlDoc->createElement("lang",$DEFAULT_LANG);
-	$langs->appendChild($temp);
+    $temp = $xmlDoc->createElement("lang",$DEFAULT_LANG);
+    $langs->appendChild($temp);
 }
 $meta->appendChild($langs);
 $local_media_files = $processor->local_media_files;
 
 // add media includes
 if(count($MEDIA) > 0 || count($local_media_files) > 0){
-	$media = $xmlDoc->createElement("media");
-	foreach ($MEDIA as $m){
-		$temp = $xmlDoc->createElement("file");
-		foreach($m as $var => $value) {
-			$temp->appendChild($xmlDoc->createAttribute($var))->appendChild($xmlDoc->createTextNode($value));
-		}
-		$media->appendChild($temp);
-	}
-	foreach ($local_media_files as $m){
-		$temp = $xmlDoc->createElement("file");
-		foreach($m as $var => $value) {
-			$temp->appendChild($xmlDoc->createAttribute($var))->appendChild($xmlDoc->createTextNode($value));
-		}
-		$media->appendChild($temp);
-	}
+    $media = $xmlDoc->createElement("media");
+    foreach ($MEDIA as $m){
+        $temp = $xmlDoc->createElement("file");
+        foreach($m as $var => $value) {
+            $temp->appendChild($xmlDoc->createAttribute($var))->appendChild($xmlDoc->createTextNode($value));
+        }
+        $media->appendChild($temp);
+    }
+    foreach ($local_media_files as $m){
+        $temp = $xmlDoc->createElement("file");
+        foreach($m as $var => $value) {
+            $temp->appendChild($xmlDoc->createAttribute($var))->appendChild($xmlDoc->createTextNode($value));
+        }
+        $media->appendChild($temp);
+    }
 
-	$root->appendChild($media);
+    $root->appendChild($media);
 }
 $xmlDoc->preserveWhiteSpace = false;
 $xmlDoc->formatOutput = true;
@@ -469,26 +469,26 @@ $xmlDoc->save($course_root.OPPIA_MODULE_XML);
 
 
 if ($sect_orderno <= 1){
-	echo '<h3>'.get_string('error_exporting', PLUGINNAME).'</h3>';
-	echo '<p>'.get_string('error_exporting_no_sections', PLUGINNAME).'</p>';
-	echo $OUTPUT->footer();
-	die();
+    echo '<h3>'.get_string('error_exporting', PLUGINNAME).'</h3>';
+    echo '<p>'.get_string('error_exporting_no_sections', PLUGINNAME).'</p>';
+    echo $OUTPUT->footer();
+    die();
 }
 
 echo $OUTPUT->render_from_template(
-	PLUGINNAME.'/export_step4_form',
-	array(
-		'id' => $id,
-		'server_connection' =>$server_connection->url,
-		'media_files' => $local_media_files,
-		'media_files_str' => json_encode($local_media_files),
-		'server_id' => $server,
-		'stylesheet' => $stylesheet,
-		'coursetags' => $tags,
-		'course_export_status' => $course_export_status,
-		'course_root' => $course_root,
-		'activity_summaries' => json_encode($activity_summaries),
-		'wwwroot' => $CFG->wwwroot));
+    PLUGINNAME.'/export_step4_form',
+    array(
+        'id' => $id,
+        'server_connection' =>$server_connection->url,
+        'media_files' => $local_media_files,
+        'media_files_str' => json_encode($local_media_files),
+        'server_id' => $server,
+        'stylesheet' => $stylesheet,
+        'coursetags' => $tags,
+        'course_export_status' => $course_export_status,
+        'course_root' => $course_root,
+        'activity_summaries' => json_encode($activity_summaries),
+        'wwwroot' => $CFG->wwwroot));
 
 echo $OUTPUT->footer();
 

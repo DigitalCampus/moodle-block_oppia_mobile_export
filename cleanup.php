@@ -1,4 +1,4 @@
-<?php 
+<?php
 require_once(dirname(__FILE__) . '/../../config.php');
 require_once(dirname(__FILE__) . '/constants.php');
 
@@ -11,7 +11,7 @@ $PAGE->set_url(PLUGINPATH . 'cleanup.php', array('id' => $id));
 context_helper::preload_course($id);
 $context = context_course::instance($course->id);
 if (!$context) {
-	print_error('nocontext');
+    print_error('nocontext');
 }
 
 require_login($course);

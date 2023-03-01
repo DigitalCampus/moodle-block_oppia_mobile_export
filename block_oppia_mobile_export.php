@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Oppia Mobile Export
  * @author Alex Little
@@ -13,17 +13,17 @@ require_once($pluginroot . 'lib.php');
 require_once($pluginroot . 'version.php');
 
 class block_oppia_mobile_export extends block_base {
-	
+    
     function init() {
         $this->title = get_string('pluginname', PLUGINNAME);
     }
 
     function instance_allow_config() {
-    	return false;
+        return false;
     }
     
     function has_config() {
-    	return true;
+        return true;
     }
     
     function get_content() {
@@ -36,7 +36,7 @@ class block_oppia_mobile_export extends block_base {
         $this->content = new stdClass;
         
         if (!has_capability('block/oppia_mobile_export:addinstance', context_course::instance($COURSE->id))) {
-        	return $this->content;
+            return $this->content;
         }
 
         $servers = array();
@@ -96,5 +96,3 @@ class block_oppia_mobile_export extends block_base {
         return $styles;
     }
 }
-
-?>

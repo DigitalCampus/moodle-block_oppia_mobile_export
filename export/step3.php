@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Oppia Mobile Export
  * Step 3: Configure password protection (for sections and feedback activities)
@@ -41,7 +41,7 @@ $PAGE->set_url(PLUGINPATH.'export/step3.php', array('id' => $id));
 context_helper::preload_course($id);
 $context = context_course::instance($course->id);
 if (!$context) {
-	print_error('nocontext');
+    print_error('nocontext');
 }
 
 require_login($course);
@@ -79,122 +79,120 @@ echo '<div class="oppia_export_section py-3">';
 $config_sections = array();
 $sect_orderno = 1;
 foreach($sections as $sect) {
-	flush_buffers();
-	// We avoid the topic0 as is not a section as the rest
-	if ($sect->section == 0) {
-	    continue;
-	}
+    flush_buffers();
+    // We avoid the topic0 as is not a section as the rest
+    if ($sect->section == 0) {
+        continue;
+    }
 
-	$sectionmods = explode(",", $sect->sequence);
-	$sectTitle = get_section_title($sect);
+    $sectionmods = explode(",", $sect->sequence);
+    $sectTitle = get_section_title($sect);
 
-	if(count($sectionmods)>0){
-		$activity_count = 0;
-		$activities = [];
+    if(count($sectionmods)>0){
+        $activity_count = 0;
+        $activities = [];
 
-		foreach ($sectionmods as $modnumber) {
-			if ($modnumber == "" || $modnumber === false){
-				continue;
-			}
-			$mod = $mods[$modnumber];
-			
-			if($mod->visible != 1){
-				continue;
-			}
-			if ( ($mod->modname == 'page') ||
-					($mod->modname == 'resource') || 
-					($mod->modname == 'url')) {
-				$activity_count++;
-			}
-			else if ($mod->modname == 'feedback'){
-				$activity_count++;
+        foreach ($sectionmods as $modnumber) {
+            if ($modnumber == "" || $modnumber === false){
+                continue;
+            }
+            $mod = $mods[$modnumber];
+            
+            if($mod->visible != 1){
+                continue;
+            }
+            if ( ($mod->modname == 'page') ||
+                    ($mod->modname == 'resource') || 
+                    ($mod->modname == 'url')) {
+                $activity_count++;
+            }
+            else if ($mod->modname == 'feedback'){
+                $activity_count++;
 
-				$password = get_oppiaconfig($mod->id, 'password', '', $server, false);
+                $password = get_oppiaconfig($mod->id, 'password', '', $server, false);
 
-				array_push($activities, array(
-					'modid' => $mod->id,
-					'title' => format_string($mod->name),
-					'password' => $password
-				));
+                array_push($activities, array(
+                    'modid' => $mod->id,
+                    'title' => format_string($mod->name),
+                    'password' => $password
+                ));
 
-				$grades = optional_param_array('grade_'.$mod->id, array(), PARAM_INT);
-				$messages = optional_param_array('message_'.$mod->id, array(), PARAM_TEXT);
+                $grades = optional_param_array('grade_'.$mod->id, array(), PARAM_INT);
+                $messages = optional_param_array('message_'.$mod->id, array(), PARAM_TEXT);
 
-				for($i = 0; $i < 21; $i++){
-					$value = $i * 5;
-					if(in_array($value, $grades, false)) {
-						$index = array_search($value, $grades);
-						$message = $messages[$index];
-						if($message) {
-							add_or_update_grade_boundary($mod->id, $value, $message, $server);
-						} else {
-							delete_grade_boundary($mod->id, $value, $server);
-						}
-					} else {
-						delete_grade_boundary($mod->id, $value, $server);
-					}
+                for($i = 0; $i < 21; $i++){
+                    $value = $i * 5;
+                    if(in_array($value, $grades, false)) {
+                        $index = array_search($value, $grades);
+                        $message = $messages[$index];
+                        if($message) {
+                            add_or_update_grade_boundary($mod->id, $value, $message, $server);
+                        } else {
+                            delete_grade_boundary($mod->id, $value, $server);
+                        }
+                    } else {
+                        delete_grade_boundary($mod->id, $value, $server);
+                    }
 
-				}
+                }
 
-			} 
-			else if($mod->modname == 'quiz'){
-				$activity_count++;
-				// For the quizzes, we save the configuration entered
-				$random = optional_param('quiz_'.$mod->id.'_randomselect', 0, PARAM_INT);
-				$showfeedback = optional_param('quiz_'.$mod->id.'_showfeedback', 1, PARAM_INT);
-				$passthreshold = optional_param('quiz_'.$mod->id.'_passthreshold', 0, PARAM_INT);
-				$maxattempts = optional_param('quiz_'.$mod->id.'_maxattempts', 'unlimited', PARAM_INT);
-				
-				if($maxattempts == 0){
-				    $maxattempts = 'unlimited';
-				}
-				add_or_update_oppiaconfig($mod->id, 'randomselect', $random);
-				add_or_update_oppiaconfig($mod->id, 'showfeedback', $showfeedback);
-				add_or_update_oppiaconfig($mod->id, 'passthreshold', $passthreshold);
-				add_or_update_oppiaconfig($mod->id, 'maxattempts', $maxattempts);
-			}
-		}
+            } 
+            else if($mod->modname == 'quiz'){
+                $activity_count++;
+                // For the quizzes, we save the configuration entered
+                $random = optional_param('quiz_'.$mod->id.'_randomselect', 0, PARAM_INT);
+                $showfeedback = optional_param('quiz_'.$mod->id.'_showfeedback', 1, PARAM_INT);
+                $passthreshold = optional_param('quiz_'.$mod->id.'_passthreshold', 0, PARAM_INT);
+                $maxattempts = optional_param('quiz_'.$mod->id.'_maxattempts', 'unlimited', PARAM_INT);
+                
+                if($maxattempts == 0){
+                    $maxattempts = 'unlimited';
+                }
+                add_or_update_oppiaconfig($mod->id, 'randomselect', $random);
+                add_or_update_oppiaconfig($mod->id, 'showfeedback', $showfeedback);
+                add_or_update_oppiaconfig($mod->id, 'passthreshold', $passthreshold);
+                add_or_update_oppiaconfig($mod->id, 'maxattempts', $maxattempts);
+            }
+        }
 
-		if ($activity_count > 0){
+        if ($activity_count > 0){
 
-			$password = get_oppiaconfig($sect->id, 'password', '', $server, false);
+            $password = get_oppiaconfig($sect->id, 'password', '', $server, false);
 
-			array_push($config_sections, array(
-				'sect_orderno' => $sect_orderno,
-				'sect_id' => $sect->id,
-				'password' => $password,
-				'activity_count' => $activity_count,
-				'title' => $sectTitle['display_title'],
-				'activities' => $activities
-			));
-			$sect_orderno++;
-		} 
-		else{
-			echo '<div class="step">'.get_string('section_password_invalid', PLUGINNAME, $sectTitle['display_title']).'</div>';
-			
-		}
-		flush_buffers();
-	}
+            array_push($config_sections, array(
+                'sect_orderno' => $sect_orderno,
+                'sect_id' => $sect->id,
+                'password' => $password,
+                'activity_count' => $activity_count,
+                'title' => $sectTitle['display_title'],
+                'activities' => $activities
+            ));
+            $sect_orderno++;
+        } 
+        else{
+            echo '<div class="step">'.get_string('section_password_invalid', PLUGINNAME, $sectTitle['display_title']).'</div>';
+            
+        }
+        flush_buffers();
+    }
 }
 echo '</div>';
 
 if ($sect_orderno <= 1){
-	echo '<h3>'.get_string('error_exporting', PLUGINNAME).'</h3>';
-	echo '<p>'.get_string('error_exporting_no_sections', PLUGINNAME).'</p>';
-	echo $OUTPUT->footer();
-	die();
+    echo '<h3>'.get_string('error_exporting', PLUGINNAME).'</h3>';
+    echo '<p>'.get_string('error_exporting_no_sections', PLUGINNAME).'</p>';
+    echo $OUTPUT->footer();
+    die();
 }
 
 echo $OUTPUT->render_from_template(
-	PLUGINNAME.'/export_step3_form',
-	array(
-		'id' => $id,
-		'server_id' => $server,
-		'stylesheet' => $stylesheet,
-		'course_export_status' => $course_export_status,
-		'sections' => $config_sections,
-		'wwwroot' => $CFG->wwwroot));
+    PLUGINNAME.'/export_step3_form',
+    array(
+        'id' => $id,
+        'server_id' => $server,
+        'stylesheet' => $stylesheet,
+        'course_export_status' => $course_export_status,
+        'sections' => $config_sections,
+        'wwwroot' => $CFG->wwwroot));
 
 echo $OUTPUT->footer();
-
-?>

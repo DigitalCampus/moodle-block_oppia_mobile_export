@@ -44,7 +44,7 @@ $PAGE->set_url(PLUGINPATH.'export/step6.php', array('id' => $id));
 context_helper::preload_course($id);
 $context = context_course::instance($course->id);
 if (!$context) {
-	print_error('nocontext');
+    print_error('nocontext');
 }
 $PAGE->set_context($context);
 context_helper::preload_course($id);
@@ -61,13 +61,13 @@ echo "<h2>".get_string('export_step6_title', PLUGINNAME)."</h2>";
 
 $server_connection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid'=>$USER->id,'id'=>$server));
 if(!$server_connection && $server != "default"){
-	echo "<p>".get_string('server_not_owner', PLUGINNAME)."</p>";
-	echo $OUTPUT->footer();
-	die();
+    echo "<p>".get_string('server_not_owner', PLUGINNAME)."</p>";
+    echo $OUTPUT->footer();
+    die();
 }
 if ($server == "default"){
-	$server_connection = new stdClass();
-	$server_connection->url = $CFG->block_oppia_mobile_export_default_server;
+    $server_connection = new stdClass();
+    $server_connection->url = $CFG->block_oppia_mobile_export_default_server;
 }
 
 echo '<div class="oppia_export_section">';
@@ -75,9 +75,9 @@ echo '<div class="oppia_export_section">';
 echo '<p class="step">'. get_string('export_xml_valid_start', PLUGINNAME);
 
 if (!file_exists($course_root.OPPIA_MODULE_XML)){
-	echo "<p>".get_string('error_xml_notfound', PLUGINNAME)."</p>";
-	echo $OUTPUT->footer();
-	die();
+    echo "<p>".get_string('error_xml_notfound', PLUGINNAME)."</p>";
+    echo $OUTPUT->footer();
+    die();
 }
 
 
@@ -87,22 +87,22 @@ $xml->load($course_root.OPPIA_MODULE_XML);
 
 // We update the local media URLs from the results of the previous step
 foreach ($xml->getElementsByTagName('file') as $mediafile) {
-	if ($mediafile->hasAttribute('download_url')){
-		// If it already has the url set, we don't need to do anything
-		continue;
-	}
-	if ($mediafile->hasAttribute('moodlefile')){
-		// We remove the moodlefile attribute (it's only a helper to publish media)
-		$mediafile->removeAttribute('moodlefile');
-	}
+    if ($mediafile->hasAttribute('download_url')){
+        // If it already has the url set, we don't need to do anything
+        continue;
+    }
+    if ($mediafile->hasAttribute('moodlefile')){
+        // We remove the moodlefile attribute (it's only a helper to publish media)
+        $mediafile->removeAttribute('moodlefile');
+    }
 
-	$digest = $mediafile->getAttribute('digest');
-	$medialength = optional_param($digest.'_length', null, PARAM_INT);
-	$url = optional_param($digest, null, PARAM_TEXT);
-	if ($url !== null){
-		$mediafile->setAttribute('download_url', $url);
-		$mediafile->setAttribute('length', $medialength);
-	}
+    $digest = $mediafile->getAttribute('digest');
+    $medialength = optional_param($digest.'_length', null, PARAM_INT);
+    $url = optional_param($digest, null, PARAM_TEXT);
+    if ($url !== null){
+        $mediafile->setAttribute('download_url', $url);
+        $mediafile->setAttribute('length', $medialength);
+    }
 }
 
 
@@ -111,122 +111,122 @@ $duplicated = array();
 $digests_to_preserve = array();
 // Check that we don't have duplicated digests in the course
 foreach ($xml->getElementsByTagName('activity') as $activity) {
-	$digest = $activity->getAttribute('digest');
-	// Get digest from previous step if the 'Preserve ID' option was selected
-	$preserve_digest = optional_param('digest_'.$digest, $digest, PARAM_TEXT);
-	$digests_to_preserve[$digest] = $preserve_digest;
-	$activity->setAttribute('digest', $preserve_digest);
-	foreach ($activity->getElementsByTagName('content') as $content) {
-		$content->firstChild->nodeValue = str_replace($digest, $preserve_digest, $content->nodeValue);
-	}
+    $digest = $activity->getAttribute('digest');
+    // Get digest from previous step if the 'Preserve ID' option was selected
+    $preserve_digest = optional_param('digest_'.$digest, $digest, PARAM_TEXT);
+    $digests_to_preserve[$digest] = $preserve_digest;
+    $activity->setAttribute('digest', $preserve_digest);
+    foreach ($activity->getElementsByTagName('content') as $content) {
+        $content->firstChild->nodeValue = str_replace($digest, $preserve_digest, $content->nodeValue);
+    }
 
-	if (isset($activities[$digest])){
-		foreach ($activity->childNodes as $node){
-	    	if ($node->nodeName == "title"){
-	    		$title = $node->nodeValue;
-	    		break;
-	    	}
-		}
-		array_push($duplicated, array(
-			'title' => $title, 
-			'digest' => $digest));
-	}
-	else{
-		$activities[$digest] = true;
-	}
+    if (isset($activities[$digest])){
+        foreach ($activity->childNodes as $node){
+            if ($node->nodeName == "title"){
+                $title = $node->nodeValue;
+                break;
+            }
+        }
+        array_push($duplicated, array(
+            'title' => $title, 
+            'digest' => $digest));
+    }
+    else{
+        $activities[$digest] = true;
+    }
 }
 if (count($duplicated) > 0){
-	echo $OUTPUT->render_from_template(PLUGINNAME.'/export_error_duplicated_digest', array('duplicated'=>$duplicated));
-	echo $OUTPUT->footer();
-	die();
+    echo $OUTPUT->render_from_template(PLUGINNAME.'/export_error_duplicated_digest', array('duplicated'=>$duplicated));
+    echo $OUTPUT->footer();
+    die();
 }
 
 $versionid = $xml->getElementsByTagName('versionid')->item(0)->textContent;
 
 if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
-	print '<p><strong>'.get_string('error_xml_invalid', PLUGINNAME).'</strong></p>';
-	libxml_display_errors();
-	add_publishing_log($server_connection->url, $USER->id, $id, "error_xml_invalid", "Invalid course XML");
+    print '<p><strong>'.get_string('error_xml_invalid', PLUGINNAME).'</strong></p>';
+    libxml_display_errors();
+    add_publishing_log($server_connection->url, $USER->id, $id, "error_xml_invalid", "Invalid course XML");
 } else {
-	echo get_string('export_xml_validated', PLUGINNAME)  . '</p>';
-	echo '<p class="step">'. get_string('export_course_xml_created', PLUGINNAME)  . '</p>';
-	
-	$xml->preserveWhiteSpace = false;
-	$xml->formatOutput = true;
-	$xml->save($course_root.OPPIA_MODULE_XML);
+    echo get_string('export_xml_validated', PLUGINNAME)  . '</p>';
+    echo '<p class="step">'. get_string('export_course_xml_created', PLUGINNAME)  . '</p>';
+    
+    $xml->preserveWhiteSpace = false;
+    $xml->formatOutput = true;
+    $xml->save($course_root.OPPIA_MODULE_XML);
 
-	echo '<p class="step">'. get_string('export_style_start', PLUGINNAME) . ' - ' . $stylesheet. '</p>';
+    echo '<p class="step">'. get_string('export_style_start', PLUGINNAME) . ' - ' . $stylesheet. '</p>';
 
-	$styles = getCompiledCSSTheme($pluginroot, $stylesheet);
-	if (!file_put_contents($course_root."/style.css", $styles)){
-		echo "<p>".get_string('error_style_copy', PLUGINNAME)."</p>";
-	}
-	
-	echo '<p class="step">'. get_string('export_style_resources', PLUGINNAME) . '</p>';
-	
-	$style_resources_dir = $course_root.COURSE_STYLES_RESOURCES_DIR;
-	recurse_copy($pluginroot."styles/".COMMON_STYLES_RESOURCES_DIR, $style_resources_dir);
-	recurse_copy($pluginroot."styles/".$stylesheet."-style-resources/", $style_resources_dir);
+    $styles = getCompiledCSSTheme($pluginroot, $stylesheet);
+    if (!file_put_contents($course_root."/style.css", $styles)){
+        echo "<p>".get_string('error_style_copy', PLUGINNAME)."</p>";
+    }
+    
+    echo '<p class="step">'. get_string('export_style_resources', PLUGINNAME) . '</p>';
+    
+    $style_resources_dir = $course_root.COURSE_STYLES_RESOURCES_DIR;
+    recurse_copy($pluginroot."styles/".COMMON_STYLES_RESOURCES_DIR, $style_resources_dir);
+    recurse_copy($pluginroot."styles/".$stylesheet."-style-resources/", $style_resources_dir);
 
-	recurse_copy($pluginroot."js/", $course_root."/js/");
-	
-	echo '<p class="step">'. get_string('export_export_complete', PLUGINNAME) . '</p>';
-	$dir2zip = $dataroot.OPPIA_OUTPUT_DIR.$USER->id."/temp";
+    recurse_copy($pluginroot."js/", $course_root."/js/");
+    
+    echo '<p class="step">'. get_string('export_export_complete', PLUGINNAME) . '</p>';
+    $dir2zip = $dataroot.OPPIA_OUTPUT_DIR.$USER->id."/temp";
 
-	$zipname = strtolower($course->shortname).'-'.$versionid.'.zip';
-	$ziprelativepath = OPPIA_OUTPUT_DIR.$USER->id."/".$zipname;
-	$outputpath = $dataroot.$ziprelativepath;
-	Zip($dir2zip, $outputpath);
+    $zipname = strtolower($course->shortname).'-'.$versionid.'.zip';
+    $ziprelativepath = OPPIA_OUTPUT_DIR.$USER->id."/".$zipname;
+    $outputpath = $dataroot.$ziprelativepath;
+    Zip($dir2zip, $outputpath);
 
-	add_or_update_oppiaconfig($id, 'stylesheet', $stylesheet, null);
+    add_or_update_oppiaconfig($id, 'stylesheet', $stylesheet, null);
 
- 	$filerecord = array(
- 	    'contextid'=> $context->id,
- 	    'component' => PLUGINNAME,
- 	    'filearea' => COURSE_EXPORT_FILEAREA,
- 	    'itemid' => $USER->id,
- 	    'filepath' => '/',
- 	    'filename' => $zipname
- 	);
+     $filerecord = array(
+         'contextid'=> $context->id,
+         'component' => PLUGINNAME,
+         'filearea' => COURSE_EXPORT_FILEAREA,
+         'itemid' => $USER->id,
+         'filepath' => '/',
+         'filename' => $zipname
+     );
 
-	$fs = get_file_storage();
-	$file = $fs->get_file($filerecord['contextid'], $filerecord['component'], $filerecord['filearea'], $filerecord['itemid'], $filerecord['filepath'], $filerecord['filename']);
-	if ($file) {
-		$file->delete();
-	}
-	$file = $fs->create_file_from_pathname($filerecord, $outputpath);
+    $fs = get_file_storage();
+    $file = $fs->get_file($filerecord['contextid'], $filerecord['component'], $filerecord['filearea'], $filerecord['itemid'], $filerecord['filepath'], $filerecord['filename']);
+    if ($file) {
+        $file->delete();
+    }
+    $file = $fs->create_file_from_pathname($filerecord, $outputpath);
 
     $url = moodle_url::make_pluginfile_url(
-		$file->get_contextid(),
-		$file->get_component(),
-		$file->get_filearea(),
-		$file->get_itemid(),
-		$file->get_filepath(),
-		$file->get_filename(),
-	    false // Do not force download of the file.
-	);
+        $file->get_contextid(),
+        $file->get_component(),
+        $file->get_filearea(),
+        $file->get_itemid(),
+        $file->get_filepath(),
+        $file->get_filename(),
+        false // Do not force download of the file.
+    );
 
-	echo '<p class="step">'. get_string('export_export_compressed', PLUGINNAME) . '</p>';
-	
-	$form_values = array(
-		'server_connection' =>$server_connection->url,
-		'wwwroot' => $CFG->wwwroot,
-		'server_id' => $server,
-		'sesskey' => sesskey(),
-		'course_id' => $COURSE->id,
-		'file' => $zipname,
-		'is_draft' => $is_draft,
-		'tags' => $tags,
-		'course_export_status' => $course_export_status,
-		'export_url' => $url,
-		'course_name' => strip_tags($course->fullname),
-		'digests_to_preserve' => json_encode($digests_to_preserve)
-	);
+    echo '<p class="step">'. get_string('export_export_compressed', PLUGINNAME) . '</p>';
+    
+    $form_values = array(
+        'server_connection' =>$server_connection->url,
+        'wwwroot' => $CFG->wwwroot,
+        'server_id' => $server,
+        'sesskey' => sesskey(),
+        'course_id' => $COURSE->id,
+        'file' => $zipname,
+        'is_draft' => $is_draft,
+        'tags' => $tags,
+        'course_export_status' => $course_export_status,
+        'export_url' => $url,
+        'course_name' => strip_tags($course->fullname),
+        'digests_to_preserve' => json_encode($digests_to_preserve)
+    );
 
-	echo $OUTPUT->render_from_template(PLUGINNAME.'/export_step6_form', $form_values);
-	
-	add_publishing_log($server_connection->url, $USER->id, $id,  "export_file_created", strtolower($course->shortname)."-".$versionid.".zip");
-	add_publishing_log($server_connection->url, $USER->id, $id,  "export_end", "Export process completed");
+    echo $OUTPUT->render_from_template(PLUGINNAME.'/export_step6_form', $form_values);
+    
+    add_publishing_log($server_connection->url, $USER->id, $id,  "export_file_created", strtolower($course->shortname)."-".$versionid.".zip");
+    add_publishing_log($server_connection->url, $USER->id, $id,  "export_end", "Export process completed");
 }
 
 echo $OUTPUT->footer();

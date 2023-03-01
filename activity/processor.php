@@ -26,118 +26,118 @@ require_once($CFG->libdir.'/componentlib.class.php');
 
 
 class ActivityProcessor {
-	
-	public $course_root;
-	public $course_id;
-	public $server_id;
-	public $versionid;
-	public $keep_html;
-	public $video_overlay;
-	public $course_shortname;
+    
+    public $course_root;
+    public $course_id;
+    public $server_id;
+    public $versionid;
+    public $keep_html;
+    public $video_overlay;
+    public $course_shortname;
 
-	public $current_section;
-	public $local_media_files;
+    public $current_section;
+    public $local_media_files;
 
     public $print_logs = true;
 
-	public function __construct($params=array()){ 
-		if (isset($params['id'])) { $this->id = $params['id']; }
-		if (isset($params['course_root'])) { $this->course_root = $params['course_root']; }
-		if (isset($params['server_id'])) { $this->server_id = $params['server_id']; }
-		if (isset($params['course_id'])) { $this->course_id = $params['course_id']; }
-		if (isset($params['section'])) { $this->section = $params['section']; }	
-		if (isset($params['versionid'])) { $this->versionid = $params['versionid']; }
-		if (isset($params['keep_html'])) { $this->keep_html = $params['keep_html']; }
-		if (isset($params['video_overlay'])) { $this->video_overlay = $params['video_overlay']; }
-		if (isset($params['local_media_files'])) { 
-			$this->local_media_files = $params['local_media_files']; 
-		}
-		else{
-			$this->local_media_files = array();
-		}
+    public function __construct($params=array()){ 
+        if (isset($params['id'])) { $this->id = $params['id']; }
+        if (isset($params['course_root'])) { $this->course_root = $params['course_root']; }
+        if (isset($params['server_id'])) { $this->server_id = $params['server_id']; }
+        if (isset($params['course_id'])) { $this->course_id = $params['course_id']; }
+        if (isset($params['section'])) { $this->section = $params['section']; }    
+        if (isset($params['versionid'])) { $this->versionid = $params['versionid']; }
+        if (isset($params['keep_html'])) { $this->keep_html = $params['keep_html']; }
+        if (isset($params['video_overlay'])) { $this->video_overlay = $params['video_overlay']; }
+        if (isset($params['local_media_files'])) { 
+            $this->local_media_files = $params['local_media_files']; 
+        }
+        else{
+            $this->local_media_files = array();
+        }
         if (isset($params['print_logs'])) { $this->print_logs = $params['print_logs']; }
     }
 
-	public function set_current_section($section){
-		$this->current_section = $section;
-	}
+    public function set_current_section($section){
+        $this->current_section = $section;
+    }
 
-	public function process_activity($mod, $sect, $act_orderno, $xmlnode=null, $xmlDoc=null, $password=''){
+    public function process_activity($mod, $sect, $act_orderno, $xmlnode=null, $xmlDoc=null, $password=''){
 
-		$params = array(
-			'id' => $mod->id,
-	    	'courseroot' => $this->course_root,
-			'section' => $this->current_section,
-			'server_id' => $this->server_id,
-			'course_id' => $this->course_id,
+        $params = array(
+            'id' => $mod->id,
+            'courseroot' => $this->course_root,
+            'section' => $this->current_section,
+            'server_id' => $this->server_id,
+            'course_id' => $this->course_id,
             'print_logs' =>$this->print_logs,
             'courseversion' => $this->versionid,
             'shortname' => $this->course_shortname,
-			'summary' => $sect->summary,	
-			'keep_html' => $this->keep_html,
-			'video_overlay' => $this->video_overlay,
-			'password' => $password,
-		);
+            'summary' => $sect->summary,    
+            'keep_html' => $this->keep_html,
+            'video_overlay' => $this->video_overlay,
+            'password' => $password,
+        );
 
 
-		if ($mod->modname == 'page'){
-		    $page = new MobileActivityPage($params);
-			$page->process();
-			
-			if ($xmlnode != null){
-				$page->getXML($mod, $act_orderno, $xmlnode, $xmlDoc, true);
-				$local_media = $page->getLocalMedia();
-				$media_files = $this->local_media_files;
-				$this->local_media_files = array_merge($media_files, $local_media);
-			}
-			return $page;
+        if ($mod->modname == 'page'){
+            $page = new MobileActivityPage($params);
+            $page->process();
+            
+            if ($xmlnode != null){
+                $page->getXML($mod, $act_orderno, $xmlnode, $xmlDoc, true);
+                $local_media = $page->getLocalMedia();
+                $media_files = $this->local_media_files;
+                $this->local_media_files = array_merge($media_files, $local_media);
+            }
+            return $page;
 
-		}
-		else if ($mod->modname == 'quiz'){
+        }
+        else if ($mod->modname == 'quiz'){
 
-		    $randomselect = get_oppiaconfig($mod->id, 'randomselect', 0, $this->server_id);
-		    $passthreshold = get_oppiaconfig($mod->id, 'passthreshold', 0, $this->server_id);
-			$showfeedback = get_oppiaconfig($mod->id, 'showfeedback', 1, $this->server_id);
-			$maxattempts = get_oppiaconfig($mod->id, 'maxattempts', 'unlimited', $this->server_id);
+            $randomselect = get_oppiaconfig($mod->id, 'randomselect', 0, $this->server_id);
+            $passthreshold = get_oppiaconfig($mod->id, 'passthreshold', 0, $this->server_id);
+            $showfeedback = get_oppiaconfig($mod->id, 'showfeedback', 1, $this->server_id);
+            $maxattempts = get_oppiaconfig($mod->id, 'maxattempts', 'unlimited', $this->server_id);
 
-			$params['config_array'] =  array(
-				'randomselect'=>$randomselect, 
-				'showfeedback'=>$showfeedback, 
-				'passthreshold'=>$passthreshold,
-				'maxattempts'=>$maxattempts
-			);	
+            $params['config_array'] =  array(
+                'randomselect'=>$randomselect, 
+                'showfeedback'=>$showfeedback, 
+                'passthreshold'=>$passthreshold,
+                'maxattempts'=>$maxattempts
+            );    
 
-		    $quiz = new MobileActivityQuiz($params);
+            $quiz = new MobileActivityQuiz($params);
 
-			$quiz->preprocess();
-			if ($quiz->get_is_valid()){
-				$quiz->process();
-				if ($xmlnode != null){
-					$quiz->getXML($mod, $act_orderno, $xmlnode, $xmlDoc, true);
-				}
-				return $quiz;
-			} else {
-			    echo get_string('error_quiz_no_questions', PLUGINNAME).OPPIA_HTML_BR;
-			    return null;
-			}
-		}
-		else if ($mod->modname == 'resource'){
-		    $resource = new MobileActivityResource($params);
-			$resource->process();
-			if ($xmlnode != null){
-				$resource->getXML($mod, $act_orderno, $xmlnode, $xmlDoc, true);
-			}
-			return $resource;
-		}
-		else if ($mod->modname == 'url'){
-		    $url = new MobileActivityUrl($params);
-			$url->process();
-			if ($xmlnode != null){
-				$url->getXML($mod, $act_orderno, $xmlnode, $xmlDoc, true);
-			}
-			return $url;
-		}
-		else if ($mod->modname == 'feedback'){
+            $quiz->preprocess();
+            if ($quiz->get_is_valid()){
+                $quiz->process();
+                if ($xmlnode != null){
+                    $quiz->getXML($mod, $act_orderno, $xmlnode, $xmlDoc, true);
+                }
+                return $quiz;
+            } else {
+                echo get_string('error_quiz_no_questions', PLUGINNAME).OPPIA_HTML_BR;
+                return null;
+            }
+        }
+        else if ($mod->modname == 'resource'){
+            $resource = new MobileActivityResource($params);
+            $resource->process();
+            if ($xmlnode != null){
+                $resource->getXML($mod, $act_orderno, $xmlnode, $xmlDoc, true);
+            }
+            return $resource;
+        }
+        else if ($mod->modname == 'url'){
+            $url = new MobileActivityUrl($params);
+            $url->process();
+            if ($xmlnode != null){
+                $url->getXML($mod, $act_orderno, $xmlnode, $xmlDoc, true);
+            }
+            return $url;
+        }
+        else if ($mod->modname == 'feedback'){
             $params['config_array'] = array(
                 'showfeedback'=>false,
                 'passthreshold'=>0,
@@ -156,25 +156,25 @@ class ActivityProcessor {
                 $params['config_array']['grade_boundaries'] = $grade_boundaries;
             }
 
-		    $feedback = new MobileActivityFeedback($params);
+            $feedback = new MobileActivityFeedback($params);
 
-			$feedback->preprocess();
-			if ($feedback->get_is_valid()){
-				$feedback->process();
-				if ($xmlnode != null){
-					$feedback->getXML($mod, $act_orderno, $xmlnode, $xmlDoc, true);
-				}
-				return $feedback;
+            $feedback->preprocess();
+            if ($feedback->get_is_valid()){
+                $feedback->process();
+                if ($xmlnode != null){
+                    $feedback->getXML($mod, $act_orderno, $xmlnode, $xmlDoc, true);
+                }
+                return $feedback;
 
-			} else {
-			    echo get_string('error_feedback_no_questions', PLUGINNAME).OPPIA_HTML_BR;
-			    return null;
-			}
-		}
-		else {
-			echo get_string('error_not_supported', PLUGINNAME);
-			return null;
-		}
+            } else {
+                echo get_string('error_feedback_no_questions', PLUGINNAME).OPPIA_HTML_BR;
+                return null;
+            }
+        }
+        else {
+            echo get_string('error_not_supported', PLUGINNAME);
+            return null;
+        }
 
-	}
+    }
 }

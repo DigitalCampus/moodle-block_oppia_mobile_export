@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -66,7 +65,7 @@ function tomobile_langfilter_callback($langblock) {
         $langlist[$lang] = $rawlanglist[2][$index];
     }
     
- 	if (array_key_exists($CURRENT_LANG, $langlist)) {
+     if (array_key_exists($CURRENT_LANG, $langlist)) {
         return $langlist[$CURRENT_LANG];
     } else {
         return array_shift($langlist);
