@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -159,12 +158,12 @@ $string['export_sequencing_course'] = 'Sequencing through whole course';
 $string['export_sequencing_section'] = 'Sequencing within a section';
 $string['export_sequencing_label'] = 'Sequencing mode';
 
-$string['export_thumbnail_sizes_title'] 	= 'Thumbnail icon sizes';
-$string['export_thumbnail_sizes_desc'] 		= 'Specify the dimensions for the thumbnail images for activities and sections';
-$string['export_thumbnail_sizes_section'] 	= 'Section';
-$string['export_thumbnail_sizes_activity'] 	= 'Activity';
-$string['export_thumbnail_sizes_width'] 	= 'Width';
-$string['export_thumbnail_sizes_height'] 	= 'Height';
+$string['export_thumbnail_sizes_title'] = 'Thumbnail icon sizes';
+$string['export_thumbnail_sizes_desc'] = 'Specify the dimensions for the thumbnail images for activities and sections';
+$string['export_thumbnail_sizes_section'] = 'Section';
+$string['export_thumbnail_sizes_activity'] = 'Activity';
+$string['export_thumbnail_sizes_width'] = 'Width';
+$string['export_thumbnail_sizes_height'] = 'Height';
 
 $string['export_sections_start'] = 'Exporting course Sections...';
 $string['export_section_title'] = 'Exporting Section: {$a}';
@@ -186,8 +185,8 @@ $string['export_advice_desc'] = 'Although your course has been exported you may 
 $string['export_preview_download'] = 'Download exported course preview at <a href="{$a->zip}">{$a->coursename}</a>';
 $string['export_preview_quiz'] = '<a href="{$a->link}" target="_blank">View all quiz questions</a>';
 
-$string['export_file_trying']   = 'Trying file: <code>{$a}</code>';
-$string['export_file_success']  = 'File: <code>{$a}</code> successfully exported';
+$string['export_file_trying'] = 'Trying file: <code>{$a}</code>';
+$string['export_file_success'] = 'File: <code>{$a}</code> successfully exported';
 $string['export_image_success'] = 'Image: <code>{$a}</code> successfully exported';
 
 $string['export_media_missing'] = 'Some media files included in your course have not been uploaded to the OppiaMobile server yet. To be able to upload the contents on OppiaMobile ({$a}), please complete your OppiaMobile server login details below:';
@@ -205,14 +204,12 @@ $string['export_quizzes_nor_feedback_message'] = 'This course does not have any 
 $string['export_renewing_digests_in_section'] = 'Renewing digests in section: {$a}';
 
 $string['section_password_title'] = 'Password protection';
-$string['section_password_added'] = '🔒 Section protected by password'; 
-$string['section_password_desc']  = 'If you want to lock a topic or activity with password, please enter it in the table below.'; 
-$string['section_password_label'] = 'Password'; 
+$string['section_password_added'] = '🔒 Section protected by password';
+$string['section_password_desc']  = 'If you want to lock a topic or activity with password, please enter it in the table below.';
+$string['section_password_label'] = 'Password';
 $string['section_password_invalid'] = '<strong>{$a}</strong>: Section doesn\'t contain any supported activities.';
 
 $string['activity_password_added'] = '🔒 Activity protected by password'; 
-
-
 
 $string['true'] = 'True';
 $string['false'] = 'False';
@@ -250,14 +247,13 @@ $string['settings_avoid_push_quizzes_info'] = 'Avoid pushing quizzes info to the
 $string['missing_video_poster'] = 'Warning: Missing "poster" image for media element.';
 $string['video_included'] = 'Video included:';
 
-$string['media_files_size']   = 'Size';
+$string['media_files_size'] = 'Size';
 $string['media_files_digest'] = 'Digest';
 $string['media_files_length'] = 'Length';
-$string['media_files_title']  = 'Pushing local media files';
-$string['media_files_not_uploaded']  = 'Not uploaded to the server yet.';
+$string['media_files_title']= 'Pushing local media files';
+$string['media_files_not_uploaded'] = 'Not uploaded to the server yet.';
 $string['media_files_request_error'] = 'Error processing request.';
 
 $string['duplicated_digest_title'] = 'Error: Duplicated digests';
 $string['duplicated_digest_description'] = 'There are identical activities in your course that have the same digest:';
 $string['duplicated_digest_footer'] = 'Please, correct these issues and export your course again, see <a href="https://oppiamobile.readthedocs.io/en/latest/support/troubleshooting/block.html">Troubleshooting Moodle Oppia Export Block</a> for more help.';
-
