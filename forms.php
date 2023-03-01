@@ -37,10 +37,10 @@ class OppiaServerForm extends moodleform {
     function validation($data, $files) {
         $errors= array();
         
-        if(trim($data['server_ref']) == "") {
+        if (trim($data['server_ref']) == "") {
             $errors['server_ref'] = get_string('server_form_name_error_none', PLUGINNAME);
         }
-        if(trim($data['server_url']) == "") {
+        if (trim($data['server_url']) == "") {
             $errors['server_url'] = get_string('server_form_url_error_none', PLUGINNAME);
         }
         return $errors;

@@ -169,7 +169,7 @@ class ActivityProcessor {
             }
             rsort($grade_boundaries);
 
-            if(!empty($grade_boundaries)) {
+            if (!empty($grade_boundaries)) {
                 $params['config_array']['grade_boundaries'] = $grade_boundaries;
             }
 

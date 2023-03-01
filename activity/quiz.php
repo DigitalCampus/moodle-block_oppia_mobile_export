@@ -64,7 +64,7 @@ class MobileActivityQuiz extends MobileActivity {
         $cm = get_coursemodule_from_id('quiz', $this->id);
         
         $quizobj = quiz::create($cm->instance, $USER->id);
-        if(!$quizobj->has_questions()) {
+        if (!$quizobj->has_questions()) {
             $this->noquestions = 0;
             $this->is_valid = false;
             return;
@@ -87,14 +87,14 @@ class MobileActivityQuiz extends MobileActivity {
         
         // check has at least one non-essay and non-random question
         $count_omitted = 0;
-        foreach($qs as $q) {    
-            if(in_array($q->qtype,$this->supported_types)) {
+        foreach ($qs as $q) {    
+            if (in_array($q->qtype,$this->supported_types)) {
                 $this->noquestions++;
             } else {
                 $count_omitted++;
             }
         }
-        if($count_omitted == count($qs)) {
+        if ($count_omitted == count($qs)) {
             $this->is_valid = false;
         }
     }
@@ -105,7 +105,7 @@ class MobileActivityQuiz extends MobileActivity {
         $cm = get_coursemodule_from_id('quiz', $this->id);
         $quiz = $DB->get_record('quiz', array('id'=>$cm->instance), '*', MUST_EXIST);
         
-        if($quiz->password != "") {
+        if ($quiz->password != "") {
             return true;
         } else {
             return parent::has_password();
@@ -150,50 +150,48 @@ class MobileActivityQuiz extends MobileActivity {
                 "maxscore" => $questionMaxScore);
 
             // skip any essay questions
-            if($q->qtype == 'essay') {
+            if ($q->qtype == 'essay') {
                 echo get_string('export_quiz_skip_essay', PLUGINNAME).OPPIA_HTML_BR;
                 continue;
             }
             
             // skip any random questions
-            if($q->qtype == 'random') {
+            if ($q->qtype == 'random') {
                 echo get_string('export_quiz_skip_random', PLUGINNAME).OPPIA_HTML_BR;
                 continue;
             }
             
             //check to see if a multichoice is actually a multiselect
-            if($q->qtype == 'multichoice') {
+            if ($q->qtype == 'multichoice') {
                 $counter = 0;
                 foreach($q->options->answers as $r) {
-                    if($r->fraction > 0) {
+                    if ($r->fraction > 0) {
                         $counter++;
                     }
                 }
-                if($counter > 1) {
+                if ($counter > 1) {
                     $q->qtype = 'multiselect';
                 }
                 $questionprops['shuffleanswers'] = $q->options->shuffleanswers;
             }
-            if($q->qtype == 'truefalse') {
+            if ($q->qtype == 'truefalse') {
                 $q->qtype = 'multichoice';
             }
-
-
 
             $responses = array();
 
             //add feedback for matching questions
-            if($q->qtype == 'match') {
+            if ($q->qtype == 'match') {
                 $q->qtype = 'matching';
-                if($q->options->correctfeedback != "") {
+                if ($q->options->correctfeedback != "") {
                     $feedbackJSON = extractLangs($q->options->correctfeedback, true, !$this->keep_html);
                     $questionprops["correctfeedback"] = json_decode($feedbackJSON);
                 }
-                if($q->options->partiallycorrectfeedback != "") {
+                if ($q->options->partiallycorrectfeedback != "") {
                     $feedbackJSON = extractLangs($q->options->partiallycorrectfeedback, true, !$this->keep_html);
                     $questionprops["partiallycorrectfeedback"] = json_decode($feedbackJSON);
                 }
-                if($q->options->incorrectfeedback != "") {
+                if ($q->options->incorrectfeedback != "") {
                     $feedbackJSON = extractLangs($q->options->incorrectfeedback, true, !$this->keep_html);
                     $questionprops["incorrectfeedback"] = json_decode($feedbackJSON);
                 }
@@ -204,7 +202,7 @@ class MobileActivityQuiz extends MobileActivity {
             $question_image = extractImageFile($q->questiontext,'question','questiontext',
                                     $q->id,$q->contextid,$this->courseroot,$cm->id); 
         
-            if($question_image) {
+            if ($question_image) {
                 $questionprops["image"] = $question_image;
             }
             
@@ -220,11 +218,11 @@ class MobileActivityQuiz extends MobileActivity {
 
             $j = 1;
             // if matching question then concat the options with |
-            if(isset($q->options->subquestions)) {
+            if (isset($q->options->subquestions)) {
                 // Find out how many subquestions
                 $subqs = 0;
                 foreach($q->options->subquestions as $sq) {
-                    if(trim($sq->questiontext) != "") {
+                    if (trim($sq->questiontext) != "") {
                         $subqs++;
                     }    
                 }
@@ -245,16 +243,16 @@ class MobileActivityQuiz extends MobileActivity {
             }
             
             // for multichoice/multiselect/shortanswer/numerical questions
-            if(isset($q->options->answers)) {
+            if (isset($q->options->answers)) {
                 foreach($q->options->answers as $r) {
                     $responseprops = array('id' => rand(1,1000));
                     
-                    if(strip_tags($r->feedback) != "") {
+                    if (strip_tags($r->feedback) != "") {
                         $feedbackJSON = extractLangs($r->feedback, true, !$this->keep_html);
                         $responseprops['feedback'] = json_decode($feedbackJSON);
                     }
                     // if numerical also add a tolerance
-                    if($q->qtype == 'numerical') {
+                    if ($q->qtype == 'numerical') {
                         $responseprops['tolerance'] = $r->tolerance;
                     }
                     $score = ($r->fraction * $q->maxmark);
@@ -300,7 +298,7 @@ class MobileActivityQuiz extends MobileActivity {
 
         // check for password protection
         // done after md5 is created so password can be changed without it being a new quiz
-        if($quiz->password != "") {
+        if ($quiz->password != "") {
             $quizJson['props']['password'] = $quiz->password;
         }
         $this->content = json_encode($quizJson);
@@ -311,7 +309,7 @@ class MobileActivityQuiz extends MobileActivity {
     
         preg_match_all(EMBED_MEDIA_REGEX, $content, $media_tmp, PREG_OFFSET_CAPTURE);
     
-        if(!isset($media_tmp['mediaobject']) || count($media_tmp['mediaobject']) == 0) {
+        if (!isset($media_tmp['mediaobject']) || count($media_tmp['mediaobject']) == 0) {
             return $content;
         }
     
@@ -321,7 +319,7 @@ class MobileActivityQuiz extends MobileActivity {
     
             $content = str_replace($toreplace, "", $content);
             // check all the required attrs exist
-            if(!isset($mediajson->digest) || !isset($mediajson->download_url) || !isset($mediajson->filename)) {
+            if (!isset($mediajson->digest) || !isset($mediajson->download_url) || !isset($mediajson->filename)) {
                 echo get_string('error_media_attributes', PLUGINNAME).OPPIA_HTML_BR;
                 die;
             }

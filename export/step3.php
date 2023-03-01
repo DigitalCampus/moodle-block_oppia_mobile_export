@@ -103,7 +103,7 @@ foreach($sections as $sect) {
     $sectionmods = explode(",", $sect->sequence);
     $sectTitle = get_section_title($sect);
 
-    if(count($sectionmods)>0) {
+    if (count($sectionmods)>0) {
         $activity_count = 0;
         $activities = [];
 
@@ -113,7 +113,7 @@ foreach($sections as $sect) {
             }
             $mod = $mods[$modnumber];
             
-            if($mod->visible != 1) {
+            if ($mod->visible != 1) {
                 continue;
             }
             if ( ($mod->modname == 'page') ||
@@ -137,10 +137,10 @@ foreach($sections as $sect) {
 
                 for($i = 0; $i < 21; $i++) {
                     $value = $i * 5;
-                    if(in_array($value, $grades, false)) {
+                    if (in_array($value, $grades, false)) {
                         $index = array_search($value, $grades);
                         $message = $messages[$index];
-                        if($message) {
+                        if ($message) {
                             add_or_update_grade_boundary($mod->id, $value, $message, $server);
                         } else {
                             delete_grade_boundary($mod->id, $value, $server);
@@ -152,7 +152,7 @@ foreach($sections as $sect) {
                 }
 
             } 
-            else if($mod->modname == 'quiz') {
+            else if ($mod->modname == 'quiz') {
                 $activity_count++;
                 // For the quizzes, we save the configuration entered
                 $random = optional_param('quiz_'.$mod->id.'_randomselect', 0, PARAM_INT);
@@ -160,7 +160,7 @@ foreach($sections as $sect) {
                 $passthreshold = optional_param('quiz_'.$mod->id.'_passthreshold', 0, PARAM_INT);
                 $maxattempts = optional_param('quiz_'.$mod->id.'_maxattempts', 'unlimited', PARAM_INT);
                 
-                if($maxattempts == 0) {
+                if ($maxattempts == 0) {
                     $maxattempts = 'unlimited';
                 }
                 add_or_update_oppiaconfig($mod->id, 'randomselect', $random);

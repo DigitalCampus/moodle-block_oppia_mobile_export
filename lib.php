@@ -157,7 +157,7 @@ function extractLangs($content, $asJSON = false, $strip_tags = false, $strip_bas
     global $MOBILE_LANGS, $CURRENT_LANG, $defaultlang;
     preg_match_all(REGEX_LANGS, $content, $langs_tmp, PREG_OFFSET_CAPTURE);
     $tempLangs = array();
-    if(isset($langs_tmp['langs']) && count($langs_tmp['langs']) > 0) {
+    if (isset($langs_tmp['langs']) && count($langs_tmp['langs']) > 0) {
         for($i=0;$i<count($langs_tmp['langs']);$i++) {
             $lang = $langs_tmp['langs'][$i][0];
             $lang = str_replace("-","_",$lang);
@@ -254,7 +254,7 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
     
     preg_match_all(MEDIAFILE_REGEX, $content, $files_tmp, PREG_OFFSET_CAPTURE);
     
-    if(!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0) {
+    if (!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0) {
         return false;
     }    
 
@@ -269,7 +269,7 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
             continue;
         }
         
-        if($CFG->block_oppia_mobile_export_debug) {
+        if ($CFG->block_oppia_mobile_export_debug) {
             echo 'Attempting to export thumbnail image: <code>'.urldecode($filename).'</code><br/>';
         }
         $fs = get_file_storage();
@@ -354,7 +354,7 @@ function copyFile($file, $component, $filearea, $itemid, $contextid, $course_roo
     $tr = new StdClass;
     $tr->originalfilename = $filename;
     $tr->filename = sha1($fullpath);
-    if($CFG->block_oppia_mobile_export_debug) {
+    if ($CFG->block_oppia_mobile_export_debug) {
         $message = 'export_'.($is_image?'image':'file').'_success';
         echo get_string($message, PLUGINNAME, urldecode($filename))."<br/>";
 
@@ -366,7 +366,7 @@ function copyFile($file, $component, $filearea, $itemid, $contextid, $course_roo
 function resizeImage($image,$image_new_name, $image_width, $image_height, $transparent=false) {
     global $CFG;
     
-    if($CFG->block_oppia_mobile_export_thumb_crop) {
+    if ($CFG->block_oppia_mobile_export_thumb_crop) {
         $filename = resizeImageCrop($image,$image_new_name, $image_width, $image_height, $transparent);
     } else {
         $filename = resizeImageScale($image,$image_new_name, $image_width, $image_height, $transparent);
@@ -389,7 +389,7 @@ function resizeImageScale($image,$image_new_name, $image_width, $image_height, $
     $image_new = ImageCreateTrueColor($image_width, $image_height);
 
     
-    if(!$transparent) {
+    if (!$transparent) {
         $bg_colour = imagecolorallocate($image_new, 
                         $CFG->block_oppia_mobile_export_thumb_bg_r, 
                         $CFG->block_oppia_mobile_export_thumb_bg_g, 
@@ -412,7 +412,7 @@ function resizeImageScale($image,$image_new_name, $image_width, $image_height, $
             break;
     }
     
-    if($orig_h > $orig_w || $ratio_src < $ratio_target) {
+    if ($orig_h > $orig_w || $ratio_src < $ratio_target) {
         $border = floor(($image_width - ($image_height*$orig_w/$orig_h))/2);
         imagecopyresampled($image_new, $image_src, $border, 0, 0, 0, $image_width -($border*2), $image_height , $orig_w, $orig_h);
     } else {
@@ -448,7 +448,7 @@ function resizeImageCrop($image,$image_new_name, $image_width, $image_height, $t
     $image_new = ImageCreateTrueColor($image_width, $image_height);
 
 
-    if(!$transparent) {
+    if (!$transparent) {
         $bg_colour = imagecolorallocate($image_new,
                 $CFG->block_oppia_mobile_export_thumb_bg_r,
                 $CFG->block_oppia_mobile_export_thumb_bg_g,
@@ -473,7 +473,7 @@ function resizeImageCrop($image,$image_new_name, $image_width, $image_height, $t
     }
 
     
-    if($ratio_src > $ratio_target) {
+    if ($ratio_src > $ratio_target) {
         $crop = floor(($orig_w - ($orig_h*$image_width/$image_height))/2);
         imagecopyresampled($image_new, $image_src, 0, 0, $crop, 0, $image_width, $image_height, $orig_w-(2*$crop), $orig_h);
     } else {

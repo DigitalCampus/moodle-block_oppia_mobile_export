@@ -46,7 +46,7 @@ class ApiHelper{
             $temp_url = $this->url."/".($api_path ? "api/v2/" : "").$object."/";
         }
         curl_setopt($this->curl, CURLOPT_URL, $temp_url );
-        if($type == 'post') {
+        if ($type == 'post') {
             curl_setopt($this->curl, CURLOPT_POSTFIELDS, $json);
             curl_setopt($this->curl, CURLOPT_POST,1);
             curl_setopt($this->curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Content-Length: ' . strlen($json) ));

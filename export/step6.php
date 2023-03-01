@@ -75,7 +75,7 @@ echo $OUTPUT->header();
 echo "<h2>".get_string('export_step6_title', PLUGINNAME)."</h2>";
 
 $server_connection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid'=>$USER->id,'id'=>$server));
-if(!$server_connection && $server != "default") {
+if (!$server_connection && $server != "default") {
     echo "<p>".get_string('server_not_owner', PLUGINNAME)."</p>";
     echo $OUTPUT->footer();
     die();

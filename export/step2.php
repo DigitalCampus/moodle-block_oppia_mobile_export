@@ -110,15 +110,15 @@ foreach($sections as $sect) {
     $sectionmods = explode(",", $sect->sequence);
     $sectTitle = get_section_title($sect);
 
-    if(count($sectionmods)>0) {
+    if (count($sectionmods)>0) {
         foreach ($sectionmods as $modnumber) {
 
-            if(!$modnumber) {
+            if (!$modnumber) {
                 continue;
             }
             $mod = $mods[$modnumber];
 
-            if($mod->modname == 'quiz' && $mod->visible == 1) {
+            if ($mod->modname == 'quiz' && $mod->visible == 1) {
                 $quiz = new MobileActivityQuiz(array(
                     'id' => $mod->id,
                     'section' =>  $orderno,
@@ -140,7 +140,7 @@ foreach($sections as $sect) {
                 }
             }
 
-            if($mod->modname == 'feedback' && $mod->visible == 1) {
+            if ($mod->modname == 'feedback' && $mod->visible == 1) {
                 $feedback = new MobileActivityFeedback(array(
                     'id' => $mod->id,
                     'section' =>  $orderno,

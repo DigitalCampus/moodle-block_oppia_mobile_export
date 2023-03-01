@@ -180,7 +180,7 @@ function save_activity_digest($courseid, $modid, $oppia_server_digest, $moodle_a
         ),
     );
 
-    if($record_exists) {
+    if ($record_exists) {
         if ($oppia_server_digest != null) {
             $record_exists->oppiaserverdigest = $oppia_server_digest;
         }

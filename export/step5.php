@@ -110,7 +110,7 @@ foreach($sections as $sect) {
                 'moodleactivitymd5, oppiaserverdigest, nquestions',
             );
 
-            if($last_published_digest_entry) {
+            if ($last_published_digest_entry) {
                 $activity_summary = $activity_summaries[$mod->id];
                 if ($activity_summary != null) {
                     $moodle_activity_md5 = $last_published_digest_entry->moodleactivitymd5;

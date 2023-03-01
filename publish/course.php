@@ -106,7 +106,7 @@ if (trim($tags) == '') {
     die();
 }
 
-if(!$server_connection && $server != "default") {
+if (!$server_connection && $server != "default") {
     echo "<p>".get_string('server_not_owner', PLUGINNAME)."</p>";
     echo $OUTPUT->footer();
     die();

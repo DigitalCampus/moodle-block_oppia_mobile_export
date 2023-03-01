@@ -126,7 +126,7 @@ class MobileActivityFeedback extends MobileActivity {
 
         foreach($feedbackitems as $q) {            
 
-            if(!in_array($q->typ,$this->supportedtypes)) {
+            if (!in_array($q->typ,$this->supportedtypes)) {
                 continue;
             }
             $responses = array();
@@ -137,7 +137,7 @@ class MobileActivityFeedback extends MobileActivity {
             $max_question_score = 0;
             
             // multichoice multi
-            if($q->typ == "multichoice" 
+            if ($q->typ == "multichoice" 
                 && (substr($q->presentation, 0, 1)==='c'
                     || substr($q->presentation, 0, 1)==='d')) {
                 $type = "multiselect";
@@ -155,17 +155,17 @@ class MobileActivityFeedback extends MobileActivity {
                     ));
                     $j++;
                 }
-            } elseif ($q->typ == "info") {
+            } else if ($q->typ == "info") {
                 // info
                 $type = "description";
-            } elseif ($q->typ == "label") {
+            } else if ($q->typ == "label") {
                 // label
                 $type = "description";
                 $questionTitle = extractLangs($q->presentation, true, !$this->keephtml);
-            } elseif ($q->typ == "textarea") {
+            } else if ($q->typ == "textarea") {
                 // long answer
                 $type = "essay";
-            } elseif ($q->typ == "multichoicerated" && substr($q->presentation, 0, 1)==='r') {
+            } else if ($q->typ == "multichoicerated" && substr($q->presentation, 0, 1)==='r') {
                 // multi - rated
                 $type = "multichoice";
                 $respstr = substr($q->presentation, 6);
@@ -187,13 +187,13 @@ class MobileActivityFeedback extends MobileActivity {
                     $j++;
                 }
                 $quizmaxscore += $max_question_score;
-            } elseif ($q->typ == "numeric") {
+            } else if ($q->typ == "numeric") {
                 // numeric
                 $type = "numerical";
-            } elseif ($q->typ == "textfield") {
+            } else if ($q->typ == "textfield") {
                 // short answer
                 $type = "shortanswer";
-            } elseif ($q->typ == "multichoice") {
+            } else if ($q->typ == "multichoice") {
                 // multichoice 1
                 $type = "multichoice";
                 $respstr = substr($q->presentation, 6);
@@ -223,8 +223,8 @@ class MobileActivityFeedback extends MobileActivity {
             if ($q->dependitem != 0) {
                 // find dependitem label
                 $dependitem = "";
-                foreach($feedbackitems as $q_depend) {
-                    if($q->dependitem == $q_depend->id) {
+                foreach ($feedbackitems as $q_depend) {
+                    if ($q->dependitem == $q_depend->id) {
                         $dependitem = $q_depend->label;
                     }
                 }
@@ -261,7 +261,7 @@ class MobileActivityFeedback extends MobileActivity {
 
         // check for password protection
         // done after md5 is created so password can be changed without it being a new quiz
-        if($this->password !== '') {
+        if ($this->password !== '') {
             $quizjson['props']['password'] = $this->password;
         }
 

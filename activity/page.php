@@ -51,7 +51,7 @@ class MobileActivityPage extends MobileActivity {
         $this->extract_thumbnail_from_intro($page->intro, $cm->id);
 
         $langs = extractLangs($content);
-        if(is_array($langs) && count($langs)>0) {
+        if (is_array($langs) && count($langs)>0) {
             foreach($langs as $lang=>$text) {
                 //Process individually each language
                 $this->process_content($context, $cm->id, $text, $lang);
@@ -67,7 +67,7 @@ class MobileActivityPage extends MobileActivity {
         $content = $this->extractAndReplaceMedia($content);
         // if page has media and no special icon for page, extract the image for first video
         if ((count($this->page_media)>0 || count($this->page_local_media)>0) && $this->thumbnailimage == null) {
-            if($this->extractMediaImage($pre_content, 'mod_page', 'content', $context->id)) {
+            if ($this->extractMediaImage($pre_content, 'mod_page', 'content', $context->id)) {
                 $this->save_resized_thumbnail($this->thumbnailimage, $mod_id);
             }
         } else if ($this->thumbnailimage == null) {
@@ -106,7 +106,7 @@ class MobileActivityPage extends MobileActivity {
     }
     
     function get_xml($mod, $counter, &$node, &$xmldoc, $activity=true) {
-        if($activity) {
+        if ($activity) {
             $struct = $this->get_activity_node($xmldoc, $mod, $counter);
             $node->appendChild($struct);
         } else {
@@ -119,7 +119,7 @@ class MobileActivityPage extends MobileActivity {
         $this->add_thumbnail_xml_node($xmldoc, $struct);
 
         // add in page media
-        if(count($this->page_media) > 0 || count($this->page_local_media) > 0) {
+        if (count($this->page_media) > 0 || count($this->page_local_media) > 0) {
             $media = $xmldoc->createElement("media");
             foreach ($this->page_media as $m) {
                 $temp = $xmldoc->createElement("file");
@@ -138,7 +138,7 @@ class MobileActivityPage extends MobileActivity {
             }
             $struct->appendChild($media);
         }
-        if(count($this->page_related) > 0) {
+        if (count($this->page_related) > 0) {
             $related = $xmldoc->createElement("related");
             foreach ($this->page_related as $r) {
                 $temp = $xmldoc->createElement("activity");
@@ -169,7 +169,7 @@ class MobileActivityPage extends MobileActivity {
         
         preg_match_all(MEDIAFILE_REGEX, $content, $files_tmp, PREG_OFFSET_CAPTURE);
         
-        if(!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0) {
+        if (!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0) {
             return $content;
         }    
         $toreplace = array();
@@ -189,13 +189,13 @@ class MobileActivityPage extends MobileActivity {
                     $imgfile = $this->courseroot."/images/".$clean_filename;
                     $file->copy_content_to($imgfile);
                 } else {
-                    if($CFG->block_oppia_mobile_export_debug and $this->printlogs) {
+                    if ($CFG->block_oppia_mobile_export_debug and $this->printlogs) {
                         echo OPPIA_HTML_SPAN_ERROR_START.get_string('error_file_not_found', PLUGINNAME, $filename).OPPIA_HTML_SPAN_END.OPPIA_HTML_BR;
                         return null;
                     }
                 }
 
-                if($CFG->block_oppia_mobile_export_debug and $this->printlogs) {
+                if ($CFG->block_oppia_mobile_export_debug and $this->printlogs) {
                     echo get_string('export_file_success', PLUGINNAME, $filename).OPPIA_HTML_BR;
                 }
             }
@@ -278,7 +278,7 @@ class MobileActivityPage extends MobileActivity {
                     $source = $source->getAttribute('src');
                     preg_match_all(MEDIAFILE_REGEX, $source, $files_tmp, PREG_OFFSET_CAPTURE);
         
-                    if(!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0) {
+                    if (!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0) {
                         continue;
                     }
                     $filename = $files_tmp['filenames'][0][0];
@@ -293,7 +293,7 @@ class MobileActivityPage extends MobileActivity {
 
 
 
-                    if($CFG->block_oppia_mobile_export_debug and $this->printlogs) {
+                    if ($CFG->block_oppia_mobile_export_debug and $this->printlogs) {
                         echo get_string('video_included', PLUGINNAME).'<code>'. $filename .'</code>'.OPPIA_HTML_BR;
                     }
 
@@ -301,11 +301,10 @@ class MobileActivityPage extends MobileActivity {
             }
 
             if (!$video->hasAttribute('poster')) {
-                if($this->printlogs) {
+                if ($this->printlogs) {
                     echo OPPIA_HTML_SPAN_ERROR_START.get_string('missing_video_poster', PLUGINNAME).OPPIA_HTML_SPAN_END.OPPIA_HTML_BR;
                 }
-            }
-            else{
+            } else {
                 $video_params['poster'] = $video->getAttribute('poster');
                 if ($this->video_overlay) {
                     $video_params['video_class'] = 'video-overlay';
@@ -343,12 +342,12 @@ class MobileActivityPage extends MobileActivity {
         global $CFG;
 
         preg_match_all(EMBED_MEDIA_IMAGE_REGEX, $content, $files_tmp, PREG_OFFSET_CAPTURE);
-        if(!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0) {
+        if (!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0) {
             return false;
         }
         $filename = $files_tmp['filenames'][0][0];
         
-        if($CFG->block_oppia_mobile_export_debug and $this->printlogs) {
+        if ($CFG->block_oppia_mobile_export_debug and $this->printlogs) {
             echo '<span>' . get_string('export_file_trying', PLUGINNAME, $filename).OPPIA_HTML_SPAN_END.OPPIA_HTML_BR;
         }
         
@@ -367,12 +366,12 @@ class MobileActivityPage extends MobileActivity {
             $imgfile = $this->courseroot."/images/".$filename;
             $file->copy_content_to($imgfile);
         } else {
-            if($CFG->block_oppia_mobile_export_debug and $this->printlogs) {
+            if ($CFG->block_oppia_mobile_export_debug and $this->printlogs) {
                 echo OPPIA_HTML_SPAN_ERROR_START.get_string('error_file_not_found', PLUGINNAME, $filename).OPPIA_HTML_SPAN_END.OPPIA_HTML_BR;
             }
         }
         
-        if($CFG->block_oppia_mobile_export_debug and $this->printlogs) {
+        if ($CFG->block_oppia_mobile_export_debug and $this->printlogs) {
             echo get_string('export_file_success', PLUGINNAME, $filename).OPPIA_HTML_BR;
         }
         $this->thumbnailimage = "images/".$filename;
