@@ -35,7 +35,7 @@ $server = required_param('server_id',PARAM_TEXT);
 $course_export_status = required_param('course_export_status', PARAM_TEXT);
 $course_root = required_param('course_root', PARAM_TEXT);
 $is_draft = ($course_export_status == 'draft');
-$DEFAULT_LANG = get_oppiaconfig($id,'default_lang', $CFG->block_oppia_mobile_export_default_lang, $server);
+$defaultlang = get_oppiaconfig($id,'defaultlang', $CFG->block_oppia_mobile_export_defaultlang, $server);
 $activity_summaries = json_decode(required_param('activity_summaries', PARAM_TEXT), true);
 
 $course = $DB->get_record('course', array('id'=>$id));

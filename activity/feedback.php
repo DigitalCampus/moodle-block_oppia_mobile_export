@@ -117,10 +117,10 @@ class MobileActivityFeedback extends MobileActivity {
         }
 
         $namejson = extractLangs($cm->name, true);
-        $descJSON = extractLangs($feedback->intro, true, !$this->keephtml);
+        $descjson = extractLangs($feedback->intro, true, !$this->keephtml);
         
         $quizjsonquestions = array();
-        $quizMaxScore = 0;
+        $quizmaxscore = 0;
         
         $i = 1;
 
@@ -186,7 +186,7 @@ class MobileActivityFeedback extends MobileActivity {
                     ));
                     $j++;
                 }
-                $quizMaxScore += $max_question_score;
+                $quizmaxscore += $max_question_score;
             } elseif ($q->typ == "numeric") {
                 // numeric
                 $type = "numerical";
@@ -247,12 +247,12 @@ class MobileActivityFeedback extends MobileActivity {
             $i++;
         }
         
-        $quizprops["maxscore"] = $quizMaxScore;
+        $quizprops["maxscore"] = $quizmaxscore;
         
         $quizjson = array(
             'id'         => rand(1,1000),
             'title'      => json_decode($namejson),
-            'description'=> json_decode($descJSON),
+            'description'=> json_decode($descjson),
             'props'      => $quizprops,
             'questions'  => $quizjsonquestions); 
         $this->generate_md5($feedback, $$quizjson);
@@ -269,16 +269,16 @@ class MobileActivityFeedback extends MobileActivity {
     }
     
     
-    function get_xml($mod, $counter, &$node, &$xmlDoc, $activity=true) {
-        global $DEFAULT_LANG;
+    function get_xml($mod, $counter, &$node, &$xmldoc, $activity=true) {
+        global $defaultlang;
         
-        $act = $this->get_activity_node($xmlDoc, $mod, $counter);
-        $this->add_lang_xml_nodes($xmlDoc, $act, $mod->name, "title");
-        $this->add_thumbnail_xml_node($xmlDoc, $act);
+        $act = $this->get_activity_node($xmldoc, $mod, $counter);
+        $this->add_lang_xml_nodes($xmldoc, $act, $mod->name, "title");
+        $this->add_thumbnail_xml_node($xmldoc, $act);
 
-        $temp = $xmlDoc->createElement("content");
-        $temp->appendChild($xmlDoc->createTextNode($this->content));
-        $temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
+        $temp = $xmldoc->createElement("content");
+        $temp->appendChild($xmldoc->createTextNode($this->content));
+        $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($defaultlang));
         $act->appendChild($temp);
         
         $node->appendChild($act);

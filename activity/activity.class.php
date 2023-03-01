@@ -119,7 +119,7 @@ abstract class MobileActivity {
     }
 
     protected function add_lang_xml_nodes($xmldoc, $activitynode, $content, $propertyname) {
-        global $DEFAULT_LANG;
+        global $defaultlang;
 
         $title = extractLangs($content);
         if (is_array($title) && count($title) > 0) {
@@ -134,7 +134,7 @@ abstract class MobileActivity {
             if ($title != "") {
                 $temp = $xmldoc->createElement($propertyname);
                 $temp->appendChild($xmldoc->createCDATASection(strip_tags($title)));
-                $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($DEFAULT_LANG));
+                $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($defaultlang));
                 $activitynode->appendChild($temp);
             }
         }

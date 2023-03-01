@@ -377,13 +377,13 @@ class MobileActivityQuiz extends MobileActivity {
     
     function get_xml($mod, $counter, &$node, &$xmldoc, $activity=true){
         
-        global $DEFAULT_LANG;
+        global $defaultlang;
         $act = $this->get_activity_node($xmldoc, $mod, $counter);
         $this->add_lang_xml_nodes($xmldoc, $act, $mod->name, "title");
         
         $temp = $xmldoc->createElement("content");
         $temp->appendChild($xmldoc->createCDATASection($this->content));
-        $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($DEFAULT_LANG));
+        $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($defaultlang));
         $act->appendChild($temp);
         
         $this->add_thumbnail_xml_node($xmldoc, $act);

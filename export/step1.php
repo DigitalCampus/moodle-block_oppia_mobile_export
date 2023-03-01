@@ -96,8 +96,8 @@ $section_width = get_oppiaconfig($id, 'section_width', $CFG->block_oppia_mobile_
 
 $base_settings = array(
     'priorities'     => $priorities,
-    'tags'             => get_oppiaconfig($id,'coursetags','', $server),
-    'default_lang'     => get_oppiaconfig($id,'default_lang', $CFG->block_oppia_mobile_export_default_lang, $server),
+    'tags'             => get_oppiaconfig($id, 'coursetags','', $server),
+    'defaultlang'     => get_oppiaconfig($id, 'defaultlang', $CFG->block_oppia_mobile_export_defaultlang, $server),
     'keep_html'        => $keep_html,
     'video_overlay' => $video_overlay,
     'thumb_height'    => $thumb_height,

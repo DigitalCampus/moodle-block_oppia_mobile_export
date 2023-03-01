@@ -43,8 +43,8 @@ $string['course_icon_height'] = 'Course icon height';
 
 $string['default_server'] = 'Default server';
 
-$string['default_lang'] = 'Default language';
-$string['default_lang_info'] = 'Language code in ISO-639 format';
+$string['defaultlang'] = 'Default language';
+$string['defaultlang_info'] = 'Language code in ISO-639 format';
 
 $string['thumbheight'] = 'Activity thumbnail height';
 $string['thumbwidth'] = 'Activity thumbnail width';

@@ -154,7 +154,7 @@ function get_section_title($section){
 }
 
 function extractLangs($content, $asJSON = false, $strip_tags = false, $strip_basic_tags = false){
-    global $MOBILE_LANGS, $CURRENT_LANG, $DEFAULT_LANG;
+    global $MOBILE_LANGS, $CURRENT_LANG, $defaultlang;
     preg_match_all(REGEX_LANGS, $content, $langs_tmp, PREG_OFFSET_CAPTURE);
     $tempLangs = array();
     if(isset($langs_tmp['langs']) && count($langs_tmp['langs']) > 0){
@@ -177,7 +177,7 @@ function extractLangs($content, $asJSON = false, $strip_tags = false, $strip_bas
             return $content;
         } else {
             $json = new stdClass;
-            $json->{$DEFAULT_LANG} = $content;
+            $json->{$defaultlang} = $content;
             return json_encode($json);
         }
     } 

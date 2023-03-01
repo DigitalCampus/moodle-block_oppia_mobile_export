@@ -34,7 +34,7 @@ class MobileActivityPage extends MobileActivity {
     }
 
     function process(){
-        global $DB, $CFG, $MOBILE_LANGS, $DEFAULT_LANG, $MEDIA;
+        global $DB, $CFG, $MOBILE_LANGS, $defaultlang, $MEDIA;
         $cm = get_coursemodule_from_id('page', $this->id);
         $page = $DB->get_record('page', array('id'=>$cm->instance), '*', MUST_EXIST);
         $context = context_module::instance($cm->id);
@@ -55,7 +55,7 @@ class MobileActivityPage extends MobileActivity {
                 $this->process_content($context, $cm->id, $text, $lang);
             }
         } else {
-            $this->process_content($context, $cm->id, $content, $DEFAULT_LANG);
+            $this->process_content($context, $cm->id, $content, $defaultlang);
         }
     }
 
