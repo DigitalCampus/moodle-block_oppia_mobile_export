@@ -506,6 +506,3 @@ echo $OUTPUT->render_from_template(
         'wwwroot' => $CFG->wwwroot));
 
 echo $OUTPUT->footer();
-
-
-?>

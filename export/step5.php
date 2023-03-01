@@ -193,6 +193,3 @@ function resolve() {
         return $render->render("{{" . $render->render($text) . "}}");
     };
 }
-
-?>
-

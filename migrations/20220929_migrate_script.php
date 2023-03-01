@@ -29,5 +29,3 @@ populate_digests_published_courses(null, false);
 
 $timediff = microtime(true) - $starttime;
 echo 'Completed in ' . $timediff . ' seconds.';
-
-?>

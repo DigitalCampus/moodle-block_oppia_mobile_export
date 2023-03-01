@@ -245,6 +245,3 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
 }
 
 echo $OUTPUT->footer();
-
-
-?>

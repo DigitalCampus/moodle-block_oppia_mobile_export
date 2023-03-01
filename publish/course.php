@@ -214,5 +214,3 @@ function show_and_log_message($server_connection, $course_id, $message, $tags, $
     echo '<div class="' . ($show_dialog ? 'export-results' : '') . ' ' .$tags.'">'.$message.'</div>';
     add_publishing_log($server_connection->url, $USER->id, $course_id, $log_action, ($tags ? $tags.':' : '').$message);
 }
-
-?>

@@ -64,4 +64,3 @@ class MobileActivityUrl extends MobileActivity {
         return null;
     }
 }
-?>

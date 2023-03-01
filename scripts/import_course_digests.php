@@ -264,6 +264,3 @@ function update_activity_digest($courseid, $modid, $digest, $server) {
         return false;
     }
 }
-
-
-?>

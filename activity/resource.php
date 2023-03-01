@@ -103,4 +103,3 @@ class MobileActivityResource extends MobileActivity {
         return null;
     }
 }
-?>

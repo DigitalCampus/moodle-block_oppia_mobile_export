@@ -46,4 +46,3 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configcheckbox(PLUGINNAME.'_debug', get_string('debug', PLUGINNAME),
             get_string('debug_info', PLUGINNAME), 1));
 }
-?>

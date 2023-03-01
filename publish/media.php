@@ -167,5 +167,3 @@ function get_server_url($server) {
 
     return $server_connection->url;
 }
-
-?>
