@@ -64,11 +64,11 @@ class MobileActivityPage extends MobileActivity {
 
         $content = $this->extractAndReplaceMedia($content);
         // if page has media and no special icon for page, extract the image for first video
-        if ((count($this->page_media)>0 || count($this->page_local_media)>0) && $this->thumbnail_image == null){
+        if ((count($this->page_media)>0 || count($this->page_local_media)>0) && $this->thumbnailimage == null){
             if($this->extractMediaImage($pre_content, 'mod_page', 'content', $context->id)){
-                $this->saveResizedThumbnail($this->thumbnail_image, $mod_id);
+                $this->saveResizedThumbnail($this->thumbnailimage, $mod_id);
             }
-        } else if ($this->thumbnail_image == null){
+        } else if ($this->thumbnailimage == null){
             // If it does not have an image, we try to extract it from the contents
             $this->extractThumbnailFromContents($pre_content, $mod_id);
         }
@@ -373,7 +373,7 @@ class MobileActivityPage extends MobileActivity {
         if($CFG->block_oppia_mobile_export_debug and $this->print_logs){
             echo get_string('export_file_success', PLUGINNAME, $filename).OPPIA_HTML_BR;
         }
-        $this->thumbnail_image = "images/".$filename;
+        $this->thumbnailimage = "images/".$filename;
         return true;
     }
     

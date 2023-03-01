@@ -45,7 +45,7 @@ class MobileActivityResource extends MobileActivity {
         // get the image from the intro section
         $this->extractThumbnailFromIntro($this->resource->intro, $cm->id);
         
-        if ($this->resource_type == "image/jpeg" && $this->thumbnail_image == null){
+        if ($this->resource_type == "image/jpeg" && $this->thumbnailimage == null){
             $this->saveResizedThumbnail($this->resource_filename, $cm->id, true);
         }
     }

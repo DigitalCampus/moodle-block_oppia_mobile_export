@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 class MobileActivityFeedback extends MobileActivity {
-    
+
     private $supported_types = array('multichoicerated',
                                      'textarea',
-                                     'multichoice', 
+                                     'multichoice',
                                      'numeric',
                                      'textfield',
                                      'info',
@@ -33,7 +33,7 @@ class MobileActivityFeedback extends MobileActivity {
     private $keep_html = false; //Should the HTML of questions and answers be stripped out or not
 
 
-    public function __construct($params=array()){ 
+    public function __construct($params=array()) {
         parent::__construct($params);
         if (isset($params['shortname'])) { $this->shortname = strip_tags($params['shortname']); }
         if (isset($params['summary'])) { $this->summary = $params['summary']; }
@@ -45,16 +45,16 @@ class MobileActivityFeedback extends MobileActivity {
     }
 
 
-    function generate_md5($feedback, $quizJSON){
+    function generate_md5($feedback, $quizJSON) {
         $md5postfix = "";
-        foreach($this->configArray as $key => $value){
+        foreach($this->configArray as $key => $value) {
             $md5postfix .= $key[0].((string) $value);
         }
         $contents = json_encode($quizJSON);
         $this->md5 = md5( $feedback->intro . removeIDsFromJSON($contents) . $md5postfix);
     }
     
-    function preprocess(){
+    function preprocess() {
         global $DB;
         $cm = get_coursemodule_from_id('feedback', $this->id);
         $feedback = $DB->get_record('feedback', array('id'=>$cm->instance), '*', MUST_EXIST);
@@ -64,8 +64,8 @@ class MobileActivityFeedback extends MobileActivity {
         $feedbackitems = $DB->get_records_select('feedback_item', $select, $params, 'position');
         
         $count_omitted = 0;
-        foreach($feedbackitems as $fi){
-            if(in_array($fi->typ,$this->supported_types)){
+        foreach($feedbackitems as $fi) {
+            if(in_array($fi->typ,$this->supported_types)) {
                 $this->no_questions++;
                 if($fi->typ == 'multichoicerated'){
                     $this->no_rated_questions++;
@@ -74,13 +74,12 @@ class MobileActivityFeedback extends MobileActivity {
                 $count_omitted++;
             }
         }
-        if($count_omitted == count($feedbackitems)){
+        if($count_omitted == count($feedbackitems)) {
             $this->is_valid = false;
         }
     }
-    
-    
-    function process(){
+
+    function process() {
         global $DB;
         
         $cm = get_coursemodule_from_id('feedback', $this->id);
@@ -95,15 +94,15 @@ class MobileActivityFeedback extends MobileActivity {
         
         $quizprops = array("courseversion" => $this->courseversion);
 
-        foreach($this->configArray as $k=>$v){
-            if ($k != 'randomselect' || $v != 0){
+        foreach($this->configArray as $k=>$v) {
+            if ($k != 'randomselect' || $v != 0) {
                 $quizprops[$k] = $v;
             }
         }
 
         $multiple_submit = intval($feedback->multiple_submit) == 1;
 
-        if (!$multiple_submit){
+        if (!$multiple_submit) {
             $quizprops['maxattempts'] = 1;    
         }
 
@@ -115,9 +114,9 @@ class MobileActivityFeedback extends MobileActivity {
         
         $i = 1;
 
-        foreach($feedbackitems as $q){            
+        foreach($feedbackitems as $q) {            
 
-            if(!in_array($q->typ,$this->supported_types)){
+            if(!in_array($q->typ,$this->supported_types)) {
                 continue;
             }
             $responses = array();
@@ -130,12 +129,12 @@ class MobileActivityFeedback extends MobileActivity {
             // multichoice multi
             if($q->typ == "multichoice" 
                 && (substr($q->presentation, 0, 1)==='c'
-                    || substr($q->presentation, 0, 1)==='d')){
+                    || substr($q->presentation, 0, 1)==='d')) {
                 $type = "multiselect";
                 $respstr = substr($q->presentation, 6);
                 $resps = explode('|', $respstr);
                 $j = 1;
-                foreach($resps as $resp){
+                foreach($resps as $resp) {
                      $respTitle = extractLangs($resp, true, !$this->keep_html, true);
                     array_push($responses, array(
                         'order' => $j,
@@ -146,23 +145,23 @@ class MobileActivityFeedback extends MobileActivity {
                     ));
                     $j++;
                 }
-            } elseif ($q->typ == "info"){
+            } elseif ($q->typ == "info") {
                 // info
                 $type = "description";
-            } elseif($q->typ == "label"){
+            } elseif($q->typ == "label") {
                 // label
                 $type = "description";
                 $questionTitle = extractLangs($q->presentation, true, !$this->keep_html);
-            } elseif($q->typ == "textarea"){
+            } elseif($q->typ == "textarea") {
                 // long answer
                 $type = "essay";
-            } elseif($q->typ == "multichoicerated" && substr($q->presentation,0,1)==='r'){
+            } elseif($q->typ == "multichoicerated" && substr($q->presentation,0,1)==='r') {
                 // multi - rated
                 $type = "multichoice";
                 $respstr = substr($q->presentation, 6);
                 $resps = explode('|', $respstr);
                 $j = 1;
-                foreach($resps as $resp){
+                foreach($resps as $resp) {
                     preg_match('/([0-9]+)####(.*)/', $resp, $matches);
                     $score = is_null($matches[1]) ? "0" : $matches[1];
                     $max_question_score = max($max_question_score, $score);
@@ -178,19 +177,19 @@ class MobileActivityFeedback extends MobileActivity {
                     $j++;
                 }
                 $quizMaxScore += $max_question_score;
-            } elseif($q->typ == "numeric"){
+            } elseif ($q->typ == "numeric") {
                 // numeric
                 $type = "numerical";
-            } elseif($q->typ == "textfield"){
+            } elseif ($q->typ == "textfield") {
                 // short answer
                 $type = "shortanswer";
-            } elseif($q->typ == "multichoice"){
+            } elseif ($q->typ == "multichoice") {
                 // multichoice 1
                 $type = "multichoice";
                 $respstr = substr($q->presentation, 6);
                 $resps = explode('|', $respstr);
                 $j = 1;
-                foreach($resps as $resp){
+                foreach($resps as $resp) {
                     $respTitle = extractLangs($resp, true, !$this->keep_html, true);
                     array_push($responses, array(
                         'order' => $j,
@@ -211,11 +210,11 @@ class MobileActivityFeedback extends MobileActivity {
             );
             
             // add any dependency props (skip logic)
-            if ($q->dependitem != 0){
+            if ($q->dependitem != 0) {
                 // find dependitem label
                 $dependitem = "";
-                foreach($feedbackitems as $q_depend){
-                    if($q->dependitem == $q_depend->id){
+                foreach($feedbackitems as $q_depend) {
+                    if($q->dependitem == $q_depend->id) {
                         $dependitem = $q_depend->label;
                     }
                 }
@@ -261,7 +260,7 @@ class MobileActivityFeedback extends MobileActivity {
     }
     
     
-    function getXML($mod, $counter, &$node, &$xmlDoc, $activity=true){
+    function getXML($mod, $counter, &$node, &$xmlDoc, $activity=true) {
         global $DEFAULT_LANG;
         
         $act = $this->getActivityNode($xmlDoc, $mod, $counter);
@@ -276,11 +275,11 @@ class MobileActivityFeedback extends MobileActivity {
         $node->appendChild($act);
     }
     
-    function get_is_valid(){
+    function get_is_valid() {
         return $this->is_valid;
     }
 
-    function get_no_questions(){
+    function get_no_questions() {
         return $this->no_questions;
     }
 
@@ -288,5 +287,3 @@ class MobileActivityFeedback extends MobileActivity {
         return $this->no_rated_questions;
     }
 }
-
-?>

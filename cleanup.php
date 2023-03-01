@@ -19,8 +19,8 @@ require_once(dirname(__FILE__) . '/constants.php');
 
 require_once($CFG->dirroot . PLUGINPATH . 'lib.php');
 
-$id = required_param('id',PARAM_INT);
-$course = $DB->get_record('course', array('id'=>$id));
+$id = required_param('id', PARAM_INT);
+$course = $DB->get_record('course', array('id' => $id));
 
 $PAGE->set_url(PLUGINPATH . 'cleanup.php', array('id' => $id));
 context_helper::preload_course($id);

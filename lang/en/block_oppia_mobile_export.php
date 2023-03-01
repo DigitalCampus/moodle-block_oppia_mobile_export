@@ -131,12 +131,12 @@ $string['export_quiz_maxattempts_unlimited'] = 'Unlimited';
 
 $string['export_priority_title'] = 'Course Priority';
 $string['export_priority_label'] = 'Priority';
-$string['export_priority_desc']  = 'This is the relative weight given to a course to help determine the ordering in which it will appear on the mobile (10 = highest priority)';
+$string['export_priority_desc'] = 'This is the relative weight given to a course to help determine the ordering in which it will appear on the mobile (10 = highest priority)';
 
 $string['export_keep_tags_title'] = 'Quiz Question Formatting';
 $string['export_keep_tags_desc'] = 'support use of HTML tags (&lt;em&gt;, &lt;b&gt;, &lt;strong&gt;, etc) in quiz question/response options. <br/><strong>Important</strong>:This is only supported for users with v7.3.2 or higher of the Oppia app';
 
-$string['export_server_error'] ='Unable to get server info (is it correctly configured and running?)';
+$string['export_server_error'] = 'Unable to get server info (is it correctly configured and running?)';
 
 $string['server_info_name'] = 'Server name';
 $string['server_info_version'] = 'Current server version';
@@ -205,11 +205,11 @@ $string['export_renewing_digests_in_section'] = 'Renewing digests in section: {$
 
 $string['section_password_title'] = 'Password protection';
 $string['section_password_added'] = '🔒 Section protected by password';
-$string['section_password_desc']  = 'If you want to lock a topic or activity with password, please enter it in the table below.';
+$string['section_password_desc'] = 'If you want to lock a topic or activity with password, please enter it in the table below.';
 $string['section_password_label'] = 'Password';
 $string['section_password_invalid'] = '<strong>{$a}</strong>: Section doesn\'t contain any supported activities.';
 
-$string['activity_password_added'] = '🔒 Activity protected by password'; 
+$string['activity_password_added'] = '🔒 Activity protected by password';
 
 $string['true'] = 'True';
 $string['false'] = 'False';
@@ -238,7 +238,7 @@ $string['publish_heading_draft'] = 'Push draft course to OppiaMobile server';
 $string['publish_text_draft'] = 'To push your draft course directly on OppiaMobile ({$a}), please complete your OppiaMobile server login details below.<br/>Check with your OppiaMobile administrator if you are unsure whether you have permissions to publish on the server';
 
 $string['publish_btn'] = "Publish";
-$string['publishing_header_live']  = "Publishing Course";
+$string['publishing_header_live'] = "Publishing Course";
 $string['publishing_header_draft'] = "Pushing Draft Course";
 
 $string['settings_avoid_push_quizzes'] = 'Don\'t push quizzes info to the Oppia server in the export process';
@@ -250,7 +250,7 @@ $string['video_included'] = 'Video included:';
 $string['media_files_size'] = 'Size';
 $string['media_files_digest'] = 'Digest';
 $string['media_files_length'] = 'Length';
-$string['media_files_title']= 'Pushing local media files';
+$string['media_files_title'] = 'Pushing local media files';
 $string['media_files_not_uploaded'] = 'Not uploaded to the server yet.';
 $string['media_files_request_error'] = 'Error processing request.';
 
