@@ -89,7 +89,7 @@ abstract class MobileActivity {
         if ($$imageresized) {
             $this->thumbnailimage = "/images/" . $$imageresized;
             if (!$keeporiginal) {
-                unlink($this->courseroot."/".$thumbnail) or die(get_string('error_file_delete', PLUGINNAME));
+                unlink($this->courseroot."/".$thumbnail) || die(get_string('error_file_delete', PLUGINNAME));
             }
         } else {
             $link = $CFG->wwwroot."/course/modedit.php?return=0&sr=0&update=".$moduleid;
@@ -122,8 +122,8 @@ abstract class MobileActivity {
         global $DEFAULT_LANG;
 
         $title = extractLangs($content);
-        if (is_array($title) && count($title)>0) {
-            foreach($title as $l=>$t) {
+        if (is_array($title) && count($title) > 0) {
+            foreach ($title as $l => $t) {
                 $temp = $xmldoc->createElement($propertyname);
                 $temp->appendChild($xmldoc->createCDATASection(strip_tags($t)));
                 $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($l));

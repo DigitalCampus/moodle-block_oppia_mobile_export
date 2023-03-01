@@ -46,7 +46,7 @@ class MobileActivityPage extends MobileActivity {
                                         0, $context->id, $this->courseroot, $cm->id);
 
         // get the image from the intro section
-        $this->extractThumbnailFromIntro($page->intro, $cm->id);
+        $this->extract_thumbnail_from_intro($page->intro, $cm->id);
 
         $langs = extractLangs($content);
         if(is_array($langs) && count($langs)>0){
@@ -66,11 +66,11 @@ class MobileActivityPage extends MobileActivity {
         // if page has media and no special icon for page, extract the image for first video
         if ((count($this->page_media)>0 || count($this->page_local_media)>0) && $this->thumbnailimage == null){
             if($this->extractMediaImage($pre_content, 'mod_page', 'content', $context->id)){
-                $this->saveResizedThumbnail($this->thumbnailimage, $mod_id);
+                $this->save_resized_thumbnail($this->thumbnailimage, $mod_id);
             }
         } else if ($this->thumbnailimage == null){
             // If it does not have an image, we try to extract it from the contents
-            $this->extractThumbnailFromContents($pre_content, $mod_id);
+            $this->extract_thumbnail_from_contents($pre_content, $mod_id);
         }
         
         // add html header tags etc
@@ -103,49 +103,49 @@ class MobileActivityPage extends MobileActivity {
         return $this->page_local_media;
     }
     
-    function get_xml($mod, $counter, &$node, &$xmlDoc, $activity=true){
+    function get_xml($mod, $counter, &$node, &$xmldoc, $activity=true){
         if($activity){
-            $struct = $this->getActivityNode($xmlDoc, $mod, $counter);
+            $struct = $this->get_activity_node($xmldoc, $mod, $counter);
             $node->appendChild($struct);
         } else {
-            $struct = $xmlDoc->createElement("page");
-            $struct->appendChild($xmlDoc->createAttribute("id"))->appendChild($xmlDoc->createTextNode($this->id));
+            $struct = $xmldoc->createElement("page");
+            $struct->appendChild($xmldoc->createAttribute("id"))->appendChild($xmldoc->createTextNode($this->id));
             $node->appendChild($struct);
         }
 
-        $this->addLangXMLNodes($xmlDoc, $struct, $mod->name, "title");
-        $this->addThumbnailXMLNode($xmlDoc, $struct);
+        $this->add_lang_xml_nodes($xmldoc, $struct, $mod->name, "title");
+        $this->add_thumbnail_xml_node($xmldoc, $struct);
 
         // add in page media
         if(count($this->page_media) > 0 || count($this->page_local_media) > 0){
-            $media = $xmlDoc->createElement("media");
+            $media = $xmldoc->createElement("media");
             foreach ($this->page_media as $m){
-                $temp = $xmlDoc->createElement("file");
+                $temp = $xmldoc->createElement("file");
                 foreach($m as $var => $value) {
-                    $temp->appendChild($xmlDoc->createAttribute($var))->appendChild($xmlDoc->createTextNode($value));
+                    $temp->appendChild($xmldoc->createAttribute($var))->appendChild($xmldoc->createTextNode($value));
                 }
                 $media->appendChild($temp);
             }
 
             foreach ($this->page_local_media as $m){
-                $temp = $xmlDoc->createElement("file");
+                $temp = $xmldoc->createElement("file");
                 foreach($m as $var => $value) {
-                    $temp->appendChild($xmlDoc->createAttribute($var))->appendChild($xmlDoc->createTextNode($value));
+                    $temp->appendChild($xmldoc->createAttribute($var))->appendChild($xmldoc->createTextNode($value));
                 }
                 $media->appendChild($temp);
             }
             $struct->appendChild($media);
         }
         if(count($this->page_related) > 0){
-            $related = $xmlDoc->createElement("related");
+            $related = $xmldoc->createElement("related");
             foreach ($this->page_related as $r){
-                $temp = $xmlDoc->createElement("activity");
-                $temp->appendChild($xmlDoc->createAttribute("order"))->appendChild($xmlDoc->createTextNode($r->order));
-                $temp->appendChild($xmlDoc->createAttribute("digest"))->appendChild($xmlDoc->createTextNode($r->digest));
+                $temp = $xmldoc->createElement("activity");
+                $temp->appendChild($xmldoc->createAttribute("order"))->appendChild($xmldoc->createTextNode($r->order));
+                $temp->appendChild($xmldoc->createAttribute("digest"))->appendChild($xmldoc->createTextNode($r->digest));
                 foreach($r->activity as $a) {
-                    $title = $xmlDoc->createElement("title");
-                    $title->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($a->lang));
-                    $title->appendChild($xmlDoc->createTextNode(strip_tags($a->title)));
+                    $title = $xmldoc->createElement("title");
+                    $title->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($a->lang));
+                    $title->appendChild($xmldoc->createTextNode(strip_tags($a->title)));
                     $temp->appendChild($title);
                 }
                 $related->appendChild($temp);
@@ -154,8 +154,8 @@ class MobileActivityPage extends MobileActivity {
         }
 
         foreach($this->act as $act){
-            $temp = $xmlDoc->createElement("location",$act->filename);
-            $temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($act->lang));
+            $temp = $xmldoc->createElement("location",$act->filename);
+            $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($act->lang));
             $struct->appendChild($temp);
         }
     }

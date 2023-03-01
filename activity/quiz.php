@@ -123,7 +123,7 @@ class MobileActivityQuiz extends MobileActivity {
         $qs = $quizobj->get_questions();
 
         // get the image from the intro section
-        $this->extractThumbnailFromIntro($quiz->intro, $cm->id);
+        $this->extract_thumbnail_from_intro($quiz->intro, $cm->id);
         
         $quizprops = array("courseversion" => $this->courseversion);
         
@@ -375,18 +375,18 @@ class MobileActivityQuiz extends MobileActivity {
         }
     }
     
-    function get_xml($mod, $counter, &$node, &$xmlDoc, $activity=true){
+    function get_xml($mod, $counter, &$node, &$xmldoc, $activity=true){
         
         global $DEFAULT_LANG;
-        $act = $this->getActivityNode($xmlDoc, $mod, $counter);
-        $this->addLangXMLNodes($xmlDoc, $act, $mod->name, "title");
+        $act = $this->get_activity_node($xmldoc, $mod, $counter);
+        $this->add_lang_xml_nodes($xmldoc, $act, $mod->name, "title");
         
-        $temp = $xmlDoc->createElement("content");
-        $temp->appendChild($xmlDoc->createCDATASection($this->content));
-        $temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
+        $temp = $xmldoc->createElement("content");
+        $temp->appendChild($xmldoc->createCDATASection($this->content));
+        $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($DEFAULT_LANG));
         $act->appendChild($temp);
         
-        $this->addThumbnailXMLNode($xmlDoc, $act);
+        $this->add_thumbnail_xml_node($xmldoc, $act);
 
         $node->appendChild($act);
     }

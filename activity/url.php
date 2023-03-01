@@ -37,26 +37,26 @@ class MobileActivityUrl extends MobileActivity {
         $this->url = $DB->get_record('url', array('id'=>$cm->instance), '*', MUST_EXIST);
         $this->generate_md5($this->url);
         // get the image from the intro section
-        $this->extractThumbnailFromIntro($this->url->intro, $cm->id);
+        $this->extract_thumbnail_from_intro($this->url->intro, $cm->id);
     }
     
     
-    function get_xml($mod, $counter, &$node, &$xmlDoc, $activity=true){
+    function get_xml($mod, $counter, &$node, &$xmldoc, $activity=true){
         global $DEFAULT_LANG;
         
         if(!$activity){
             return;
         }
         
-        $act = $this->getActivityNode($xmlDoc, $mod, $counter);
-        $this->addLangXMLNodes($xmlDoc, $act, $mod->name, "title");
-        $this->addLangXMLNodes($xmlDoc, $act, $this->url->intro, "description");
+        $act = $this->get_activity_node($xmldoc, $mod, $counter);
+        $this->add_lang_xml_nodes($xmldoc, $act, $mod->name, "title");
+        $this->add_lang_xml_nodes($xmldoc, $act, $this->url->intro, "description");
 
-        $temp = $xmlDoc->createElement("location",$this->url->externalurl);
-        $temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
+        $temp = $xmldoc->createElement("location",$this->url->externalurl);
+        $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($DEFAULT_LANG));
         $act->appendChild($temp);
 
-        $this->addThumbnailXMLNode($xmlDoc, $act);
+        $this->add_thumbnail_xml_node($xmldoc, $act);
         $node->appendChild($act);
     }
 

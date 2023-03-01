@@ -17,8 +17,8 @@
 class MobileActivityResource extends MobileActivity {
     
     private $resource;
-    private $resource_filename = null;
-    private $resource_type = null;
+    private $resourcefilename = null;
+    private $resourcetype = null;
     
 
     public function __construct($params=array()){ 
@@ -43,29 +43,29 @@ class MobileActivityResource extends MobileActivity {
         $this->extractResource($context->id);
     
         // get the image from the intro section
-        $this->extractThumbnailFromIntro($this->resource->intro, $cm->id);
+        $this->extract_thumbnail_from_intro($this->resource->intro, $cm->id);
         
-        if ($this->resource_type == "image/jpeg" && $this->thumbnailimage == null){
-            $this->saveResizedThumbnail($this->resource_filename, $cm->id, true);
+        if ($this->resourcetype == "image/jpeg" && $this->thumbnailimage == null){
+            $this->save_resized_thumbnail($this->resourcefilename, $cm->id, true);
         }
     }
 
     
-    function get_xml($mod, $counter, &$node, &$xmlDoc, $activity=true){
+    function get_xml($mod, $counter, &$node, &$xmldoc, $activity=true){
         global $DEFAULT_LANG;
         
         if(!$activity){
             return;
         }
 
-        $act = $this->getActivityNode($xmlDoc, $mod, $counter);
-        $this->addLangXMLNodes($xmlDoc, $act, $mod->name, "title");
-        $this->addLangXMLNodes($xmlDoc, $act, $this->resource->intro, "description");
-        $this->addThumbnailXMLNode($xmlDoc, $act);
+        $act = $this->get_activity_node($xmldoc, $mod, $counter);
+        $this->add_lang_xml_nodes($xmldoc, $act, $mod->name, "title");
+        $this->add_lang_xml_nodes($xmldoc, $act, $this->resource->intro, "description");
+        $this->add_thumbnail_xml_node($xmldoc, $act);
 
-        $temp = $xmlDoc->createElement("location",$this->resource_filename);
-        $temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
-        $temp->appendChild($xmlDoc->createAttribute("type"))->appendChild($xmlDoc->createTextNode($this->resource_type));
+        $temp = $xmldoc->createElement("location",$this->resourcefilename);
+        $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($DEFAULT_LANG));
+        $temp->appendChild($xmldoc->createAttribute("type"))->appendChild($xmldoc->createTextNode($this->resourcetype));
         $act->appendChild($temp);
 
         $node->appendChild($act);
@@ -82,10 +82,10 @@ class MobileActivityResource extends MobileActivity {
 
         $finfo = new finfo(FILEINFO_MIME);
         $type = $finfo->file($resourcefile);
-        $this->resource_type = substr($type, 0, strpos($type, ';'));
+        $this->resourcetype = substr($type, 0, strpos($type, ';'));
         
         $this->generate_md5($file);
-        $this->resource_filename = "/resources/".$filename;
+        $this->resourcefilename = "/resources/".$filename;
     }
 
     private function filter_filename($filename){
