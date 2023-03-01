@@ -103,7 +103,7 @@ class MobileActivityPage extends MobileActivity {
         return $this->page_local_media;
     }
     
-    function getXML($mod, $counter, &$node, &$xmlDoc, $activity=true){
+    function get_xml($mod, $counter, &$node, &$xmlDoc, $activity=true){
         if($activity){
             $struct = $this->getActivityNode($xmlDoc, $mod, $counter);
             $node->appendChild($struct);

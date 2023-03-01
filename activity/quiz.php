@@ -375,7 +375,7 @@ class MobileActivityQuiz extends MobileActivity {
         }
     }
     
-    function getXML($mod, $counter, &$node, &$xmlDoc, $activity=true){
+    function get_xml($mod, $counter, &$node, &$xmlDoc, $activity=true){
         
         global $DEFAULT_LANG;
         $act = $this->getActivityNode($xmlDoc, $mod, $counter);

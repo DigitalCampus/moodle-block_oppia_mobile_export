@@ -41,7 +41,7 @@ class MobileActivityUrl extends MobileActivity {
     }
     
     
-    function getXML($mod, $counter, &$node, &$xmlDoc, $activity=true){
+    function get_xml($mod, $counter, &$node, &$xmlDoc, $activity=true){
         global $DEFAULT_LANG;
         
         if(!$activity){

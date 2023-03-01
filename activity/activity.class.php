@@ -53,46 +53,46 @@ abstract class MobileActivity {
     }
 
     abstract function process();
-    abstract function getXML($mod, $counter, &$node, &$xmlDoc, $activity=true);
+    abstract function get_xml($mod, $counter, &$node, &$xmlDoc, $activity=true);
 
-    public function extractThumbnailFromIntro($content, $moduleid) {
-        $this->extractThumbnail($content, $moduleid, 'intro');
+    public function extract_thumbnail_from_intro($content, $moduleid) {
+        $this->extract_thumbnail($content, $moduleid, 'intro');
     }
 
-    public function extractThumbnailFromContents($content, $module_id) {
-        $this->extractThumbnail($content, $module_id, 'content');
+    public function extract_thumbnail_from_contents($content, $moduleid) {
+        $this->extract_thumbnail($content, $moduleid, 'content');
     }
 
-    public function extractThumbnail($content, $module_id, $file_area) {
+    public function extract_thumbnail($content, $moduleid, $filearea) {
 
-        $context = context_module::instance($module_id);
+        $context = context_module::instance($moduleid);
         // Get the image from the intro section.
-        $thumbnail = extractImageFile($content, $this->component_name, $file_area,
-                                        0, $context->id, $this->courseroot, $module_id);
+        $thumbnail = extractImageFile($content, $this->component_name, $filearea,
+                                        0, $context->id, $this->courseroot, $moduleid);
 
         if ($thumbnail) {
-            $this->saveResizedThumbnail($thumbnail, $module_id);
+            $this->save_resized_thumbnail($thumbnail, $moduleid);
         }
     }
 
-    public function saveResizedThumbnail($thumbnail, $module_id, $keep_original=false) {
+    public function save_resized_thumbnail($thumbnail, $moduleid, $keeporiginal=false) {
         global $CFG;
 
-        $thumb_height = get_oppiaconfig($this->courseid, 'thumb_height', $CFG->block_oppia_mobile_export_thumb_height, $this->server_id);
-        $thumb_width = get_oppiaconfig($this->courseid, 'thumb_width', $CFG->block_oppia_mobile_export_thumb_width, $this->server_id);
+        $thumbheight = get_oppiaconfig($this->courseid, 'thumb_height', $CFG->block_oppia_mobile_export_thumb_height, $this->server_id);
+        $thumbwidth = get_oppiaconfig($this->courseid, 'thumb_width', $CFG->block_oppia_mobile_export_thumb_width, $this->server_id);
 
         $this->thumbnailimage = $thumbnail;
-        $imageResized = resizeImage($this->courseroot . "/". $this->thumbnailimage,
-                                    $this->courseroot."/images/".$module_id,
-                                    $thumb_width, $thumb_height);
+        $$imageresized = resizeImage($this->courseroot . "/". $this->thumbnailimage,
+                                    $this->courseroot."/images/".$moduleid,
+                                    $thumbwidth, $thumbheight);
 
-        if ($imageResized) {
-            $this->thumbnailimage = "/images/" . $imageResized;
-            if (!$keep_original) {
+        if ($$imageresized) {
+            $this->thumbnailimage = "/images/" . $$imageresized;
+            if (!$keeporiginal) {
                 unlink($this->courseroot."/".$thumbnail) or die(get_string('error_file_delete', PLUGINNAME));
             }
         } else {
-            $link = $CFG->wwwroot."/course/modedit.php?return=0&sr=0&update=".$module_id;
+            $link = $CFG->wwwroot."/course/modedit.php?return=0&sr=0&update=".$moduleid;
             echo '<span class="export-error">'.get_string('error_edit_page', PLUGINNAME, $link).'</span><br/>';
         }
     }
@@ -101,51 +101,51 @@ abstract class MobileActivity {
         return (($this->password != NULL) && ($this->password != ''));
     }
 
-    protected function getActivityNode($xmlDoc, $module, $counter) {
-        $act = $xmlDoc->createElement("activity");
-        $act->appendChild($xmlDoc->createAttribute("type"))->appendChild($xmlDoc->createTextNode($module->modname));
-        $act->appendChild($xmlDoc->createAttribute("order"))->appendChild($xmlDoc->createTextNode($counter));
-        $act->appendChild($xmlDoc->createAttribute("digest"))->appendChild($xmlDoc->createTextNode($this->md5));
+    protected function get_activity_node($xmldoc, $module, $counter) {
+        $act = $xmldoc->createElement("activity");
+        $act->appendChild($xmldoc->createAttribute("type"))->appendChild($xmldoc->createTextNode($module->modname));
+        $act->appendChild($xmldoc->createAttribute("order"))->appendChild($xmldoc->createTextNode($counter));
+        $act->appendChild($xmldoc->createAttribute("digest"))->appendChild($xmldoc->createTextNode($this->md5));
 
         return $act;
     }
 
-    protected function addTitleXMLNodes($xmlDoc, $module, $activity_node) {
-        $this->addLangXMLNodes($xmlDoc, $activity_node, $module->name, "title");
+    protected function addTitleXMLNodes($xmldoc, $module, $activitynode) {
+        $this->addLangXMLNodes($xmldoc, $activitynode, $module->name, "title");
     }
 
-    protected function addDescriptionXMLNodes($xmlDoc, $module, $activity_node) {
-        $this->addLangXMLNodes($xmlDoc, $activity_node, $module->intro, "description");
+    protected function addDescriptionXMLNodes($xmldoc, $module, $activitynode) {
+        $this->addLangXMLNodes($xmldoc, $activitynode, $module->intro, "description");
     }
 
-    protected function addLangXMLNodes($xmlDoc, $activity_node, $content, $property_name) {
+    protected function addLangXMLNodes($xmldoc, $activitynode, $content, $propertyname) {
         global $DEFAULT_LANG;
 
         $title = extractLangs($content);
         if (is_array($title) && count($title)>0) {
             foreach($title as $l=>$t) {
-                $temp = $xmlDoc->createElement($property_name);
-                $temp->appendChild($xmlDoc->createCDATASection(strip_tags($t)));
-                $temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($l));
-                $activity_node->appendChild($temp);
+                $temp = $xmldoc->createElement($propertyname);
+                $temp->appendChild($xmldoc->createCDATASection(strip_tags($t)));
+                $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($l));
+                $activitynode->appendChild($temp);
             }
         } else {
             $title = strip_tags($content);
             if ($title != "") {
-                $temp = $xmlDoc->createElement($property_name);
-                $temp->appendChild($xmlDoc->createCDATASection(strip_tags($title)));
-                $temp->appendChild($xmlDoc->createAttribute("lang"))->appendChild($xmlDoc->createTextNode($DEFAULT_LANG));
-                $activity_node->appendChild($temp);
+                $temp = $xmldoc->createElement($propertyname);
+                $temp->appendChild($xmldoc->createCDATASection(strip_tags($title)));
+                $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($DEFAULT_LANG));
+                $activitynode->appendChild($temp);
             }
         }
     }
 
-    protected function addThumbnailXMLNode($xmlDoc, $activity_node) {
+    protected function addThumbnailXMLNode($xmldoc, $activitynode) {
 
         if ($this->thumbnailimage) {
-            $temp = $xmlDoc->createElement("image");
-            $temp->appendChild($xmlDoc->createAttribute("filename"))->appendChild($xmlDoc->createTextNode($this->thumbnailimage));
-            $activity_node->appendChild($temp);
+            $temp = $xmldoc->createElement("image");
+            $temp->appendChild($xmldoc->createAttribute("filename"))->appendChild($xmldoc->createTextNode($this->thumbnailimage));
+            $activitynode->appendChild($temp);
         }
     }
 
