@@ -28,7 +28,7 @@ require_once($pluginroot . 'lib.php');
 require_once($pluginroot . 'version.php');
 
 class block_oppia_mobile_export extends block_base {
-    
+
     function init() {
         $this->title = get_string('pluginname', PLUGINNAME);
     }
@@ -36,20 +36,20 @@ class block_oppia_mobile_export extends block_base {
     function instance_allow_config() {
         return false;
     }
-    
+
     function has_config() {
         return true;
     }
-    
+
     function get_content() {
         global $USER, $CFG, $COURSE, $OUTPUT, $pluginroot;
-        
+
         if ($this->content !== NULL || !isset($COURSE->id) || $COURSE->id == 1) {
             return $this->content;
         }
 
         $this->content = new stdClass;
-        
+
         if (!has_capability('block/oppia_mobile_export:addinstance', context_course::instance($COURSE->id))) {
             return $this->content;
         }
@@ -70,10 +70,10 @@ class block_oppia_mobile_export extends block_base {
             'default_server' => $CFG->block_oppia_mobile_export_default_server,
             'current_style' => $current_style,
         );
-        
+
         $this->content->text = $OUTPUT->render_from_template(PLUGINNAME.'/block', $settings);
-        
-        require($pluginroot . 'version.php'); // to get release no
+
+        require($pluginroot . 'version.php'); // To get release no.
         $this->content->footer = $OUTPUT->render_from_template(PLUGINNAME.'/block_footer',
             array( 'release' => $plugin->release));
 
@@ -83,8 +83,7 @@ class block_oppia_mobile_export extends block_base {
 
         return $this->content;
     }
-    
-    
+
     private function getStyles($current_style) {
 
         $styles_dir = dirname(__FILE__).'/'.STYLES_DIR.STYLES_THEMES_DIR;
@@ -103,9 +102,8 @@ class block_oppia_mobile_export extends block_base {
                         'theme' => $theme,
                         'name' => ucwords($theme, " -"),
                         'selected' => ($theme == $current_style)
-                    ));    
+                    ));
                 }
-                
             }
         }
         return $styles;

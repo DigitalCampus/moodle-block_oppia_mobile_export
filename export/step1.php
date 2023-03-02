@@ -72,8 +72,8 @@ $mods = $modinfo->get_cms();
 
 echo $OUTPUT->header();
 
-// Check specified server belongs to current user
-$server_connection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid'=>$USER->id,'id'=>$server));
+// Check specified server belongs to current user.
+$server_connection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid' => $USER->id, 'id' => $server));
 if (!$server_connection && $server != "default") {
     echo "<p>".get_string('server_not_owner', PLUGINNAME)."</p>";
     echo $OUTPUT->footer();
@@ -82,7 +82,7 @@ if (!$server_connection && $server != "default") {
 
 $priority = (int) get_oppiaconfig($id, 'coursepriority', '0', $server);
 $priorities = [];
-for ($i=0; $i<=PRIORITY_LEVELS; $i++) {
+for ($i = 0; $i <= PRIORITY_LEVELS; $i++) {
     $priorities[$i] = array ("idx" => $i, "selected" => $i == $priority );
 }
 
@@ -95,18 +95,18 @@ $section_height = get_oppiaconfig($id, 'section_height', $CFG->block_oppia_mobil
 $section_width = get_oppiaconfig($id, 'section_width', $CFG->block_oppia_mobile_export_section_icon_width, $server);
 
 $base_settings = array(
-    'priorities'     => $priorities,
-    'tags'             => get_oppiaconfig($id, 'coursetags','', $server),
-    'defaultlang'     => get_oppiaconfig($id, 'defaultlang', $CFG->block_oppia_mobile_export_defaultlang, $server),
-    'keep_html'        => $keep_html,
+    'priorities' => $priorities,
+    'tags' => get_oppiaconfig($id, 'coursetags', '', $server),
+    'defaultlang' => get_oppiaconfig($id, 'defaultlang', $CFG->block_oppia_mobile_export_defaultlang, $server),
+    'keep_html'  => $keep_html,
     'video_overlay' => $video_overlay,
-    'thumb_height'    => $thumb_height,
-    'thumb_width'    => $thumb_width,
-    'section_height'=> $section_height,
-    'section_width'    => $section_width,
-    'sequencing_none'      => $sequencing == '' || $sequencing == 'none',
+    'thumb_height' => $thumb_height,
+    'thumb_width' => $thumb_width,
+    'section_height' => $section_height,
+    'section_width' => $section_width,
+    'sequencing_none' => $sequencing == '' || $sequencing == 'none',
     'sequencing_section' => $sequencing == 'section',
-    'sequencing_course'  => $sequencing == 'course',
+    'sequencing_course' => $sequencing == 'course',
 );
 
 echo $OUTPUT->render_from_template(

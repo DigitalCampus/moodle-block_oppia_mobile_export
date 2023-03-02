@@ -48,7 +48,7 @@ $password = required_param('password', PARAM_TEXT);
 $course_status = required_param('course_export_status', PARAM_TEXT);
 $digests_to_preserve = required_param('digests_to_preserve', PARAM_TEXT);
 
-$course = $DB->get_record('course', array('id'=>$id));
+$course = $DB->get_record('course', array('id' => $id));
 
 $PAGE->set_url(PLUGINPATH.'publish/course.php', array('id' => $id));
 context_helper::preload_course($id);
@@ -70,7 +70,7 @@ $modinfo = get_fast_modinfo($course);
 $sections = $modinfo->get_section_info_all();
 $mods = $modinfo->get_cms();
 
-$server_connection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid'=>$USER->id,'id'=>$server));
+$server_connection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid' => $USER->id, 'id' => $server));
 
 add_or_update_oppiaconfig($id, 'is_draft', $is_draft);
 add_publishing_log($server_connection->url, $USER->id, $id, "api_publish_start", "API publish process started");
@@ -174,15 +174,12 @@ switch ($http_status) {
         deleteDir($dataroot.OPPIA_OUTPUT_DIR.$USER->id."/temp");
         break;
     default:
-        
 }
 $json_response = json_decode($result, true);
 
 if (is_null($json_response)) {
     echo $result;
-}
-else{
-
+} else {
     if (array_key_exists('message', $json_response)) {
         show_and_log_message($server_connection, $id, $json_response['message'], false, "api_publish_response", false);
     }
@@ -198,17 +195,14 @@ else{
             show_and_log_message($server_connection, $id, $err, 'warning', "api_publish_response_message", true);
         }
     }
-    
 }
-
 
 
 add_publishing_log($server_connection->url, $USER->id, $id, "api_publish_end", "API publish process ended");
 
 echo $OUTPUT->footer();
 
-
-// Function to show on screen the message and save it in the publishing log
+// Function to show on screen the message and save it in the publishing log.
 function show_and_log_message($server_connection, $course_id, $message, $tags, $log_action, $show_dialog=false) {
     global $USER;
     echo '<div class="' . ($show_dialog ? 'export-results' : '') . ' ' .$tags.'">'.$message.'</div>';

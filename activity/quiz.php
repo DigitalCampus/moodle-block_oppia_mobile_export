@@ -28,17 +28,26 @@ class MobileActivityQuiz extends MobileActivity {
     private $keep_html = false; //Should the HTML of questions and answers be stripped out or not
 
 
-    public function __construct($params=array()) { 
+    public function __construct($params=array()) {
         parent::__construct($params);
-        if (isset($params['shortname'])) { $this->shortname = strip_tags($params['shortname']); }
-        if (isset($params['summary'])) { $this->summary = $params['summary']; }
-        if (isset($params['config_array'])) { $this->configArray = $params['config_array']; }
-        if (isset($params['courseversion'])) { $this->courseversion = $params['courseversion']; }
-        if (isset($params['keep_html'])) { $this->keep_html = $params['keep_html']; }    
+        if (isset($params['shortname'])) {
+            $this->shortname = strip_tags($params['shortname']);
+        }
+        if (isset($params['summary'])) {
+            $this->summary = $params['summary'];
+        }
+        if (isset($params['config_array'])) {
+            $this->configArray = $params['config_array'];
+        }
+        if (isset($params['courseversion'])) {
+            $this->courseversion = $params['courseversion'];
+        }
+        if (isset($params['keep_html'])) {
+            $this->keep_html = $params['keep_html'];
+        }
 
         $this->componentname = 'mod_quiz';
-    } 
-    
+    }
 
     function generate_md5($quiz, $quizJSON) {
         $md5postfix = "";
@@ -49,20 +58,19 @@ class MobileActivityQuiz extends MobileActivity {
         $this->md5 = md5( $quiz->intro . removeIDsFromJSON($contents) . $md5postfix);
     }
 
-    // Bit masks for the quiz review options (copied from Moodle's internal class `mod_quiz_display_options`)
+    // Bit masks for the quiz review options (copied from Moodle's internal class `mod_quiz_display_options`).
     const IMMEDIATELY_AFTER = 0x01000;
-    const LATER_WHILE_OPEN  = 0x00100;    
-    const AFTER_CLOSE       = 0x00010;
+    const LATER_WHILE_OPEN = 0x00100;
+    const AFTER_CLOSE = 0x00010;
 
     function get_review_availability($quiz, $when) {
         return boolval(($when & intval($quiz->reviewcorrectness)) == $when);
     }
 
-    
     function preprocess() {
-        global $DB,$USER;
+        global $DB, $USER;
         $cm = get_coursemodule_from_id('quiz', $this->id);
-        
+
         $quizobj = quiz::create($cm->instance, $USER->id);
         if (!$quizobj->has_questions()) {
             $this->noquestions = 0;
@@ -73,7 +81,7 @@ class MobileActivityQuiz extends MobileActivity {
         $quiz = $DB->get_record('quiz', array('id'=>$cm->instance), '*', MUST_EXIST);
         $allow_review_after = $this->get_review_availability($quiz, self::IMMEDIATELY_AFTER);
         $allow_review_later = $this->get_review_availability($quiz, self::LATER_WHILE_OPEN);
-        // Only include the config values if they are set to false
+        // Only include the config values if they are set to false.
         if (!$allow_review_after) {
             $this->configArray['immediate_whether_correct'] = false;
         }
@@ -84,11 +92,11 @@ class MobileActivityQuiz extends MobileActivity {
         $quizobj->preload_questions();
         $quizobj->load_questions();
         $qs = $quizobj->get_questions();
-        
-        // check has at least one non-essay and non-random question
+
+        // Check has at least one non-essay and non-random question.
         $count_omitted = 0;
-        foreach ($qs as $q) {    
-            if (in_array($q->qtype,$this->supported_types)) {
+        foreach ($qs as $q) {
+            if (in_array($q->qtype, $this->supported_types)) {
                 $this->noquestions++;
             } else {
                 $count_omitted++;
@@ -101,10 +109,10 @@ class MobileActivityQuiz extends MobileActivity {
 
     public function has_password() {
         global $DB, $USER;
-        
+
         $cm = get_coursemodule_from_id('quiz', $this->id);
-        $quiz = $DB->get_record('quiz', array('id'=>$cm->instance), '*', MUST_EXIST);
-        
+        $quiz = $DB->get_record('quiz', array('id' => $cm->instance), '*', MUST_EXIST);
+
         if ($quiz->password != "") {
             return true;
         } else {
@@ -124,18 +132,18 @@ class MobileActivityQuiz extends MobileActivity {
 
         // get the image from the intro section
         $this->extract_thumbnail_from_intro($quiz->intro, $cm->id);
-        
+
         $quizprops = array("courseversion" => $this->courseversion);
-        
-        foreach ($this->configArray as $k=>$v) {
+
+        foreach ($this->configArray as $k => $v) {
             if ($k != 'randomselect' || $v != 0) {
                 $quizprops[$k] = $v;
             }
         }
-        
+
         $nameJSON = extractLangs($cm->name, true);
         $descJSON = extractLangs($quiz->intro, true, !$this->keep_html);
-        
+
         $quizJsonQuestions = array();
         $quizMaxScore = 0;
 
@@ -154,13 +162,13 @@ class MobileActivityQuiz extends MobileActivity {
                 echo get_string('export_quiz_skip_essay', PLUGINNAME).OPPIA_HTML_BR;
                 continue;
             }
-            
+
             // skip any random questions
             if ($q->qtype == 'random') {
                 echo get_string('export_quiz_skip_random', PLUGINNAME).OPPIA_HTML_BR;
                 continue;
             }
-            
+
             //check to see if a multichoice is actually a multiselect
             if ($q->qtype == 'multichoice') {
                 $counter = 0;
@@ -180,7 +188,7 @@ class MobileActivityQuiz extends MobileActivity {
 
             $responses = array();
 
-            //add feedback for matching questions
+            // Add feedback for matching questions.
             if ($q->qtype == 'match') {
                 $q->qtype = 'matching';
                 if ($q->options->correctfeedback != "") {
@@ -198,22 +206,21 @@ class MobileActivityQuiz extends MobileActivity {
             }
 
 
-            // find if the question text has any images in it
-            $question_image = extractImageFile($q->questiontext,'question','questiontext',
-                                    $q->id,$q->contextid,$this->courseroot,$cm->id); 
-        
+            // Find if the question text has any images in it.
+            $question_image = extractImageFile($q->questiontext, 'question', 'questiontext',
+                                    $q->id, $q->contextid, $this->courseroot, $cm->id);
             if ($question_image) {
                 $questionprops["image"] = $question_image;
             }
-            
+
             // find if any videos embedded in question text
             $q->questiontext = $this->extractMedia($q->id, $q->questiontext);
-            if (array_key_exists($q->id,$this->quiz_media)) {
+            if (array_key_exists($q->id, $this->quiz_media)) {
                 foreach ($this->quiz_media[$q->id] as $media) {
                     $questionprops["media"] = $media->filename;
                 }
             }
-            
+
             $questionTitle = extractLangs(cleanHTMLEntities($q->questiontext, true), true, !$this->keep_html);
 
             $j = 1;
@@ -224,16 +231,16 @@ class MobileActivityQuiz extends MobileActivity {
                 foreach ($q->options->subquestions as $sq) {
                     if (trim($sq->questiontext) != "") {
                         $subqs++;
-                    }    
+                    }
                 }
                 foreach ($q->options->subquestions as $sq) {
                     $titleJSON = extractLangs($sq->questiontext.$this->MATCHING_SEPERATOR.$sq->answertext, true, !$this->keep_html, true);
-                    // add response
+                    // Add response.
                     $score = ($q->maxmark / $subqs);
 
                     array_push($responses, array(
                         'order' => $j,
-                        'id'     => rand(1,1000),
+                        'id' => rand(1, 1000),
                         'props' => json_decode ("{}"),
                         'title' => json_decode($titleJSON),
                         'score' => sprintf("%.4f", $score)
@@ -241,17 +248,17 @@ class MobileActivityQuiz extends MobileActivity {
                     $j++;
                 }
             }
-            
-            // for multichoice/multiselect/shortanswer/numerical questions
+
+            // For multichoice/multiselect/shortanswer/numerical questions.
             if (isset($q->options->answers)) {
                 foreach ($q->options->answers as $r) {
-                    $responseprops = array('id' => rand(1,1000));
-                    
+                    $responseprops = array('id' => rand(1, 1000));
+
                     if (strip_tags($r->feedback) != "") {
                         $feedbackJSON = extractLangs($r->feedback, true, !$this->keep_html);
                         $responseprops['feedback'] = json_decode($feedbackJSON);
                     }
-                    // if numerical also add a tolerance
+                    // If numerical also add a tolerance.
                     if ($q->qtype == 'numerical') {
                         $responseprops['tolerance'] = $r->tolerance;
                     }
@@ -259,7 +266,7 @@ class MobileActivityQuiz extends MobileActivity {
 
                     array_push($responses, array(
                         'order' => $j,
-                        'id'     => rand(1,1000),
+                        'id' => rand(1, 1000),
                         'props' => $responseprops,
                         'title' => json_decode(extractLangs($r->answer, true, !$this->keep_html, true)),
                         'score' => sprintf("%.4f", $score)
@@ -267,34 +274,33 @@ class MobileActivityQuiz extends MobileActivity {
                     $j++;
                 }
             }
-            
+
             $questionJson = array(
-                "id"     => rand(1,1000),
-                "type"     => $q->qtype,
+                "id" => rand(1, 1000),
+                "type" => $q->qtype,
                 "title" => json_decode($questionTitle),
                 "props" => $questionprops,
                 "responses" => $responses);
 
             array_push($quizJsonQuestions, array(
-                'order'    => $i,
-                'id'       => rand(1,1000),
+                'order' => $i,
+                'id' => rand(1, 1000),
                 'question' => $questionJson));
             $i++;
         }
-        
+
         $quizprops["maxscore"] = $quizMaxScore;
 
         $quizJson = array(
-            'id'          => rand(1,1000),
-            'title'      => json_decode($nameJSON),
-            'description'=> json_decode($descJSON),
-            'props'      => $quizprops,
-            'questions'  => $quizJsonQuestions);
+            'id' => rand(11000),
+            'title' => json_decode($nameJSON),
+            'description' => json_decode($descJSON),
+            'props' => $quizprops,
+            'questions' => $quizJsonQuestions);
 
         $this->generate_md5($quiz, $quizJson);
         $quizJson['props']['digest'] = $this->md5;
         $quizJson['props']['moodle_quiz_id'] = $this->id;
-            
 
         // check for password protection
         // done after md5 is created so password can be changed without it being a new quiz
@@ -302,35 +308,34 @@ class MobileActivityQuiz extends MobileActivity {
             $quizJson['props']['password'] = $quiz->password;
         }
         $this->content = json_encode($quizJson);
-        
     }
-    
+
     private function extractMedia($question_id, $content) {
-    
+
         preg_match_all(EMBED_MEDIA_REGEX, $content, $media_tmp, PREG_OFFSET_CAPTURE);
-    
+
         if (!isset($media_tmp['mediaobject']) || count($media_tmp['mediaobject']) == 0) {
             return $content;
         }
-    
-        for($i=0;$i<count($media_tmp['mediaobject']);$i++) {
+
+        for($i = 0; $i < count($media_tmp['mediaobject']); $i++) {
             $mediajson = json_decode($media_tmp['mediaobject'][$i][0]);
             $toreplace = $media_tmp[0][$i][0];
-    
+
             $content = str_replace($toreplace, "", $content);
-            // check all the required attrs exist
+            // Check all the required attrs exist.
             if (!isset($mediajson->digest) || !isset($mediajson->download_url) || !isset($mediajson->filename)) {
                 echo get_string('error_media_attributes', PLUGINNAME).OPPIA_HTML_BR;
                 die;
             }
-                
-            // put the media in both the structure for page ($this->page_media) and for module ($MEDIA)
+
+            // Put the media in both the structure for page ($this->page_media) and for module ($MEDIA).
             $MEDIA[$mediajson->digest] = $mediajson;
             $this->quiz_media[$question_id][$mediajson->digest] = $mediajson;
         }
         return str_replace("[[/media]]", "", $content);
     }
-    
+
     function exportQuestionImages () {
         global $USER;
         $cm = get_coursemodule_from_id('quiz', $this->id);
@@ -347,14 +352,13 @@ class MobileActivityQuiz extends MobileActivity {
                                         $q->id,
                                         $q->contextid,
                                         $this->courseroot,
-                                        $cm->id); 
+                                        $cm->id);
             }
-            
         } catch (moodle_exception $me) {
             return;
         }
     }
-    
+
     function exportQuestionMedia() {
         global $USER;
         $cm = get_coursemodule_from_id('quiz', $this->id);
@@ -367,32 +371,31 @@ class MobileActivityQuiz extends MobileActivity {
             foreach ($qs as $q) {
                 $this->extractMedia($q->id, $q->questiontext);
             }
-                
         } catch (moodle_exception $me) {
             return;
         }
     }
-    
+
     function get_xml($mod, $counter, &$node, &$xmldoc, $activity=true) {
-        
         global $defaultlang;
+
         $act = $this->get_activity_node($xmldoc, $mod, $counter);
         $this->add_lang_xml_nodes($xmldoc, $act, $mod->name, "title");
-        
+
         $temp = $xmldoc->createElement("content");
         $temp->appendChild($xmldoc->createCDATASection($this->content));
         $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($defaultlang));
         $act->appendChild($temp);
-        
+
         $this->add_thumbnail_xml_node($xmldoc, $act);
 
         $node->appendChild($act);
     }
-    
+
     function get_is_valid() {
         return $this->is_valid;
     }
-    
+
     function get_no_questions() {
         return $this->noquestions;
     }

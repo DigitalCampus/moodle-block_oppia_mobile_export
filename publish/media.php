@@ -40,7 +40,7 @@ $digest = required_param('digest', PARAM_TEXT);
 $server_base_url = get_server_url($server);
 $media_info = get_media_info($server_base_url, $digest);
 
-if ((!$media_info) && ($_SERVER['REQUEST_METHOD'] === 'POST')) {    
+if ((!$media_info) && ($_SERVER['REQUEST_METHOD'] === 'POST')) {
     $file = required_param('moodlefile', PARAM_TEXT);
     $username = required_param('username', PARAM_TEXT);
     $password = required_param('password', PARAM_TEXT);
@@ -49,8 +49,8 @@ if ((!$media_info) && ($_SERVER['REQUEST_METHOD'] === 'POST')) {
 
 header('Content-Type: application/json');
 if (!$media_info) {
-    echo json_encode(array('error'=>'not_valid_json'));
-} else{
+    echo json_encode(array('error' => 'not_valid_json'));
+} else {
     echo json_encode($media_info);
 }
 
@@ -71,7 +71,7 @@ function publish_media($server_base_url, $moodlefile, $username, $password, $tem
 
     list($contextid, $component, $filearea, $itemid, $path, $filename) = explode(";", $moodlefile);
     $file = get_file_storage()->get_file($contextid, $component, $filearea, $itemid, $path, $filename);
-    
+
     if (!$file) {
         http_response_code(500);
         return false;
@@ -109,16 +109,13 @@ function publish_media($server_base_url, $moodlefile, $username, $password, $tem
         // so we try to fetch the info if it was already published in the server
         $digest = required_param('digest', PARAM_TEXT);
         return get_media_info($server_base_url, $digest);
-    }
-    else{
+    } else {
         return process_response($http_status, $response);
     }
-    
-    
 }
 
 function process_response($http_status, $response) {
-    
+
     $json_response = json_decode($response, true);
     http_response_code($http_status);
 
@@ -128,10 +125,8 @@ function process_response($http_status, $response) {
         }
         return false;
     }
-
     return get_mediainfo_from_response($json_response);
 }
-
 
 function get_mediainfo_from_response($json_response) {
     $media_info = array();
@@ -145,13 +140,12 @@ function get_mediainfo_from_response($json_response) {
         $media_info['length'] = $json_response['length'];
     }
     return $media_info;
-
 }
 
 function get_server_url($server) {
     global $DB, $OUTPUT, $USER;
 
-    $server_connection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid'=>$USER->id,'id'=>$server));
+    $server_connection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid' => $USER->id, 'id' =>$ server));
     if (!$server_connection && $server != "default") {
         echo "<p>".get_string('server_not_owner', PLUGINNAME)."</p>";
         echo $OUTPUT->footer();
@@ -161,7 +155,7 @@ function get_server_url($server) {
         $server_connection = new stdClass();
         $server_connection->url = $CFG->block_oppia_mobile_export_default_server;
     }
-    if (substr($server_connection->url, -strlen('/'))!=='/') {
+    if (substr($server_connection->url, -strlen('/')) !== '/') {
         $server_connection->url .= '/';
     }
 

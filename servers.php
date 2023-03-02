@@ -33,7 +33,7 @@ echo $OUTPUT->header();
 $serverform = new OppiaServerForm();
 
 if ($serverform->is_cancelled()) {
-    // do nothing
+    // Do nothing.
 } else if ($fromform = $serverform->get_data()) {
     $record = new stdClass();
     $record->servername = $fromform->server_ref;
@@ -54,7 +54,7 @@ $servers = get_oppiaservers();
 
 echo "<h2>".get_string('servers_current', PLUGINNAME)."</h2>";
 
-if (count($servers)== 0) {
+if (count($servers) == 0) {
     echo "<p>".get_string('servers_none', PLUGINNAME)."</p>";
 } else {
     echo "<ul>";
@@ -64,7 +64,7 @@ if (count($servers)== 0) {
         echo " (<a href='".$s->url."' target='_blank'>".$s->url. "</a>)";
         echo " [<a href='?delete=".$s->id."'>". get_string('server_delete', PLUGINNAME)."</a>]";
         echo OPPIA_HTML_LI_END;
-    }    
+    }
     echo "</ul>";
 }
 

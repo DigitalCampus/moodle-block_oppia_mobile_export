@@ -83,7 +83,6 @@ function parse_module_file($filename) {
     }
 
     foreach ($xml->getElementsByTagName('section') as $section) {
-        
         foreach ($section->childNodes as $node) {
             if ($node->nodeName == "title") {
                 $sect_title = strip_tags($node->nodeValue);
@@ -97,7 +96,7 @@ function parse_module_file($filename) {
         foreach ($section->getElementsByTagName('activity') as $activity) {
             $digest = $activity->getAttribute('digest');
             $modid = get_moodle_activity_modid($course->id, $moodle_sect, $activity);
-            
+
             if ($modid == false) {
                 continue;
             }
@@ -106,8 +105,7 @@ function parse_module_file($filename) {
             echo "   mod_id: [" . $modid . "]: " . $digest;
             if ($prev_digest == false) {
                 echo " (did not exist previoulsy)\n";
-            }
-            else{
+            } else {
                 echo ($prev_digest == $digest ? " (unchanged)" : (" (was ".$prev_digest).")") . "\n";
             }
         }
@@ -139,33 +137,29 @@ function get_moodle_activity_modid($courseid, $sect_orderno, $activity) {
         }
     }
 
-    // We get all the activities that match the title
+    // We get all the activities that match the title.
     $activities = $DB->get_records_select($type, "name LIKE '%{$title}%' and course=$courseid");
     $mod_id = false;
     $num_matches = 0;
 
     foreach ($activities as $act) {
         $actid = $act->id;
-        //Check if the page belongs to the same section (in case of posible repeated activity titles like "Introduction")
-        $mod = $DB->get_record('course_modules', array('instance'=>$actid, 'module'=>$MODULE_TYPES[$type], 'section'=>$sect_orderno));
-        
+        // Check if the page belongs to the same section (in case of posible repeated activity titles like "Introduction").
+        $mod = $DB->get_record('course_modules', array('instance' => $actid, 'module' => $MODULE_TYPES[$type], 'section' => $sect_orderno));
         if ($mod !== false) {
             $mod_id = $mod->id;
             $num_matches++;
         }
     }
-    
+
     if ($num_matches == 1) {
         return $mod_id;
-    }
-    else{
+    } else {
         if ($num_matches > 0) {
             echo "   There is more than one activity in the same section with this title, skipping... \n";
         }
         return false;
     }
-    
-
 }
 
 function fetch_module_types() {
@@ -183,16 +177,14 @@ function fetch_module_types() {
         $modtype = $DB->get_record('modules', array('name'=>$type));
         $MODULE_TYPES[$type] = $modtype->id;
     }
-
 }
-
 
 function get_course_by_shortname($xml) {
     global $DB;
 
     $shortname = $xml->getElementsByTagName('shortname')->item(0)->nodeValue;
     $course = $DB->get_record('course', array('shortname'=>$shortname));
-    
+
     if ($course) {
         return $course;
     }
@@ -206,10 +198,9 @@ function get_course_by_shortname($xml) {
     if (!$course) {
         echo "The course '" . $shortname . "' was not found in this Moodle server. \n";
     }
-    
+
     return $course;
 }
-
 
 function get_and_validate_server($xml) {
     global $CFG, $DB;
@@ -250,8 +241,7 @@ function update_activity_digest($courseid, $modid, $digest, $server) {
         $record_exists->updated = $timestamp;
         $DB->update_record(OPPIA_DIGEST_TABLE, $record_exists);
         return $prev_digest;
-    } 
-    else {
+    } else {
         $DB->insert_record(OPPIA_DIGEST_TABLE,
             array(
                 'courseid' => $courseid,

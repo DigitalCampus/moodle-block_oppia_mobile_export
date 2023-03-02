@@ -49,11 +49,11 @@ require_once($CFG->libdir.'/componentlib.class.php');
 $id = required_param('id', PARAM_INT);
 $stylesheet = required_param('stylesheet', PARAM_TEXT);
 $tags = required_param('coursetags', PARAM_TEXT);
-$server = required_param('server_id',PARAM_TEXT);
+$server = required_param('server_id', PARAM_TEXT);
 $course_export_status = required_param('course_export_status', PARAM_TEXT);
 $course_root = required_param('course_root', PARAM_TEXT);
 $is_draft = ($course_export_status == 'draft');
-$course = $DB->get_record('course', array('id'=>$id));
+$course = $DB->get_record('course', array('id' => $id));
 
 $PAGE->set_url(PLUGINPATH.'export/step6.php', array('id' => $id));
 context_helper::preload_course($id);
@@ -74,7 +74,7 @@ echo $OUTPUT->header();
 
 echo "<h2>".get_string('export_step6_title', PLUGINNAME)."</h2>";
 
-$server_connection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid'=>$USER->id,'id'=>$server));
+$server_connection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid' => $USER->id, 'id' => $server));
 if (!$server_connection && $server != "default") {
     echo "<p>".get_string('server_not_owner', PLUGINNAME)."</p>";
     echo $OUTPUT->footer();
@@ -143,7 +143,7 @@ foreach ($xml->getElementsByTagName('activity') as $activity) {
             }
         }
         array_push($duplicated, array(
-            'title' => $title, 
+            'title' => $title,
             'digest' => $digest));
     }
     else{
@@ -151,7 +151,7 @@ foreach ($xml->getElementsByTagName('activity') as $activity) {
     }
 }
 if (count($duplicated) > 0) {
-    echo $OUTPUT->render_from_template(PLUGINNAME.'/export_error_duplicated_digest', array('duplicated'=>$duplicated));
+    echo $OUTPUT->render_from_template(PLUGINNAME.'/export_error_duplicated_digest', array('duplicated' => $duplicated));
     echo $OUTPUT->footer();
     die();
 }
@@ -165,7 +165,7 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
 } else {
     echo get_string('export_xml_validated', PLUGINNAME)  . '</p>';
     echo '<p class="step">'. get_string('export_course_xml_created', PLUGINNAME)  . '</p>';
-    
+
     $xml->preserveWhiteSpace = false;
     $xml->formatOutput = true;
     $xml->save($course_root.OPPIA_MODULE_XML);
@@ -176,15 +176,15 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
     if (!file_put_contents($course_root."/style.css", $styles)) {
         echo "<p>".get_string('error_style_copy', PLUGINNAME)."</p>";
     }
-    
+
     echo '<p class="step">'. get_string('export_style_resources', PLUGINNAME) . '</p>';
-    
+
     $style_resources_dir = $course_root.COURSE_STYLES_RESOURCES_DIR;
     recurse_copy($pluginroot."styles/".COMMON_STYLES_RESOURCES_DIR, $style_resources_dir);
     recurse_copy($pluginroot."styles/".$stylesheet."-style-resources/", $style_resources_dir);
 
     recurse_copy($pluginroot."js/", $course_root."/js/");
-    
+
     echo '<p class="step">'. get_string('export_export_complete', PLUGINNAME) . '</p>';
     $dir2zip = $dataroot.OPPIA_OUTPUT_DIR.$USER->id."/temp";
 
@@ -195,17 +195,22 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
 
     add_or_update_oppiaconfig($id, 'stylesheet', $stylesheet, null);
 
-     $filerecord = array(
-         'contextid'=> $context->id,
-         'component' => PLUGINNAME,
-         'filearea' => COURSE_EXPORT_FILEAREA,
-         'itemid' => $USER->id,
-         'filepath' => '/',
-         'filename' => $zipname
-     );
+    $filerecord = array(
+        'contextid' => $context->id,
+        'component' => PLUGINNAME,
+        'filearea' => COURSE_EXPORT_FILEAREA,
+        'itemid' => $USER->id,
+        'filepath' => '/',
+        'filename' => $zipname
+    );
 
     $fs = get_file_storage();
-    $file = $fs->get_file($filerecord['contextid'], $filerecord['component'], $filerecord['filearea'], $filerecord['itemid'], $filerecord['filepath'], $filerecord['filename']);
+    $file = $fs->get_file($filerecord['contextid'],
+        $filerecord['component'],
+        $filerecord['filearea'],
+        $filerecord['itemid'],
+        $filerecord['filepath'],
+        $filerecord['filename']);
     if ($file) {
         $file->delete();
     }
@@ -222,9 +227,9 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
     );
 
     echo '<p class="step">'. get_string('export_export_compressed', PLUGINNAME) . '</p>';
-    
+
     $form_values = array(
-        'server_connection' =>$server_connection->url,
+        'server_connection' => $server_connection->url,
         'wwwroot' => $CFG->wwwroot,
         'server_id' => $server,
         'sesskey' => sesskey(),
@@ -239,7 +244,7 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
     );
 
     echo $OUTPUT->render_from_template(PLUGINNAME.'/export_step6_form', $form_values);
-    
+
     add_publishing_log($server_connection->url, $USER->id, $id,  "export_file_created", strtolower($course->shortname)."-".$versionid.".zip");
     add_publishing_log($server_connection->url, $USER->id, $id,  "export_end", "Export process completed");
 }

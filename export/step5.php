@@ -31,14 +31,14 @@ $id = required_param('id', PARAM_INT);
 $media_files = required_param('media_files', PARAM_TEXT);
 $stylesheet = required_param('stylesheet', PARAM_TEXT);
 $tags = required_param('coursetags', PARAM_TEXT);
-$server = required_param('server_id',PARAM_TEXT);
+$server = required_param('server_id', PARAM_TEXT);
 $course_export_status = required_param('course_export_status', PARAM_TEXT);
 $course_root = required_param('course_root', PARAM_TEXT);
 $is_draft = ($course_export_status == 'draft');
-$defaultlang = get_oppiaconfig($id,'defaultlang', $CFG->block_oppia_mobile_export_defaultlang, $server);
+$defaultlang = get_oppiaconfig($id, 'defaultlang', $CFG->block_oppia_mobile_export_defaultlang, $server);
 $activity_summaries = json_decode(required_param('activity_summaries', PARAM_TEXT), true);
 
-$course = $DB->get_record('course', array('id'=>$id));
+$course = $DB->get_record('course', array('id' => $id));
 $PAGE->set_url(PLUGINPATH.'export/step5.php', array('id' => $id));
 context_helper::preload_course($id);
 $context = context_course::instance($course->id);

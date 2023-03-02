@@ -40,13 +40,13 @@ function populate_digests_published_courses($digests_to_preserve = null, $print_
 
     if (($courses_count > 0) && ($courses_result->valid())) {
         echo '<p class="lead">' . $courses_count . " courses to process" . '</p>';
-        
+
         foreach ($courses_result as $r) {
             $course_id = $r->modid;
-            $course = $DB->get_record('course', array('id'=>$course_id), '*', $strictness=IGNORE_MISSING);
+            $course = $DB->get_record('course', array('id' => $course_id), '*', $strictness = IGNORE_MISSING);
 
             if ($course == false) {
-                // The course was deleted but there are still some rows in the course_info table
+                // The course was deleted but there are still some rows in the course_info table.
                 continue;
             }
             echo '<br>';
@@ -57,15 +57,12 @@ function populate_digests_published_courses($digests_to_preserve = null, $print_
                 "DISTINCT serverid");
 
             foreach ($course_servers as $s) {
-
                 $serverid = $s->serverid;
-                
                 echo '<strong>Server ID:' . $serverid . '</strong><br>';
                 populate_digests_for_course($course, $course_id, $serverid, null, true);
             }
         }
-    }
-    else{
+    } else {
         echo "There were no previously exported courses to process.";
     }
 
@@ -74,15 +71,15 @@ function populate_digests_published_courses($digests_to_preserve = null, $print_
 }
 
 
-/* 
+/*
     'digests_to_preserve' is an array containing the value of the digest that we have to preserve.
       The array's key is the real digest of the moodle activity.
       The array's value is the digest that we want to preserve in the output modules.xml. Might be different from the real digest.
 */
-      
+
 function populate_digests_for_course($course, $course_id, $server_id, $digests_to_preserve = null, $print_logs=true) {
     global $CFG, $defaultlang, $pluginroot;
-    $defaultlang = get_oppiaconfig($course_id,'defaultlang', $CFG->block_oppia_mobile_export_defaultlang, $server_id);
+    $defaultlang = get_oppiaconfig($course_id, 'defaultlang', $CFG->block_oppia_mobile_export_defaultlang, $server_id);
 
     $modinfo = course_modinfo::instance($course_id);
     $sections = $modinfo->get_section_info_all();
@@ -94,13 +91,13 @@ function populate_digests_for_course($course, $course_id, $server_id, $digests_t
     deleteDir($pluginroot.OPPIA_OUTPUT_DIR."upgrade"."/temp");
     deleteDir($pluginroot.OPPIA_OUTPUT_DIR."upgrade");
 
-    mkdir($pluginroot.OPPIA_OUTPUT_DIR."upgrade"."/temp/",0777, true);
+    mkdir($pluginroot.OPPIA_OUTPUT_DIR."upgrade"."/temp/", 0777, true);
     $course_root = $pluginroot.OPPIA_OUTPUT_DIR."upgrade"."/temp/".strtolower($course->shortname);
-    mkdir($course_root,0777);
-    mkdir($course_root."/images",0777);
+    mkdir($course_root, 0777);
+    mkdir($course_root."/images", 0777);
     $fh = fopen($course_root."/images/.nomedia", 'w');
     fclose($fh);
-    mkdir($course_root."/resources",0777);
+    mkdir($course_root."/resources", 0777);
     $fh = fopen($course_root."/resources/.nomedia", 'w');
     fclose($fh);
 
@@ -122,8 +119,7 @@ function populate_digests_for_course($course, $course_id, $server_id, $digests_t
         // We avoid the topic0 as is not a section as the rest
         if ($sect->section == 0) {
             $sectionTitle = "Intro";
-        }
-        else{
+        } else {
             $sectionTitle = strip_tags($sect->summary);
             // If the course has no summary, we try to use the section name
             if ($sectionTitle == "") {
@@ -150,7 +146,7 @@ function populate_digests_for_course($course, $course_id, $server_id, $digests_t
                     $nquestions = $activity->get_no_questions();
                 }
                 $moodle_activity_md5 = $activity->md5;
-                
+
                 if ($digests_to_preserve != null) {
                     $oppia_server_digest = $digests_to_preserve[$moodle_activity_md5];
                 }
@@ -163,7 +159,6 @@ function populate_digests_for_course($course, $course_id, $server_id, $digests_t
         if ($act_orderno > 1) {
             $sect_orderno++;
         }
-    
     }
     echo '</div>';
 }

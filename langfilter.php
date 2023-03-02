@@ -46,7 +46,7 @@ class tomobile_langfilter  {
         }
 
         $search = '/(<span(\s+lang="[a-zA-Z0-9_-]+"|\s+class="multilang"){2}\s*>.*?<\/span>)(\s*<span(\s+lang="[a-zA-Z0-9_-]+"|\s+class="multilang"){2}\s*>.*?<\/span>)+/is';
-      
+
         return preg_replace_callback($search, 'tomobile_langfilter_callback', $text);
     }
 }
@@ -56,20 +56,18 @@ function tomobile_langfilter_callback($langblock) {
     $searchtosplit = '/<(?:lang|span)[^>]+lang="([a-zA-Z0-9_-]+)"[^>]*>(.*?)<\/(?:lang|span)>/is';
 
     if (!preg_match_all($searchtosplit, $langblock[0], $rawlanglist)) {
-        //skip malformed blocks
+        // Skip malformed blocks.
         return $langblock[0];
     }
     $langlist = array();
-    foreach ($rawlanglist[1] as $index=>$lang) {
-        $lang = str_replace('-','_',strtolower($lang)); // normalize languages
+    foreach ($rawlanglist[1] as $index => $lang) {
+        $lang = str_replace('-', '_', strtolower($lang)); // Normalize languages.
         $langlist[$lang] = $rawlanglist[2][$index];
     }
-    
-     if (array_key_exists($CURRENT_LANG, $langlist)) {
+
+    if (array_key_exists($CURRENT_LANG, $langlist)) {
         return $langlist[$CURRENT_LANG];
     } else {
         return array_shift($langlist);
     }
 }
-
-

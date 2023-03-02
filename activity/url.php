@@ -15,44 +15,40 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 class MobileActivityUrl extends MobileActivity {
-    
+
     private $url;
 
-
-    public function __construct($params=array()) { 
+    public function __construct($params=array()) {
         parent::__construct($params);
         $this->componentname = 'mod_url';
     }
-    
 
     function generate_md5($activity) {
         $md5contents = $activity->intro . $activity->externalurl;
         $this->md5 = md5($md5contents);
     }
 
-
     function process() {
         global $DB;
         $cm= get_coursemodule_from_id('url', $this->id);
-        $this->url = $DB->get_record('url', array('id'=>$cm->instance), '*', MUST_EXIST);
+        $this->url = $DB->get_record('url', array('id' => $cm->instance), '*', MUST_EXIST);
         $this->generate_md5($this->url);
-        // get the image from the intro section
+        // Get the image from the intro section.
         $this->extract_thumbnail_from_intro($this->url->intro, $cm->id);
     }
-    
-    
+
     function get_xml($mod, $counter, &$node, &$xmldoc, $activity=true) {
         global $defaultlang;
-        
+
         if (!$activity) {
             return;
         }
-        
+
         $act = $this->get_activity_node($xmldoc, $mod, $counter);
         $this->add_lang_xml_nodes($xmldoc, $act, $mod->name, "title");
         $this->add_lang_xml_nodes($xmldoc, $act, $this->url->intro, "description");
 
-        $temp = $xmldoc->createElement("location",$this->url->externalurl);
+        $temp = $xmldoc->createElement("location", $this->url->externalurl);
         $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($defaultlang));
         $act->appendChild($temp);
 

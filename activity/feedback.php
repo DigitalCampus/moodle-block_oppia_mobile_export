@@ -63,19 +63,19 @@ class MobileActivityFeedback extends MobileActivity {
         $contents = json_encode($quizjson);
         $this->md5 = md5( $feedback->intro . removeIDsFromJSON($contents) . $md5postfix);
     }
-    
+
     function preprocess() {
         global $DB;
         $cm = get_coursemodule_from_id('feedback', $this->id);
-        $feedback = $DB->get_record('feedback', array('id'=>$cm->instance), '*', MUST_EXIST);
-        
+        $feedback = $DB->get_record('feedback', array('id' => $cm->instance), '*', MUST_EXIST);
+
         $select = 'feedback = ?';
         $params = array($feedback->id);
         $feedbackitems = $DB->get_records_select('feedback_item', $select, $params, 'position');
-        
+
         $count_omitted = 0;
         foreach ($feedbackitems as $fi) {
-            if (in_array($fi->typ,$this->supportedtypes)) {
+            if (in_array($fi->typ, $this->supportedtypes)) {
                 $this->noquestions++;
                 if ($fi->typ == 'multichoicerated') {
                     $this->noratedquestions++;
@@ -91,17 +91,17 @@ class MobileActivityFeedback extends MobileActivity {
 
     function process() {
         global $DB;
-        
+
         $cm = get_coursemodule_from_id('feedback', $this->id);
         context_module::instance($cm->id);
         $feedback = $DB->get_record('feedback', array('id'=>$cm->instance), '*', MUST_EXIST);
         $select = 'feedback = ?';
         $params = array($feedback->id);
-        $feedbackitems = $DB->get_records_select('feedback_item', $select, $params, 'position');    
+        $feedbackitems = $DB->get_records_select('feedback_item', $select, $params, 'position');
 
         // get the image from the intro section
         $this->extract_thumbnail_from_intro($feedback->intro, $cm->id);
-        
+
         $quizprops = array("courseversion" => $this->courseversion);
 
         foreach ($this->configarray as $k=>$v) {
@@ -113,20 +113,20 @@ class MobileActivityFeedback extends MobileActivity {
         $multiple_submit = intval($feedback->multiple_submit) == 1;
 
         if (!$multiple_submit) {
-            $quizprops['maxattempts'] = 1;    
+            $quizprops['maxattempts'] = 1;
         }
 
         $namejson = extractLangs($cm->name, true);
         $descjson = extractLangs($feedback->intro, true, !$this->keephtml);
-        
+
         $quizjsonquestions = array();
         $quizmaxscore = 0;
-        
+
         $i = 1;
 
-        foreach ($feedbackitems as $q) {            
+        foreach ($feedbackitems as $q) {
 
-            if (!in_array($q->typ,$this->supportedtypes)) {
+            if (!in_array($q->typ, $this->supportedtypes)) {
                 continue;
             }
             $responses = array();
@@ -135,9 +135,9 @@ class MobileActivityFeedback extends MobileActivity {
             $questionTitle = extractLangs(cleanHTMLEntities($title, true), true, !$this->keephtml);
             $type = null;
             $max_question_score = 0;
-            
+
             // multichoice multi
-            if ($q->typ == "multichoice" 
+            if ($q->typ == "multichoice"
                 && (substr($q->presentation, 0, 1)==='c'
                     || substr($q->presentation, 0, 1)==='d')) {
                 $type = "multiselect";
@@ -148,7 +148,7 @@ class MobileActivityFeedback extends MobileActivity {
                      $respTitle = extractLangs($resp, true, !$this->keephtml, true);
                     array_push($responses, array(
                         'order' => $j,
-                        'id'    => rand(1,1000),
+                        'id' => rand(1, 1000),
                         'props' => json_decode ("{}"),
                         'title' => json_decode($respTitle),
                         'score' => "0"
@@ -179,7 +179,7 @@ class MobileActivityFeedback extends MobileActivity {
                     $respTitle = extractLangs($respTitle, true, !$this->keephtml, true);
                     array_push($responses, array(
                         'order' => $j,
-                        'id'    => rand(1,1000),
+                        'id' => rand(1, 1000),
                         'props' => json_decode ("{}"),
                         'title' => json_decode($respTitle),
                         'score' => $score
@@ -203,7 +203,7 @@ class MobileActivityFeedback extends MobileActivity {
                     $respTitle = extractLangs($resp, true, !$this->keephtml, true);
                     array_push($responses, array(
                         'order' => $j,
-                        'id'    => rand(1,1000),
+                        'id' => rand(1, 1000),
                         'props' => json_decode ("{}"),
                         'title' => json_decode($respTitle),
                         'score' => "0"
@@ -211,14 +211,14 @@ class MobileActivityFeedback extends MobileActivity {
                     $j++;
                 }
             }
-            
+
             $questionprops = array(
                 "maxscore" => $max_question_score,
                 "required"  => $required,
                 "label" => $q->label,
                 "moodle_question_id" => $q->id,
             );
-            
+
             // add any dependency props (skip logic)
             if ($q->dependitem != 0) {
                 // find dependitem label
@@ -231,30 +231,29 @@ class MobileActivityFeedback extends MobileActivity {
                 $questionprops["dependvalue"] = $q->dependvalue;
                 $questionprops["dependitemlabel"] = $dependitem;
             }
-            
-            
+
             $questionJson = array(
-                "id"        => rand(1,1000),
-                "type"      => $type,
-                "title"     => json_decode($questionTitle),
-                "props"     => $questionprops,
+                "id" => rand(1, 1000),
+                "type" => $type,
+                "title" => json_decode($questionTitle),
+                "props" => $questionprops,
                 "responses" => $responses);
-            
+
             array_push($quizjsonquestions, array(
-                'order'    => $i,
-                'id'       => rand(1,1000),
+                'order' => $i,
+                'id' => rand(1, 1000),
                 'question' => $questionJson));
             $i++;
         }
-        
+
         $quizprops["maxscore"] = $quizmaxscore;
-        
+
         $quizjson = array(
-            'id'         => rand(1,1000),
-            'title'      => json_decode($namejson),
-            'description'=> json_decode($descjson),
-            'props'      => $quizprops,
-            'questions'  => $quizjsonquestions); 
+            'id' => rand(1, 1000),
+            'title' => json_decode($namejson),
+            'description' => json_decode($descjson),
+            'props' => $quizprops,
+            'questions' => $quizjsonquestions);
         $this->generate_md5($feedback, $$quizjson);
         $quizjson['props']['digest'] = $this->md5;
         $quizjson['props']['moodle_quiz_id'] = $this->id;
@@ -267,11 +266,10 @@ class MobileActivityFeedback extends MobileActivity {
 
         $this->content = json_encode($quizjson);
     }
-    
-    
+
     function get_xml($mod, $counter, &$node, &$xmldoc, $activity=true) {
         global $defaultlang;
-        
+
         $act = $this->get_activity_node($xmldoc, $mod, $counter);
         $this->add_lang_xml_nodes($xmldoc, $act, $mod->name, "title");
         $this->add_thumbnail_xml_node($xmldoc, $act);
@@ -280,10 +278,10 @@ class MobileActivityFeedback extends MobileActivity {
         $temp->appendChild($xmldoc->createTextNode($this->content));
         $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($defaultlang));
         $act->appendChild($temp);
-        
+
         $node->appendChild($act);
     }
-    
+
     function get_is_valid() {
         return $this->isvalid;
     }

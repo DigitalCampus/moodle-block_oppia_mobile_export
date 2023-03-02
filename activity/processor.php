@@ -41,7 +41,7 @@ require_once($CFG->libdir.'/componentlib.class.php');
 
 
 class ActivityProcessor {
-    
+
     public $course_root;
     public $course_id;
     public $server_id;
@@ -55,17 +55,33 @@ class ActivityProcessor {
 
     public $print_logs = true;
 
-    public function __construct($params=array()) { 
-        if (isset($params['id'])) { $this->id = $params['id']; }
-        if (isset($params['course_root'])) { $this->course_root = $params['course_root']; }
-        if (isset($params['server_id'])) { $this->server_id = $params['server_id']; }
-        if (isset($params['course_id'])) { $this->course_id = $params['course_id']; }
-        if (isset($params['section'])) { $this->section = $params['section']; }    
-        if (isset($params['versionid'])) { $this->versionid = $params['versionid']; }
-        if (isset($params['keep_html'])) { $this->keep_html = $params['keep_html']; }
-        if (isset($params['video_overlay'])) { $this->video_overlay = $params['video_overlay']; }
-        if (isset($params['local_media_files'])) { 
-            $this->local_media_files = $params['local_media_files']; 
+    public function __construct($params=array()) {
+        if (isset($params['id'])) {
+            $this->id = $params['id'];
+        }
+        if (isset($params['course_root'])) {
+            $this->course_root = $params['course_root'];
+        }
+        if (isset($params['server_id'])) {
+            $this->server_id = $params['server_id'];
+        }
+        if (isset($params['course_id'])) {
+            $this->course_id = $params['course_id'];
+        }
+        if (isset($params['section'])) {
+            $this->section = $params['section'];
+        }
+        if (isset($params['versionid'])) {
+            $this->versionid = $params['versionid'];
+        }
+        if (isset($params['keep_html'])) {
+            $this->keep_html = $params['keep_html'];
+        }
+        if (isset($params['video_overlay'])) {
+            $this->video_overlay = $params['video_overlay'];
+        }
+        if (isset($params['local_media_files'])) {
+            $this->local_media_files = $params['local_media_files'];
         }
         else{
             $this->local_media_files = array();
@@ -90,7 +106,7 @@ class ActivityProcessor {
             'print_logs' =>$this->print_logs,
             'courseversion' => $this->versionid,
             'shortname' => $this->course_shortname,
-            'summary' => $sect->summary,    
+            'summary' => $sect->summary,
             'keep_html' => $this->keep_html,
             'video_overlay' => $this->video_overlay,
             'password' => $password,
@@ -100,7 +116,7 @@ class ActivityProcessor {
         if ($mod->modname == 'page') {
             $page = new MobileActivityPage($params);
             $page->process();
-            
+
             if ($xmlnode != null) {
                 $page->get_xml($mod, $act_orderno, $xmlnode, $xmldoc, true);
                 $local_media = $page->getLocalMedia();
@@ -109,8 +125,7 @@ class ActivityProcessor {
             }
             return $page;
 
-        }
-        else if ($mod->modname == 'quiz') {
+        } else if ($mod->modname == 'quiz') {
 
             $randomselect = get_oppiaconfig($mod->id, 'randomselect', 0, $this->server_id);
             $passthreshold = get_oppiaconfig($mod->id, 'passthreshold', 0, $this->server_id);
@@ -118,11 +133,11 @@ class ActivityProcessor {
             $maxattempts = get_oppiaconfig($mod->id, 'maxattempts', 'unlimited', $this->server_id);
 
             $params['config_array'] =  array(
-                'randomselect'=>$randomselect, 
-                'showfeedback'=>$showfeedback, 
-                'passthreshold'=>$passthreshold,
-                'maxattempts'=>$maxattempts
-            );    
+                'randomselect' => $randomselect,
+                'showfeedback' => $showfeedback,
+                'passthreshold' => $passthreshold,
+                'maxattempts' => $maxattempts
+            );
 
             $quiz = new MobileActivityQuiz($params);
 
@@ -137,28 +152,25 @@ class ActivityProcessor {
                 echo get_string('error_quiz_no_questions', PLUGINNAME).OPPIA_HTML_BR;
                 return null;
             }
-        }
-        else if ($mod->modname == 'resource') {
+        } else if ($mod->modname == 'resource') {
             $resource = new MobileActivityResource($params);
             $resource->process();
             if ($xmlnode != null) {
                 $resource->get_xml($mod, $act_orderno, $xmlnode, $xmldoc, true);
             }
             return $resource;
-        }
-        else if ($mod->modname == 'url') {
+        } else if ($mod->modname == 'url') {
             $url = new MobileActivityUrl($params);
             $url->process();
             if ($xmlnode != null) {
                 $url->get_xml($mod, $act_orderno, $xmlnode, $xmldoc, true);
             }
             return $url;
-        }
-        else if ($mod->modname == 'feedback') {
+        } else if ($mod->modname == 'feedback') {
             $params['config_array'] = array(
-                'showfeedback'=>false,
-                'passthreshold'=>0,
-                'maxattempts'=>'unlimited',
+                'showfeedback' => false,
+                'passthreshold' => 0,
+                'maxattempts' => 'unlimited',
             );
 
             $grade_boundaries = array();
@@ -187,11 +199,9 @@ class ActivityProcessor {
                 echo get_string('error_feedback_no_questions', PLUGINNAME).OPPIA_HTML_BR;
                 return null;
             }
-        }
-        else {
+        } else {
             echo get_string('error_not_supported', PLUGINNAME);
             return null;
         }
-
     }
 }

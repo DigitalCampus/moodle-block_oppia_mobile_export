@@ -31,16 +31,16 @@ class ApiHelper{
 
     function fetch_server_info($url) {
         $this->init($url);
-        $server_info = $this->exec('server', array(),'get', false, false);
+        $server_info = $this->exec('server', array(), 'get', false, false);
         $this->version = $server_info->version;
         $this->name = $server_info->name;
         $this->max_upload = $server_info->max_upload;
     }
-    
+
     function exec($object, $data_array, $type='post', $api_path=true, $print_error_msg=true) {
         $json = json_encode($data_array);
-        // Check if the url already has trailing '/' or not
-        if (substr($this->url, -strlen('/'))==='/') { 
+        // Check if the url already has trailing '/' or not.
+        if (substr($this->url, -strlen('/')) === '/') {
             $temp_url = $this->url.($api_path ? "api/v2/" : "").$object."/";
         } else {
             $temp_url = $this->url."/".($api_path ? "api/v2/" : "").$object."/";
@@ -48,7 +48,7 @@ class ApiHelper{
         curl_setopt($this->curl, CURLOPT_URL, $temp_url );
         if ($type == 'post') {
             curl_setopt($this->curl, CURLOPT_POSTFIELDS, $json);
-            curl_setopt($this->curl, CURLOPT_POST,1);
+            curl_setopt($this->curl, CURLOPT_POST, 1);
             curl_setopt($this->curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Content-Length: ' . strlen($json) ));
         } else {
             curl_setopt($this->curl, CURLOPT_HTTPGET, 1 );
@@ -59,6 +59,6 @@ class ApiHelper{
         if ($http_status != 200 && $http_status != 201 && $print_error_msg) {
             echo '<p style="color:red">'.get_string('error_creating_quiz', PLUGINNAME).' ( status code: ' . $http_status . ')</p>';
         }
-        return $json;   
+        return $json;
     }
 }

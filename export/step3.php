@@ -103,7 +103,7 @@ foreach ($sections as $sect) {
     $sectionmods = explode(",", $sect->sequence);
     $sectTitle = get_section_title($sect);
 
-    if (count($sectionmods)>0) {
+    if (count($sectionmods) > 0) {
         $activity_count = 0;
         $activities = [];
 
@@ -112,16 +112,15 @@ foreach ($sections as $sect) {
                 continue;
             }
             $mod = $mods[$modnumber];
-            
+
             if ($mod->visible != 1) {
                 continue;
             }
             if ( ($mod->modname == 'page') ||
-                    ($mod->modname == 'resource') || 
+                    ($mod->modname == 'resource') ||
                     ($mod->modname == 'url')) {
                 $activity_count++;
-            }
-            else if ($mod->modname == 'feedback') {
+            } else if ($mod->modname == 'feedback') {
                 $activity_count++;
 
                 $password = get_oppiaconfig($mod->id, 'password', '', $server, false);
@@ -151,15 +150,14 @@ foreach ($sections as $sect) {
 
                 }
 
-            } 
-            else if ($mod->modname == 'quiz') {
+            } else if ($mod->modname == 'quiz') {
                 $activity_count++;
-                // For the quizzes, we save the configuration entered
+                // For the quizzes, we save the configuration entered.
                 $random = optional_param('quiz_'.$mod->id.'_randomselect', 0, PARAM_INT);
                 $showfeedback = optional_param('quiz_'.$mod->id.'_showfeedback', 1, PARAM_INT);
                 $passthreshold = optional_param('quiz_'.$mod->id.'_passthreshold', 0, PARAM_INT);
                 $maxattempts = optional_param('quiz_'.$mod->id.'_maxattempts', 'unlimited', PARAM_INT);
-                
+
                 if ($maxattempts == 0) {
                     $maxattempts = 'unlimited';
                 }
@@ -183,10 +181,8 @@ foreach ($sections as $sect) {
                 'activities' => $activities
             ));
             $sect_orderno++;
-        } 
-        else{
+        } else {
             echo '<div class="step">'.get_string('section_password_invalid', PLUGINNAME, $sectTitle['display_title']).'</div>';
-            
         }
         flush_buffers();
     }

@@ -16,22 +16,22 @@
 
 require_once(dirname(__FILE__) . '/constants.php');
 
-const REGEX_FORBIDDEN_DIR_CHARS = '([\\/?%*:|"<>\. ]+)'; //Catches any sequence of forbidden UNIX dir chars
-const REGEX_FORBIDDEN_TAG_CHARS = '([^a-zA-z0-9\_]+)'; //Catches any character not allowed inside an XML tag
-const REGEX_HTML_ENTITIES = '(&nbsp;|&amp;|&quot;)'; //Catches HTML entities after urlencoding text contents
-const REGEX_RESOURCE_EXTENSIONS = '/\.(mp3|mp4|avi)/'; //Catches media resource supported extensions
-const REGEX_IMAGE_EXTENSIONS = '/\.(png|jpg|jpeg|gif)/'; //Catches image supported extensions
-const BASIC_HTML_TAGS = '<strong><b><i><em>'; // Basic HTML tags allowed for the strip_tags() method 
-const REGEX_LANGS = '((lang=[\'|\"](?P<langs>[\w\-]*)[\'|\"]))'; //Extracts the lang attribute
-const REGEX_BR = '(<br[[:space:]]*/?>)'; //Catches <br> tags in all its possible ways
+const REGEX_FORBIDDEN_DIR_CHARS = '([\\/?%*:|"<>\. ]+)'; // Catches any sequence of forbidden UNIX dir chars.
+const REGEX_FORBIDDEN_TAG_CHARS = '([^a-zA-z0-9\_]+)'; // Catches any character not allowed inside an XML tag.
+const REGEX_HTML_ENTITIES = '(&nbsp;|&amp;|&quot;)'; // Catches HTML entities after urlencoding text contents.
+const REGEX_RESOURCE_EXTENSIONS = '/\.(mp3|mp4|avi)/'; // Catches media resource supported extensions.
+const REGEX_IMAGE_EXTENSIONS = '/\.(png|jpg|jpeg|gif)/'; // Catches image supported extensions.
+const BASIC_HTML_TAGS = '<strong><b><i><em>'; // Basic HTML tags allowed for the strip_tags() method.
+const REGEX_LANGS = '((lang=[\'|\"](?P<langs>[\w\-]*)[\'|\"]))'; // Extracts the lang attribute.
+const REGEX_BR = '(<br[[:space:]]*/?>)'; // Catches <br> tags in all its possible ways.
 
 const MEDIAFILE_PREFIX = '@@PLUGINFILE@@';
-const MEDIAFILE_REGEX = '(('.MEDIAFILE_PREFIX.'/(?P<filenames>[^\"\'\?<>]*)))'; // Catches the filenames for Moodle embeded files in the content
-// Detects any number of spaces or <br> or <p> tags (in any of its forms) 
+const MEDIAFILE_REGEX = '(('.MEDIAFILE_PREFIX.'/(?P<filenames>[^\"\'\?<>]*)))'; // Catches the filenames for Moodle embeded files in the content.
+// Detects any number of spaces or <br> or <p> tags (in any of its forms).
 const SPACES_REGEX = '([[:space:]]|\<br\/?[[:space:]]*\>|\<\/?p\>)*';
-// Captures the old media embed method code ( [[media object="..."]])
+// Captures the old media embed method code ( [[media object="..."]]).
 const EMBED_MEDIA_REGEX = '((\[\['.SPACES_REGEX . 'media'.SPACES_REGEX.'object=[\"|\'](?P<mediaobject>[\{\}\'\"\:a-zA-Z0-9\._\-\/,[:space:]]*)([[:space:]]|\<br\/?[[:space:]]*\>)*[\"|\']'.SPACES_REGEX.'\]\]))';
-// Captures the filename of images inside old media embed method code ( [[media object="..."]])
+// Captures the filename of images inside old media embed method code ( [[media object="..."]]).
 const EMBED_MEDIA_IMAGE_REGEX = '(\]\]'.SPACES_REGEX.'\<img[[:space:]]src=[\"|\\\']images/(?P<filenames>[\w\W_\-.]*?)[\"|\\\'])';
 const COURSE_EXPORT_FILEAREA = 'course_export';
 
@@ -61,21 +61,20 @@ function deleteDir($dirPath) {
 
 function add_or_update_oppiaconfig($modid, $name, $value, $servid="default") {
     global $DB;
-    
+
     if ($servid !== null) {
         $record = $DB->get_record_select(OPPIA_CONFIG_TABLE,
-        "modid=$modid and `name`='$name' and serverid='$servid'");    
+        "modid=$modid and `name`='$name' and serverid='$servid'");
+    } else {
+        $record = $DB->get_record(OPPIA_CONFIG_TABLE, array('modid' => $modid, 'name' => $name));
     }
-    else{
-        $record = $DB->get_record(OPPIA_CONFIG_TABLE, array('modid'=>$modid,'name'=>$name));
-    }
-    
+
     if ($record) {
         $DB->update_record(OPPIA_CONFIG_TABLE,
-            array('id'=>$record->id,'value'=>$value));
+            array('id' => $record->id, 'value' => $value));
     } else {
-        $DB->insert_record(OPPIA_CONFIG_TABLE, 
-            array('modid'=>$modid,'name'=>$name,'value'=>$value,'serverid'=>$servid));
+        $DB->insert_record(OPPIA_CONFIG_TABLE,
+            array('modid' => $modid, 'name' => $name, 'value' => $value, 'serverid' => $servid));
     }
 }
 
@@ -84,26 +83,25 @@ function remove_oppiaconfig_if_exists($modid, $name, $servid="default") {
 
     if ($servid !== null) {
         $record = $DB->delete_records_select(OPPIA_CONFIG_TABLE,
-        "modid=$modid and `name`='$name' and serverid='$servid'");    
-    }
-    else{
-        $record = $DB->delete_records(OPPIA_CONFIG_TABLE, array('modid'=>$modid,'name'=>$name));
+        "modid=$modid and `name`='$name' and serverid='$servid'");
+    } else {
+        $record = $DB->delete_records(OPPIA_CONFIG_TABLE, array('modid' => $modid, 'name' => $name));
     }
 }
 
 function get_oppiaconfig($modid, $name, $default, $servid="default", $use_non_server_value=true) {
     global $DB;
-    $record = $DB->get_record_select(OPPIA_CONFIG_TABLE, 
+    $record = $DB->get_record_select(OPPIA_CONFIG_TABLE,
         "modid=$modid and `name`='$name' and serverid='$servid'");
     if ($record) {
         return $record->value;
     } else {
         if ($use_non_server_value) {
             //Try if there is a non-server value saved
-            $record = $DB->get_record(OPPIA_CONFIG_TABLE, array('modid'=>$modid,'name'=>$name));
+            $record = $DB->get_record(OPPIA_CONFIG_TABLE, array('modid' => $modid, 'name' => $name));
             if ($record) {
                 return $record->value;
-            } 
+            }
         }
         return $default;
     }
@@ -111,7 +109,7 @@ function get_oppiaconfig($modid, $name, $default, $servid="default", $use_non_se
 
 function get_oppiaservers() {
     global $DB, $USER;
-    return $DB->get_records(OPPIA_SERVER_TABLE, array('moodleuserid'=>$USER->id));
+    return $DB->get_records(OPPIA_SERVER_TABLE, array('moodleuserid' => $USER->id));
 }
 
 function add_publishing_log($server, $userid, $courseid, $action, $data) {
@@ -119,12 +117,12 @@ function add_publishing_log($server, $userid, $courseid, $action, $data) {
     $date = new DateTime();
     $timestamp = $date->getTimestamp();
     $DB->insert_record(OPPIA_PUBLISH_LOG_TABLE,
-        array('server'=>$server,
-                'logdatetime'=>$timestamp,
-                'moodleuserid'=>$userid,
-                'courseid'=>$courseid,
-                'action'=>$action,
-                'data'=>$data)
+        array('server' => $server,
+                'logdatetime' => $timestamp,
+                'moodleuserid' => $userid,
+                'courseid' => $courseid,
+                'action' => $action,
+                'data' => $data)
         );
 }
 
@@ -134,12 +132,12 @@ function get_section_title($section) {
     $sectionTitle = strip_tags(format_string($section->summary));
     $title = extractLangs($section->summary);
 
-    // If the course has no summary, we try to use the section name
+    // If the course has no summary, we try to use the section name.
     if ($sectionTitle == "") {
         $sectionTitle = strip_tags(format_string($section->name));
         $title = extractLangs($section->name);
     }
-    // If the course has neither summary nor name, use the default topic title
+    // If the course has neither summary nor name, use the default topic title.
     if ($sectionTitle == "") {
         $sectionTitle = get_string('sectionname', 'format_topics') . ' ' . $section->section;
         $title = $sectionTitle;
@@ -158,9 +156,9 @@ function extractLangs($content, $asJSON = false, $strip_tags = false, $strip_bas
     preg_match_all(REGEX_LANGS, $content, $langs_tmp, PREG_OFFSET_CAPTURE);
     $tempLangs = array();
     if (isset($langs_tmp['langs']) && count($langs_tmp['langs']) > 0) {
-        for($i=0;$i<count($langs_tmp['langs']);$i++) {
+        for($i = 0; $i < count($langs_tmp['langs']); $i++) {
             $lang = $langs_tmp['langs'][$i][0];
-            $lang = str_replace("-","_",$lang);
+            $lang = str_replace("-", "_", $lang);
             $tempLangs[$lang] = true;
         }
     } else{
@@ -171,7 +169,7 @@ function extractLangs($content, $asJSON = false, $strip_tags = false, $strip_bas
             else{
                 $content = trim(strip_tags($content, BASIC_HTML_TAGS));
             }
-        } 
+        }
 
         if (!$asJSON) {
             return $content;
@@ -180,10 +178,10 @@ function extractLangs($content, $asJSON = false, $strip_tags = false, $strip_bas
             $json->{$defaultlang} = $content;
             return json_encode($json);
         }
-    } 
+    }
 
     $filter = new tomobile_langfilter();
-    foreach ($tempLangs as $k=>$v) {
+    foreach ($tempLangs as $k => $v) {
         $CURRENT_LANG = $k;
         if ($strip_tags) {
             if ($strip_basic_tags) {
@@ -196,10 +194,10 @@ function extractLangs($content, $asJSON = false, $strip_tags = false, $strip_bas
             $tempLangs[$k] = trim($filter->filter($content));
         }
     }
-    
-    //reverse array
+
+    // Reverse array.
     $tempLangsRev = array_reverse($tempLangs);
-    foreach ($tempLangsRev as $k=>$v) {
+    foreach ($tempLangsRev as $k => $v) {
         $MOBILE_LANGS[$k] = true;
     }
 
@@ -220,10 +218,10 @@ function cleanHTMLEntities($text, $replace_br=false) {
 
 function cleanTagList($tags) {
     // split on comma
-    $tagList = explode (",", $tags); 
+    $tagList = explode(",", $tags);
     $cleanTags = array();
-    
-    // clean each tag separately
+
+    // Clean each tag separately.
     foreach ($tagList as $tag) {
         $cleanTag = trim($tag);
         $cleanTag = preg_replace(REGEX_FORBIDDEN_TAG_CHARS, "-", $cleanTag);
@@ -231,14 +229,14 @@ function cleanTagList($tags) {
             array_push($cleanTags, $cleanTag);
         }
     }
-    // combine cleanTags to string and return
+    // Combine cleanTags to string and return.
     return implode(", ", $cleanTags);
 }
 
 function cleanShortname($shortname) {
     $shortname = trim($shortname);
     $shortname = preg_replace(REGEX_FORBIDDEN_DIR_CHARS, "-", $shortname);
-    return preg_replace('(\-+)', "-", $shortname); //clean duplicated hyphens
+    return preg_replace('(\-+)', "-", $shortname); // clean duplicated hyphens.
 }
 
 function removeIDsFromJSON($jsonString) {
@@ -250,17 +248,16 @@ function removeIDsFromJSON($jsonString) {
 
 function extractImageFile($content, $component, $filearea, $itemid, $contextid, $course_root, $cmid) {
     global $CFG;
-    //find if any images/links exist
-    
+    // Find if any images/links exist.
     preg_match_all(MEDIAFILE_REGEX, $content, $files_tmp, PREG_OFFSET_CAPTURE);
-    
+
     if (!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0) {
         return false;
-    }    
+    }
 
     $lastimg = false;
     $toreplace = array();
-    for($i=0;$i<count($files_tmp['filenames']);$i++) {
+    for($i = 0; $i < count($files_tmp['filenames']); $i++) {
 
         $filename = trim($files_tmp['filenames'][$i][0]);
 
@@ -268,17 +265,16 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
             // If the file is not an image, we pass on it
             continue;
         }
-        
         if ($CFG->block_oppia_mobile_export_debug) {
             echo 'Attempting to export thumbnail image: <code>'.urldecode($filename).'</code><br/>';
         }
         $fs = get_file_storage();
         $fileinfo = array(
-                'component' => $component,   
-                'filearea' => $filearea,     
-                'itemid' => $itemid,               
+                'component' => $component,
+                'filearea' => $filearea,
+                'itemid' => $itemid,
                 'contextid' => $contextid,
-                'filepath' => '/',           
+                'filepath' => '/',
                 'filename' => $filename);
         $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
                 $fileinfo['itemid'], $fileinfo['filepath'], urldecode($fileinfo['filename']));
@@ -287,7 +283,6 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
         if ($result) {
             $lastimg = $result;
         }
-        
     }
     return $lastimg;
 }
@@ -310,7 +305,7 @@ function getFileInfo($filename, $component, $filearea, $itemid, $contextid) {
 
 }
 
-// Returns the filename without special or non-ASCII characters, replacing them with underscores 
+// Returns the filename without special or non-ASCII characters, replacing them with underscores.
 function cleanFilename($filename) {
     $clean = preg_replace(
         '([^\x1F-\x7F]|'.    // non-ASCII characters
@@ -337,11 +332,9 @@ function copyFile($file, $component, $filearea, $itemid, $contextid, $course_roo
             if (preg_match(REGEX_RESOURCE_EXTENSIONS, $filename) > 0) {
                 $is_image = false;
                 $filedest = "/resources/".$filename;
-            }
-            else{
+            } else {
                 $filedest = "/images/".$sha1;
             }
-            
             $file->copy_content_to($course_root.$filedest);
 
     } else {
@@ -350,7 +343,7 @@ function copyFile($file, $component, $filearea, $itemid, $contextid, $course_roo
         echo '<span class="export-error">'.get_string($message, PLUGINNAME, $link).'</span><br/>';
         return false;
     }
-    
+
     $tr = new StdClass;
     $tr->originalfilename = $filename;
     $tr->filename = sha1($fullpath);
@@ -363,43 +356,42 @@ function copyFile($file, $component, $filearea, $itemid, $contextid, $course_roo
 }
 
 
-function resizeImage($image,$image_new_name, $image_width, $image_height, $transparent=false) {
+function resizeImage($image, $image_new_name, $image_width, $image_height, $transparent=false) {
     global $CFG;
-    
+
     if ($CFG->block_oppia_mobile_export_thumb_crop) {
-        $filename = resizeImageCrop($image,$image_new_name, $image_width, $image_height, $transparent);
+        $filename = resizeImageCrop($image, $image_new_name, $image_width, $image_height, $transparent);
     } else {
-        $filename = resizeImageScale($image,$image_new_name, $image_width, $image_height, $transparent);
+        $filename = resizeImageScale($image, $image_new_name, $image_width, $image_height, $transparent);
     }
     // just return the last part of the filename (name + extn... not the dir path)
-    $pieces = explode("/",$filename);
-    
-    return $pieces[count($pieces)-1];
+    $pieces = explode("/", $filename);
+
+    return $pieces[count($pieces) - 1];
 }
 
-function resizeImageScale($image,$image_new_name, $image_width, $image_height, $transparent=false) {
+function resizeImageScale($image, $image_new_name, $image_width, $image_height, $transparent=false) {
     global $CFG;
     $size=GetimageSize($image);
     $orig_w = $size[0];
     $orig_h = $size[1];
     $ratio_src = $orig_w/$orig_h;
-    
-    $ratio_target = $image_width/$image_height;
-    
+
+    $ratio_target = $image_width / $image_height;
+
     $image_new = ImageCreateTrueColor($image_width, $image_height);
 
-    
     if (!$transparent) {
-        $bg_colour = imagecolorallocate($image_new, 
-                        $CFG->block_oppia_mobile_export_thumb_bg_r, 
-                        $CFG->block_oppia_mobile_export_thumb_bg_g, 
+        $bg_colour = imagecolorallocate($image_new,
+                        $CFG->block_oppia_mobile_export_thumb_bg_r,
+                        $CFG->block_oppia_mobile_export_thumb_bg_g,
                         $CFG->block_oppia_mobile_export_thumb_bg_b);
         imagefill($image_new, 0, 0, $bg_colour);
     } else {
         imagealphablending( $image_new, false );
         imagesavealpha($image_new, true);
     }
-    
+
     switch($size['mime']) {
         case 'image/jpeg':
             $image_src = imagecreatefromjpeg($image);
@@ -411,42 +403,39 @@ function resizeImageScale($image,$image_new_name, $image_width, $image_height, $
             $image_src = imagecreatefromgif($image);
             break;
     }
-    
+
     if ($orig_h > $orig_w || $ratio_src < $ratio_target) {
         $border = floor(($image_width - ($image_height*$orig_w/$orig_h))/2);
         imagecopyresampled($image_new, $image_src, $border, 0, 0, 0, $image_width -($border*2), $image_height , $orig_w, $orig_h);
     } else {
         $border = floor(($image_height - ($image_width*$orig_h/$orig_w))/2);
         imagecopyresampled($image_new, $image_src, 0, $border, 0, 0, $image_width , $image_height- ($border*2) , $orig_w, $orig_h);
-    } 
+    }
     $image_new_name = $image_new_name.'.png';
-    imagepng($image_new,$image_new_name,9);
+    imagepng($image_new, $image_new_name, 9);
 
     imagedestroy($image_new);
     imagedestroy($image_src);
     return $image_new_name;
-    
 }
 
-
-function IsFileAnImage($filepath) { 
-    return (preg_match(REGEX_IMAGE_EXTENSIONS, $filepath) > 0); 
+function IsFileAnImage($filepath) {
+    return (preg_match(REGEX_IMAGE_EXTENSIONS, $filepath) > 0);
 }
 
-function resizeImageCrop($image,$image_new_name, $image_width, $image_height, $transparent=false) {
+function resizeImageCrop($image, $image_new_name, $image_width, $image_height, $transparent=false) {
     global $CFG;
     if (!file_exists($image)) {
         return false;
     }
-    $size=GetimageSize($image);
+    $size = GetimageSize($image);
     $orig_w = $size[0];
     $orig_h = $size[1];
-    $ratio_src = $orig_w/$orig_h;
+    $ratio_src = $orig_w / $orig_h;
 
-    $ratio_target = $image_width/$image_height;
+    $ratio_target = $image_width / $image_height;
 
     $image_new = ImageCreateTrueColor($image_width, $image_height);
-
 
     if (!$transparent) {
         $bg_colour = imagecolorallocate($image_new,
@@ -459,7 +448,6 @@ function resizeImageCrop($image,$image_new_name, $image_width, $image_height, $t
         imagesavealpha($image_new, true);
     }
 
-
     switch($size['mime']) {
         case 'image/jpeg':
             $image_src = imagecreatefromjpeg($image);
@@ -472,7 +460,6 @@ function resizeImageCrop($image,$image_new_name, $image_width, $image_height, $t
             break;
     }
 
-    
     if ($ratio_src > $ratio_target) {
         $crop = floor(($orig_w - ($orig_h*$image_width/$image_height))/2);
         imagecopyresampled($image_new, $image_src, 0, 0, $crop, 0, $image_width, $image_height, $orig_w-(2*$crop), $orig_h);
@@ -482,7 +469,7 @@ function resizeImageCrop($image,$image_new_name, $image_width, $image_height, $t
     }
 
     $image_new_name = $image_new_name.'.png';
-    imagepng($image_new,$image_new_name,9);
+    imagepng($image_new, $image_new_name, 9);
 
     imagedestroy($image_new);
     imagedestroy($image_src);
@@ -521,8 +508,7 @@ function Zip($source, $destination) {
 }
 
 
-function libxml_display_error($error)
-{
+function libxml_display_error($error) {
     $return = "<br/>\n";
     switch ($error->level) {
         case LIBXML_ERR_WARNING:
@@ -559,16 +545,15 @@ function flush_buffers() {
     ob_start();
 }
 
-function recurse_copy($src,$dst) {
+function recurse_copy($src, $dst) {
     $dir = opendir($src);
     @mkdir($dst);
     while(false !== ( $file = readdir($dir)) ) {
         if (( $file != '.' ) && ( $file != '..' )) {
             if ( is_dir($src . '/' . $file) ) {
-                recurse_copy($src . '/' . $file,$dst . '/' . $file);
-            }
-            else {
-                copy($src . '/' . $file,$dst . '/' . $file);
+                recurse_copy($src . '/' . $file, $dst . '/' . $file);
+            } else {
+                copy($src . '/' . $file, $dst . '/' . $file);
             }
         }
     }
@@ -675,15 +660,15 @@ function add_or_update_grade_boundary($modid, $grade, $message, $servid="default
             "modid=$modid and `grade`='$grade' and serverid='$servid'");
     }
     else{
-        $record = $DB->get_record(OPPIA_GRADE_BOUNDARY_TABLE, array('modid'=>$modid,'grade'=>$grade));
+        $record = $DB->get_record(OPPIA_GRADE_BOUNDARY_TABLE, array('modid' => $modid, 'grade' => $grade));
     }
 
     if ($record) {
         $DB->update_record(OPPIA_GRADE_BOUNDARY_TABLE,
-            array('id'=>$record->id,'message'=>$message));
+            array('id' => $record->id, 'message' => $message));
     } else {
         $DB->insert_record(OPPIA_GRADE_BOUNDARY_TABLE,
-            array('modid'=>$modid,'grade'=>$grade,'message'=>$message,'serverid'=>$servid));
+            array('modid' => $modid, 'grade' => $grade, 'message' => $message, 'serverid' => $servid));
     }
 }
 function delete_grade_boundary($modid, $grade, $servid="default") {
@@ -705,7 +690,7 @@ function get_grade_boundaries($modid, $servid="default") {
     } else {
         //Try if there is a non-server value saved
         $records = $DB->get_records(OPPIA_GRADE_BOUNDARY_TABLE,
-            array('modid'=>$modid));
+            array('modid' => $modid));
         if ($records) {
             return $records;
         } else {
