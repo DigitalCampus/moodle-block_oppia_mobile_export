@@ -85,7 +85,7 @@ function populate_digests_for_course($course, $course_id, $server_id, $digests_t
     $sections = $modinfo->get_section_info_all();
     $mods = $modinfo->get_cms();
 
-    $keep_html = get_oppiaconfig($course_id, 'keep_html', '', $server_id);
+    $keephtml = get_oppiaconfig($course_id, 'keep_html', '', $server_id);
     $course->shortname = cleanShortname($course->shortname);
 
     deleteDir($pluginroot.OPPIA_OUTPUT_DIR."upgrade"."/temp");
@@ -107,7 +107,7 @@ function populate_digests_for_course($course, $course_id, $server_id, $digests_t
         'course_id' => $course_id,
         'course_shortname' => $course->shortname,
         'versionid' => '0',
-        'keep_html' => $keep_html,
+        'keephtml' => $keephtml,
         'print_logs' => $print_logs,
     ));
 

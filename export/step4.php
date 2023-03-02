@@ -219,7 +219,7 @@ foreach ($sectionmods as $modnumber) {
             'courseroot' => $course_root,
             'server_id' => $server,
             'section' => 0,
-            'keep_html' => $keephtml,
+            'keephtml' => $keephtml,
             'video_overlay' => $videooverlay,
             'local_media_files' => $local_media_files,
         ));
@@ -243,7 +243,7 @@ foreach ($sectionmods as $modnumber) {
             'shortname' => $course->shortname,
             'summary' => 'Pre-test',
             'courseversion' => $versionid,
-            'keep_html' => $keephtml,
+            'keephtml' => $keephtml,
             'config_array' => array(
                 'randomselect' => $randomselect,
                 'showfeedback' => $showfeedback,
@@ -269,7 +269,7 @@ foreach ($sectionmods as $modnumber) {
             'course_id' => $id,
             'shortname' => $course->shortname,
             'courseversion' => $versionid,
-            'keep_html' => $keephtml,
+            'keephtml' => $keephtml,
             'config_array' => array(
                 'showfeedback' => false,
                 'passthreshold' => 0,
@@ -320,7 +320,7 @@ $processor = new ActivityProcessor(array(
             'course_id' => $id,
             'course_shortname' => $course->shortname,
             'versionid' => $versionid,
-            'keep_html' => $keephtml,
+            'keephtml' => $keephtml,
             'video_overlay' => $videooverlay,
             'local_media_files' => $local_media_files
 ));

@@ -34,7 +34,6 @@ $serverform = new OppiaServerForm();
 
 if ($serverform->is_cancelled()) {
     // Do nothing.
-    continue;
 } else if ($fromform = $serverform->get_data()) {
     $record = new stdClass();
     $record->servername = $fromform->server_ref;

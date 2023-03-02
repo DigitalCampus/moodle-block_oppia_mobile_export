@@ -46,7 +46,7 @@ class ActivityProcessor {
     public $course_id;
     public $server_id;
     public $versionid;
-    public $keep_html;
+    public $keephtml;
     public $video_overlay;
     public $course_shortname;
 
@@ -75,7 +75,7 @@ class ActivityProcessor {
             $this->versionid = $params['versionid'];
         }
         if (isset($params['keep_html'])) {
-            $this->keep_html = $params['keep_html'];
+            $this->keephtml = $params['keep_html'];
         }
         if (isset($params['video_overlay'])) {
             $this->video_overlay = $params['video_overlay'];
@@ -106,7 +106,7 @@ class ActivityProcessor {
             'courseversion' => $this->versionid,
             'shortname' => $this->course_shortname,
             'summary' => $sect->summary,
-            'keep_html' => $this->keep_html,
+            'keep_html' => $this->keephtml,
             'video_overlay' => $this->video_overlay,
             'password' => $password,
         );
