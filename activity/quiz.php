@@ -49,12 +49,12 @@ class MobileActivityQuiz extends MobileActivity {
         $this->componentname = 'mod_quiz';
     }
 
-    function generate_md5($quiz, $quizJSON) {
+    function generate_md5($quiz, $quizjson) {
         $md5postfix = "";
         foreach ($this->configArray as $key => $value) {
             $md5postfix .= $key[0].((string) $value);
         }
-        $contents = json_encode($quizJSON);
+        $contents = json_encode($quizjson);
         $this->md5 = md5( $quiz->intro . removeIDsFromJSON($contents) . $md5postfix);
     }
 
@@ -94,15 +94,15 @@ class MobileActivityQuiz extends MobileActivity {
         $qs = $quizobj->get_questions();
 
         // Check has at least one non-essay and non-random question.
-        $count_omitted = 0;
+        $countomitted = 0;
         foreach ($qs as $q) {
             if (in_array($q->qtype, $this->supported_types)) {
                 $this->noquestions++;
             } else {
-                $count_omitted++;
+                $countomitted++;
             }
         }
-        if ($count_omitted == count($qs)) {
+        if ($countomitted == count($qs)) {
             $this->is_valid = false;
         }
     }
@@ -145,17 +145,17 @@ class MobileActivityQuiz extends MobileActivity {
         $descJSON = extractLangs($quiz->intro, true, !$this->keep_html);
 
         $quizJsonQuestions = array();
-        $quizMaxScore = 0;
+        $quizmaxscore = 0;
 
         $i = 1;
         foreach ($qs as $q) {
 
-            $questionMaxScore = intval($q->maxmark);
-            $quizMaxScore += $questionMaxScore;
+            $questionmaxscore = intval($q->maxmark);
+            $quizmaxscore += $questionmaxscore;
             $questionprops = array(
                 "moodle_question_id" => $q->questionbankentryid,
                 "moodle_question_latest_version_id" => $q->id,
-                "maxscore" => $questionMaxScore);
+                "maxscore" => $questionmaxscore);
 
             // Skip any essay questions.
             if ($q->qtype == 'essay') {
@@ -204,7 +204,6 @@ class MobileActivityQuiz extends MobileActivity {
                     $questionprops["incorrectfeedback"] = json_decode($feedbackJSON);
                 }
             }
-
 
             // Find if the question text has any images in it.
             $question_image = extractImageFile($q->questiontext, 'question', 'questiontext',
@@ -289,25 +288,25 @@ class MobileActivityQuiz extends MobileActivity {
             $i++;
         }
 
-        $quizprops["maxscore"] = $quizMaxScore;
+        $quizprops["maxscore"] = $quizmaxscore;
 
-        $quizJson = array(
+        $quizjson = array(
             'id' => rand(11000),
             'title' => json_decode($nameJSON),
             'description' => json_decode($descJSON),
             'props' => $quizprops,
             'questions' => $quizJsonQuestions);
 
-        $this->generate_md5($quiz, $quizJson);
-        $quizJson['props']['digest'] = $this->md5;
-        $quizJson['props']['moodle_quiz_id'] = $this->id;
+        $this->generate_md5($quiz, $quizjson);
+        $quizjson['props']['digest'] = $this->md5;
+        $quizjson['props']['moodle_quiz_id'] = $this->id;
 
         // Check for password protection.
         // Done after md5 is created so password can be changed without it being a new quiz.
         if ($quiz->password != "") {
-            $quizJson['props']['password'] = $quiz->password;
+            $quizjson['props']['password'] = $quiz->password;
         }
-        $this->content = json_encode($quizJson);
+        $this->content = json_encode($quizjson);
     }
 
     private function extractMedia($question_id, $content) {

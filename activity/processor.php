@@ -111,7 +111,6 @@ class ActivityProcessor {
             'password' => $password,
         );
 
-
         if ($mod->modname == 'page') {
             $page = new MobileActivityPage($params);
             $page->process();

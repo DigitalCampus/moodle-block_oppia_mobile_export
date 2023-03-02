@@ -59,16 +59,16 @@ class block_oppia_mobile_export extends block_base {
             array_push($servers, $s);
         }
 
-        $current_style = get_oppiaconfig($COURSE->id, 'stylesheet', STYLESHEET_DEFAULT);
+        $currentstyle = get_oppiaconfig($COURSE->id, 'stylesheet', STYLESHEET_DEFAULT);
 
         $settings = array(
             'id' => $COURSE->id,
             'sesskey' => sesskey(),
             'wwwplugin' => $CFG->wwwroot.PLUGINPATH,
             'servers' => $servers,
-            'styles' => $this->getStyles($current_style),
+            'styles' => $this->getStyles($currentstyle),
             'default_server' => $CFG->block_oppia_mobile_export_default_server,
-            'current_style' => $current_style,
+            'current_style' => $currentstyle,
         );
 
         $this->content->text = $OUTPUT->render_from_template(PLUGINNAME.'/block', $settings);
@@ -84,24 +84,24 @@ class block_oppia_mobile_export extends block_base {
         return $this->content;
     }
 
-    private function getStyles($current_style) {
+    private function getStyles($currentstyle) {
 
-        $styles_dir = dirname(__FILE__).'/'.STYLES_DIR.STYLES_THEMES_DIR;
+        $stylesdir = dirname(__FILE__).'/'.STYLES_DIR.STYLES_THEMES_DIR;
         $styles = array();
-        if ($handle = opendir($styles_dir)) {
+        if ($handle = opendir($stylesdir)) {
             while (false !== ($file = readdir($handle))) {
-                if ($file == "." || $file == ".." || is_dir($styles_dir.$file)) {
+                if ($file == "." || $file == ".." || is_dir($stylesdir.$file)) {
                     continue;
                 }
 
                 list($theme, $extn) = explode('.', $file);
-                $ends_extra_suffix = substr($theme, -strlen(STYLES_EXTRA_SUFFIX)) === STYLES_EXTRA_SUFFIX;
-                if ($extn == 'scss' && !$ends_extra_suffix) {
+                $endsextrasuffix = substr($theme, -strlen(STYLES_EXTRA_SUFFIX)) === STYLES_EXTRA_SUFFIX;
+                if ($extn == 'scss' && !$endsextrasuffix) {
 
                     array_push($styles, array(
                         'theme' => $theme,
                         'name' => ucwords($theme, " -"),
-                        'selected' => ($theme == $current_style)
+                        'selected' => ($theme == $currentstyle)
                     ));
                 }
             }
