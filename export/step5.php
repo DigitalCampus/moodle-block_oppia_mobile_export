@@ -62,7 +62,7 @@ $modinfo = get_fast_modinfo($course);
 $sections = $modinfo->get_section_info_all();
 $mods = $modinfo->get_cms();
 $keephtml = get_oppiaconfig($course->id, 'keep_html', '', $server);
-$video_overlay = get_oppiaconfig($id, 'video_overlay', '', $server);
+$videooverlay = get_oppiaconfig($id, 'video_overlay', '', $server);
 
 $processor = new ActivityProcessor(array(
     'course_root' => $course_root,
@@ -71,7 +71,7 @@ $processor = new ActivityProcessor(array(
     'course_shortname' => $course->shortname,
     'versionid' => '0',
     'keep_html' => $keephtml,
-    'video_overlay' => $video_overlay,
+    'video_overlay' => $videooverlay,
     'print_logs' => false
 ));
 
