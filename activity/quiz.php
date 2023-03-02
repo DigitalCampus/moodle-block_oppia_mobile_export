@@ -42,7 +42,7 @@ class MobileActivityQuiz extends MobileActivity {
 
     function generate_md5($quiz, $quizJSON) {
         $md5postfix = "";
-        foreach($this->configArray as $key => $value) {
+        foreach ($this->configArray as $key => $value) {
             $md5postfix .= $key[0].((string) $value);
         }
         $contents = json_encode($quizJSON);
@@ -127,7 +127,7 @@ class MobileActivityQuiz extends MobileActivity {
         
         $quizprops = array("courseversion" => $this->courseversion);
         
-        foreach($this->configArray as $k=>$v) {
+        foreach ($this->configArray as $k=>$v) {
             if ($k != 'randomselect' || $v != 0) {
                 $quizprops[$k] = $v;
             }
@@ -140,7 +140,7 @@ class MobileActivityQuiz extends MobileActivity {
         $quizMaxScore = 0;
 
         $i = 1;
-        foreach($qs as $q) {
+        foreach ($qs as $q) {
 
             $questionMaxScore = intval($q->maxmark);
             $quizMaxScore += $questionMaxScore;
@@ -164,7 +164,7 @@ class MobileActivityQuiz extends MobileActivity {
             //check to see if a multichoice is actually a multiselect
             if ($q->qtype == 'multichoice') {
                 $counter = 0;
-                foreach($q->options->answers as $r) {
+                foreach ($q->options->answers as $r) {
                     if ($r->fraction > 0) {
                         $counter++;
                     }
@@ -209,7 +209,7 @@ class MobileActivityQuiz extends MobileActivity {
             // find if any videos embedded in question text
             $q->questiontext = $this->extractMedia($q->id, $q->questiontext);
             if (array_key_exists($q->id,$this->quiz_media)) {
-                foreach($this->quiz_media[$q->id] as $media) {
+                foreach ($this->quiz_media[$q->id] as $media) {
                     $questionprops["media"] = $media->filename;
                 }
             }
@@ -221,12 +221,12 @@ class MobileActivityQuiz extends MobileActivity {
             if (isset($q->options->subquestions)) {
                 // Find out how many subquestions
                 $subqs = 0;
-                foreach($q->options->subquestions as $sq) {
+                foreach ($q->options->subquestions as $sq) {
                     if (trim($sq->questiontext) != "") {
                         $subqs++;
                     }    
                 }
-                foreach($q->options->subquestions as $sq) {
+                foreach ($q->options->subquestions as $sq) {
                     $titleJSON = extractLangs($sq->questiontext.$this->MATCHING_SEPERATOR.$sq->answertext, true, !$this->keep_html, true);
                     // add response
                     $score = ($q->maxmark / $subqs);
@@ -244,7 +244,7 @@ class MobileActivityQuiz extends MobileActivity {
             
             // for multichoice/multiselect/shortanswer/numerical questions
             if (isset($q->options->answers)) {
-                foreach($q->options->answers as $r) {
+                foreach ($q->options->answers as $r) {
                     $responseprops = array('id' => rand(1,1000));
                     
                     if (strip_tags($r->feedback) != "") {
@@ -340,7 +340,7 @@ class MobileActivityQuiz extends MobileActivity {
             $quizobj->preload_questions();
             $quizobj->load_questions();
             $qs = $quizobj->get_questions();
-            foreach($qs as $q) {
+            foreach ($qs as $q) {
                 extractImageFile($q->questiontext,
                                         'question',
                                         'questiontext',
@@ -364,7 +364,7 @@ class MobileActivityQuiz extends MobileActivity {
             $quizobj->preload_questions();
             $quizobj->load_questions();
             $qs = $quizobj->get_questions();
-            foreach($qs as $q) {
+            foreach ($qs as $q) {
                 $this->extractMedia($q->id, $q->questiontext);
             }
                 

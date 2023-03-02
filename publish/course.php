@@ -188,13 +188,13 @@ else{
     }
     if (array_key_exists('messages', $json_response)) {
         $messages = $json_response['messages'];
-        foreach($messages as $msg) {
+        foreach ($messages as $msg) {
             show_and_log_message($server_connection, $id, $msg['message'], $msg['tags'], "api_publish_bad_request", true);
         }
     }
     if (array_key_exists('errors', $json_response)) {
         $errors = $json_response['errors'];
-        foreach($errors as $err) {
+        foreach ($errors as $err) {
             show_and_log_message($server_connection, $id, $err, 'warning', "api_publish_response_message", true);
         }
     }

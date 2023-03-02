@@ -171,7 +171,7 @@ add_publishing_log($server_connection->url, $USER->id, $id, "export_start", "Exp
 
 $title = extractLangs($course->fullname);
 if (is_array($title) && count($title)>0) {
-    foreach($title as $l=>$t) {
+    foreach ($title as $l=>$t) {
         $temp = $xmldoc->createElement("title");
         $temp->appendChild($xmldoc->createCDATASection(strip_tags($t)));
         $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($l));
@@ -345,7 +345,7 @@ foreach ($sections as $sect) {
         $section = $xmldoc->createElement("section");
         $section->appendChild($xmldoc->createAttribute("order"))->appendChild($xmldoc->createTextNode($sect_orderno));
         if (!$sectTitle['using_default'] && is_array($sectTitle['title']) && count($sectTitle['title'])>0) {
-            foreach($sectTitle['title'] as $l=>$t) {
+            foreach ($sectTitle['title'] as $l=>$t) {
                 $temp = $xmldoc->createElement("title");
                 $temp->appendChild($xmldoc->createCDATASection(strip_tags($t)));
                 $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($l));
@@ -447,7 +447,7 @@ $root->appendChild($structure);
 
 // add in the langs available here
 $langs = $xmldoc->createElement("langs");
-foreach($MOBILE_LANGS as $k=>$v) {
+foreach ($MOBILE_LANGS as $k=>$v) {
     $temp = $xmldoc->createElement("lang",$k);
     $langs->appendChild($temp);
 }
@@ -463,14 +463,14 @@ if (count($MEDIA) > 0 || count($local_media_files) > 0) {
     $media = $xmldoc->createElement("media");
     foreach ($MEDIA as $m) {
         $temp = $xmldoc->createElement("file");
-        foreach($m as $var => $value) {
+        foreach ($m as $var => $value) {
             $temp->appendChild($xmldoc->createAttribute($var))->appendChild($xmldoc->createTextNode($value));
         }
         $media->appendChild($temp);
     }
     foreach ($local_media_files as $m) {
         $temp = $xmldoc->createElement("file");
-        foreach($m as $var => $value) {
+        foreach ($m as $var => $value) {
             $temp->appendChild($xmldoc->createAttribute($var))->appendChild($xmldoc->createTextNode($value));
         }
         $media->appendChild($temp);

@@ -162,7 +162,7 @@ class ActivityProcessor {
             );
 
             $grade_boundaries = array();
-            foreach(get_grade_boundaries($mod->id, $this->server_id) as $gb) {
+            foreach (get_grade_boundaries($mod->id, $this->server_id) as $gb) {
                 array_push($grade_boundaries, (object)[
                     $gb->grade => $gb->message
                 ]);

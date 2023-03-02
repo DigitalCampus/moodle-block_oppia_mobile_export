@@ -57,7 +57,7 @@ class MobileActivityFeedback extends MobileActivity {
 
     function generate_md5($feedback, $quizjson) {
         $md5postfix = "";
-        foreach($this->configarray as $key => $value) {
+        foreach ($this->configarray as $key => $value) {
             $md5postfix .= $key[0].((string) $value);
         }
         $contents = json_encode($quizjson);
@@ -124,7 +124,7 @@ class MobileActivityFeedback extends MobileActivity {
         
         $i = 1;
 
-        foreach($feedbackitems as $q) {            
+        foreach ($feedbackitems as $q) {            
 
             if (!in_array($q->typ,$this->supportedtypes)) {
                 continue;
@@ -144,7 +144,7 @@ class MobileActivityFeedback extends MobileActivity {
                 $respstr = substr($q->presentation, 6);
                 $resps = explode('|', $respstr);
                 $j = 1;
-                foreach($resps as $resp) {
+                foreach ($resps as $resp) {
                      $respTitle = extractLangs($resp, true, !$this->keephtml, true);
                     array_push($responses, array(
                         'order' => $j,
@@ -199,7 +199,7 @@ class MobileActivityFeedback extends MobileActivity {
                 $respstr = substr($q->presentation, 6);
                 $resps = explode('|', $respstr);
                 $j = 1;
-                foreach($resps as $resp) {
+                foreach ($resps as $resp) {
                     $respTitle = extractLangs($resp, true, !$this->keephtml, true);
                     array_push($responses, array(
                         'order' => $j,

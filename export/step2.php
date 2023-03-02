@@ -106,7 +106,7 @@ for($i=0; $i<19; $i++) {
 $quizzes = array();
 $feedback_activities = array();
 $orderno = 1;
-foreach($sections as $sect) {
+foreach ($sections as $sect) {
     $sectionmods = explode(",", $sect->sequence);
     $sectTitle = get_section_title($sect);
 
@@ -157,7 +157,7 @@ foreach($sections as $sect) {
                     $grade_boundaries = array();
                     $gb = get_grade_boundaries($mod->id, $server);
                     usort($gb, 'sort_grade_boundaries_descending');
-                    foreach($gb as $grade_boundary) {
+                    foreach ($gb as $grade_boundary) {
                         switch($grade_boundary->grade) {
                             case 0:   $grade_0_message = $grade_boundary->message; break;
                             case 100: $grade_100_message = $grade_boundary->message; break;

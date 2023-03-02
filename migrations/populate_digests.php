@@ -117,7 +117,7 @@ function populate_digests_for_course($course, $course_id, $server_id, $digests_t
     echo '<div class="oppia_export_section py-3">';
 
     $sect_orderno = 1;
-    foreach($sections as $sect) {
+    foreach ($sections as $sect) {
         flush_buffers();
         // We avoid the topic0 as is not a section as the rest
         if ($sect->section == 0) {

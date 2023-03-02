@@ -93,7 +93,7 @@ echo '<div class="oppia_export_section py-3">';
 
 $config_sections = array();
 $sect_orderno = 1;
-foreach($sections as $sect) {
+foreach ($sections as $sect) {
     flush_buffers();
     // We avoid the topic0 as is not a section as the rest
     if ($sect->section == 0) {

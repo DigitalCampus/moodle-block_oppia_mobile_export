@@ -46,7 +46,7 @@ function deleteDir($dirPath) {
     $it = new RecursiveDirectoryIterator($dirPath, RecursiveDirectoryIterator::SKIP_DOTS);
     $files = new RecursiveIteratorIterator($it,
             RecursiveIteratorIterator::CHILD_FIRST);
-    foreach($files as $file) {
+    foreach ($files as $file) {
         if ($file->getFilename() === '.' || $file->getFilename() === '..') {
             continue;
         }
@@ -183,7 +183,7 @@ function extractLangs($content, $asJSON = false, $strip_tags = false, $strip_bas
     } 
 
     $filter = new tomobile_langfilter();
-    foreach($tempLangs as $k=>$v) {
+    foreach ($tempLangs as $k=>$v) {
         $CURRENT_LANG = $k;
         if ($strip_tags) {
             if ($strip_basic_tags) {
@@ -199,7 +199,7 @@ function extractLangs($content, $asJSON = false, $strip_tags = false, $strip_bas
     
     //reverse array
     $tempLangsRev = array_reverse($tempLangs);
-    foreach($tempLangsRev as $k=>$v) {
+    foreach ($tempLangsRev as $k=>$v) {
         $MOBILE_LANGS[$k] = true;
     }
 
@@ -224,7 +224,7 @@ function cleanTagList($tags) {
     $cleanTags = array();
     
     // clean each tag separately
-    foreach($tagList as $tag) {
+    foreach ($tagList as $tag) {
         $cleanTag = trim($tag);
         $cleanTag = preg_replace(REGEX_FORBIDDEN_TAG_CHARS, "-", $cleanTag);
         if (strlen($cleanTag) > 0) {
@@ -660,7 +660,7 @@ function cleanUpExportedFiles($context, $userid) {
         COURSE_EXPORT_FILEAREA,
         $userid
     );
-    foreach($files as $file) {
+    foreach ($files as $file) {
         $file->delete();
         unlink($file->get_filepath());
     }

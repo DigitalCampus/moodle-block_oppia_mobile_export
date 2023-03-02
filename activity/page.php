@@ -52,7 +52,7 @@ class MobileActivityPage extends MobileActivity {
 
         $langs = extractLangs($content);
         if (is_array($langs) && count($langs)>0) {
-            foreach($langs as $lang=>$text) {
+            foreach ($langs as $lang=>$text) {
                 //Process individually each language
                 $this->process_content($context, $cm->id, $text, $lang);
             }
@@ -123,7 +123,7 @@ class MobileActivityPage extends MobileActivity {
             $media = $xmldoc->createElement("media");
             foreach ($this->page_media as $m) {
                 $temp = $xmldoc->createElement("file");
-                foreach($m as $var => $value) {
+                foreach ($m as $var => $value) {
                     $temp->appendChild($xmldoc->createAttribute($var))->appendChild($xmldoc->createTextNode($value));
                 }
                 $media->appendChild($temp);
@@ -131,7 +131,7 @@ class MobileActivityPage extends MobileActivity {
 
             foreach ($this->page_local_media as $m) {
                 $temp = $xmldoc->createElement("file");
-                foreach($m as $var => $value) {
+                foreach ($m as $var => $value) {
                     $temp->appendChild($xmldoc->createAttribute($var))->appendChild($xmldoc->createTextNode($value));
                 }
                 $media->appendChild($temp);
@@ -144,7 +144,7 @@ class MobileActivityPage extends MobileActivity {
                 $temp = $xmldoc->createElement("activity");
                 $temp->appendChild($xmldoc->createAttribute("order"))->appendChild($xmldoc->createTextNode($r->order));
                 $temp->appendChild($xmldoc->createAttribute("digest"))->appendChild($xmldoc->createTextNode($r->digest));
-                foreach($r->activity as $a) {
+                foreach ($r->activity as $a) {
                     $title = $xmldoc->createElement("title");
                     $title->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($a->lang));
                     $title->appendChild($xmldoc->createTextNode(strip_tags($a->title)));
@@ -155,7 +155,7 @@ class MobileActivityPage extends MobileActivity {
             $struct->appendChild($related);
         }
 
-        foreach($this->act as $act) {
+        foreach ($this->act as $act) {
             $temp = $xmldoc->createElement("location",$act->filename);
             $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($act->lang));
             $struct->appendChild($temp);

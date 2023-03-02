@@ -78,7 +78,7 @@ $processor = new ActivityProcessor(array(
 $config_sections = array();
 $unmodified_activities = array();
 $sect_orderno = 1;
-foreach($sections as $sect) {
+foreach ($sections as $sect) {
     flush_buffers();
     // We avoid the topic0 as is not a section as the rest
     if ($sect->section == 0) {
