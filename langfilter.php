@@ -24,20 +24,21 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-// Given XML multilinguage text, return relevant text according to
-// current language:
-//   - look for multilang blocks in the text.
-//   - if there exists texts in the currently active language, print them.
-//   - else, if there exists texts in the current parent language, print them.
-//   - else, print the first language in the text.
-// Please note that English texts are not used as default anymore!
-//
-// This version is based on original multilang filter by Gaetan Frenoy,
-// rewritten by Eloy and skodak.
-//
-// Following new syntax is not compatible with old one:
-//   <span lang="XX" class="multilang">one lang</span><span lang="YY" class="multilang">another language</span>
-
+/* 
+ * Given XML multilinguage text, return relevant text according to
+ * current language:
+ *   - look for multilang blocks in the text.
+ *   - if there exists texts in the currently active language, print them.
+ *   - else, if there exists texts in the current parent language, print them.
+ *   - else, print the first language in the text.
+ * Please note that English texts are not used as default anymore!
+ *
+ * This version is based on original multilang filter by Gaetan Frenoy,
+ * rewritten by Eloy and skodak.
+ *
+ * Following new syntax is not compatible with old one:
+ *   <span lang="XX" class="multilang">one lang</span><span lang="YY" class="multilang">another language</span>.
+ */
 class tomobile_langfilter  {
     function filter($text) {
 

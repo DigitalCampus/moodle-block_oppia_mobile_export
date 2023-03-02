@@ -101,12 +101,13 @@ function publish_media($server_base_url, $moodlefile, $username, $password, $tem
     $http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
     curl_close ($curl);
 
-    //We remove the temporary copied file
+    // We remove the temporary copied file.
     unlink($temppath);
 
     if ($http_status == 400) {
-        // if the server returned a 400 error, it is probably because the file already exists
-        // so we try to fetch the info if it was already published in the server
+        /* If the server returned a 400 error, it is probably because the file already exists
+         * so we try to fetch the info if it was already published in the server
+         */
         $digest = required_param('digest', PARAM_TEXT);
         return get_media_info($server_base_url, $digest);
     } else {

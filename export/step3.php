@@ -44,7 +44,7 @@ require_once($pluginroot . 'activity/url.php');
 
 require_once($CFG->libdir.'/componentlib.class.php');
 
-// We get all the params from the previous step form
+// We get all the params from the previous step form.
 $id = required_param('id', PARAM_INT);
 $stylesheet = required_param('stylesheet', PARAM_TEXT);
 $server = required_param('server', PARAM_TEXT);
@@ -95,7 +95,7 @@ $config_sections = array();
 $sect_orderno = 1;
 foreach ($sections as $sect) {
     flush_buffers();
-    // We avoid the topic0 as is not a section as the rest
+    // We avoid the topic0 as is not a section as the rest.
     if ($sect->section == 0) {
         continue;
     }

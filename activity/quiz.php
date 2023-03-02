@@ -22,10 +22,10 @@ class MobileActivityQuiz extends MobileActivity {
     private $shortname;
     private $content = "";
     private $MATCHING_SEPERATOR = "|";
-    private $is_valid = true; //i.e. doesn't only contain essay or random questions
-    private $configArray = array(); // config (quiz props) array
+    private $is_valid = true; // I.e. doesn't only contain essay or random questions.
+    private $configArray = array(); // Config (quiz props) array.
     private $quiz_media = array();
-    private $keep_html = false; //Should the HTML of questions and answers be stripped out or not
+    private $keep_html = false; // Should the HTML of questions and answers be stripped out or not.
 
 
     public function __construct($params=array()) {
@@ -130,7 +130,7 @@ class MobileActivityQuiz extends MobileActivity {
         $quizobj->load_questions();
         $qs = $quizobj->get_questions();
 
-        // get the image from the intro section
+        // Get the image from the intro section.
         $this->extract_thumbnail_from_intro($quiz->intro, $cm->id);
 
         $quizprops = array("courseversion" => $this->courseversion);
@@ -157,19 +157,19 @@ class MobileActivityQuiz extends MobileActivity {
                 "moodle_question_latest_version_id" => $q->id,
                 "maxscore" => $questionMaxScore);
 
-            // skip any essay questions
+            // Skip any essay questions.
             if ($q->qtype == 'essay') {
                 echo get_string('export_quiz_skip_essay', PLUGINNAME).OPPIA_HTML_BR;
                 continue;
             }
 
-            // skip any random questions
+            // Skip any random questions.
             if ($q->qtype == 'random') {
                 echo get_string('export_quiz_skip_random', PLUGINNAME).OPPIA_HTML_BR;
                 continue;
             }
 
-            //check to see if a multichoice is actually a multiselect
+            // Check to see if a multichoice is actually a multiselect.
             if ($q->qtype == 'multichoice') {
                 $counter = 0;
                 foreach ($q->options->answers as $r) {
@@ -213,7 +213,7 @@ class MobileActivityQuiz extends MobileActivity {
                 $questionprops["image"] = $question_image;
             }
 
-            // find if any videos embedded in question text
+            // Find if any videos embedded in question text.
             $q->questiontext = $this->extractMedia($q->id, $q->questiontext);
             if (array_key_exists($q->id, $this->quiz_media)) {
                 foreach ($this->quiz_media[$q->id] as $media) {
@@ -224,9 +224,9 @@ class MobileActivityQuiz extends MobileActivity {
             $questionTitle = extractLangs(cleanHTMLEntities($q->questiontext, true), true, !$this->keep_html);
 
             $j = 1;
-            // if matching question then concat the options with |
+            // If matching question then concat the options with |.
             if (isset($q->options->subquestions)) {
-                // Find out how many subquestions
+                // Find out how many subquestions.
                 $subqs = 0;
                 foreach ($q->options->subquestions as $sq) {
                     if (trim($sq->questiontext) != "") {
@@ -302,8 +302,8 @@ class MobileActivityQuiz extends MobileActivity {
         $quizJson['props']['digest'] = $this->md5;
         $quizJson['props']['moodle_quiz_id'] = $this->id;
 
-        // check for password protection
-        // done after md5 is created so password can be changed without it being a new quiz
+        // Check for password protection.
+        // Done after md5 is created so password can be changed without it being a new quiz.
         if ($quiz->password != "") {
             $quizJson['props']['password'] = $quiz->password;
         }

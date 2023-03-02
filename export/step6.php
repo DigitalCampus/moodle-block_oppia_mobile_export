@@ -100,14 +100,14 @@ libxml_use_internal_errors(true);
 $xml = new DOMDocument();
 $xml->load($course_root.OPPIA_MODULE_XML);
 
-// We update the local media URLs from the results of the previous step
+// We update the local media URLs from the results of the previous step.
 foreach ($xml->getElementsByTagName('file') as $mediafile) {
     if ($mediafile->hasAttribute('download_url')) {
-        // If it already has the url set, we don't need to do anything
+        // If it already has the url set, we don't need to do anything.
         continue;
     }
     if ($mediafile->hasAttribute('moodlefile')) {
-        // We remove the moodlefile attribute (it's only a helper to publish media)
+        // We remove the moodlefile attribute (it's only a helper to publish media).
         $mediafile->removeAttribute('moodlefile');
     }
 
@@ -124,10 +124,10 @@ foreach ($xml->getElementsByTagName('file') as $mediafile) {
 $activities = array();
 $duplicated = array();
 $digests_to_preserve = array();
-// Check that we don't have duplicated digests in the course
+// Check that we don't have duplicated digests in the course.
 foreach ($xml->getElementsByTagName('activity') as $activity) {
     $digest = $activity->getAttribute('digest');
-    // Get digest from previous step if the 'Preserve ID' option was selected
+    // Get digest from previous step if the 'Preserve ID' option was selected.
     $preserve_digest = optional_param('digest_'.$digest, $digest, PARAM_TEXT);
     $digests_to_preserve[$digest] = $preserve_digest;
     $activity->setAttribute('digest', $preserve_digest);

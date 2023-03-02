@@ -99,7 +99,7 @@ class MobileActivityFeedback extends MobileActivity {
         $params = array($feedback->id);
         $feedbackitems = $DB->get_records_select('feedback_item', $select, $params, 'position');
 
-        // get the image from the intro section
+        // Get the image from the intro section.
         $this->extract_thumbnail_from_intro($feedback->intro, $cm->id);
 
         $quizprops = array("courseversion" => $this->courseversion);
@@ -136,7 +136,7 @@ class MobileActivityFeedback extends MobileActivity {
             $type = null;
             $max_question_score = 0;
 
-            // multichoice multi
+            // Multichoice multi.
             if ($q->typ == "multichoice"
                 && (substr($q->presentation, 0, 1)==='c'
                     || substr($q->presentation, 0, 1)==='d')) {
@@ -156,17 +156,17 @@ class MobileActivityFeedback extends MobileActivity {
                     $j++;
                 }
             } else if ($q->typ == "info") {
-                // info
+                // Info.
                 $type = "description";
             } else if ($q->typ == "label") {
-                // label
+                // Label.
                 $type = "description";
                 $questionTitle = extractLangs($q->presentation, true, !$this->keephtml);
             } else if ($q->typ == "textarea") {
-                // long answer
+                // Long answer.
                 $type = "essay";
             } else if ($q->typ == "multichoicerated" && substr($q->presentation, 0, 1)==='r') {
-                // multi - rated
+                // Multi - rated.
                 $type = "multichoice";
                 $respstr = substr($q->presentation, 6);
                 $resps = explode('|', $respstr);
@@ -188,13 +188,13 @@ class MobileActivityFeedback extends MobileActivity {
                 }
                 $quizmaxscore += $max_question_score;
             } else if ($q->typ == "numeric") {
-                // numeric
+                // Numeric.
                 $type = "numerical";
             } else if ($q->typ == "textfield") {
-                // short answer
+                // Short answer.
                 $type = "shortanswer";
             } else if ($q->typ == "multichoice") {
-                // multichoice 1
+                // Multichoice 1.
                 $type = "multichoice";
                 $respstr = substr($q->presentation, 6);
                 $resps = explode('|', $respstr);
@@ -219,9 +219,9 @@ class MobileActivityFeedback extends MobileActivity {
                 "moodle_question_id" => $q->id,
             );
 
-            // add any dependency props (skip logic)
+            // Add any dependency props (skip logic).
             if ($q->dependitem != 0) {
-                // find dependitem label
+                // Find dependitem label.
                 $dependitem = "";
                 foreach ($feedbackitems as $q_depend) {
                     if ($q->dependitem == $q_depend->id) {
@@ -258,8 +258,8 @@ class MobileActivityFeedback extends MobileActivity {
         $quizjson['props']['digest'] = $this->md5;
         $quizjson['props']['moodle_quiz_id'] = $this->id;
 
-        // check for password protection
-        // done after md5 is created so password can be changed without it being a new quiz
+        // Check for password protection.
+        // Done after md5 is created so password can be changed without it being a new quiz.
         if ($this->password !== '') {
             $quizjson['props']['password'] = $this->password;
         }

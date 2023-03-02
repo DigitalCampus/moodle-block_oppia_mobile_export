@@ -68,7 +68,7 @@ function parse_module_file($filename) {
     $xml = new DOMDocument();
     $xml->loadXML($contents);
 
-    // Enable error handling
+    // Enable error handling.
     libxml_use_internal_errors(true);
 
     if (!$xml->schemaValidate($schema)) {
@@ -91,7 +91,7 @@ function parse_module_file($filename) {
         }
         $sect_orderno = $section->getAttribute('order');
         echo "\nSection " . $sect_orderno . ": " . $sect_title . " \n================== \n";
-        $moodle_sect = $sect_orderno + 1; //Internally, Moodle starts in 1 with the Pre-Topics section
+        $moodle_sect = $sect_orderno + 1; // Internally, Moodle starts in 1 with the Pre-Topics section.
 
         foreach ($section->getElementsByTagName('activity') as $activity) {
             $digest = $activity->getAttribute('digest');
@@ -120,7 +120,7 @@ function get_moodle_activity_modid($courseid, $sect_orderno, $activity) {
 
     $type = $activity->getAttribute('type');
     if ($type == 'quiz') {
-        // For quizzes, we have the prop that links with its Moodle id
+        // For quizzes, we have the prop that links with its Moodle id.
         $contents = $activity->getElementsByTagName('content')->item(0)->nodeValue;
         $quiz = json_decode($contents);
         if (isset($quiz->props->moodle_quiz_id)) {

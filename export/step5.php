@@ -80,7 +80,7 @@ $unmodified_activities = array();
 $sect_orderno = 1;
 foreach ($sections as $sect) {
     flush_buffers();
-    // We avoid the topic0 as is not a section as the rest
+    // We avoid the topic0 as is not a section as the rest.
     if ($sect->section == 0) {
         continue;
     }
@@ -116,9 +116,11 @@ foreach ($sections as $sect) {
                     $moodle_activity_md5 = $last_published_digest_entry->moodleactivitymd5;
                     $current_digest = $activity_summary['digest'];
 
-                    if (strcmp($moodle_activity_md5, $current_digest) !== 0) { // The activity was modified
+                    if (strcmp($moodle_activity_md5, $current_digest) !== 0) { // The activity was modified.
 
-                        // For 'quiz' and 'feedback' activities, don't show option to preserve digest if the number of questions has changed
+                        /* For 'quiz' and 'feedback' activities, don't show option to preserve digest
+                         * if the number of questions has changed.
+                         */
                         if (($mod->modname == 'quiz' or $mod->modname == 'feedback') and
                             $last_published_digest_entry->nquestions != $activity_summary['no_questions']) {
                             continue;
@@ -132,8 +134,8 @@ foreach ($sections as $sect) {
                             'last_published_digest' => $last_published_digest_entry->oppiaserverdigest,
                             'icon' => $mod->get_icon_url()->out(),
                         ));
-                    } else { // The activity wasn't modified
-                        // Include a parameter preserving the value of the digest that is currently in use in the Oppia Server
+                    } else { // The activity wasn't modified.
+                        // Include a parameter preserving the value of the digest that is currently in use in the Oppia Server.
                         $unmodified_activities['digest_' . $current_digest] = $last_published_digest_entry->oppiaserverdigest;
                     }
                 }

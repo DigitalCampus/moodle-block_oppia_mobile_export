@@ -49,7 +49,7 @@ if ($delete != 0) {
 }
 
 
-// get users current servers
+// Get users current servers.
 $servers = get_oppiaservers();
 
 echo "<h2>".get_string('servers_current', PLUGINNAME)."</h2>";

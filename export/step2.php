@@ -44,7 +44,7 @@ require_once($CFG->libdir.'/componentlib.class.php');
 
 const PRIORITY_LEVELS = 10;
 const MAX_ATTEMPTS = 10;
-// We get all the params from the previous step form
+// We get all the params from the previous step form.
 $id = required_param('id', PARAM_INT);
 $stylesheet = required_param('stylesheet', PARAM_TEXT);
 $priority = required_param('coursepriority', PARAM_INT);
@@ -61,7 +61,7 @@ $section_width = required_param('section_width', PARAM_INT);
 $tags = required_param('coursetags', PARAM_TEXT);
 $tags = cleanTagList($tags);
 
-// Save new export configurations for this course and server
+// Save new export configurations for this course and server.
 add_or_update_oppiaconfig($id, 'coursepriority', $priority, $server);
 add_or_update_oppiaconfig($id, 'coursetags', $tags, $server);
 add_or_update_oppiaconfig($id, 'coursesequencing', $sequencing, $server);

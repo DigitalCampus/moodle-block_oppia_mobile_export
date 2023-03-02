@@ -45,7 +45,7 @@ require_once($pluginroot . 'activity/processor.php');
 
 require_once($CFG->libdir.'/componentlib.class.php');
 
-// We get all the params from the previous step form
+// We get all the params from the previous step form.
 $id = required_param('id', PARAM_INT);
 $stylesheet = required_param('stylesheet', PARAM_TEXT);
 $server = required_param('server_id', PARAM_TEXT);
@@ -370,7 +370,7 @@ foreach ($sections as $sect) {
             remove_oppiaconfig_if_exists($sect->id, 'password', $server);
         }
 
-        // get section image (from summary)
+        // Get section image (from summary).
         $filename = extractImageFile($sect->summary,
                                     'course',
                                     'section',
@@ -443,7 +443,7 @@ echo '<hr><br>';
 echo get_string('export_sections_finish', PLUGINNAME).OPPIA_HTML_BR;
 $root->appendChild($structure);
 
-// add in the langs available here
+// Add in the langs available here.
 $langs = $xmldoc->createElement("langs");
 foreach ($MOBILE_LANGS as $k => $v) {
     $temp = $xmldoc->createElement("lang", $k);

@@ -116,12 +116,12 @@ function populate_digests_for_course($course, $course_id, $server_id, $digests_t
     $sect_orderno = 1;
     foreach ($sections as $sect) {
         flush_buffers();
-        // We avoid the topic0 as is not a section as the rest
+        // We avoid the topic0 as is not a section as the rest.
         if ($sect->section == 0) {
             $sectionTitle = "Intro";
         } else {
             $sectionTitle = strip_tags($sect->summary);
-            // If the course has no summary, we try to use the section name
+            // If the course has no summary, we try to use the section name.
             if ($sectionTitle == "") {
                 $sectionTitle = strip_tags($sect->name);
             }

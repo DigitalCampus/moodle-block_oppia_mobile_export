@@ -47,13 +47,13 @@ class MobileActivityPage extends MobileActivity {
         $content = $this->extractAndReplaceFiles($content, 'mod_page', 'content',
                                         0, $context->id, $this->courseroot, $cm->id);
 
-        // get the image from the intro section
+        // Get the image from the intro section.
         $this->extract_thumbnail_from_intro($page->intro, $cm->id);
 
         $langs = extractLangs($content);
         if (is_array($langs) && count($langs)>0) {
             foreach ($langs as $lang=>$text) {
-                //Process individually each language
+                // Process individually each language.
                 $this->process_content($context, $cm->id, $text, $lang);
             }
         } else {
@@ -65,18 +65,18 @@ class MobileActivityPage extends MobileActivity {
         $pre_content = $content;
 
         $content = $this->extractAndReplaceMedia($content);
-        // if page has media and no special icon for page, extract the image for first video
+        // If page has media and no special icon for page, extract the image for first video.
         if ((count($this->page_media)>0 || count($this->page_local_media)>0) && $this->thumbnailimage == null) {
             if ($this->extractMediaImage($pre_content, 'mod_page', 'content', $context->id)) {
                 $this->save_resized_thumbnail($this->thumbnailimage, $mod_id);
             }
         } else if ($this->thumbnailimage == null) {
-            // If it does not have an image, we try to extract it from the contents
+            // If it does not have an image, we try to extract it from the contents.
             $this->extract_thumbnail_from_contents($pre_content, $mod_id);
         }
 
-        // add html header tags etc
-        // need to do this to ensure it all has the right encoding when loaded in android webview
+        // Add html header tags etc.
+        // Need to do this to ensure it all has the right encoding when loaded in android webview.
         $webpage = '<!DOCTYPE html>';
         $webpage .= '<html><head>';
         $webpage .= '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
@@ -118,7 +118,7 @@ class MobileActivityPage extends MobileActivity {
         $this->add_lang_xml_nodes($xmldoc, $struct, $mod->name, "title");
         $this->add_thumbnail_xml_node($xmldoc, $struct);
 
-        // add in page media
+        // Add in page media.
         if (count($this->page_media) > 0 || count($this->page_local_media) > 0) {
             $media = $xmldoc->createElement("media");
             foreach ($this->page_media as $m) {

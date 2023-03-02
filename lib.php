@@ -97,7 +97,7 @@ function get_oppiaconfig($modid, $name, $default, $servid="default", $use_non_se
         return $record->value;
     } else {
         if ($use_non_server_value) {
-            //Try if there is a non-server value saved
+            // Try if there is a non-server value saved.
             $record = $DB->get_record(OPPIA_CONFIG_TABLE, array('modid' => $modid, 'name' => $name));
             if ($record) {
                 return $record->value;
@@ -217,7 +217,7 @@ function cleanHTMLEntities($text, $replace_br=false) {
 }
 
 function cleanTagList($tags) {
-    // split on comma
+    // Split on comma.
     $tagList = explode(",", $tags);
     $cleanTags = array();
 
@@ -236,7 +236,7 @@ function cleanTagList($tags) {
 function cleanShortname($shortname) {
     $shortname = trim($shortname);
     $shortname = preg_replace(REGEX_FORBIDDEN_DIR_CHARS, "-", $shortname);
-    return preg_replace('(\-+)', "-", $shortname); // clean duplicated hyphens.
+    return preg_replace('(\-+)', "-", $shortname); // Clean duplicated hyphens.
 }
 
 function removeIDsFromJSON($jsonString) {
@@ -262,7 +262,7 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
         $filename = trim($files_tmp['filenames'][$i][0]);
 
         if (!IsFileAnImage($course_root . "/" . $filename)) {
-            // If the file is not an image, we pass on it
+            // If the file is not an image, we pass on it.
             continue;
         }
         if ($CFG->block_oppia_mobile_export_debug) {
@@ -308,15 +308,15 @@ function getFileInfo($filename, $component, $filearea, $itemid, $contextid) {
 // Returns the filename without special or non-ASCII characters, replacing them with underscores.
 function cleanFilename($filename) {
     $clean = preg_replace(
-        '([^\x1F-\x7F]|'.    // non-ASCII characters
-        '[[:space:]]|' .    // spaces
-        '[<>:"/\\|?*]|'.      // file system reserved https://en.wikipedia.org/wiki/Filename#Reserved_characters_and_words
-        '[\x00-\x1F]|'.     // control characters http://msdn.microsoft.com/en-us/library/windows/desktop/aa365247%28v=vs.85%29.aspx
-        '[\x7F\xA0\xAD]|'.     // non-printing characters DEL, NO-BREAK SPACE, SOFT HYPHEN
-        '[{}^\~`])',           // URL unsafe characters https://www.ietf.org/rfc/rfc1738.txt
+        '([^\x1F-\x7F]|'.    // Non-ASCII characters.
+        '[[:space:]]|' .    // Spaces.
+        '[<>:"/\\|?*]|'.      // File system reserved https://en.wikipedia.org/wiki/Filename#Reserved_characters_and_words.
+        '[\x00-\x1F]|'.     // Control characters http://msdn.microsoft.com/en-us/library/windows/desktop/aa365247%28v=vs.85%29.aspx.
+        '[\x7F\xA0\xAD]|'.     // Non-printing characters DEL, NO-BREAK SPACE, SOFT HYPHEN.
+        '[{}^\~`])',           // URL unsafe characters https://www.ietf.org/rfc/rfc1738.txt.
         '_', $filename);
 
-    $clean = preg_replace('(_+)', '_', $clean); // Remove multiple repeated underscores
+    $clean = preg_replace('(_+)', '_', $clean); // Remove multiple repeated underscores.
     return $clean;
 }
 
@@ -339,7 +339,7 @@ function copyFile($file, $component, $filearea, $itemid, $contextid, $course_roo
 
     } else {
         $link = $CFG->wwwroot.'/course/modedit.php?return=0&sr=0&update='.$cmid;
-        $message = 'error_'.($is_image?'image':'file').'_edit_page';
+        $message = 'error_'.($is_image ? 'image' : 'file').'_edit_page';
         echo '<span class="export-error">'.get_string($message, PLUGINNAME, $link).'</span><br/>';
         return false;
     }
@@ -348,7 +348,7 @@ function copyFile($file, $component, $filearea, $itemid, $contextid, $course_roo
     $tr->originalfilename = $filename;
     $tr->filename = sha1($fullpath);
     if ($CFG->block_oppia_mobile_export_debug) {
-        $message = 'export_'.($is_image?'image':'file').'_success';
+        $message = 'export_'.($is_image ? 'image' : 'file').'_success';
         echo get_string($message, PLUGINNAME, urldecode($filename))."<br/>";
 
     }
@@ -364,7 +364,7 @@ function resizeImage($image, $image_new_name, $image_width, $image_height, $tran
     } else {
         $filename = resizeImageScale($image, $image_new_name, $image_width, $image_height, $transparent);
     }
-    // just return the last part of the filename (name + extn... not the dir path)
+    // Just return the last part of the filename (name + extn... not the dir path).
     $pieces = explode("/", $filename);
 
     return $pieces[count($pieces) - 1];
@@ -621,9 +621,9 @@ function block_oppia_mobile_export_pluginfile($course, $cm, $context, $filearea,
 
     $filename = array_pop($args); // The last item in the $args array.
     if (!$args) {
-        $filepath = '/'; // $args is empty => the path is '/'
+        $filepath = '/'; // Then $args is empty => the path is '/'.
     } else {
-        $filepath = '/'.implode('/', $args).'/'; // $args contains elements of the filepath
+        $filepath = '/'.implode('/', $args).'/'; // The $args contains elements of the filepath.
     }
 
     // Retrieve the file from the Files API.
@@ -688,7 +688,7 @@ function get_grade_boundaries($modid, $servid="default") {
     if ($records) {
         return $records;
     } else {
-        //Try if there is a non-server value saved
+        // Try if there is a non-server value saved.
         $records = $DB->get_records(OPPIA_GRADE_BOUNDARY_TABLE,
             array('modid' => $modid));
         if ($records) {
