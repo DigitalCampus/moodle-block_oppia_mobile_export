@@ -110,9 +110,9 @@ class MobileActivityFeedback extends MobileActivity {
             }
         }
 
-        $multiple_submit = intval($feedback->multiple_submit) == 1;
+        $multiplesubmit = intval($feedback->multiple_submit) == 1;
 
-        if (!$multiple_submit) {
+        if (!$multiplesubmit) {
             $quizprops['maxattempts'] = 1;
         }
 
@@ -223,16 +223,16 @@ class MobileActivityFeedback extends MobileActivity {
             if ($q->dependitem != 0) {
                 // Find dependitem label.
                 $dependitem = "";
-                foreach ($feedbackitems as $q_depend) {
-                    if ($q->dependitem == $q_depend->id) {
-                        $dependitem = $q_depend->label;
+                foreach ($feedbackitems as $qdepend) {
+                    if ($q->dependitem == $qdepend->id) {
+                        $dependitem = $qdepend->label;
                     }
                 }
                 $questionprops["dependvalue"] = $q->dependvalue;
                 $questionprops["dependitemlabel"] = $dependitem;
             }
 
-            $questionJson = array(
+            $questionjson = array(
                 "id" => rand(1, 1000),
                 "type" => $type,
                 "title" => json_decode($questiontitle),
@@ -242,7 +242,7 @@ class MobileActivityFeedback extends MobileActivity {
             array_push($quizjsonquestions, array(
                 'order' => $i,
                 'id' => rand(1, 1000),
-                'question' => $questionJson));
+                'question' => $questionjson));
             $i++;
         }
 
