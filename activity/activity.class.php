@@ -82,12 +82,12 @@ abstract class MobileActivity {
         $thumbwidth = get_oppiaconfig($this->courseid, 'thumb_width', $CFG->block_oppia_mobile_export_thumb_width, $this->serverid);
 
         $this->thumbnailimage = $thumbnail;
-        $$imageresized = resizeImage($this->courseroot . "/". $this->thumbnailimage,
+        $imageresized = resizeImage($this->courseroot . "/". $this->thumbnailimage,
                                     $this->courseroot."/images/".$moduleid,
                                     $thumbwidth, $thumbheight);
 
-        if ($$imageresized) {
-            $this->thumbnailimage = "/images/" . $$imageresized;
+        if ($imageresized) {
+            $this->thumbnailimage = "/images/" . $imageresized;
             if (!$keeporiginal) {
                 unlink($this->courseroot."/".$thumbnail) || die(get_string('error_file_delete', PLUGINNAME));
             }

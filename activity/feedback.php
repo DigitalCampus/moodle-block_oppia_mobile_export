@@ -73,7 +73,7 @@ class MobileActivityFeedback extends MobileActivity {
         $params = array($feedback->id);
         $feedbackitems = $DB->get_records_select('feedback_item', $select, $params, 'position');
 
-        $count_omitted = 0;
+        $countomitted = 0;
         foreach ($feedbackitems as $fi) {
             if (in_array($fi->typ, $this->supportedtypes)) {
                 $this->noquestions++;
@@ -81,10 +81,10 @@ class MobileActivityFeedback extends MobileActivity {
                     $this->noratedquestions++;
                 }
             } else {
-                $count_omitted++;
+                $countomitted++;
             }
         }
-        if ($count_omitted == count($feedbackitems)) {
+        if ($countomitted == count($feedbackitems)) {
             $this->isvalid = false;
         }
     }
@@ -132,9 +132,9 @@ class MobileActivityFeedback extends MobileActivity {
             $responses = array();
             $title = $q->name;
             $required = $q->required == 1;
-            $questionTitle = extractLangs(cleanHTMLEntities($title, true), true, !$this->keephtml);
+            $questiontitle = extractLangs(cleanHTMLEntities($title, true), true, !$this->keephtml);
             $type = null;
-            $max_question_score = 0;
+            $maxquestionscore = 0;
 
             // Multichoice multi.
             if ($q->typ == "multichoice"
@@ -145,12 +145,12 @@ class MobileActivityFeedback extends MobileActivity {
                 $resps = explode('|', $respstr);
                 $j = 1;
                 foreach ($resps as $resp) {
-                     $respTitle = extractLangs($resp, true, !$this->keephtml, true);
+                    $resptitle = extractLangs($resp, true, !$this->keephtml, true);
                     array_push($responses, array(
                         'order' => $j,
                         'id' => rand(1, 1000),
                         'props' => json_decode ("{}"),
-                        'title' => json_decode($respTitle),
+                        'title' => json_decode($resptitle),
                         'score' => "0"
                     ));
                     $j++;
@@ -161,7 +161,7 @@ class MobileActivityFeedback extends MobileActivity {
             } else if ($q->typ == "label") {
                 // Label.
                 $type = "description";
-                $questionTitle = extractLangs($q->presentation, true, !$this->keephtml);
+                $questiontitle = extractLangs($q->presentation, true, !$this->keephtml);
             } else if ($q->typ == "textarea") {
                 // Long answer.
                 $type = "essay";
@@ -174,19 +174,19 @@ class MobileActivityFeedback extends MobileActivity {
                 foreach ($resps as $resp) {
                     preg_match('/([0-9]+)####(.*)/', $resp, $matches);
                     $score = is_null($matches[1]) ? "0" : $matches[1];
-                    $max_question_score = max($max_question_score, $score);
-                    $respTitle = trim($matches[2]);
-                    $respTitle = extractLangs($respTitle, true, !$this->keephtml, true);
+                    $maxquestionscore = max($maxquestionscore, $score);
+                    $resptitle = trim($matches[2]);
+                    $resptitle = extractLangs($resptitle, true, !$this->keephtml, true);
                     array_push($responses, array(
                         'order' => $j,
                         'id' => rand(1, 1000),
                         'props' => json_decode ("{}"),
-                        'title' => json_decode($respTitle),
+                        'title' => json_decode($resptitle),
                         'score' => $score
                     ));
                     $j++;
                 }
-                $quizmaxscore += $max_question_score;
+                $quizmaxscore += $maxquestionscore;
             } else if ($q->typ == "numeric") {
                 // Numeric.
                 $type = "numerical";
@@ -200,12 +200,12 @@ class MobileActivityFeedback extends MobileActivity {
                 $resps = explode('|', $respstr);
                 $j = 1;
                 foreach ($resps as $resp) {
-                    $respTitle = extractLangs($resp, true, !$this->keephtml, true);
+                    $resptitle = extractLangs($resp, true, !$this->keephtml, true);
                     array_push($responses, array(
                         'order' => $j,
                         'id' => rand(1, 1000),
                         'props' => json_decode ("{}"),
-                        'title' => json_decode($respTitle),
+                        'title' => json_decode($resptitle),
                         'score' => "0"
                     ));
                     $j++;
@@ -213,7 +213,7 @@ class MobileActivityFeedback extends MobileActivity {
             }
 
             $questionprops = array(
-                "maxscore" => $max_question_score,
+                "maxscore" => $maxquestionscore,
                 "required" => $required,
                 "label" => $q->label,
                 "moodle_question_id" => $q->id,
@@ -235,7 +235,7 @@ class MobileActivityFeedback extends MobileActivity {
             $questionJson = array(
                 "id" => rand(1, 1000),
                 "type" => $type,
-                "title" => json_decode($questionTitle),
+                "title" => json_decode($questiontitle),
                 "props" => $questionprops,
                 "responses" => $responses);
 
@@ -254,7 +254,7 @@ class MobileActivityFeedback extends MobileActivity {
             'description' => json_decode($descjson),
             'props' => $quizprops,
             'questions' => $quizjsonquestions);
-        $this->generate_md5($feedback, $$quizjson);
+        $this->generate_md5($feedback, $quizjson);
         $quizjson['props']['digest'] = $this->md5;
         $quizjson['props']['moodle_quiz_id'] = $this->id;
 
