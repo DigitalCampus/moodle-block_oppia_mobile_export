@@ -145,8 +145,7 @@ foreach ($xml->getElementsByTagName('activity') as $activity) {
         array_push($duplicated, array(
             'title' => $title,
             'digest' => $digest));
-    }
-    else{
+    } else {
         $activities[$digest] = true;
     }
 }

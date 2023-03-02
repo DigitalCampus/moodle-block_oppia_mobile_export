@@ -34,6 +34,7 @@ $serverform = new OppiaServerForm();
 
 if ($serverform->is_cancelled()) {
     // Do nothing.
+    continue;
 } else if ($fromform = $serverform->get_data()) {
     $record = new stdClass();
     $record->servername = $fromform->server_ref;
@@ -44,8 +45,7 @@ if ($serverform->is_cancelled()) {
 
 $delete = optional_param('delete', 0, PARAM_INT);
 if ($delete != 0) {
-    $DB->delete_records('block_oppia_mobile_server', array('id' => $delete,
-        'moodleuserid'=>$USER->id));
+    $DB->delete_records('block_oppia_mobile_server', array('id' => $delete, 'moodleuserid' => $USER->id));
 }
 
 

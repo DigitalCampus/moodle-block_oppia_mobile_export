@@ -94,7 +94,7 @@ class MobileActivityFeedback extends MobileActivity {
 
         $cm = get_coursemodule_from_id('feedback', $this->id);
         context_module::instance($cm->id);
-        $feedback = $DB->get_record('feedback', array('id'=>$cm->instance), '*', MUST_EXIST);
+        $feedback = $DB->get_record('feedback', array('id' => $cm->instance), '*', MUST_EXIST);
         $select = 'feedback = ?';
         $params = array($feedback->id);
         $feedbackitems = $DB->get_records_select('feedback_item', $select, $params, 'position');
@@ -104,7 +104,7 @@ class MobileActivityFeedback extends MobileActivity {
 
         $quizprops = array("courseversion" => $this->courseversion);
 
-        foreach ($this->configarray as $k=>$v) {
+        foreach ($this->configarray as $k => $v) {
             if ($k != 'randomselect' || $v != 0) {
                 $quizprops[$k] = $v;
             }
@@ -138,8 +138,8 @@ class MobileActivityFeedback extends MobileActivity {
 
             // Multichoice multi.
             if ($q->typ == "multichoice"
-                && (substr($q->presentation, 0, 1)==='c'
-                    || substr($q->presentation, 0, 1)==='d')) {
+                && (substr($q->presentation, 0, 1) === 'c'
+                    || substr($q->presentation, 0, 1) === 'd')) {
                 $type = "multiselect";
                 $respstr = substr($q->presentation, 6);
                 $resps = explode('|', $respstr);
@@ -165,7 +165,7 @@ class MobileActivityFeedback extends MobileActivity {
             } else if ($q->typ == "textarea") {
                 // Long answer.
                 $type = "essay";
-            } else if ($q->typ == "multichoicerated" && substr($q->presentation, 0, 1)==='r') {
+            } else if ($q->typ == "multichoicerated" && substr($q->presentation, 0, 1) === 'r') {
                 // Multi - rated.
                 $type = "multichoice";
                 $respstr = substr($q->presentation, 6);
@@ -214,7 +214,7 @@ class MobileActivityFeedback extends MobileActivity {
 
             $questionprops = array(
                 "maxscore" => $max_question_score,
-                "required"  => $required,
+                "required" => $required,
                 "label" => $q->label,
                 "moodle_question_id" => $q->id,
             );

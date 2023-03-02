@@ -118,8 +118,7 @@ echo '<p>';
 if ($api_helper->version == null || $api_helper->version == '') {
     echo '<span class="export-error">'. get_string('export_server_error', PLUGINNAME).OPPIA_HTML_BR;
     add_publishing_log($server_connection->url, $USER->id, $id, "server_unavailable", "Unable to get server info");
-}
-else{
+} else {
     echo $OUTPUT->render_from_template(
         PLUGINNAME.'/server_info', array('server_info' => $api_helper)
     );
@@ -358,14 +357,13 @@ foreach ($sections as $sect) {
             $section->appendChild($temp);
         }
 
-        $sect_password =  optional_param('section_'.$sect->id.'_password', '', PARAM_TEXT);
+        $sect_password = optional_param('section_'.$sect->id.'_password', '', PARAM_TEXT);
         if ($sect_password != '') {
             echo '<span class="export-results warning">'. get_string('section_password_added', PLUGINNAME) .'</span>'.OPPIA_HTML_BR;
             $section->appendChild($xmldoc->createAttribute("password"))->appendChild($xmldoc->createTextNode($sect_password));
             // We store the section's password for future exports.
             add_or_update_oppiaconfig($sect->id, 'password', $sect_password, $server);
-        }
-        else{
+        } else {
             // If the password was empty, we remove possible previous ones.
             remove_oppiaconfig_if_exists($sect->id, 'password', $server);
         }
@@ -404,7 +402,7 @@ foreach ($sections as $sect) {
             }
 
             echo '<div class="step"><strong>' . format_string($mod->name) . '</strong>'.OPPIA_HTML_BR;
-            $password =  optional_param('mod_'.$mod->id.'_password', '', PARAM_TEXT);
+            $password = optional_param('mod_'.$mod->id.'_password', '', PARAM_TEXT);
             $activity = $processor->process_activity($mod, $sect, $act_orderno, $activities, $xmldoc, $password);
             $activity_summaries[$activity->id] = array(
                 'digest' => $activity->md5,

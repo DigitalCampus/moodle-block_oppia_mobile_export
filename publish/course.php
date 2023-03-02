@@ -116,7 +116,7 @@ if ($server == "default") {
     $server_connection->url = $CFG->block_oppia_mobile_export_default_server;
 }
 
-if (substr($server_connection->url, -strlen('/'))!=='/') {
+if (substr($server_connection->url, -strlen('/')) !== '/') {
     $server_connection->url .= '/';
 }
 
@@ -132,7 +132,7 @@ $curlfile = new CurlFile($filepath, 'application/zip', $file);
 $post = array(
         'username' => $username,
         'password' => $password,
-        'tags'        => $tags,
+        'tags' => $tags,
         'is_draft' => $is_draft,
         'course_file' => $curlfile);
 

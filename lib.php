@@ -156,17 +156,16 @@ function extractLangs($content, $asJSON = false, $strip_tags = false, $strip_bas
     preg_match_all(REGEX_LANGS, $content, $langs_tmp, PREG_OFFSET_CAPTURE);
     $tempLangs = array();
     if (isset($langs_tmp['langs']) && count($langs_tmp['langs']) > 0) {
-        for($i = 0; $i < count($langs_tmp['langs']); $i++) {
+        for ($i = 0; $i < count($langs_tmp['langs']); $i++) {
             $lang = $langs_tmp['langs'][$i][0];
             $lang = str_replace("-", "_", $lang);
             $tempLangs[$lang] = true;
         }
-    } else{
+    } else {
         if ($strip_tags) {
             if ($strip_basic_tags) {
                 $content = trim(strip_tags($content));
-            }
-            else{
+            } else {
                 $content = trim(strip_tags($content, BASIC_HTML_TAGS));
             }
         }
@@ -186,8 +185,7 @@ function extractLangs($content, $asJSON = false, $strip_tags = false, $strip_bas
         if ($strip_tags) {
             if ($strip_basic_tags) {
                 $tempLangs[$k] = trim(strip_tags($filter->filter($content)));
-            }
-            else{
+            } else {
                 $tempLangs[$k] = trim(strip_tags($filter->filter($content), BASIC_HTML_TAGS));
             }
         } else {
@@ -257,7 +255,7 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
 
     $lastimg = false;
     $toreplace = array();
-    for($i = 0; $i < count($files_tmp['filenames']); $i++) {
+    for ($i = 0; $i < count($files_tmp['filenames']); $i++) {
 
         $filename = trim($files_tmp['filenames'][$i][0]);
 
@@ -325,18 +323,16 @@ function copyFile($file, $component, $filearea, $itemid, $contextid, $course_roo
 
     $is_image = true;
     if ($file) {
-
-            $filename = $file->get_filename();
-            $fullpath = '/'. $contextid .'/'. $component .'/'. $filearea .'/'. $itemid .'/'. $filename;
-            $sha1 = sha1($fullpath);
-            if (preg_match(REGEX_RESOURCE_EXTENSIONS, $filename) > 0) {
-                $is_image = false;
-                $filedest = "/resources/".$filename;
-            } else {
-                $filedest = "/images/".$sha1;
-            }
-            $file->copy_content_to($course_root.$filedest);
-
+        $filename = $file->get_filename();
+        $fullpath = '/'. $contextid .'/'. $component .'/'. $filearea .'/'. $itemid .'/'. $filename;
+        $sha1 = sha1($fullpath);
+        if (preg_match(REGEX_RESOURCE_EXTENSIONS, $filename) > 0) {
+            $is_image = false;
+            $filedest = "/resources/".$filename;
+        } else {
+            $filedest = "/images/".$sha1;
+        }
+        $file->copy_content_to($course_root.$filedest);
     } else {
         $link = $CFG->wwwroot.'/course/modedit.php?return=0&sr=0&update='.$cmid;
         $message = 'error_'.($is_image ? 'image' : 'file').'_edit_page';
@@ -372,10 +368,10 @@ function resizeImage($image, $image_new_name, $image_width, $image_height, $tran
 
 function resizeImageScale($image, $image_new_name, $image_width, $image_height, $transparent=false) {
     global $CFG;
-    $size=GetimageSize($image);
+    $size = GetimageSize($image);
     $orig_w = $size[0];
     $orig_h = $size[1];
-    $ratio_src = $orig_w/$orig_h;
+    $ratio_src = $orig_w / $orig_h;
 
     $ratio_target = $image_width / $image_height;
 
@@ -405,11 +401,11 @@ function resizeImageScale($image, $image_new_name, $image_width, $image_height, 
     }
 
     if ($orig_h > $orig_w || $ratio_src < $ratio_target) {
-        $border = floor(($image_width - ($image_height*$orig_w/$orig_h))/2);
-        imagecopyresampled($image_new, $image_src, $border, 0, 0, 0, $image_width -($border*2), $image_height , $orig_w, $orig_h);
+        $border = floor(($image_width - ($image_height * $orig_w / $orig_h)) / 2);
+        imagecopyresampled($image_new, $image_src, $border, 0, 0, 0, $image_width - ($border * 2), $image_height , $orig_w, $orig_h);
     } else {
-        $border = floor(($image_height - ($image_width*$orig_h/$orig_w))/2);
-        imagecopyresampled($image_new, $image_src, 0, $border, 0, 0, $image_width , $image_height- ($border*2) , $orig_w, $orig_h);
+        $border = floor(($image_height - ($image_width * $orig_h / $orig_w)) / 2);
+        imagecopyresampled($image_new, $image_src, 0, $border, 0, 0, $image_width , $image_height - ($border * 2) , $orig_w, $orig_h);
     }
     $image_new_name = $image_new_name.'.png';
     imagepng($image_new, $image_new_name, 9);
@@ -461,11 +457,11 @@ function resizeImageCrop($image, $image_new_name, $image_width, $image_height, $
     }
 
     if ($ratio_src > $ratio_target) {
-        $crop = floor(($orig_w - ($orig_h*$image_width/$image_height))/2);
-        imagecopyresampled($image_new, $image_src, 0, 0, $crop, 0, $image_width, $image_height, $orig_w-(2*$crop), $orig_h);
+        $crop = floor(($orig_w - ($orig_h * $image_width / $image_height)) / 2);
+        imagecopyresampled($image_new, $image_src, 0, 0, $crop, 0, $image_width, $image_height, $orig_w - ( 2 * $crop), $orig_h);
     } else {
-        $crop = floor(($orig_h - ($orig_w*$image_height/$image_width))/2);
-        imagecopyresampled($image_new, $image_src, 0, 0,  0, $crop,  $image_width, $image_height, $orig_w, $orig_h -(2*$crop));
+        $crop = floor(($orig_h - ($orig_w * $image_height / $image_width)) / 2);
+        imagecopyresampled($image_new, $image_src, 0, 0,  0, $crop,  $image_width, $image_height, $orig_w, $orig_h - (2 * $crop));
     }
 
     $image_new_name = $image_new_name.'.png';
@@ -548,7 +544,7 @@ function flush_buffers() {
 function recurse_copy($src, $dst) {
     $dir = opendir($src);
     @mkdir($dst);
-    while(false !== ( $file = readdir($dir)) ) {
+    while (false !== ( $file = readdir($dir)) ) {
         if (( $file != '.' ) && ( $file != '..' )) {
             if ( is_dir($src . '/' . $file) ) {
                 recurse_copy($src . '/' . $file, $dst . '/' . $file);
@@ -658,8 +654,7 @@ function add_or_update_grade_boundary($modid, $grade, $message, $servid="default
     if ($servid !== null) {
         $record = $DB->get_record_select(OPPIA_GRADE_BOUNDARY_TABLE,
             "modid=$modid and `grade`='$grade' and serverid='$servid'");
-    }
-    else{
+    } else {
         $record = $DB->get_record(OPPIA_GRADE_BOUNDARY_TABLE, array('modid' => $modid, 'grade' => $grade));
     }
 

@@ -50,7 +50,7 @@ $stylesheet = required_param('stylesheet', PARAM_TEXT);
 $server = required_param('server', PARAM_TEXT);
 $course_export_status = required_param('course_export_status', PARAM_TEXT);
 
-$course = $DB->get_record('course', array('id'=>$id));
+$course = $DB->get_record('course', array('id' => $id));
 
 $PAGE->set_url(PLUGINPATH.'export/step3.php', array('id' => $id));
 context_helper::preload_course($id);
@@ -134,7 +134,7 @@ foreach ($sections as $sect) {
                 $grades = optional_param_array('grade_'.$mod->id, array(), PARAM_INT);
                 $messages = optional_param_array('message_'.$mod->id, array(), PARAM_TEXT);
 
-                for($i = 0; $i < 21; $i++) {
+                for ($i = 0; $i < 21; $i++) {
                     $value = $i * 5;
                     if (in_array($value, $grades, false)) {
                         $index = array_search($value, $grades);

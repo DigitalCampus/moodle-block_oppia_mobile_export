@@ -16,7 +16,7 @@
 
 require_once(dirname(__FILE__) . '/constants.php');
 
-class ApiHelper{
+class ApiHelper {
     private $url;
     private $curl;
     public $version;

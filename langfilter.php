@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-/* 
+/*
  * Given XML multilinguage text, return relevant text according to
  * current language:
  *   - look for multilang blocks in the text.
@@ -39,7 +39,7 @@ defined('MOODLE_INTERNAL') || die();
  * Following new syntax is not compatible with old one:
  *   <span lang="XX" class="multilang">one lang</span><span lang="YY" class="multilang">another language</span>.
  */
-class tomobile_langfilter  {
+class tomobile_langfilter {
     function filter($text) {
 
         if (empty($text) || is_numeric($text)) {

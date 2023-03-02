@@ -78,7 +78,7 @@ class MobileActivityQuiz extends MobileActivity {
             return;
         }
 
-        $quiz = $DB->get_record('quiz', array('id'=>$cm->instance), '*', MUST_EXIST);
+        $quiz = $DB->get_record('quiz', array('id' => $cm->instance), '*', MUST_EXIST);
         $allow_review_after = $this->get_review_availability($quiz, self::IMMEDIATELY_AFTER);
         $allow_review_later = $this->get_review_availability($quiz, self::LATER_WHILE_OPEN);
         // Only include the config values if they are set to false.
@@ -124,7 +124,7 @@ class MobileActivityQuiz extends MobileActivity {
         global $DB, $USER;
 
         $cm = get_coursemodule_from_id('quiz', $this->id);
-        $quiz = $DB->get_record('quiz', array('id'=>$cm->instance), '*', MUST_EXIST);
+        $quiz = $DB->get_record('quiz', array('id' => $cm->instance), '*', MUST_EXIST);
         $quizobj = quiz::create($cm->instance, $USER->id);
         $quizobj->preload_questions();
         $quizobj->load_questions();
@@ -318,7 +318,7 @@ class MobileActivityQuiz extends MobileActivity {
             return $content;
         }
 
-        for($i = 0; $i < count($media_tmp['mediaobject']); $i++) {
+        for ($i = 0; $i < count($media_tmp['mediaobject']); $i++) {
             $mediajson = json_decode($media_tmp['mediaobject'][$i][0]);
             $toreplace = $media_tmp[0][$i][0];
 

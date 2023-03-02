@@ -44,7 +44,7 @@ $starttime = microtime(true);
 
 fetch_module_types();
 
-for ($i=1; $i<$argc; $i++) {
+for ($i = 1; $i < $argc; $i++) {
     $filename = $argv[$i];
     parse_module_file($filename);
 }
@@ -129,8 +129,7 @@ function get_moodle_activity_modid($courseid, $sect_orderno, $activity) {
             $cm = get_coursemodule_from_id('quiz', intval($modid));
             if ($cm == false) {
                  echo "Not found, are you sure the course was exported from this Moodle server?\n";
-            }
-            else{
+            } else {
                 echo "Found!\n";
                 return $modid;
             }
@@ -174,7 +173,7 @@ function fetch_module_types() {
     );
 
     foreach ($MODULE_TYPES as $type => $value) {
-        $modtype = $DB->get_record('modules', array('name'=>$type));
+        $modtype = $DB->get_record('modules', array('name' => $type));
         $MODULE_TYPES[$type] = $modtype->id;
     }
 }
@@ -183,7 +182,7 @@ function get_course_by_shortname($xml) {
     global $DB;
 
     $shortname = $xml->getElementsByTagName('shortname')->item(0)->nodeValue;
-    $course = $DB->get_record('course', array('shortname'=>$shortname));
+    $course = $DB->get_record('course', array('shortname' => $shortname));
 
     if ($course) {
         return $course;
@@ -192,7 +191,7 @@ function get_course_by_shortname($xml) {
     if (strrpos($shortname, '-draft')) {
         echo "The course was exported in \"draft\" mode, trying the lookup without the suffix \n";
         $shortname = substr($shortname, 0, strrpos($shortname, '-draft'));
-        $course = $DB->get_record('course', array('shortname'=>$shortname));
+        $course = $DB->get_record('course', array('shortname' => $shortname));
     }
 
     if (!$course) {
@@ -211,7 +210,7 @@ function get_and_validate_server($xml) {
         return 'default';
     }
 
-    $server = $DB->get_record(OPPIA_SERVER_TABLE, array('url'=>$server_url));
+    $server = $DB->get_record(OPPIA_SERVER_TABLE, array('url' => $server_url));
     if ($server) {
         echo "Server (" . $server_url . ") found in available servers\n";
         return $server->id;

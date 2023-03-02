@@ -82,8 +82,7 @@ class ActivityProcessor {
         }
         if (isset($params['local_media_files'])) {
             $this->local_media_files = $params['local_media_files'];
-        }
-        else{
+        } else {
             $this->local_media_files = array();
         }
         if (isset($params['print_logs'])) {
@@ -103,7 +102,7 @@ class ActivityProcessor {
             'section' => $this->current_section,
             'server_id' => $this->server_id,
             'course_id' => $this->course_id,
-            'print_logs' =>$this->print_logs,
+            'print_logs' => $this->print_logs,
             'courseversion' => $this->versionid,
             'shortname' => $this->course_shortname,
             'summary' => $sect->summary,
@@ -132,7 +131,7 @@ class ActivityProcessor {
             $showfeedback = get_oppiaconfig($mod->id, 'showfeedback', 1, $this->server_id);
             $maxattempts = get_oppiaconfig($mod->id, 'maxattempts', 'unlimited', $this->server_id);
 
-            $params['config_array'] =  array(
+            $params['config_array'] = array(
                 'randomselect' => $randomselect,
                 'showfeedback' => $showfeedback,
                 'passthreshold' => $passthreshold,

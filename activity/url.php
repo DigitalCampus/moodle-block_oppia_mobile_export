@@ -30,7 +30,7 @@ class MobileActivityUrl extends MobileActivity {
 
     function process() {
         global $DB;
-        $cm= get_coursemodule_from_id('url', $this->id);
+        $cm = get_coursemodule_from_id('url', $this->id);
         $this->url = $DB->get_record('url', array('id' => $cm->instance), '*', MUST_EXIST);
         $this->generate_md5($this->url);
         // Get the image from the intro section.

@@ -38,7 +38,7 @@ class MobileActivityPage extends MobileActivity {
     function process() {
         global $DB, $CFG, $MOBILE_LANGS, $defaultlang, $MEDIA;
         $cm = get_coursemodule_from_id('page', $this->id);
-        $page = $DB->get_record('page', array('id'=>$cm->instance), '*', MUST_EXIST);
+        $page = $DB->get_record('page', array('id' => $cm->instance), '*', MUST_EXIST);
         $context = context_module::instance($cm->id);
         $this->generate_md5($page);
 
@@ -51,8 +51,8 @@ class MobileActivityPage extends MobileActivity {
         $this->extract_thumbnail_from_intro($page->intro, $cm->id);
 
         $langs = extractLangs($content);
-        if (is_array($langs) && count($langs)>0) {
-            foreach ($langs as $lang=>$text) {
+        if (is_array($langs) && count($langs) > 0) {
+            foreach ($langs as $lang => $text) {
                 // Process individually each language.
                 $this->process_content($context, $cm->id, $text, $lang);
             }
@@ -66,7 +66,7 @@ class MobileActivityPage extends MobileActivity {
 
         $content = $this->extractAndReplaceMedia($content);
         // If page has media and no special icon for page, extract the image for first video.
-        if ((count($this->page_media)>0 || count($this->page_local_media)>0) && $this->thumbnailimage == null) {
+        if ((count($this->page_media) > 0 || count($this->page_local_media) > 0) && $this->thumbnailimage == null) {
             if ($this->extractMediaImage($pre_content, 'mod_page', 'content', $context->id)) {
                 $this->save_resized_thumbnail($this->thumbnailimage, $mod_id);
             }
@@ -172,7 +172,7 @@ class MobileActivityPage extends MobileActivity {
         }
         $toreplace = array();
 
-        for($i=0; $i<count($files_tmp['filenames']); $i++) {
+        for ($i = 0; $i < count($files_tmp['filenames']); $i++) {
 
             $orig_filename = $files_tmp['filenames'][$i][0];
             $filename = urldecode($orig_filename);
