@@ -54,7 +54,7 @@ $course_export_status = required_param('course_export_status', PARAM_TEXT);
 $tags = get_oppiaconfig($id, 'coursetags', '', $server);
 $priority = (int) get_oppiaconfig($id, 'coursepriority', '0', $server);
 $sequencing = get_oppiaconfig($id, 'coursesequencing', '', $server);
-$keep_html = get_oppiaconfig($id, 'keep_html', '', $server);
+$keephtml = get_oppiaconfig($id, 'keep_html', '', $server);
 $video_overlay = get_oppiaconfig($id, 'video_overlay', '', $server);
 $defaultlang = get_oppiaconfig($id, 'defaultlang', $CFG->block_oppia_mobile_export_defaultlang, $server);
 $thumb_height = get_oppiaconfig($id, 'thumb_height', $CFG->block_oppia_mobile_export_thumb_height, $server);
@@ -219,7 +219,7 @@ foreach ($sectionmods as $modnumber) {
             'courseroot' => $course_root,
             'server_id' => $server,
             'section' => 0,
-            'keep_html' => $keep_html,
+            'keep_html' => $keephtml,
             'video_overlay' => $video_overlay,
             'local_media_files' => $local_media_files,
         ));
@@ -243,7 +243,7 @@ foreach ($sectionmods as $modnumber) {
             'shortname' => $course->shortname,
             'summary' => 'Pre-test',
             'courseversion' => $versionid,
-            'keep_html' => $keep_html,
+            'keep_html' => $keephtml,
             'config_array' => array(
                 'randomselect' => $randomselect,
                 'showfeedback' => $showfeedback,
@@ -269,7 +269,7 @@ foreach ($sectionmods as $modnumber) {
             'course_id' => $id,
             'shortname' => $course->shortname,
             'courseversion' => $versionid,
-            'keep_html' => $keep_html,
+            'keep_html' => $keephtml,
             'config_array' => array(
                 'showfeedback' => false,
                 'passthreshold' => 0,
@@ -320,7 +320,7 @@ $processor = new ActivityProcessor(array(
             'course_id' => $id,
             'course_shortname' => $course->shortname,
             'versionid' => $versionid,
-            'keep_html' => $keep_html,
+            'keep_html' => $keephtml,
             'video_overlay' => $video_overlay,
             'local_media_files' => $local_media_files
 ));

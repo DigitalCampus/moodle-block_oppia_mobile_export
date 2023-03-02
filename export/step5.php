@@ -61,7 +61,7 @@ echo "<h2>".get_string('export_step5_title', PLUGINNAME)."</h2>";
 $modinfo = get_fast_modinfo($course);
 $sections = $modinfo->get_section_info_all();
 $mods = $modinfo->get_cms();
-$keep_html = get_oppiaconfig($course->id, 'keep_html', '', $server);
+$keephtml = get_oppiaconfig($course->id, 'keep_html', '', $server);
 $video_overlay = get_oppiaconfig($id, 'video_overlay', '', $server);
 
 $processor = new ActivityProcessor(array(
@@ -70,7 +70,7 @@ $processor = new ActivityProcessor(array(
     'course_id' => $course->id,
     'course_shortname' => $course->shortname,
     'versionid' => '0',
-    'keep_html' => $keep_html,
+    'keep_html' => $keephtml,
     'video_overlay' => $video_overlay,
     'print_logs' => false
 ));

@@ -87,7 +87,7 @@ for ($i = 0; $i <= PRIORITY_LEVELS; $i++) {
 }
 
 $sequencing = get_oppiaconfig($id, 'coursesequencing', '', $server);
-$keep_html = get_oppiaconfig($id, 'keep_html', '', $server);
+$keephtml = get_oppiaconfig($id, 'keep_html', '', $server);
 $video_overlay = get_oppiaconfig($id, 'video_overlay', '', $server);
 $thumb_height = get_oppiaconfig($id, 'thumb_height', $CFG->block_oppia_mobile_export_thumb_height, $server);
 $thumb_width = get_oppiaconfig($id, 'thumb_width', $CFG->block_oppia_mobile_export_thumb_width, $server);
@@ -98,7 +98,7 @@ $base_settings = array(
     'priorities' => $priorities,
     'tags' => get_oppiaconfig($id, 'coursetags', '', $server),
     'defaultlang' => get_oppiaconfig($id, 'defaultlang', $CFG->block_oppia_mobile_export_defaultlang, $server),
-    'keep_html' => $keep_html,
+    'keep_html' => $keephtml,
     'video_overlay' => $video_overlay,
     'thumb_height' => $thumb_height,
     'thumb_width' => $thumb_width,
