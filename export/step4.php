@@ -381,7 +381,7 @@ foreach ($sections as $sect) {
                 $course_root."/".$filename,
                 $course_root."/images/".$sect->id.'_'.$context->id,
                 $section_width, $section_height, true);
-            unlink($course_root."/".$filename) or die('Unable to delete the file');
+            unlink($course_root."/".$filename) || die('Unable to delete the file');
             $temp = $xmldoc->createElement("image");
             $temp->appendChild($xmldoc->createAttribute("filename"))->appendChild($xmldoc->createTextNode("/images/".$resized_filename));
             $section->appendChild($temp);

@@ -121,7 +121,7 @@ foreach ($sections as $sect) {
                         /* For 'quiz' and 'feedback' activities, don't show option to preserve digest
                          * if the number of questions has changed.
                          */
-                        if (($mod->modname == 'quiz' or $mod->modname == 'feedback') and
+                        if (($mod->modname == 'quiz' || $mod->modname == 'feedback') &&
                             $last_published_digest_entry->nquestions != $activity_summary['no_questions']) {
                             continue;
                         }

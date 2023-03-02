@@ -187,13 +187,13 @@ class MobileActivityPage extends MobileActivity {
                     $imgfile = $this->courseroot."/images/".$clean_filename;
                     $file->copy_content_to($imgfile);
                 } else {
-                    if ($CFG->block_oppia_mobile_export_debug and $this->printlogs) {
+                    if ($CFG->block_oppia_mobile_export_debug && $this->printlogs) {
                         echo OPPIA_HTML_SPAN_ERROR_START.get_string('error_file_not_found', PLUGINNAME, $filename).OPPIA_HTML_SPAN_END.OPPIA_HTML_BR;
                         return null;
                     }
                 }
 
-                if ($CFG->block_oppia_mobile_export_debug and $this->printlogs) {
+                if ($CFG->block_oppia_mobile_export_debug && $this->printlogs) {
                     echo get_string('export_file_success', PLUGINNAME, $filename).OPPIA_HTML_BR;
                 }
             }
