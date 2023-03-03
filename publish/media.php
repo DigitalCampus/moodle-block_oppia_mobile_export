@@ -60,10 +60,10 @@ function get_media_info($server_base_url, $digest) {
     curl_setopt($curl, CURLOPT_URL, $server_base_url."api/media/".$digest );
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
     $response = curl_exec($curl);
-    $http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+    $httpstatus = curl_getinfo($curl, CURLINFO_HTTP_CODE);
     curl_close ($curl);
 
-    return process_response($http_status, $response);
+    return process_response($httpstatus, $response);
 }
 
 
@@ -98,30 +98,30 @@ function publish_media($server_base_url, $moodlefile, $username, $password, $tem
     curl_setopt($curl, CURLOPT_VERBOSE, true);
 
     $response = curl_exec($curl);
-    $http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+    $httpstatus = curl_getinfo($curl, CURLINFO_HTTP_CODE);
     curl_close ($curl);
 
     // We remove the temporary copied file.
     unlink($temppath);
 
-    if ($http_status == 400) {
+    if ($httpstatus == 400) {
         /* If the server returned a 400 error, it is probably because the file already exists
          * so we try to fetch the info if it was already published in the server
          */
         $digest = required_param('digest', PARAM_TEXT);
         return get_media_info($server_base_url, $digest);
     } else {
-        return process_response($http_status, $response);
+        return process_response($httpstatus, $response);
     }
 }
 
-function process_response($http_status, $response) {
+function process_response($httpstatus, $response) {
 
     $json_response = json_decode($response, true);
-    http_response_code($http_status);
+    http_response_code($httpstatus);
 
-    if (!$http_status || $http_status == 404 || is_null($json_response)) {
-        if (!$http_status || !$response) {
+    if (!$httpstatus || $httpstatus == 404 || is_null($json_response)) {
+        if (!$httpstatus || !$response) {
             http_response_code(400);
         }
         return false;
@@ -146,19 +146,19 @@ function get_mediainfo_from_response($json_response) {
 function get_server_url($server) {
     global $DB, $OUTPUT, $USER;
 
-    $server_connection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid' => $USER->id, 'id' => $server));
-    if (!$server_connection && $server != "default") {
+    $serverconnection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid' => $USER->id, 'id' => $server));
+    if (!$serverconnection && $server != "default") {
         echo "<p>".get_string('server_not_owner', PLUGINNAME)."</p>";
         echo $OUTPUT->footer();
         die();
     }
     if ($server == "default") {
-        $server_connection = new stdClass();
-        $server_connection->url = $CFG->block_oppia_mobile_export_default_server;
+        $serverconnection = new stdClass();
+        $serverconnection->url = $CFG->block_oppia_mobile_export_default_server;
     }
-    if (substr($server_connection->url, -strlen('/')) !== '/') {
-        $server_connection->url .= '/';
+    if (substr($serverconnection->url, -strlen('/')) !== '/') {
+        $serverconnection->url .= '/';
     }
 
-    return $server_connection->url;
+    return $serverconnection->url;
 }

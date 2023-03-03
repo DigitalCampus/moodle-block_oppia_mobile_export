@@ -70,10 +70,10 @@ $modinfo = get_fast_modinfo($course);
 $sections = $modinfo->get_section_info_all();
 $mods = $modinfo->get_cms();
 
-$server_connection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid' => $USER->id, 'id' => $server));
+$serverconnection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid' => $USER->id, 'id' => $server));
 
 add_or_update_oppiaconfig($id, 'is_draft', $isdraft);
-add_publishing_log($server_connection->url, $USER->id, $id, "api_publish_start", "API publish process started");
+add_publishing_log($serverconnection->url, $USER->id, $id, "api_publish_start", "API publish process started");
 
 echo $OUTPUT->header();
 
@@ -106,18 +106,18 @@ if (trim($tags) == '') {
     die();
 }
 
-if (!$server_connection && $server != "default") {
+if (!$serverconnection && $server != "default") {
     echo "<p>".get_string('server_not_owner', PLUGINNAME)."</p>";
     echo $OUTPUT->footer();
     die();
 }
 if ($server == "default") {
-    $server_connection = new stdClass();
-    $server_connection->url = $CFG->block_oppia_mobile_export_default_server;
+    $serverconnection = new stdClass();
+    $serverconnection->url = $CFG->block_oppia_mobile_export_default_server;
 }
 
-if (substr($server_connection->url, -strlen('/')) !== '/') {
-    $server_connection->url .= '/';
+if (substr($serverconnection->url, -strlen('/')) !== '/') {
+    $serverconnection->url .= '/';
 }
 
 if ($course_status == 'draft') {
@@ -137,41 +137,41 @@ $post = array(
         'course_file' => $curlfile);
 
 $curl = curl_init();
-curl_setopt($curl, CURLOPT_URL, $server_connection->url."api/publish/" );
+curl_setopt($curl, CURLOPT_URL, $serverconnection->url."api/publish/" );
 curl_setopt($curl, CURLOPT_POST, true);
 curl_setopt($curl, CURLOPT_POSTFIELDS, $post);
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($curl, CURLOPT_VERBOSE, true);
 
 $result = curl_exec($curl);
-$http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+$httpstatus = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 curl_close ($curl);
 
-add_publishing_log($server_connection->url, $USER->id, $id, "api_publishing_user", $username);
-add_publishing_log($server_connection->url, $USER->id, $id, "api_file_posted", $file);
+add_publishing_log($serverconnection->url, $USER->id, $id, "api_publishing_user", $username);
+add_publishing_log($serverconnection->url, $USER->id, $id, "api_file_posted", $file);
 
-switch ($http_status) {
+switch ($httpstatus) {
     case "405":
         $msgtext = get_string('publish_message_405', PLUGINNAME);
-        show_and_log_message($server_connection, $id, $msgtext, false, "api_publish_invalid_request", false);
+        show_and_log_message($serverconnection, $id, $msgtext, false, "api_publish_invalid_request", false);
         break;
     case "400":
         $msgtext = get_string('publish_message_400', PLUGINNAME);
-        show_and_log_message($server_connection, $id, $msgtext, false, "api_publish_bad_request", false);
+        show_and_log_message($serverconnection, $id, $msgtext, false, "api_publish_bad_request", false);
         break;
     case "401":
         $msgtext = get_string('publish_message_401', PLUGINNAME);
-        show_and_log_message($server_connection, $id, $msgtext, false, "api_publish_unauthorised", false);
+        show_and_log_message($serverconnection, $id, $msgtext, false, "api_publish_unauthorised", false);
         break;
     case "500":
         $msgtext = get_string('publish_message_500', PLUGINNAME);
-        show_and_log_message($server_connection, $id, $msgtext, false, "api_publish_server_error", false);
+        show_and_log_message($serverconnection, $id, $msgtext, false, "api_publish_server_error", false);
         break;
     case "201":
         $msgtext = get_string('publish_message_201', PLUGINNAME);
-        show_and_log_message($server_connection, $id, $msgtext, false, "api_publish_success", false);
+        show_and_log_message($serverconnection, $id, $msgtext, false, "api_publish_success", false);
         populate_digests_for_course($course, $course->id, $server, json_decode($digests_to_preserve, true), false);
-        deleteDir($dataroot.OPPIA_OUTPUT_DIR.$USER->id."/temp");
+        delete_dir($dataroot.OPPIA_OUTPUT_DIR.$USER->id."/temp");
         break;
     default:
 }
@@ -181,30 +181,30 @@ if (is_null($json_response)) {
     echo $result;
 } else {
     if (array_key_exists('message', $json_response)) {
-        show_and_log_message($server_connection, $id, $json_response['message'], false, "api_publish_response", false);
+        show_and_log_message($serverconnection, $id, $json_response['message'], false, "api_publish_response", false);
     }
     if (array_key_exists('messages', $json_response)) {
         $messages = $json_response['messages'];
         foreach ($messages as $msg) {
-            show_and_log_message($server_connection, $id, $msg['message'], $msg['tags'], "api_publish_bad_request", true);
+            show_and_log_message($serverconnection, $id, $msg['message'], $msg['tags'], "api_publish_bad_request", true);
         }
     }
     if (array_key_exists('errors', $json_response)) {
         $errors = $json_response['errors'];
         foreach ($errors as $err) {
-            show_and_log_message($server_connection, $id, $err, 'warning', "api_publish_response_message", true);
+            show_and_log_message($serverconnection, $id, $err, 'warning', "api_publish_response_message", true);
         }
     }
 }
 
 
-add_publishing_log($server_connection->url, $USER->id, $id, "api_publish_end", "API publish process ended");
+add_publishing_log($serverconnection->url, $USER->id, $id, "api_publish_end", "API publish process ended");
 
 echo $OUTPUT->footer();
 
 // Function to show on screen the message and save it in the publishing log.
-function show_and_log_message($server_connection, $course_id, $message, $tags, $log_action, $show_dialog=false) {
+function show_and_log_message($serverconnection, $course_id, $message, $tags, $log_action, $show_dialog=false) {
     global $USER;
     echo '<div class="' . ($show_dialog ? 'export-results' : '') . ' ' .$tags.'">'.$message.'</div>';
-    add_publishing_log($server_connection->url, $USER->id, $course_id, $log_action, ($tags ? $tags.':' : '').$message);
+    add_publishing_log($serverconnection->url, $USER->id, $course_id, $log_action, ($tags ? $tags.':' : '').$message);
 }

@@ -89,9 +89,9 @@ function parse_module_file($filename) {
                 break;
             }
         }
-        $sect_orderno = $section->getAttribute('order');
-        echo "\nSection " . $sect_orderno . ": " . $sect_title . " \n================== \n";
-        $moodle_sect = $sect_orderno + 1; // Internally, Moodle starts in 1 with the Pre-Topics section.
+        $sectorderno = $section->getAttribute('order');
+        echo "\nSection " . $sectorderno . ": " . $sect_title . " \n================== \n";
+        $moodle_sect = $sectorderno + 1; // Internally, Moodle starts in 1 with the Pre-Topics section.
 
         foreach ($section->getElementsByTagName('activity') as $activity) {
             $digest = $activity->getAttribute('digest');
@@ -100,20 +100,20 @@ function parse_module_file($filename) {
             if ($modid == false) {
                 continue;
             }
-            $prev_digest = update_activity_digest($course->id, $modid, $digest, $server);
+            $prevdigest = update_activity_digest($course->id, $modid, $digest, $server);
 
             echo "   modid: [" . $modid . "]: " . $digest;
-            if ($prev_digest == false) {
+            if ($prevdigest == false) {
                 echo " (did not exist previoulsy)\n";
             } else {
-                echo ($prev_digest == $digest ? " (unchanged)" : (" (was ".$prev_digest).")") . "\n";
+                echo ($prevdigest == $digest ? " (unchanged)" : (" (was ".$prevdigest).")") . "\n";
             }
         }
     }
 }
 
 
-function get_moodle_activity_modid($courseid, $sect_orderno, $activity) {
+function get_moodle_activity_modid($courseid, $sectorderno, $activity) {
     global $DB, $MODULE_TYPES;
     $title = $activity->getElementsByTagName('title')->item(0)->nodeValue;
     echo " > " . $title . "\n";
@@ -144,7 +144,7 @@ function get_moodle_activity_modid($courseid, $sect_orderno, $activity) {
     foreach ($activities as $act) {
         $actid = $act->id;
         // Check if the page belongs to the same section (in case of posible repeated activity titles like "Introduction").
-        $mod = $DB->get_record('course_modules', array('instance' => $actid, 'module' => $MODULE_TYPES[$type], 'section' => $sect_orderno));
+        $mod = $DB->get_record('course_modules', array('instance' => $actid, 'module' => $MODULE_TYPES[$type], 'section' => $sectorderno));
         if ($mod !== false) {
             $modid = $mod->id;
             $num_matches++;
@@ -225,7 +225,7 @@ function update_activity_digest($courseid, $modid, $digest, $server) {
     global $DB;
     $date = new DateTime();
     $timestamp = $date->getTimestamp();
-    $record_exists = $DB->get_record(OPPIA_DIGEST_TABLE,
+    $recordexists = $DB->get_record(OPPIA_DIGEST_TABLE,
         array(
             'courseid' => $courseid,
             'modid' => $modid,
@@ -233,13 +233,13 @@ function update_activity_digest($courseid, $modid, $digest, $server) {
         ),
     );
 
-    if ($record_exists) {
-        $prev_digest = $record_exists->oppiaserverdigest;
-        $record_exists->oppiaserverdigest = $digest;
-        $record_exists->moodleactivitymd5 = $digest;
-        $record_exists->updated = $timestamp;
-        $DB->update_record(OPPIA_DIGEST_TABLE, $record_exists);
-        return $prev_digest;
+    if ($recordexists) {
+        $prevdigest = $recordexists->oppiaserverdigest;
+        $recordexists->oppiaserverdigest = $digest;
+        $recordexists->moodleactivitymd5 = $digest;
+        $recordexists->updated = $timestamp;
+        $DB->update_record(OPPIA_DIGEST_TABLE, $recordexists);
+        return $prevdigest;
     } else {
         $DB->insert_record(OPPIA_DIGEST_TABLE,
             array(

@@ -88,8 +88,8 @@ function populate_digests_for_course($course, $course_id, $server_id, $digests_t
     $keephtml = get_oppiaconfig($course_id, 'keephtml', '', $server_id);
     $course->shortname = cleanShortname($course->shortname);
 
-    deleteDir($pluginroot.OPPIA_OUTPUT_DIR."upgrade"."/temp");
-    deleteDir($pluginroot.OPPIA_OUTPUT_DIR."upgrade");
+    delete_dir($pluginroot.OPPIA_OUTPUT_DIR."upgrade"."/temp");
+    delete_dir($pluginroot.OPPIA_OUTPUT_DIR."upgrade");
 
     mkdir($pluginroot.OPPIA_OUTPUT_DIR."upgrade"."/temp/", 0777, true);
     $courseroot = $pluginroot.OPPIA_OUTPUT_DIR."upgrade"."/temp/".strtolower($course->shortname);
@@ -113,7 +113,7 @@ function populate_digests_for_course($course, $course_id, $server_id, $digests_t
 
     echo '<div class="oppia_export_section py-3">';
 
-    $sect_orderno = 1;
+    $sectorderno = 1;
     foreach ($sections as $sect) {
         flush_buffers();
         // We avoid the topic0 as is not a section as the rest.
@@ -131,7 +131,7 @@ function populate_digests_for_course($course, $course_id, $server_id, $digests_t
 
         $sectionmods = explode(",", $sect->sequence);
         $act_orderno = 1;
-        $processor->set_current_section($sect_orderno);
+        $processor->set_current_section($sectorderno);
 
         foreach ($sectionmods as $modnumber) {
             if ($modnumber == "" || $modnumber === false) {
@@ -157,7 +157,7 @@ function populate_digests_for_course($course, $course_id, $server_id, $digests_t
             echo '</div>';
         }
         if ($act_orderno > 1) {
-            $sect_orderno++;
+            $sectorderno++;
         }
     }
     echo '</div>';
@@ -167,7 +167,7 @@ function save_activity_digest($courseid, $modid, $oppia_server_digest, $moodle_a
     global $DB;
     $date = new DateTime();
     $timestamp = $date->getTimestamp();
-    $record_exists = $DB->get_record(OPPIA_DIGEST_TABLE,
+    $recordexists = $DB->get_record(OPPIA_DIGEST_TABLE,
         array(
             'courseid' => $courseid,
             'modid' => $modid,
@@ -175,15 +175,15 @@ function save_activity_digest($courseid, $modid, $oppia_server_digest, $moodle_a
         ),
     );
 
-    if ($record_exists) {
+    if ($recordexists) {
         if ($oppia_server_digest != null) {
-            $record_exists->oppiaserverdigest = $oppia_server_digest;
+            $recordexists->oppiaserverdigest = $oppia_server_digest;
         }
-        $record_exists->moodleactivitymd5 = $moodle_activity_md5;
-        $record_exists->updated = $timestamp;
-        $record_exists->nquestions = $nquestions;
+        $recordexists->moodleactivitymd5 = $moodle_activity_md5;
+        $recordexists->updated = $timestamp;
+        $recordexists->nquestions = $nquestions;
 
-        $DB->update_record(OPPIA_DIGEST_TABLE, $record_exists);
+        $DB->update_record(OPPIA_DIGEST_TABLE, $recordexists);
     } else {
         $oppia_server_digest = $moodle_activity_md5;
         $DB->insert_record(OPPIA_DIGEST_TABLE,
@@ -198,5 +198,5 @@ function save_activity_digest($courseid, $modid, $oppia_server_digest, $moodle_a
         );
     }
 
-    echo 'Digest: <span class="alert alert-warning mt-3 py-1">' . ($oppia_server_digest ?? $record_exists->oppiaserverdigest) . '</span>';
+    echo 'Digest: <span class="alert alert-warning mt-3 py-1">' . ($oppia_server_digest ?? $recordexists->oppiaserverdigest) . '</span>';
 }

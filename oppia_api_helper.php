@@ -55,9 +55,9 @@ class ApiHelper {
         }
         $data = curl_exec($this->curl);
         $json = json_decode($data);
-        $http_status = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
-        if ($http_status != 200 && $http_status != 201 && $print_error_msg) {
-            echo '<p style="color:red">'.get_string('error_creating_quiz', PLUGINNAME).' ( status code: ' . $http_status . ')</p>';
+        $httpstatus = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
+        if ($httpstatus != 200 && $httpstatus != 201 && $print_error_msg) {
+            echo '<p style="color:red">'.get_string('error_creating_quiz', PLUGINNAME).' ( status code: ' . $httpstatus . ')</p>';
         }
         return $json;
     }

@@ -11,12 +11,12 @@
 
 	{{# is_draft }}
     	<h2>{{# str }}publish_heading_draft,block_oppia_mobile_export{{/ str }}</h2>
-    	<p>{{# str }}publish_text_draft,block_oppia_mobile_export,{{server_connection}}{{/ str }}</p>
+    	<p>{{# str }}publish_text_draft,block_oppia_mobile_export,{{serverconnection}}{{/ str }}</p>
 	{{/ is_draft }}
 
 	{{^is_draft }}
 	    <h2>{{# str }}publish_heading,block_oppia_mobile_export{{/ str }}</h2>
-	    <p>{{# str }}publish_text,block_oppia_mobile_export, {{server_connection}}{{/ str }}</p>
+	    <p>{{# str }}publish_text,block_oppia_mobile_export, {{serverconnection}}{{/ str }}</p>
 	{{/ is_draft }}
 	
 	<div class="pure-g">

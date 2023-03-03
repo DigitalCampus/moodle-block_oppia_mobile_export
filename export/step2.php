@@ -56,8 +56,8 @@ $server = required_param('server', PARAM_TEXT);
 $course_export_status = required_param('course_export_status', PARAM_TEXT);
 $thumbheight = required_param('thumbheight', PARAM_INT);
 $thumbwidth = required_param('thumbwidth', PARAM_INT);
-$section_height = required_param('section_height', PARAM_INT);
-$section_width = required_param('section_width', PARAM_INT);
+$sectionheight = required_param('sectionheight', PARAM_INT);
+$sectionwidth = required_param('sectionwidth', PARAM_INT);
 $tags = required_param('coursetags', PARAM_TEXT);
 $tags = cleanTagList($tags);
 
@@ -70,8 +70,8 @@ add_or_update_oppiaconfig($id, 'keephtml', $keephtml, $server);
 add_or_update_oppiaconfig($id, 'videooverlay', $videooverlay, $server);
 add_or_update_oppiaconfig($id, 'thumb_height', $thumbheight, $server);
 add_or_update_oppiaconfig($id, 'thumb_width', $thumbwidth, $server);
-add_or_update_oppiaconfig($id, 'section_height', $section_height, $server);
-add_or_update_oppiaconfig($id, 'section_width', $section_width, $server);
+add_or_update_oppiaconfig($id, 'section_height', $sectionheight, $server);
+add_or_update_oppiaconfig($id, 'section_width', $sectionwidth, $server);
 
 $course = $DB->get_record_select('course', "id=$id");
 
@@ -108,7 +108,7 @@ $feedback_activities = array();
 $orderno = 1;
 foreach ($sections as $sect) {
     $sectionmods = explode(",", $sect->sequence);
-    $sectTitle = get_section_title($sect);
+    $secttitle = get_section_title($sect);
 
     if (count($sectionmods) > 0) {
         foreach ($sectionmods as $modnumber) {
@@ -131,7 +131,7 @@ foreach ($sections as $sect) {
                 $quiz->preprocess();
                 if ($quiz->get_is_valid() && $quiz->get_no_questions() > 0) {
                     array_push($quizzes, array(
-                        'section' => $sectTitle['display_title'],
+                        'section' => $secttitle['display_title'],
                         'name' => format_string($mod->name),
                         'noquestions' => $quiz->get_no_questions(),
                         'id' => $mod->id,
@@ -162,23 +162,23 @@ foreach ($sections as $sect) {
                             case 0:   $grade_0_message = $gradeboundary->message; break;
                             case 100: $grade_100_message = $gradeboundary->message; break;
                             default: {
-                                $selected_index = array_search(array('grade' => $gradeboundary->grade), $grades);
-                                $grades[$selected_index]['selected'] = true;
+                                $selectedindex = array_search(array('grade' => $gradeboundary->grade), $grades);
+                                $grades[$selectedindex]['selected'] = true;
                                 array_push($grade_boundaries, array(
                                     'feedback_id' => $mod->id,
                                     'id' => $gradeboundary->id,
-                                    'grade' => $grade_oundary->grade,
+                                    'grade' => $gradeboundary->grade,
                                     'grades' => $grades,
                                     'message' => $gradeboundary->message
                                 ));
-                                unset($grades[$selected_index]['selected']);
+                                unset($grades[$selectedindex]['selected']);
                                 break;
                             }
                         }
                     }
 
                     array_push($feedback_activities, array(
-                        'section' => $sectTitle['display_title'],
+                        'section' => $secttitle['display_title'],
                         'name' => format_string($mod->name),
                         'noquestions' => $feedback->get_no_questions(),
                         'id' => $mod->id,
@@ -227,7 +227,7 @@ for ($qid = 0; $qid < count($quizzes); $qid++) {
     $quizzes[$qid] = $quiz;
 }
 
-$form_data = array(
+$formdata = array(
     'id' => $id,
     'stylesheet' => $stylesheet,
     'server' => $server,
@@ -239,6 +239,6 @@ $form_data = array(
     'feedback_activities' => $feedback_activities,
 );
 
-echo $OUTPUT->render_from_template(PLUGINNAME.'/export_step2_form', $form_data);
+echo $OUTPUT->render_from_template(PLUGINNAME.'/export_step2_form', $formdata);
 
 echo $OUTPUT->footer();

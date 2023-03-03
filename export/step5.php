@@ -77,7 +77,7 @@ $processor = new ActivityProcessor(array(
 
 $config_sections = array();
 $unmodified_activities = array();
-$sect_orderno = 1;
+$sectorderno = 1;
 foreach ($sections as $sect) {
     flush_buffers();
     // We avoid the topic0 as is not a section as the rest.
@@ -85,12 +85,12 @@ foreach ($sections as $sect) {
         continue;
     }
 
-    $sectTitle = get_section_title($sect);
+    $secttitle = get_section_title($sect);
 
     $modified_activities_count = 0;
     $modified_activities = array();
     $act_orderno = 1;
-    $processor->set_current_section($sect_orderno);
+    $processor->set_current_section($sectorderno);
 
     $sectionmods = explode(",", $sect->sequence);
     foreach ($sectionmods as $modnumber) {
@@ -144,12 +144,12 @@ foreach ($sections as $sect) {
     }
 
     if ($act_orderno > 1) {
-        $sect_orderno++;
+        $sectorderno++;
     }
 
     if ($modified_activities_count > 0) {
         array_push($config_sections, array(
-            'title' => $sectTitle['display_title'],
+            'title' => $secttitle['display_title'],
             'activities' => $modified_activities,
         ));
     }

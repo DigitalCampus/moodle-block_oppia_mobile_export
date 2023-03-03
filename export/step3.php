@@ -92,7 +92,7 @@ echo "<h2>".get_string('export_step3_title', PLUGINNAME)."</h2>";
 echo '<div class="oppia_export_section py-3">';
 
 $config_sections = array();
-$sect_orderno = 1;
+$sectorderno = 1;
 foreach ($sections as $sect) {
     flush_buffers();
     // We avoid the topic0 as is not a section as the rest.
@@ -101,10 +101,10 @@ foreach ($sections as $sect) {
     }
 
     $sectionmods = explode(",", $sect->sequence);
-    $sectTitle = get_section_title($sect);
+    $secttitle = get_section_title($sect);
 
     if (count($sectionmods) > 0) {
-        $activity_count = 0;
+        $activitycount = 0;
         $activities = [];
 
         foreach ($sectionmods as $modnumber) {
@@ -119,9 +119,9 @@ foreach ($sections as $sect) {
             if ( ($mod->modname == 'page') ||
                     ($mod->modname == 'resource') ||
                     ($mod->modname == 'url')) {
-                $activity_count++;
+                $activitycount++;
             } else if ($mod->modname == 'feedback') {
-                $activity_count++;
+                $activitycount++;
 
                 $password = get_oppiaconfig($mod->id, 'password', '', $server, false);
 
@@ -151,7 +151,7 @@ foreach ($sections as $sect) {
                 }
 
             } else if ($mod->modname == 'quiz') {
-                $activity_count++;
+                $activitycount++;
                 // For the quizzes, we save the configuration entered.
                 $random = optional_param('quiz_'.$mod->id.'_randomselect', 0, PARAM_INT);
                 $showfeedback = optional_param('quiz_'.$mod->id.'_showfeedback', 1, PARAM_INT);
@@ -168,28 +168,28 @@ foreach ($sections as $sect) {
             }
         }
 
-        if ($activity_count > 0) {
+        if ($activitycount > 0) {
 
             $password = get_oppiaconfig($sect->id, 'password', '', $server, false);
 
             array_push($config_sections, array(
-                'sect_orderno' => $sect_orderno,
+                'sectorderno' => $sectorderno,
                 'sect_id' => $sect->id,
                 'password' => $password,
-                'activity_count' => $activity_count,
-                'title' => $sectTitle['display_title'],
+                'activitycount' => $activitycount,
+                'title' => $secttitle['display_title'],
                 'activities' => $activities
             ));
-            $sect_orderno++;
+            $sectorderno++;
         } else {
-            echo '<div class="step">'.get_string('section_password_invalid', PLUGINNAME, $sectTitle['display_title']).'</div>';
+            echo '<div class="step">'.get_string('section_password_invalid', PLUGINNAME, $secttitle['display_title']).'</div>';
         }
         flush_buffers();
     }
 }
 echo '</div>';
 
-if ($sect_orderno <= 1) {
+if ($sectorderno <= 1) {
     echo '<h3>'.get_string('error_exporting', PLUGINNAME).'</h3>';
     echo '<p>'.get_string('error_exporting_no_sections', PLUGINNAME).'</p>';
     echo $OUTPUT->footer();

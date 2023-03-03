@@ -73,8 +73,8 @@ $mods = $modinfo->get_cms();
 echo $OUTPUT->header();
 
 // Check specified server belongs to current user.
-$server_connection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid' => $USER->id, 'id' => $server));
-if (!$server_connection && $server != "default") {
+$serverconnection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid' => $USER->id, 'id' => $server));
+if (!$serverconnection && $server != "default") {
     echo "<p>".get_string('server_not_owner', PLUGINNAME)."</p>";
     echo $OUTPUT->footer();
     die();
@@ -91,8 +91,8 @@ $keephtml = get_oppiaconfig($id, 'keephtml', '', $server);
 $videooverlay = get_oppiaconfig($id, 'videooverlay', '', $server);
 $thumbheight = get_oppiaconfig($id, 'thumb_height', $CFG->block_oppia_mobile_export_thumb_height, $server);
 $thumbwidth = get_oppiaconfig($id, 'thumb_width', $CFG->block_oppia_mobile_export_thumb_width, $server);
-$section_height = get_oppiaconfig($id, 'section_height', $CFG->block_oppia_mobile_export_section_icon_height, $server);
-$section_width = get_oppiaconfig($id, 'section_width', $CFG->block_oppia_mobile_export_section_icon_width, $server);
+$sectionheight = get_oppiaconfig($id, 'section_height', $CFG->block_oppia_mobile_export_section_icon_height, $server);
+$sectionwidth = get_oppiaconfig($id, 'section_width', $CFG->block_oppia_mobile_export_section_icon_width, $server);
 
 $base_settings = array(
     'priorities' => $priorities,
@@ -102,8 +102,8 @@ $base_settings = array(
     'videooverlay' => $videooverlay,
     'thumbheight' => $thumbheight,
     'thumbwidth' => $thumbwidth,
-    'section_height' => $section_height,
-    'section_width' => $section_width,
+    'sectionheight' => $sectionheight,
+    'sectionwidth' => $sectionwidth,
     'sequencing_none' => $sequencing == '' || $sequencing == 'none',
     'sequencing_section' => $sequencing == 'section',
     'sequencing_course' => $sequencing == 'course',

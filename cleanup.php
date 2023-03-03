@@ -39,7 +39,7 @@ $PAGE->set_heading($course->fullname);
 echo $OUTPUT->header();
 
 echo "<p>".get_string('cleanup_start', PLUGINNAME)."</p>";
-deleteDir($CFG->dataroot."/".OPPIA_OUTPUT_DIR.$USER->id);
+delete_dir($CFG->dataroot."/".OPPIA_OUTPUT_DIR.$USER->id);
 cleanUpExportedFiles($context, $USER->id);
 echo "<p>".get_string('cleanup_end', PLUGINNAME)."</p>";
 

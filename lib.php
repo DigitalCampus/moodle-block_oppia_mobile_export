@@ -35,15 +35,15 @@ const EMBED_MEDIA_REGEX = '((\[\['.SPACES_REGEX . 'media'.SPACES_REGEX.'object=[
 const EMBED_MEDIA_IMAGE_REGEX = '(\]\]'.SPACES_REGEX.'\<img[[:space:]]src=[\"|\\\']images/(?P<filenames>[\w\W_\-.]*?)[\"|\\\'])';
 const COURSE_EXPORT_FILEAREA = 'course_export';
 
-function deleteDir($dirPath) {
-    if (! is_dir($dirPath)) {
+function delete_dir($dirpath) {
+    if (! is_dir($dirpath)) {
         return;
     }
-    if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') {
-        $dirPath .= '/';
+    if (substr($dirpath, strlen($dirpath) - 1, 1) != '/') {
+        $dirpath .= '/';
     }
 
-    $it = new RecursiveDirectoryIterator($dirPath, RecursiveDirectoryIterator::SKIP_DOTS);
+    $it = new RecursiveDirectoryIterator($dirpath, RecursiveDirectoryIterator::SKIP_DOTS);
     $files = new RecursiveIteratorIterator($it,
             RecursiveIteratorIterator::CHILD_FIRST);
     foreach ($files as $file) {
@@ -56,7 +56,7 @@ function deleteDir($dirPath) {
             unlink($file->getRealPath());
         }
     }
-    rmdir($dirPath);
+    rmdir($dirpath);
 }
 
 function add_or_update_oppiaconfig($modid, $name, $value, $servid="default") {

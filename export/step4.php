@@ -59,8 +59,8 @@ $videooverlay = get_oppiaconfig($id, 'videooverlay', '', $server);
 $defaultlang = get_oppiaconfig($id, 'defaultlang', $CFG->block_oppia_mobile_export_default_lang, $server);
 $thumbheight = get_oppiaconfig($id, 'thumb_height', $CFG->block_oppia_mobile_export_thumb_height, $server);
 $thumbwidth = get_oppiaconfig($id, 'thumb_width', $CFG->block_oppia_mobile_export_thumb_width, $server);
-$section_height = get_oppiaconfig($id, 'section_height', $CFG->block_oppia_mobile_export_section_icon_height, $server);
-$section_width = get_oppiaconfig($id, 'section_width', $CFG->block_oppia_mobile_export_section_icon_width, $server);
+$sectionheight = get_oppiaconfig($id, 'section_height', $CFG->block_oppia_mobile_export_section_icon_height, $server);
+$sectionwidth = get_oppiaconfig($id, 'section_width', $CFG->block_oppia_mobile_export_section_icon_width, $server);
 
 $localmediafiles = array();
 $course = $DB->get_record('course', array('id' => $id));
@@ -101,23 +101,23 @@ $MEDIA = array();
 
 echo "<h2>".get_string('export_step4_title', PLUGINNAME)."</h2>";
 
-$server_connection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid' => $USER->id, 'id' => $server));
-if (!$server_connection && $server != "default") {
+$serverconnection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid' => $USER->id, 'id' => $server));
+if (!$serverconnection && $server != "default") {
     echo "<p>".get_string('server_not_owner', PLUGINNAME)."</p>";
     echo $OUTPUT->footer();
     die();
 }
 if ($server == "default") {
-    $server_connection = new stdClass();
-    $server_connection->url = $CFG->block_oppia_mobile_export_default_server;
+    $serverconnection = new stdClass();
+    $serverconnection->url = $CFG->block_oppia_mobile_export_default_server;
 }
 $api_helper = new ApiHelper();
-$api_helper->fetch_server_info($server_connection->url);
+$api_helper->fetch_server_info($serverconnection->url);
 
 echo '<p>';
 if ($api_helper->version == null || $api_helper->version == '') {
     echo '<span class="export-error">'. get_string('export_server_error', PLUGINNAME).OPPIA_HTML_BR;
-    add_publishing_log($server_connection->url, $USER->id, $id, "server_unavailable", "Unable to get server info");
+    add_publishing_log($serverconnection->url, $USER->id, $id, "server_unavailable", "Unable to get server info");
 } else {
     echo $OUTPUT->render_from_template(
         PLUGINNAME.'/server_info', array('server_info' => $api_helper)
@@ -126,8 +126,8 @@ if ($api_helper->version == null || $api_helper->version == '') {
 
 // Make course dir etc for output.
 $dataroot = $CFG->dataroot . "/";
-deleteDir($dataroot.OPPIA_OUTPUT_DIR.$USER->id."/temp");
-deleteDir($dataroot.OPPIA_OUTPUT_DIR.$USER->id);
+delete_dir($dataroot.OPPIA_OUTPUT_DIR.$USER->id."/temp");
+delete_dir($dataroot.OPPIA_OUTPUT_DIR.$USER->id);
 if (!is_dir($dataroot."output")) {
     if (!mkdir($dataroot."output", 0777)) {
         echo "<h3>Failed to create the output directory, please check your server permissions to allow the webserver user to create the output directory under " . __DIR__ . "</h3>";
@@ -161,12 +161,12 @@ $meta = $root->appendChild($xmldoc->createElement("meta"));
 $meta->appendChild($xmldoc->createElement("versionid", $versionid));
 $meta->appendChild($xmldoc->createElement("priority", $priority));
 
-$meta->appendChild($xmldoc->createElement("server", $server_connection->url));
+$meta->appendChild($xmldoc->createElement("server", $serverconnection->url));
 $meta->appendChild($xmldoc->createElement("sequencing", $sequencing));
 $meta->appendChild($xmldoc->createElement("tags", $tags));
 $meta->appendChild($xmldoc->createElement("exportversion", $plugin_version));
 
-add_publishing_log($server_connection->url, $USER->id, $id, "export_start", "Export process starting");
+add_publishing_log($serverconnection->url, $USER->id, $id, "export_start", "Export process starting");
 
 $title = extractLangs($course->fullname);
 if (is_array($title) && count($title) > 0) {
@@ -325,7 +325,7 @@ $processor = new ActivityProcessor(array(
             'localmediafiles' => $localmediafiles
 ));
 
-$sect_orderno = 1;
+$sectorderno = 1;
 $activity_summaries = array();
 foreach ($sections as $sect) {
     flush_buffers();
@@ -334,17 +334,17 @@ foreach ($sections as $sect) {
         continue;
     }
     $sectionmods = explode(",", $sect->sequence);
-    $sectTitle = get_section_title($sect);
+    $secttitle = get_section_title($sect);
 
     if (count($sectionmods) > 0) {
         echo '<hr>';
         echo '<div class="oppia_export_section">';
-        echo "<h4>".get_string('export_section_title', PLUGINNAME, $sectTitle['display_title'])."</h4>";
+        echo "<h4>".get_string('export_section_title', PLUGINNAME, $secttitle['display_title'])."</h4>";
 
         $section = $xmldoc->createElement("section");
-        $section->appendChild($xmldoc->createAttribute("order"))->appendChild($xmldoc->createTextNode($sect_orderno));
-        if (!$sectTitle['using_default'] && is_array($sectTitle['title']) && count($sectTitle['title']) > 0) {
-            foreach ($sectTitle['title'] as $l => $t) {
+        $section->appendChild($xmldoc->createAttribute("order"))->appendChild($xmldoc->createTextNode($sectorderno));
+        if (!$secttitle['using_default'] && is_array($secttitle['title']) && count($secttitle['title']) > 0) {
+            foreach ($secttitle['title'] as $l => $t) {
                 $temp = $xmldoc->createElement("title");
                 $temp->appendChild($xmldoc->createCDATASection(strip_tags($t)));
                 $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($l));
@@ -352,7 +352,7 @@ foreach ($sections as $sect) {
             }
         } else {
             $temp = $xmldoc->createElement("title");
-            $temp->appendChild($xmldoc->createCDATASection(strip_tags($sectTitle['title'])));
+            $temp->appendChild($xmldoc->createCDATASection(strip_tags($secttitle['title'])));
             $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($defaultlang));
             $section->appendChild($temp);
         }
@@ -380,7 +380,7 @@ foreach ($sections as $sect) {
             $resized_filename = resizeImage(
                 $courseroot."/".$filename,
                 $courseroot."/images/".$sect->id.'_'.$context->id,
-                $section_width, $section_height, true);
+                $sectionwidth, $sectionheight, true);
             unlink($courseroot."/".$filename) || die('Unable to delete the file');
             $temp = $xmldoc->createElement("image");
             $temp->appendChild($xmldoc->createAttribute("filename"))->appendChild($xmldoc->createTextNode("/images/".$resized_filename));
@@ -389,7 +389,7 @@ foreach ($sections as $sect) {
 
         $act_orderno = 1;
         $activities = $xmldoc->createElement("activities");
-        $processor->set_current_section($sect_orderno);
+        $processor->set_current_section($sectorderno);
         foreach ($sectionmods as $modnumber) {
 
             if ($modnumber == "" || $modnumber === false) {
@@ -428,7 +428,7 @@ foreach ($sections as $sect) {
         if ($act_orderno > 1) {
             $section->appendChild($activities);
             $structure->appendChild($section);
-            $sect_orderno++;
+            $sectorderno++;
         } else {
             echo get_string('error_section_no_activities', PLUGINNAME).OPPIA_HTML_BR;
         }
@@ -479,7 +479,7 @@ $xmldoc->formatOutput = true;
 $xmldoc->save($courseroot.OPPIA_MODULE_XML);
 
 
-if ($sect_orderno <= 1) {
+if ($sectorderno <= 1) {
     echo '<h3>'.get_string('error_exporting', PLUGINNAME).'</h3>';
     echo '<p>'.get_string('error_exporting_no_sections', PLUGINNAME).'</p>';
     echo $OUTPUT->footer();
@@ -490,7 +490,7 @@ echo $OUTPUT->render_from_template(
     PLUGINNAME.'/export_step4_form',
     array(
         'id' => $id,
-        'server_connection' => $server_connection->url,
+        'serverconnection' => $serverconnection->url,
         'mediafiles' => $localmediafiles,
         'media_files_str' => json_encode($localmediafiles),
         'server_id' => $server,

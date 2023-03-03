@@ -74,15 +74,15 @@ echo $OUTPUT->header();
 
 echo "<h2>".get_string('export_step6_title', PLUGINNAME)."</h2>";
 
-$server_connection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid' => $USER->id, 'id' => $server));
-if (!$server_connection && $server != "default") {
+$serverconnection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid' => $USER->id, 'id' => $server));
+if (!$serverconnection && $server != "default") {
     echo "<p>".get_string('server_not_owner', PLUGINNAME)."</p>";
     echo $OUTPUT->footer();
     die();
 }
 if ($server == "default") {
-    $server_connection = new stdClass();
-    $server_connection->url = $CFG->block_oppia_mobile_export_default_server;
+    $serverconnection = new stdClass();
+    $serverconnection->url = $CFG->block_oppia_mobile_export_default_server;
 }
 
 echo '<div class="oppia_export_section">';
@@ -160,7 +160,7 @@ $versionid = $xml->getElementsByTagName('versionid')->item(0)->textContent;
 if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
     print '<p><strong>'.get_string('error_xml_invalid', PLUGINNAME).'</strong></p>';
     libxml_display_errors();
-    add_publishing_log($server_connection->url, $USER->id, $id, "error_xml_invalid", "Invalid course XML");
+    add_publishing_log($serverconnection->url, $USER->id, $id, "error_xml_invalid", "Invalid course XML");
 } else {
     echo get_string('export_xml_validated', PLUGINNAME)  . '</p>';
     echo '<p class="step">'. get_string('export_course_xml_created', PLUGINNAME)  . '</p>';
@@ -228,7 +228,7 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
     echo '<p class="step">'. get_string('export_export_compressed', PLUGINNAME) . '</p>';
 
     $form_values = array(
-        'server_connection' => $server_connection->url,
+        'serverconnection' => $serverconnection->url,
         'wwwroot' => $CFG->wwwroot,
         'server_id' => $server,
         'sesskey' => sesskey(),
@@ -244,8 +244,8 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
 
     echo $OUTPUT->render_from_template(PLUGINNAME.'/export_step6_form', $form_values);
 
-    add_publishing_log($server_connection->url, $USER->id, $id,  "export_file_created", strtolower($course->shortname)."-".$versionid.".zip");
-    add_publishing_log($server_connection->url, $USER->id, $id,  "export_end", "Export process completed");
+    add_publishing_log($serverconnection->url, $USER->id, $id,  "export_file_created", strtolower($course->shortname)."-".$versionid.".zip");
+    add_publishing_log($serverconnection->url, $USER->id, $id,  "export_end", "Export process completed");
 }
 
 echo $OUTPUT->footer();
