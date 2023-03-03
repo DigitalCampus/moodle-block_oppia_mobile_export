@@ -49,7 +49,7 @@ class MobileActivityQuiz extends MobileActivity {
         $this->componentname = 'mod_quiz';
     }
 
-    function generate_md5($quiz, $quizjson) {
+    private function generate_md5($quiz, $quizjson) {
         $md5postfix = "";
         foreach ($this->configarray as $key => $value) {
             $md5postfix .= $key[0].((string) $value);
@@ -63,11 +63,11 @@ class MobileActivityQuiz extends MobileActivity {
     const LATER_WHILE_OPEN = 0x00100;
     const AFTER_CLOSE = 0x00010;
 
-    function get_review_availability($quiz, $when) {
+    private function get_review_availability($quiz, $when) {
         return boolval(($when & intval($quiz->reviewcorrectness)) == $when);
     }
 
-    function preprocess() {
+    public function preprocess() {
         global $DB, $USER;
         $cm = get_coursemodule_from_id('quiz', $this->id);
 
@@ -120,7 +120,7 @@ class MobileActivityQuiz extends MobileActivity {
         }
     }
 
-    function process() {
+    public function process() {
         global $DB, $USER;
 
         $cm = get_coursemodule_from_id('quiz', $this->id);
@@ -375,7 +375,7 @@ class MobileActivityQuiz extends MobileActivity {
         }
     }
 
-    function get_xml($mod, $counter, &$node, &$xmldoc, $activity=true) {
+    public function get_xml($mod, $counter, &$node, &$xmldoc, $activity=true) {
         global $defaultlang;
 
         $act = $this->get_activity_node($xmldoc, $mod, $counter);
@@ -391,11 +391,11 @@ class MobileActivityQuiz extends MobileActivity {
         $node->appendChild($act);
     }
 
-    function get_is_valid() {
+    public function get_is_valid() {
         return $this->isvalid;
     }
 
-    function get_no_questions() {
+    public function get_no_questions() {
         return $this->noquestions;
     }
 }

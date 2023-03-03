@@ -23,12 +23,12 @@ class MobileActivityUrl extends MobileActivity {
         $this->componentname = 'mod_url';
     }
 
-    function generate_md5($activity) {
+    private function generate_md5($activity) {
         $md5contents = $activity->intro . $activity->externalurl;
         $this->md5 = md5($md5contents);
     }
 
-    function process() {
+    public function process() {
         global $DB;
         $cm = get_coursemodule_from_id('url', $this->id);
         $this->url = $DB->get_record('url', array('id' => $cm->instance), '*', MUST_EXIST);
@@ -37,7 +37,7 @@ class MobileActivityUrl extends MobileActivity {
         $this->extract_thumbnail_from_intro($this->url->intro, $cm->id);
     }
 
-    function get_xml($mod, $counter, &$node, &$xmldoc, $activity=true) {
+    public function get_xml($mod, $counter, &$node, &$xmldoc, $activity=true) {
         global $defaultlang;
 
         if (!$activity) {
@@ -56,7 +56,7 @@ class MobileActivityUrl extends MobileActivity {
         $node->appendChild($act);
     }
 
-    function get_no_questions() {
+    public function get_no_questions() {
         return null;
     }
 }

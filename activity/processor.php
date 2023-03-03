@@ -117,7 +117,7 @@ class ActivityProcessor {
 
             if ($xmlnode != null) {
                 $page->get_xml($mod, $actorderno, $xmlnode, $xmldoc, true);
-                $localmedia = $page->getLocalMedia();
+                $localmedia = $page->get_local_media();
                 $mediafiles = $this->localmediafiles;
                 $this->localmediafiles = array_merge($mediafiles, $localmedia);
             }

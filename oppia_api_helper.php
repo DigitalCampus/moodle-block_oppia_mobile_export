@@ -23,13 +23,13 @@ class ApiHelper {
     public $name;
     public $max_upload;
 
-    function init($url) {
+    public function init($url) {
         $this->url = $url;
         $this->curl = curl_init();
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, 1 );
     }
 
-    function fetch_server_info($url) {
+    public function fetch_server_info($url) {
         $this->init($url);
         $server_info = $this->exec('server', array(), 'get', false, false);
         $this->version = $server_info->version;
@@ -37,7 +37,7 @@ class ApiHelper {
         $this->max_upload = $server_info->max_upload;
     }
 
-    function exec($object, $data_array, $type='post', $api_path=true, $print_error_msg=true) {
+    public function exec($object, $data_array, $type='post', $api_path=true, $print_error_msg=true) {
         $json = json_encode($data_array);
         // Check if the url already has trailing '/' or not.
         if (substr($this->url, -strlen('/')) === '/') {

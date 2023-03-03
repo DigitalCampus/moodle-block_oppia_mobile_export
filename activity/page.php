@@ -30,12 +30,12 @@ class MobileActivityPage extends MobileActivity {
         }
     }
 
-    function generate_md5($page) {
+    private function generate_md5($page) {
         $contents = $page->name . $page->intro . $page->content;
         $this->md5 = md5($contents);
     }
 
-    function process() {
+    public function process() {
         global $DB, $CFG, $MOBILE_LANGS, $defaultlang, $MEDIA;
         $cm = get_coursemodule_from_id('page', $this->id);
         $page = $DB->get_record('page', array('id' => $cm->instance), '*', MUST_EXIST);
@@ -61,7 +61,7 @@ class MobileActivityPage extends MobileActivity {
         }
     }
 
-    function process_content($context, $modid, $content, $lang) {
+    private function process_content($context, $modid, $content, $lang) {
         $precontent = $content;
 
         $content = $this->extractAndReplaceMedia($content);
@@ -101,11 +101,11 @@ class MobileActivityPage extends MobileActivity {
         unset($pagefilename);
     }
 
-    function getLocalMedia() {
+    public function get_local_media() {
         return $this->pagelocalmedia;
     }
 
-    function get_xml($mod, $counter, &$node, &$xmldoc, $activity=true) {
+    public function get_xml($mod, $counter, &$node, &$xmldoc, $activity=true) {
         if ($activity) {
             $struct = $this->get_activity_node($xmldoc, $mod, $counter);
             $node->appendChild($struct);
@@ -373,7 +373,7 @@ class MobileActivityPage extends MobileActivity {
         return sprintf('%02d', $sectionno)."_".strtolower(preg_replace("/[^A-Za-z0-9]/i", "_", $name))."_".strtolower($lang).".html";
     }
 
-    function get_no_questions() {
+    public function get_no_questions() {
         return null;
     }
 }

@@ -25,14 +25,14 @@ class MobileActivityResource extends MobileActivity {
         $this->componentname = 'mod_resource';
     }
 
-    function generate_md5($file) {
+    private function generate_md5($file) {
         $resourcefile = $this->courseroot."/resources/".$file->get_filename();
         $md5contents = $file->get_filename() . md5_file($resourcefile);
 
         $this->md5 = md5($md5contents);
     }
 
-    function process() {
+    public function process() {
         global $DB;
         $cm = get_coursemodule_from_id('resource', $this->id);
         $this->resource = $DB->get_record('resource', array('id' => $cm->instance), '*', MUST_EXIST);
@@ -47,7 +47,7 @@ class MobileActivityResource extends MobileActivity {
         }
     }
 
-    function get_xml($mod, $counter, &$node, &$xmldoc, $activity=true) {
+    public function get_xml($mod, $counter, &$node, &$xmldoc, $activity=true) {
         global $defaultlang;
 
         if (!$activity) {
@@ -95,7 +95,7 @@ class MobileActivityResource extends MobileActivity {
             '_', $filename);
     }
 
-    function get_no_questions() {
+    public function get_no_questions() {
         return null;
     }
 }

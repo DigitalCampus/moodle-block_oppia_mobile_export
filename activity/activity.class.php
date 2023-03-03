@@ -52,8 +52,8 @@ abstract class MobileActivity {
         }
     }
 
-    abstract function process();
-    abstract function get_xml($mod, $counter, &$node, &$xmldoc, $activity=true);
+    abstract public function process();
+    abstract public function get_xml($mod, $counter, &$node, &$xmldoc, $activity=true);
 
     public function extract_thumbnail_from_intro($content, $moduleid) {
         $this->extract_thumbnail($content, $moduleid, 'intro');
@@ -97,7 +97,7 @@ abstract class MobileActivity {
         }
     }
 
-    function has_password() {
+    public function has_password() {
         return (($this->password != null) && ($this->password != ''));
     }
 
@@ -149,5 +149,5 @@ abstract class MobileActivity {
         }
     }
 
-    abstract function get_no_questions();
+    abstract public function get_no_questions();
 }

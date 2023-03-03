@@ -55,7 +55,7 @@ class MobileActivityFeedback extends MobileActivity {
     }
 
 
-    function generate_md5($feedback, $quizjson) {
+    private function generate_md5($feedback, $quizjson) {
         $md5postfix = "";
         foreach ($this->configarray as $key => $value) {
             $md5postfix .= $key[0].((string) $value);
@@ -64,7 +64,7 @@ class MobileActivityFeedback extends MobileActivity {
         $this->md5 = md5( $feedback->intro . removeIDsFromJSON($contents) . $md5postfix);
     }
 
-    function preprocess() {
+    public function preprocess() {
         global $DB;
         $cm = get_coursemodule_from_id('feedback', $this->id);
         $feedback = $DB->get_record('feedback', array('id' => $cm->instance), '*', MUST_EXIST);
@@ -89,7 +89,7 @@ class MobileActivityFeedback extends MobileActivity {
         }
     }
 
-    function process() {
+    public function process() {
         global $DB;
 
         $cm = get_coursemodule_from_id('feedback', $this->id);
@@ -267,7 +267,7 @@ class MobileActivityFeedback extends MobileActivity {
         $this->content = json_encode($quizjson);
     }
 
-    function get_xml($mod, $counter, &$node, &$xmldoc, $activity=true) {
+    public function get_xml($mod, $counter, &$node, &$xmldoc, $activity=true) {
         global $defaultlang;
 
         $act = $this->get_activity_node($xmldoc, $mod, $counter);
@@ -282,15 +282,15 @@ class MobileActivityFeedback extends MobileActivity {
         $node->appendChild($act);
     }
 
-    function get_is_valid() {
+    public function get_is_valid() {
         return $this->isvalid;
     }
 
-    function get_no_questions() {
+    public function get_no_questions() {
         return $this->noquestions;
     }
 
-    function get_no_rated_questions() {
+    public function get_no_rated_questions() {
         return $this->noratedquestions;
     }
 }
