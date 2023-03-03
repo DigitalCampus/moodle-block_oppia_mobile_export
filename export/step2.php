@@ -157,19 +157,19 @@ foreach ($sections as $sect) {
                     $grade_boundaries = array();
                     $gb = get_grade_boundaries($mod->id, $server);
                     usort($gb, 'sort_grade_boundaries_descending');
-                    foreach ($gb as $grade_boundary) {
-                        switch($grade_boundary->grade) {
-                            case 0:   $grade_0_message = $grade_boundary->message; break;
-                            case 100: $grade_100_message = $grade_boundary->message; break;
+                    foreach ($gb as $gradeboundary) {
+                        switch($gradeboundary->grade) {
+                            case 0:   $grade_0_message = $gradeboundary->message; break;
+                            case 100: $grade_100_message = $gradeboundary->message; break;
                             default: {
-                                $selected_index = array_search(array('grade' => $grade_boundary->grade), $grades);
+                                $selected_index = array_search(array('grade' => $gradeboundary->grade), $grades);
                                 $grades[$selected_index]['selected'] = true;
                                 array_push($grade_boundaries, array(
                                     'feedback_id' => $mod->id,
-                                    'id' => $grade_boundary->id,
-                                    'grade' => $grade_boundary->grade,
+                                    'id' => $gradeboundary->id,
+                                    'grade' => $grade_oundary->grade,
                                     'grades' => $grades,
-                                    'message' => $grade_boundary->message
+                                    'message' => $gradeboundary->message
                                 ));
                                 unset($grades[$selected_index]['selected']);
                                 break;
