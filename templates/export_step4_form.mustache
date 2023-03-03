@@ -1,10 +1,10 @@
 <br>
 
 <div>
-{{# media_files.0 }}<h3> {{# str }}media_files_title,block_oppia_mobile_export{{/ str }}</h3>{{/ media_files.0 }}
+{{# mediafiles.0 }}<h3> {{# str }}media_files_title,block_oppia_mobile_export{{/ str }}</h3>{{/ mediafiles.0 }}
 
 <div class="media_files" data-publish="{{wwwroot}}/blocks/oppia_mobile_export/publish/media.php" data-server="{{server_id}}">
-{{# media_files }}
+{{# mediafiles }}
 	<div class="media_file" data-moodlefile="{{moodlefile}}">
 		<span class="filename">{{filename}}</span> <span class="status loading"></span>
 		<div class="info">
@@ -21,7 +21,7 @@
 		</div>
 	</div>
 	<hr>
-{{/ media_files }}
+{{/ mediafiles }}
 </div>
 
 <form 
@@ -49,7 +49,7 @@
 <form id="step_form" method="POST" action="{{wwwroot}}/blocks/oppia_mobile_export/export/step5.php">
 	
 	<input type="hidden" name="id" value="{{id}}">
-	<input type="hidden" name="media_files" value="{{media_files_str}}">
+	<input type="hidden" name="mediafiles" value="{{media_files_str}}">
 	<input type="hidden" name="stylesheet" value="{{stylesheet}}">
 	<input type="hidden" name="course_export_status" value="{{course_export_status}}">
 	<input type="hidden" name="server_id" value="{{server_id}}">
@@ -57,6 +57,6 @@
 	<input type="hidden" name="coursetags" value="{{coursetags}}">
     <input type="hidden" name="activity_summaries" value="{{activity_summaries}}">
 
-	<button type="submit" class="btn btn-primary" {{# media_files.0 }}disabled{{/ media_files.0 }}>
+	<button type="submit" class="btn btn-primary" {{# mediafiles.0 }}disabled{{/ mediafiles.0 }}>
 		{{# str }}continue,block_oppia_mobile_export{{/ str }} </button>
 </div>

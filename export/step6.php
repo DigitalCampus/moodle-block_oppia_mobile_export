@@ -52,7 +52,7 @@ $tags = required_param('coursetags', PARAM_TEXT);
 $server = required_param('server_id', PARAM_TEXT);
 $course_export_status = required_param('course_export_status', PARAM_TEXT);
 $courseroot = required_param('courseroot', PARAM_TEXT);
-$is_draft = ($course_export_status == 'draft');
+$isdraft = ($course_export_status == 'draft');
 $course = $DB->get_record('course', array('id' => $id));
 
 $PAGE->set_url(PLUGINPATH.'export/step6.php', array('id' => $id));
@@ -234,7 +234,7 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
         'sesskey' => sesskey(),
         'course_id' => $COURSE->id,
         'file' => $zipname,
-        'is_draft' => $is_draft,
+        'isdraft' => $isdraft,
         'tags' => $tags,
         'course_export_status' => $course_export_status,
         'export_url' => $url,

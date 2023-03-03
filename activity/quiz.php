@@ -16,16 +16,16 @@
 
 class MobileActivityQuiz extends MobileActivity {
 
-    private $supported_types = array('multichoice', 'match', 'truefalse', 'description', 'shortanswer', 'numerical');
+    private $supportedtypes = array('multichoice', 'match', 'truefalse', 'description', 'shortanswer', 'numerical');
     private $courseversion;
     private $summary;
     private $shortname;
     private $content = "";
     private $MATCHING_SEPERATOR = "|";
-    private $is_valid = true; // I.e. doesn't only contain essay or random questions.
+    private $isvalid = true; // I.e. doesn't only contain essay or random questions.
     private $configArray = array(); // Config (quiz props) array.
-    private $quiz_media = array();
-    private $keep_html = false; // Should the HTML of questions and answers be stripped out or not.
+    private $quizmedia = array();
+    private $keephtml = false; // Should the HTML of questions and answers be stripped out or not.
 
 
     public function __construct($params=array()) {
@@ -42,8 +42,8 @@ class MobileActivityQuiz extends MobileActivity {
         if (isset($params['courseversion'])) {
             $this->courseversion = $params['courseversion'];
         }
-        if (isset($params['keep_html'])) {
-            $this->keep_html = $params['keep_html'];
+        if (isset($params['keephtml'])) {
+            $this->keephtml = $params['keephtml'];
         }
 
         $this->componentname = 'mod_quiz';
@@ -74,18 +74,18 @@ class MobileActivityQuiz extends MobileActivity {
         $quizobj = quiz::create($cm->instance, $USER->id);
         if (!$quizobj->has_questions()) {
             $this->noquestions = 0;
-            $this->is_valid = false;
+            $this->isvalid = false;
             return;
         }
 
         $quiz = $DB->get_record('quiz', array('id' => $cm->instance), '*', MUST_EXIST);
-        $allow_review_after = $this->get_review_availability($quiz, self::IMMEDIATELY_AFTER);
-        $allow_review_later = $this->get_review_availability($quiz, self::LATER_WHILE_OPEN);
+        $allowreviewafter = $this->get_review_availability($quiz, self::IMMEDIATELY_AFTER);
+        $allowreviewlater = $this->get_review_availability($quiz, self::LATER_WHILE_OPEN);
         // Only include the config values if they are set to false.
-        if (!$allow_review_after) {
+        if (!$allowreviewafter) {
             $this->configArray['immediate_whether_correct'] = false;
         }
-        if (!$allow_review_later) {
+        if (!$allowreviewlater) {
             $this->configArray['later_whether_correct'] = false;
         }
 
@@ -96,14 +96,14 @@ class MobileActivityQuiz extends MobileActivity {
         // Check has at least one non-essay and non-random question.
         $countomitted = 0;
         foreach ($qs as $q) {
-            if (in_array($q->qtype, $this->supported_types)) {
+            if (in_array($q->qtype, $this->supportedtypes)) {
                 $this->noquestions++;
             } else {
                 $countomitted++;
             }
         }
         if ($countomitted == count($qs)) {
-            $this->is_valid = false;
+            $this->isvalid = false;
         }
     }
 
@@ -142,7 +142,7 @@ class MobileActivityQuiz extends MobileActivity {
         }
 
         $nameJSON = extractLangs($cm->name, true);
-        $descJSON = extractLangs($quiz->intro, true, !$this->keep_html);
+        $descJSON = extractLangs($quiz->intro, true, !$this->keephtml);
 
         $quizJsonQuestions = array();
         $quizmaxscore = 0;
@@ -192,35 +192,35 @@ class MobileActivityQuiz extends MobileActivity {
             if ($q->qtype == 'match') {
                 $q->qtype = 'matching';
                 if ($q->options->correctfeedback != "") {
-                    $feedbackjson = extractLangs($q->options->correctfeedback, true, !$this->keep_html);
+                    $feedbackjson = extractLangs($q->options->correctfeedback, true, !$this->keephtml);
                     $questionprops["correctfeedback"] = json_decode($feedbackjson);
                 }
                 if ($q->options->partiallycorrectfeedback != "") {
-                    $feedbackjson = extractLangs($q->options->partiallycorrectfeedback, true, !$this->keep_html);
+                    $feedbackjson = extractLangs($q->options->partiallycorrectfeedback, true, !$this->keephtml);
                     $questionprops["partiallycorrectfeedback"] = json_decode($feedbackjson);
                 }
                 if ($q->options->incorrectfeedback != "") {
-                    $feedbackjson = extractLangs($q->options->incorrectfeedback, true, !$this->keep_html);
+                    $feedbackjson = extractLangs($q->options->incorrectfeedback, true, !$this->keephtml);
                     $questionprops["incorrectfeedback"] = json_decode($feedbackjson);
                 }
             }
 
             // Find if the question text has any images in it.
-            $question_image = extractImageFile($q->questiontext, 'question', 'questiontext',
+            $questionimage = extractImageFile($q->questiontext, 'question', 'questiontext',
                                     $q->id, $q->contextid, $this->courseroot, $cm->id);
-            if ($question_image) {
-                $questionprops["image"] = $question_image;
+            if ($questionimage) {
+                $questionprops["image"] = $questionimage;
             }
 
             // Find if any videos embedded in question text.
-            $q->questiontext = $this->extractMedia($q->id, $q->questiontext);
-            if (array_key_exists($q->id, $this->quiz_media)) {
-                foreach ($this->quiz_media[$q->id] as $media) {
+            $q->questiontext = $this->extract_media($q->id, $q->questiontext);
+            if (array_key_exists($q->id, $this->quizmedia)) {
+                foreach ($this->quizmedia[$q->id] as $media) {
                     $questionprops["media"] = $media->filename;
                 }
             }
 
-            $questionTitle = extractLangs(cleanHTMLEntities($q->questiontext, true), true, !$this->keep_html);
+            $questionTitle = extractLangs(cleanHTMLEntities($q->questiontext, true), true, !$this->keephtml);
 
             $j = 1;
             // If matching question then concat the options with |.
@@ -233,7 +233,7 @@ class MobileActivityQuiz extends MobileActivity {
                     }
                 }
                 foreach ($q->options->subquestions as $sq) {
-                    $titleJSON = extractLangs($sq->questiontext.$this->MATCHING_SEPERATOR.$sq->answertext, true, !$this->keep_html, true);
+                    $titleJSON = extractLangs($sq->questiontext.$this->MATCHING_SEPERATOR.$sq->answertext, true, !$this->keephtml, true);
                     // Add response.
                     $score = ($q->maxmark / $subqs);
 
@@ -254,7 +254,7 @@ class MobileActivityQuiz extends MobileActivity {
                     $responseprops = array('id' => rand(1, 1000));
 
                     if (strip_tags($r->feedback) != "") {
-                        $feedbackjson = extractLangs($r->feedback, true, !$this->keep_html);
+                        $feedbackjson = extractLangs($r->feedback, true, !$this->keephtml);
                         $responseprops['feedback'] = json_decode($feedbackjson);
                     }
                     // If numerical also add a tolerance.
@@ -267,7 +267,7 @@ class MobileActivityQuiz extends MobileActivity {
                         'order' => $j,
                         'id' => rand(1, 1000),
                         'props' => $responseprops,
-                        'title' => json_decode(extractLangs($r->answer, true, !$this->keep_html, true)),
+                        'title' => json_decode(extractLangs($r->answer, true, !$this->keephtml, true)),
                         'score' => sprintf("%.4f", $score)
                     ));
                     $j++;
@@ -309,17 +309,17 @@ class MobileActivityQuiz extends MobileActivity {
         $this->content = json_encode($quizjson);
     }
 
-    private function extractMedia($question_id, $content) {
+    private function extract_media($questionid, $content) {
 
-        preg_match_all(EMBED_MEDIA_REGEX, $content, $media_tmp, PREG_OFFSET_CAPTURE);
+        preg_match_all(EMBED_MEDIA_REGEX, $content, $mediatmp, PREG_OFFSET_CAPTURE);
 
-        if (!isset($media_tmp['mediaobject']) || count($media_tmp['mediaobject']) == 0) {
+        if (!isset($mediatmp['mediaobject']) || count($mediatmp['mediaobject']) == 0) {
             return $content;
         }
 
-        for ($i = 0; $i < count($media_tmp['mediaobject']); $i++) {
-            $mediajson = json_decode($media_tmp['mediaobject'][$i][0]);
-            $toreplace = $media_tmp[0][$i][0];
+        for ($i = 0; $i < count($mediatmp['mediaobject']); $i++) {
+            $mediajson = json_decode($mediatmp['mediaobject'][$i][0]);
+            $toreplace = $mediatmp[0][$i][0];
 
             $content = str_replace($toreplace, "", $content);
             // Check all the required attrs exist.
@@ -328,9 +328,9 @@ class MobileActivityQuiz extends MobileActivity {
                 die;
             }
 
-            // Put the media in both the structure for page ($this->quiz_media) and for module ($MEDIA).
+            // Put the media in both the structure for page ($this->quizmedia) and for module ($MEDIA).
             $MEDIA[$mediajson->digest] = $mediajson;
-            $this->quiz_media[$question_id][$mediajson->digest] = $mediajson;
+            $this->quizmedia[$questionid][$mediajson->digest] = $mediajson;
         }
         return str_replace("[[/media]]", "", $content);
     }
@@ -368,7 +368,7 @@ class MobileActivityQuiz extends MobileActivity {
             $quizobj->load_questions();
             $qs = $quizobj->get_questions();
             foreach ($qs as $q) {
-                $this->extractMedia($q->id, $q->questiontext);
+                $this->extract_media($q->id, $q->questiontext);
             }
         } catch (moodle_exception $me) {
             return;
@@ -392,7 +392,7 @@ class MobileActivityQuiz extends MobileActivity {
     }
 
     function get_is_valid() {
-        return $this->is_valid;
+        return $this->isvalid;
     }
 
     function get_no_questions() {

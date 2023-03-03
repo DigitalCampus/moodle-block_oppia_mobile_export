@@ -19,7 +19,7 @@ class MobileActivityPage extends MobileActivity {
     private $act = array();
     private $pagemedia = array();
     private $pagerelated = array();
-    private $page_local_media = array();
+    private $pagelocalmedia = array();
     private $videooverlay = false;
 
     public function __construct($params=array()) {
@@ -61,18 +61,18 @@ class MobileActivityPage extends MobileActivity {
         }
     }
 
-    function process_content($context, $mod_id, $content, $lang) {
-        $pre_content = $content;
+    function process_content($context, $modid, $content, $lang) {
+        $precontent = $content;
 
         $content = $this->extractAndReplaceMedia($content);
         // If page has media and no special icon for page, extract the image for first video.
-        if ((count($this->pagemedia) > 0 || count($this->page_local_media) > 0) && $this->thumbnailimage == null) {
-            if ($this->extractMediaImage($pre_content, 'mod_page', 'content', $context->id)) {
-                $this->save_resized_thumbnail($this->thumbnailimage, $mod_id);
+        if ((count($this->pagemedia) > 0 || count($this->pagelocalmedia) > 0) && $this->thumbnailimage == null) {
+            if ($this->extract_media_image($precontent, 'mod_page', 'content', $context->id)) {
+                $this->save_resized_thumbnail($this->thumbnailimage, $modid);
             }
         } else if ($this->thumbnailimage == null) {
             // If it does not have an image, we try to extract it from the contents.
-            $this->extract_thumbnail_from_contents($pre_content, $mod_id);
+            $this->extract_thumbnail_from_contents($precontent, $modid);
         }
 
         // Add html header tags etc.
@@ -86,8 +86,8 @@ class MobileActivityPage extends MobileActivity {
         $webpage .= '</head>';
         $webpage .= '<body>'.$content.'</body></html>';
 
-        $page_filename = $this->makePageFilename($this->section, $mod_id, $lang);
-        $index = $this->courseroot."/".$page_filename;
+        $pagefilename = $this->makePageFilename($this->section, $modid, $lang);
+        $index = $this->courseroot."/".$pagefilename;
         $fh = fopen($index, 'w');
         if ($fh !== false) {
             fwrite($fh, $webpage);
@@ -96,13 +96,13 @@ class MobileActivityPage extends MobileActivity {
 
         $o = new stdClass();
         $o->lang = $lang;
-        $o->filename = $page_filename;
+        $o->filename = $pagefilename;
         array_push($this->act, $o);
-        unset($page_filename);
+        unset($pagefilename);
     }
 
     function getLocalMedia() {
-        return $this->page_local_media;
+        return $this->pagelocalmedia;
     }
 
     function get_xml($mod, $counter, &$node, &$xmldoc, $activity=true) {
@@ -119,7 +119,7 @@ class MobileActivityPage extends MobileActivity {
         $this->add_thumbnail_xml_node($xmldoc, $struct);
 
         // Add in page media.
-        if (count($this->pagemedia) > 0 || count($this->page_local_media) > 0) {
+        if (count($this->pagemedia) > 0 || count($this->pagelocalmedia) > 0) {
             $media = $xmldoc->createElement("media");
             foreach ($this->pagemedia as $m) {
                 $temp = $xmldoc->createElement("file");
@@ -129,7 +129,7 @@ class MobileActivityPage extends MobileActivity {
                 $media->appendChild($temp);
             }
 
-            foreach ($this->page_local_media as $m) {
+            foreach ($this->pagelocalmedia as $m) {
                 $temp = $xmldoc->createElement("file");
                 foreach ($m as $var => $value) {
                     $temp->appendChild($xmldoc->createAttribute($var))->appendChild($xmldoc->createTextNode($value));
@@ -165,26 +165,26 @@ class MobileActivityPage extends MobileActivity {
     private function extractAndReplaceFiles($content, $component, $filearea, $itemid, $contextid) {
         global $CFG;
 
-        preg_match_all(MEDIAFILE_REGEX, $content, $files_tmp, PREG_OFFSET_CAPTURE);
+        preg_match_all(MEDIAFILE_REGEX, $content, $filestmp, PREG_OFFSET_CAPTURE);
 
-        if (!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0) {
+        if (!isset($filestmp['filenames']) || count($filestmp['filenames']) == 0) {
             return $content;
         }
         $toreplace = array();
 
-        for ($i = 0; $i < count($files_tmp['filenames']); $i++) {
+        for ($i = 0; $i < count($filestmp['filenames']); $i++) {
 
-            $orig_filename = $files_tmp['filenames'][$i][0];
-            $filename = urldecode($orig_filename);
-            $clean_filename = cleanFilename($filename);
-            if ( !$this->isLocalMedia($orig_filename) ) {
+            $origfilename = $filestmp['filenames'][$i][0];
+            $filename = urldecode($origfilename);
+            $cleanfilename = cleanFilename($filename);
+            if ( !$this->isLocalMedia($origfilename) ) {
 
                 $filepath = '/';
                 $fs = get_file_storage();
                 $file = $fs->get_file($contextid, $component, $filearea, $itemid, $filepath, $filename);
 
                 if ($file) {
-                    $imgfile = $this->courseroot."/images/".$clean_filename;
+                    $imgfile = $this->courseroot."/images/".$cleanfilename;
                     $file->copy_content_to($imgfile);
                 } else {
                     if ($CFG->block_oppia_mobile_export_debug && $this->printlogs) {
@@ -198,16 +198,16 @@ class MobileActivityPage extends MobileActivity {
                 }
             }
 
-            $filenameReplace = new StdClass;
-            $filenameReplace->filename = $filename;
-            $filenameReplace->orig_filename = $orig_filename;
-            $filenameReplace->clean_filename = $clean_filename;
-            array_push($toreplace, $filenameReplace);
+            $filenamereplace = new StdClass;
+            $filenamereplace->filename = $filename;
+            $filenamereplace->origfilename = $origfilename;
+            $filenamereplace->cleanfilename = $cleanfilename;
+            array_push($toreplace, $filenamereplace);
         }
 
         foreach ($toreplace as $tr) {
-            $content = str_replace(MEDIAFILE_PREFIX.'/'.$tr->orig_filename, 'images/'.$tr->clean_filename, $content);
-            $content = str_replace(MEDIAFILE_PREFIX.'/'.urlencode($tr->filename), 'images/'.$tr->clean_filename, $content);
+            $content = str_replace(MEDIAFILE_PREFIX.'/'.$tr->origfilename, 'images/'.$tr->cleanfilename, $content);
+            $content = str_replace(MEDIAFILE_PREFIX.'/'.urlencode($tr->filename), 'images/'.$tr->cleanfilename, $content);
         }
 
         return $content;
@@ -216,15 +216,15 @@ class MobileActivityPage extends MobileActivity {
     private function extractAndReplaceMedia($content) {
         global $MEDIA;
 
-        preg_match_all(EMBED_MEDIA_REGEX, $content, $media_tmp, PREG_OFFSET_CAPTURE);
+        preg_match_all(EMBED_MEDIA_REGEX, $content, $mediatmp, PREG_OFFSET_CAPTURE);
 
-        if (!isset($media_tmp['mediaobject']) || count($media_tmp['mediaobject']) == 0) {
+        if (!isset($mediatmp['mediaobject']) || count($mediatmp['mediaobject']) == 0) {
             return $content;
         }
 
-        for ($i = 0; $i < count($media_tmp['mediaobject']); $i++) {
-            $mediajson = json_decode($media_tmp['mediaobject'][$i][0]);
-            $toreplace = $media_tmp[0][$i][0];
+        for ($i = 0; $i < count($mediatmp['mediaobject']); $i++) {
+            $mediajson = json_decode($mediatmp['mediaobject'][$i][0]);
+            $toreplace = $mediatmp[0][$i][0];
 
             $r = "<a href='/video/".$mediajson->filename."'>";
             $content = str_replace($toreplace, $r, $content);
@@ -260,33 +260,33 @@ class MobileActivityPage extends MobileActivity {
         }
 
         $videos = $html->getElementsByTagName('video');
-        $videos_length = $videos->length;
+        $videoslength = $videos->length;
 
-        if ($videos_length <= 0) {
+        if ($videoslength <= 0) {
             return $content;
         }
 
-        for ($i = 0; $i < $videos_length; $i++) {
+        for ($i = 0; $i < $videoslength; $i++) {
             $video = $videos->item(0); // We always get the first one, as the previous one would be replaced by now.
-            $video_params = array();
+            $videoparams = array();
 
             foreach ($video->childNodes as $source) {
                 if (($source->nodeName == 'source') && ($source->hasAttribute('src'))) {
                     $source = $source->getAttribute('src');
-                    preg_match_all(MEDIAFILE_REGEX, $source, $files_tmp, PREG_OFFSET_CAPTURE);
+                    preg_match_all(MEDIAFILE_REGEX, $source, $filestmp, PREG_OFFSET_CAPTURE);
 
-                    if (!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0) {
+                    if (!isset($filestmp['filenames']) || count($filestmp['filenames']) == 0) {
                         continue;
                     }
-                    $filename = $files_tmp['filenames'][0][0];
+                    $filename = $filestmp['filenames'][0][0];
 
                     if (!$this->isLocalMedia($filename)) {
                         // If it hasn't been added yet, we include it.
                         $fileinfo = getFileInfo(urldecode($filename), $component, $filearea, $itemid, $contextid);
-                        array_push($this->page_local_media, $fileinfo);
+                        array_push($this->pagelocalmedia, $fileinfo);
                     }
 
-                    $video_params['filename'] = $filename;
+                    $videoparams['filename'] = $filename;
 
                     if ($CFG->block_oppia_mobile_export_debug && $this->printlogs) {
                         echo get_string('video_included', PLUGINNAME).'<code>'. $filename .'</code>'.OPPIA_HTML_BR;
@@ -299,17 +299,17 @@ class MobileActivityPage extends MobileActivity {
                     echo OPPIA_HTML_SPAN_ERROR_START.get_string('missing_video_poster', PLUGINNAME).OPPIA_HTML_SPAN_END.OPPIA_HTML_BR;
                 }
             } else {
-                $video_params['poster'] = $video->getAttribute('poster');
+                $videoparams['poster'] = $video->getAttribute('poster');
                 if ($this->videooverlay) {
-                    $video_params['video_class'] = 'video-overlay';
+                    $videoparams['video_class'] = 'video-overlay';
                 }
             }
 
-            $embed = createDOMElemFromTemplate($html, PLUGINNAME.'/video_embed', $video_params);
+            $embed = createDOMElemFromTemplate($html, PLUGINNAME.'/video_embed', $videoparams);
             $video->parentNode->replaceChild($embed, $video);
         }
 
-        if (count($this->page_local_media) > 0) {
+        if (count($this->pagelocalmedia) > 0) {
             $content = $html->saveHTML($html->documentElement);
         }
 
@@ -318,25 +318,25 @@ class MobileActivityPage extends MobileActivity {
 
     private function isLocalMedia($filename) {
         $exists = false;
-        foreach ($this->page_local_media as $local_media) {
-            if (strpos($local_media['filename'], $filename) !== false) {
+        foreach ($this->pagelocalmedia as $localmedia) {
+            if (strpos($localmedia['filename'], $filename) !== false) {
                 $exists = true;
             }
-            if (strpos($local_media['filename'], urldecode($filename)) !== false) {
+            if (strpos($localmedia['filename'], urldecode($filename)) !== false) {
                 $exists = true;
             }
         }
         return $exists;
     }
 
-    private function extractMediaImage($content, $component, $filearea, $contextid) {
+    private function extract_media_image($content, $component, $filearea, $contextid) {
         global $CFG;
 
-        preg_match_all(EMBED_MEDIA_IMAGE_REGEX, $content, $files_tmp, PREG_OFFSET_CAPTURE);
-        if (!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0) {
+        preg_match_all(EMBED_MEDIA_IMAGE_REGEX, $content, $filestmp, PREG_OFFSET_CAPTURE);
+        if (!isset($filestmp['filenames']) || count($filestmp['filenames']) == 0) {
             return false;
         }
-        $filename = $files_tmp['filenames'][0][0];
+        $filename = $filestmp['filenames'][0][0];
 
         if ($CFG->block_oppia_mobile_export_debug && $this->printlogs) {
             echo '<span>' . get_string('export_file_trying', PLUGINNAME, $filename).OPPIA_HTML_SPAN_END.OPPIA_HTML_BR;

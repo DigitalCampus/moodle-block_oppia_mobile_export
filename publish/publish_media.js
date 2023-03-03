@@ -1,8 +1,8 @@
 require(['jquery'], function($) { $(function(){
 	
-	var filenames = $('.media_files .media_file');
-	var publishURL = $('.media_files').attr('data-publish');
-	var server = $('.media_files').attr('data-server');
+	var filenames = $('.mediafiles .media_file');
+	var publishURL = $('.mediafiles').attr('data-publish');
+	var server = $('.mediafiles').attr('data-server');
 	var form = $('#step_form');
 
 	var pendingFiles = false;
@@ -15,7 +15,7 @@ require(['jquery'], function($) { $(function(){
 
 		var username = publishForm.find('[name="username"]').val();
 		var password = publishForm.find('[name="password"]').val();
-		pending = $('.media_files .media_file.pending');
+		pending = $('.mediafiles .media_file.pending');
 		pendingCount = pending.length;
 		pending.find('.status').removeClass('pending').removeClass('error').addClass('loading')
 		

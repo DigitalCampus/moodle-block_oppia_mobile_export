@@ -128,25 +128,25 @@ function add_publishing_log($server, $userid, $courseid, $action, $data) {
 
 function get_section_title($section) {
 
-    $defaultSectionTitle = false;
-    $sectionTitle = strip_tags(format_string($section->summary));
+    $defaultsectiontitle = false;
+    $sectiontitle = strip_tags(format_string($section->summary));
     $title = extractLangs($section->summary);
 
     // If the course has no summary, we try to use the section name.
-    if ($sectionTitle == "") {
-        $sectionTitle = strip_tags(format_string($section->name));
+    if ($sectiontitle == "") {
+        $sectiontitle = strip_tags(format_string($section->name));
         $title = extractLangs($section->name);
     }
     // If the course has neither summary nor name, use the default topic title.
-    if ($sectionTitle == "") {
-        $sectionTitle = get_string('sectionname', 'format_topics') . ' ' . $section->section;
-        $title = $sectionTitle;
-        $defaultSectionTitle = true;
+    if ($sectiontitle == "") {
+        $sectiontitle = get_string('sectionname', 'format_topics') . ' ' . $section->section;
+        $title = $sectiontitle;
+        $defaultsectiontitle = true;
     }
 
     return array(
-        'using_default' => $defaultSectionTitle,
-        'display_title' => $sectionTitle,
+        'using_default' => $defaultsectiontitle,
+        'display_title' => $sectiontitle,
         'title' => $title,
     );
 }
@@ -247,17 +247,17 @@ function removeIDsFromJSON($jsonString) {
 function extractImageFile($content, $component, $filearea, $itemid, $contextid, $courseroot, $cmid) {
     global $CFG;
     // Find if any images/links exist.
-    preg_match_all(MEDIAFILE_REGEX, $content, $files_tmp, PREG_OFFSET_CAPTURE);
+    preg_match_all(MEDIAFILE_REGEX, $content, $filestmp, PREG_OFFSET_CAPTURE);
 
-    if (!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0) {
+    if (!isset($filestmp['filenames']) || count($filestmp['filenames']) == 0) {
         return false;
     }
 
     $lastimg = false;
     $toreplace = array();
-    for ($i = 0; $i < count($files_tmp['filenames']); $i++) {
+    for ($i = 0; $i < count($filestmp['filenames']); $i++) {
 
-        $filename = trim($files_tmp['filenames'][$i][0]);
+        $filename = trim($filestmp['filenames'][$i][0]);
 
         if (!IsFileAnImage($courseroot . "/" . $filename)) {
             // If the file is not an image, we pass on it.

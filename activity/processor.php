@@ -51,9 +51,9 @@ class ActivityProcessor {
     public $course_shortname;
 
     public $current_section;
-    public $local_media_files;
+    public $localmediafiles;
 
-    public $print_logs = true;
+    public $printlogs = true;
 
     public function __construct($params=array()) {
         if (isset($params['id'])) {
@@ -74,19 +74,19 @@ class ActivityProcessor {
         if (isset($params['versionid'])) {
             $this->versionid = $params['versionid'];
         }
-        if (isset($params['keep_html'])) {
-            $this->keephtml = $params['keep_html'];
+        if (isset($params['keephtml'])) {
+            $this->keephtml = $params['keephtml'];
         }
         if (isset($params['videooverlay'])) {
             $this->videooverlay = $params['videooverlay'];
         }
-        if (isset($params['local_media_files'])) {
-            $this->local_media_files = $params['local_media_files'];
+        if (isset($params['localmediafiles'])) {
+            $this->localmediafiles = $params['localmediafiles'];
         } else {
-            $this->local_media_files = array();
+            $this->localmediafiles = array();
         }
-        if (isset($params['print_logs'])) {
-            $this->print_logs = $params['print_logs'];
+        if (isset($params['printlogs'])) {
+            $this->printlogs = $params['printlogs'];
         }
     }
 
@@ -102,11 +102,11 @@ class ActivityProcessor {
             'section' => $this->current_section,
             'server_id' => $this->server_id,
             'course_id' => $this->course_id,
-            'print_logs' => $this->print_logs,
+            'printlogs' => $this->printlogs,
             'courseversion' => $this->versionid,
             'shortname' => $this->course_shortname,
             'summary' => $sect->summary,
-            'keep_html' => $this->keephtml,
+            'keephtml' => $this->keephtml,
             'videooverlay' => $this->videooverlay,
             'password' => $password,
         );
@@ -117,9 +117,9 @@ class ActivityProcessor {
 
             if ($xmlnode != null) {
                 $page->get_xml($mod, $actorderno, $xmlnode, $xmldoc, true);
-                $local_media = $page->getLocalMedia();
-                $media_files = $this->local_media_files;
-                $this->local_media_files = array_merge($media_files, $local_media);
+                $localmedia = $page->getLocalMedia();
+                $mediafiles = $this->localmediafiles;
+                $this->localmediafiles = array_merge($mediafiles, $localmedia);
             }
             return $page;
 

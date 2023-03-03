@@ -87,10 +87,10 @@ for ($i = 0; $i <= PRIORITY_LEVELS; $i++) {
 }
 
 $sequencing = get_oppiaconfig($id, 'coursesequencing', '', $server);
-$keephtml = get_oppiaconfig($id, 'keep_html', '', $server);
+$keephtml = get_oppiaconfig($id, 'keephtml', '', $server);
 $videooverlay = get_oppiaconfig($id, 'videooverlay', '', $server);
-$thumb_height = get_oppiaconfig($id, 'thumb_height', $CFG->block_oppia_mobile_export_thumb_height, $server);
-$thumb_width = get_oppiaconfig($id, 'thumb_width', $CFG->block_oppia_mobile_export_thumb_width, $server);
+$thumbheight = get_oppiaconfig($id, 'thumb_height', $CFG->block_oppia_mobile_export_thumb_height, $server);
+$thumbwidth = get_oppiaconfig($id, 'thumb_width', $CFG->block_oppia_mobile_export_thumb_width, $server);
 $section_height = get_oppiaconfig($id, 'section_height', $CFG->block_oppia_mobile_export_section_icon_height, $server);
 $section_width = get_oppiaconfig($id, 'section_width', $CFG->block_oppia_mobile_export_section_icon_width, $server);
 
@@ -98,10 +98,10 @@ $base_settings = array(
     'priorities' => $priorities,
     'tags' => get_oppiaconfig($id, 'coursetags', '', $server),
     'defaultlang' => get_oppiaconfig($id, 'defaultlang', $CFG->block_oppia_mobile_export_default_lang, $server),
-    'keep_html' => $keephtml,
+    'keephtml' => $keephtml,
     'videooverlay' => $videooverlay,
-    'thumb_height' => $thumb_height,
-    'thumb_width' => $thumb_width,
+    'thumbheight' => $thumbheight,
+    'thumbwidth' => $thumbwidth,
     'section_height' => $section_height,
     'section_width' => $section_width,
     'sequencing_none' => $sequencing == '' || $sequencing == 'none',

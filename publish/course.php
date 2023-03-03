@@ -72,7 +72,7 @@ $mods = $modinfo->get_cms();
 
 $server_connection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid' => $USER->id, 'id' => $server));
 
-add_or_update_oppiaconfig($id, 'is_draft', $is_draft);
+add_or_update_oppiaconfig($id, 'is_draft', $isdraft);
 add_publishing_log($server_connection->url, $USER->id, $id, "api_publish_start", "API publish process started");
 
 echo $OUTPUT->header();
@@ -121,9 +121,9 @@ if (substr($server_connection->url, -strlen('/')) !== '/') {
 }
 
 if ($course_status == 'draft') {
-    $is_draft = "true";
+    $isdraft = "true";
 } else {
-    $is_draft = "false";
+    $isdraft = "false";
 }
 
 $filepath = $dataroot.OPPIA_OUTPUT_DIR.$USER->id."/".$file;
@@ -133,7 +133,7 @@ $post = array(
         'username' => $username,
         'password' => $password,
         'tags' => $tags,
-        'is_draft' => $is_draft,
+        'isdraft' => $isdraft,
         'course_file' => $curlfile);
 
 $curl = curl_init();

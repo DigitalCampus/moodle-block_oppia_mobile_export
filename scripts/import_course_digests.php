@@ -102,7 +102,7 @@ function parse_module_file($filename) {
             }
             $prev_digest = update_activity_digest($course->id, $modid, $digest, $server);
 
-            echo "   mod_id: [" . $modid . "]: " . $digest;
+            echo "   modid: [" . $modid . "]: " . $digest;
             if ($prev_digest == false) {
                 echo " (did not exist previoulsy)\n";
             } else {
@@ -138,7 +138,7 @@ function get_moodle_activity_modid($courseid, $sect_orderno, $activity) {
 
     // We get all the activities that match the title.
     $activities = $DB->get_records_select($type, "name LIKE '%{$title}%' and course=$courseid");
-    $mod_id = false;
+    $modid = false;
     $num_matches = 0;
 
     foreach ($activities as $act) {
@@ -146,13 +146,13 @@ function get_moodle_activity_modid($courseid, $sect_orderno, $activity) {
         // Check if the page belongs to the same section (in case of posible repeated activity titles like "Introduction").
         $mod = $DB->get_record('course_modules', array('instance' => $actid, 'module' => $MODULE_TYPES[$type], 'section' => $sect_orderno));
         if ($mod !== false) {
-            $mod_id = $mod->id;
+            $modid = $mod->id;
             $num_matches++;
         }
     }
 
     if ($num_matches == 1) {
-        return $mod_id;
+        return $modid;
     } else {
         if ($num_matches > 0) {
             echo "   There is more than one activity in the same section with this title, skipping... \n";

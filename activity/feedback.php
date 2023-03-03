@@ -47,8 +47,8 @@ class MobileActivityFeedback extends MobileActivity {
         if (isset($params['courseversion'])) {
             $this->courseversion = $params['courseversion'];
         }
-        if (isset($params['keep_html'])) {
-            $this->keephtml = $params['keep_html'];
+        if (isset($params['keephtml'])) {
+            $this->keephtml = $params['keephtml'];
         }
 
         $this->componentname = 'mod_feedback';

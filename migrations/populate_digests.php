@@ -27,7 +27,7 @@ require_once($pluginroot . 'activity/processor.php');
 const SELECT_COURSES_DIGEST = 'name="coursepriority"';
 
 
-function populate_digests_published_courses($digests_to_preserve = null, $print_logs=true) {
+function populate_digests_published_courses($digests_to_preserve = null, $printlogs=true) {
     global $DB, $pluginroot;
 
     $courses_count = $DB->count_records_select(OPPIA_CONFIG_TABLE,
@@ -77,7 +77,7 @@ function populate_digests_published_courses($digests_to_preserve = null, $print_
       The array's value is the digest that we want to preserve in the output modules.xml. Might be different from the real digest.
 */
 
-function populate_digests_for_course($course, $course_id, $server_id, $digests_to_preserve = null, $print_logs=true) {
+function populate_digests_for_course($course, $course_id, $server_id, $digests_to_preserve = null, $printlogs=true) {
     global $CFG, $defaultlang, $pluginroot;
     $defaultlang = get_oppiaconfig($course_id, 'defaultlang', $CFG->block_oppia_mobile_export_default_lang, $server_id);
 
@@ -85,7 +85,7 @@ function populate_digests_for_course($course, $course_id, $server_id, $digests_t
     $sections = $modinfo->get_section_info_all();
     $mods = $modinfo->get_cms();
 
-    $keephtml = get_oppiaconfig($course_id, 'keep_html', '', $server_id);
+    $keephtml = get_oppiaconfig($course_id, 'keephtml', '', $server_id);
     $course->shortname = cleanShortname($course->shortname);
 
     deleteDir($pluginroot.OPPIA_OUTPUT_DIR."upgrade"."/temp");
@@ -108,7 +108,7 @@ function populate_digests_for_course($course, $course_id, $server_id, $digests_t
         'course_shortname' => $course->shortname,
         'versionid' => '0',
         'keephtml' => $keephtml,
-        'print_logs' => $print_logs,
+        'printlogs' => $printlogs,
     ));
 
     echo '<div class="oppia_export_section py-3">';
@@ -118,16 +118,16 @@ function populate_digests_for_course($course, $course_id, $server_id, $digests_t
         flush_buffers();
         // We avoid the topic0 as is not a section as the rest.
         if ($sect->section == 0) {
-            $sectionTitle = "Intro";
+            $sectiontitle = "Intro";
         } else {
-            $sectionTitle = strip_tags($sect->summary);
+            $sectiontitle = strip_tags($sect->summary);
             // If the course has no summary, we try to use the section name.
-            if ($sectionTitle == "") {
-                $sectionTitle = strip_tags($sect->name);
+            if ($sectiontitle == "") {
+                $sectiontitle = strip_tags($sect->name);
             }
         }
 
-        echo "<h4>".get_string('export_renewing_digests_in_section', PLUGINNAME, $sectionTitle)."</h4>";
+        echo "<h4>".get_string('export_renewing_digests_in_section', PLUGINNAME, $sectiontitle)."</h4>";
 
         $sectionmods = explode(",", $sect->sequence);
         $act_orderno = 1;

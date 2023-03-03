@@ -47,8 +47,8 @@ abstract class MobileActivity {
         if (isset($params['password'])) {
             $this->password = $params['password'];
         }
-        if (isset($params['print_logs'])) {
-            $this->printlogs = $params['print_logs'];
+        if (isset($params['printlogs'])) {
+            $this->printlogs = $params['printlogs'];
         }
     }
 

@@ -54,21 +54,21 @@ $course_export_status = required_param('course_export_status', PARAM_TEXT);
 $tags = get_oppiaconfig($id, 'coursetags', '', $server);
 $priority = (int) get_oppiaconfig($id, 'coursepriority', '0', $server);
 $sequencing = get_oppiaconfig($id, 'coursesequencing', '', $server);
-$keephtml = get_oppiaconfig($id, 'keep_html', '', $server);
+$keephtml = get_oppiaconfig($id, 'keephtml', '', $server);
 $videooverlay = get_oppiaconfig($id, 'videooverlay', '', $server);
 $defaultlang = get_oppiaconfig($id, 'defaultlang', $CFG->block_oppia_mobile_export_default_lang, $server);
-$thumb_height = get_oppiaconfig($id, 'thumb_height', $CFG->block_oppia_mobile_export_thumb_height, $server);
-$thumb_width = get_oppiaconfig($id, 'thumb_width', $CFG->block_oppia_mobile_export_thumb_width, $server);
+$thumbheight = get_oppiaconfig($id, 'thumb_height', $CFG->block_oppia_mobile_export_thumb_height, $server);
+$thumbwidth = get_oppiaconfig($id, 'thumb_width', $CFG->block_oppia_mobile_export_thumb_width, $server);
 $section_height = get_oppiaconfig($id, 'section_height', $CFG->block_oppia_mobile_export_section_icon_height, $server);
 $section_width = get_oppiaconfig($id, 'section_width', $CFG->block_oppia_mobile_export_section_icon_width, $server);
 
-$local_media_files = array();
+$localmediafiles = array();
 $course = $DB->get_record('course', array('id' => $id));
 // We clean the shortname of the course (the change doesn't get saved in Moodle).
 $course->shortname = cleanShortname($course->shortname);
 
-$is_draft = ($course_export_status == 'draft');
-if ($is_draft) {
+$isdraft = ($course_export_status == 'draft');
+if ($isdraft) {
     $course->shortname = $course->shortname."-draft";
 }
 
@@ -221,7 +221,7 @@ foreach ($sectionmods as $modnumber) {
             'section' => 0,
             'keephtml' => $keephtml,
             'videooverlay' => $videooverlay,
-            'local_media_files' => $local_media_files,
+            'localmediafiles' => $localmediafiles,
         ));
         $page->process();
         $page->get_xml($mod, $i, $meta, $xmldoc, false);
@@ -322,7 +322,7 @@ $processor = new ActivityProcessor(array(
             'versionid' => $versionid,
             'keephtml' => $keephtml,
             'videooverlay' => $videooverlay,
-            'local_media_files' => $local_media_files
+            'localmediafiles' => $localmediafiles
 ));
 
 $sect_orderno = 1;
@@ -452,10 +452,10 @@ if (count($MOBILE_LANGS) == 0) {
     $langs->appendChild($temp);
 }
 $meta->appendChild($langs);
-$local_media_files = $processor->local_media_files;
+$localmediafiles = $processor->localmediafiles;
 
 // Add media includes.
-if (count($MEDIA) > 0 || count($local_media_files) > 0) {
+if (count($MEDIA) > 0 || count($localmediafiles) > 0) {
     $media = $xmldoc->createElement("media");
     foreach ($MEDIA as $m) {
         $temp = $xmldoc->createElement("file");
@@ -464,7 +464,7 @@ if (count($MEDIA) > 0 || count($local_media_files) > 0) {
         }
         $media->appendChild($temp);
     }
-    foreach ($local_media_files as $m) {
+    foreach ($localmediafiles as $m) {
         $temp = $xmldoc->createElement("file");
         foreach ($m as $var => $value) {
             $temp->appendChild($xmldoc->createAttribute($var))->appendChild($xmldoc->createTextNode($value));
@@ -491,8 +491,8 @@ echo $OUTPUT->render_from_template(
     array(
         'id' => $id,
         'server_connection' => $server_connection->url,
-        'media_files' => $local_media_files,
-        'media_files_str' => json_encode($local_media_files),
+        'mediafiles' => $localmediafiles,
+        'media_files_str' => json_encode($localmediafiles),
         'server_id' => $server,
         'stylesheet' => $stylesheet,
         'coursetags' => $tags,

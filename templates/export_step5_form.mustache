@@ -48,10 +48,10 @@
     <input type="hidden" name="courseroot" value="{{courseroot}}">
     <input type="hidden" name="coursetags" value="{{coursetags}}">
 
-    {{#media_files}}
+    {{#mediafiles}}
         <input type="hidden" name="{{digest}}_length" value="{{#resolve}}{{digest}}_length{{/resolve}}">
         <input type="hidden" name="{{digest}}" value="{{#resolve}}{{digest}}{{/resolve}}">
-    {{/media_files}}
+    {{/mediafiles}}
 
     <p>
         <button type="submit" name="submit" class="btn btn-primary">

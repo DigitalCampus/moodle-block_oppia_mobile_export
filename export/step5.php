@@ -28,13 +28,13 @@ require_once($pluginroot . 'lib.php');
 require_once($pluginroot . 'activity/processor.php');
 
 $id = required_param('id', PARAM_INT);
-$media_files = required_param('media_files', PARAM_TEXT);
+$mediafiles = required_param('mediafiles', PARAM_TEXT);
 $stylesheet = required_param('stylesheet', PARAM_TEXT);
 $tags = required_param('coursetags', PARAM_TEXT);
 $server = required_param('server_id', PARAM_TEXT);
 $course_export_status = required_param('course_export_status', PARAM_TEXT);
 $courseroot = required_param('courseroot', PARAM_TEXT);
-$is_draft = ($course_export_status == 'draft');
+$isdraft = ($course_export_status == 'draft');
 $defaultlang = get_oppiaconfig($id, 'defaultlang', $CFG->block_oppia_mobile_export_default_lang, $server);
 $activity_summaries = json_decode(required_param('activity_summaries', PARAM_TEXT), true);
 
@@ -61,7 +61,7 @@ echo "<h2>".get_string('export_step5_title', PLUGINNAME)."</h2>";
 $modinfo = get_fast_modinfo($course);
 $sections = $modinfo->get_section_info_all();
 $mods = $modinfo->get_cms();
-$keephtml = get_oppiaconfig($course->id, 'keep_html', '', $server);
+$keephtml = get_oppiaconfig($course->id, 'keephtml', '', $server);
 $videooverlay = get_oppiaconfig($id, 'videooverlay', '', $server);
 
 $processor = new ActivityProcessor(array(
@@ -70,9 +70,9 @@ $processor = new ActivityProcessor(array(
     'course_id' => $course->id,
     'course_shortname' => $course->shortname,
     'versionid' => '0',
-    'keep_html' => $keephtml,
+    'keephtml' => $keephtml,
     'videooverlay' => $videooverlay,
-    'print_logs' => false
+    'printlogs' => false
 ));
 
 $config_sections = array();
@@ -160,7 +160,7 @@ $form_values = array_merge(
     array(
         'id' => $id,
         'server_id' => $server,
-        'media_files' => json_decode($media_files, true),
+        'mediafiles' => json_decode($mediafiles, true),
         'stylesheet' => $stylesheet,
         'coursetags' => $tags,
         'course_export_status' => $course_export_status,
@@ -173,7 +173,7 @@ $form_values = array_merge(
 );
 
 // The next step expect in the form parameters the media_url and the media_length for every media file.
-foreach ($form_values['media_files'] as $media_file) {
+foreach ($form_values['mediafiles'] as $media_file) {
     $digest = $media_file['digest'];
 
     $media_url = optional_param($digest, null, PARAM_TEXT);
