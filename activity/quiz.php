@@ -291,7 +291,7 @@ class MobileActivityQuiz extends MobileActivity {
         $quizprops["maxscore"] = $quizmaxscore;
 
         $quizjson = array(
-            'id' => rand(11000),
+            'id' => rand(1, 1000),
             'title' => json_decode($nameJSON),
             'description' => json_decode($descJSON),
             'props' => $quizprops,
