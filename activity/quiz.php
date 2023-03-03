@@ -328,7 +328,7 @@ class MobileActivityQuiz extends MobileActivity {
                 die;
             }
 
-            // Put the media in both the structure for page ($this->page_media) and for module ($MEDIA).
+            // Put the media in both the structure for page ($this->quiz_media) and for module ($MEDIA).
             $MEDIA[$mediajson->digest] = $mediajson;
             $this->quiz_media[$question_id][$mediajson->digest] = $mediajson;
         }

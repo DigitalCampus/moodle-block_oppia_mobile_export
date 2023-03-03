@@ -142,8 +142,8 @@ $string['server_info_name'] = 'Server name';
 $string['server_info_version'] = 'Current server version';
 $string['server_info_max_upload'] = 'Max. upload size';
 
-$string['export_video_overlay_title'] = 'Video overlay';
-$string['export_video_overlay_desc'] = 'Add a "play" button overlay on top of the poster image for all the embedded videos in the course';
+$string['export_videooverlay_title'] = 'Video overlay';
+$string['export_videooverlay_desc'] = 'Add a "play" button overlay on top of the poster image for all the embedded videos in the course';
 
 $string['export_course_tags_title'] = 'Course Categories';
 $string['export_course_tags_desc'] = 'Categories that will be used to classify the course on the OppiaMobile server, separate each category by a comma';

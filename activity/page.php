@@ -17,16 +17,16 @@
 class MobileActivityPage extends MobileActivity {
 
     private $act = array();
-    private $page_media = array();
-    private $page_related = array();
+    private $pagemedia = array();
+    private $pagerelated = array();
     private $page_local_media = array();
-    private $video_overlay = false;
+    private $videooverlay = false;
 
     public function __construct($params=array()) {
         parent::__construct($params);
         $this->componentname = 'mod_page';
-        if (isset($params['video_overlay'])) {
-            $this->video_overlay = $params['video_overlay'];
+        if (isset($params['videooverlay'])) {
+            $this->videooverlay = $params['videooverlay'];
         }
     }
 
@@ -66,7 +66,7 @@ class MobileActivityPage extends MobileActivity {
 
         $content = $this->extractAndReplaceMedia($content);
         // If page has media and no special icon for page, extract the image for first video.
-        if ((count($this->page_media) > 0 || count($this->page_local_media) > 0) && $this->thumbnailimage == null) {
+        if ((count($this->pagemedia) > 0 || count($this->page_local_media) > 0) && $this->thumbnailimage == null) {
             if ($this->extractMediaImage($pre_content, 'mod_page', 'content', $context->id)) {
                 $this->save_resized_thumbnail($this->thumbnailimage, $mod_id);
             }
@@ -119,9 +119,9 @@ class MobileActivityPage extends MobileActivity {
         $this->add_thumbnail_xml_node($xmldoc, $struct);
 
         // Add in page media.
-        if (count($this->page_media) > 0 || count($this->page_local_media) > 0) {
+        if (count($this->pagemedia) > 0 || count($this->page_local_media) > 0) {
             $media = $xmldoc->createElement("media");
-            foreach ($this->page_media as $m) {
+            foreach ($this->pagemedia as $m) {
                 $temp = $xmldoc->createElement("file");
                 foreach ($m as $var => $value) {
                     $temp->appendChild($xmldoc->createAttribute($var))->appendChild($xmldoc->createTextNode($value));
@@ -138,9 +138,9 @@ class MobileActivityPage extends MobileActivity {
             }
             $struct->appendChild($media);
         }
-        if (count($this->page_related) > 0) {
+        if (count($this->pagerelated) > 0) {
             $related = $xmldoc->createElement("related");
-            foreach ($this->page_related as $r) {
+            foreach ($this->pagerelated as $r) {
                 $temp = $xmldoc->createElement("activity");
                 $temp->appendChild($xmldoc->createAttribute("order"))->appendChild($xmldoc->createTextNode($r->order));
                 $temp->appendChild($xmldoc->createAttribute("digest"))->appendChild($xmldoc->createTextNode($r->digest));
@@ -234,9 +234,9 @@ class MobileActivityPage extends MobileActivity {
                 die;
             }
 
-            // Put the media in both the structure for page ($this->page_media) and for module ($MEDIA).
+            // Put the media in both the structure for page ($this->pagemedia) and for module ($MEDIA).
             $MEDIA[$mediajson->digest] = $mediajson;
-            $this->page_media[$mediajson->digest] = $mediajson;
+            $this->pagemedia[$mediajson->digest] = $mediajson;
         }
         return str_replace("[[/media]]", "</a>", $content);
     }
@@ -244,13 +244,13 @@ class MobileActivityPage extends MobileActivity {
     private function extractAndReplaceLocalMedia($content, $component, $filearea, $itemid, $contextid) {
         global $CFG;
 
-        $contents_to_parse = '<div>'.$content.'</div>'; // We add a fake root element to avoid problems with libxml.
-        $contents_to_parse = mb_convert_encoding($contents_to_parse, 'HTML-ENTITIES', 'UTF-8');
-        $contents_to_parse = utf8_decode($contents_to_parse);
+        $contentstoparse = '<div>'.$content.'</div>'; // We add a fake root element to avoid problems with libxml.
+        $contentstoparse = mb_convert_encoding($contentstoparse, 'HTML-ENTITIES', 'UTF-8');
+        $contentstoparse = utf8_decode($contentstoparse);
 
         $html = new DOMDocument('1.0', 'utf-8');
         libxml_use_internal_errors(true);
-        $parsed = $html->loadHTML($contents_to_parse, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        $parsed = $html->loadHTML($contentstoparse, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
         libxml_use_internal_errors(false);
         $html->encoding = 'utf-8';
 
@@ -300,7 +300,7 @@ class MobileActivityPage extends MobileActivity {
                 }
             } else {
                 $video_params['poster'] = $video->getAttribute('poster');
-                if ($this->video_overlay) {
+                if ($this->videooverlay) {
                     $video_params['video_class'] = 'video-overlay';
                 }
             }
