@@ -79,7 +79,7 @@ function populate_digests_published_courses($digests_to_preserve = null, $print_
 
 function populate_digests_for_course($course, $course_id, $server_id, $digests_to_preserve = null, $print_logs=true) {
     global $CFG, $defaultlang, $pluginroot;
-    $defaultlang = get_oppiaconfig($course_id, 'defaultlang', $CFG->block_oppia_mobile_export_defaultlang, $server_id);
+    $defaultlang = get_oppiaconfig($course_id, 'defaultlang', $CFG->block_oppia_mobile_export_default_lang, $server_id);
 
     $modinfo = course_modinfo::instance($course_id);
     $sections = $modinfo->get_section_info_all();
