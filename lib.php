@@ -244,7 +244,7 @@ function removeIDsFromJSON($jsonString) {
 }
 
 
-function extractImageFile($content, $component, $filearea, $itemid, $contextid, $course_root, $cmid) {
+function extractImageFile($content, $component, $filearea, $itemid, $contextid, $courseroot, $cmid) {
     global $CFG;
     // Find if any images/links exist.
     preg_match_all(MEDIAFILE_REGEX, $content, $files_tmp, PREG_OFFSET_CAPTURE);
@@ -259,7 +259,7 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
 
         $filename = trim($files_tmp['filenames'][$i][0]);
 
-        if (!IsFileAnImage($course_root . "/" . $filename)) {
+        if (!IsFileAnImage($courseroot . "/" . $filename)) {
             // If the file is not an image, we pass on it.
             continue;
         }
@@ -276,7 +276,7 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
                 'filename' => $filename);
         $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
                 $fileinfo['itemid'], $fileinfo['filepath'], urldecode($fileinfo['filename']));
-        $result = copyFile($file, $component, $filearea, $itemid, $contextid, $course_root, $cmid);
+        $result = copyFile($file, $component, $filearea, $itemid, $contextid, $courseroot, $cmid);
 
         if ($result) {
             $lastimg = $result;
@@ -318,7 +318,7 @@ function cleanFilename($filename) {
     return $clean;
 }
 
-function copyFile($file, $component, $filearea, $itemid, $contextid, $course_root, $cmid) {
+function copyFile($file, $component, $filearea, $itemid, $contextid, $courseroot, $cmid) {
     global $CFG;
 
     $is_image = true;
@@ -332,7 +332,7 @@ function copyFile($file, $component, $filearea, $itemid, $contextid, $course_roo
         } else {
             $filedest = "/images/".$sha1;
         }
-        $file->copy_content_to($course_root.$filedest);
+        $file->copy_content_to($courseroot.$filedest);
     } else {
         $link = $CFG->wwwroot.'/course/modedit.php?return=0&sr=0&update='.$cmid;
         $message = 'error_'.($is_image ? 'image' : 'file').'_edit_page';

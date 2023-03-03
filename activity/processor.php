@@ -42,7 +42,7 @@ require_once($CFG->libdir.'/componentlib.class.php');
 
 class ActivityProcessor {
 
-    public $course_root;
+    public $courseroot;
     public $course_id;
     public $server_id;
     public $versionid;
@@ -59,8 +59,8 @@ class ActivityProcessor {
         if (isset($params['id'])) {
             $this->id = $params['id'];
         }
-        if (isset($params['course_root'])) {
-            $this->course_root = $params['course_root'];
+        if (isset($params['courseroot'])) {
+            $this->courseroot = $params['courseroot'];
         }
         if (isset($params['server_id'])) {
             $this->server_id = $params['server_id'];
@@ -94,11 +94,11 @@ class ActivityProcessor {
         $this->current_section = $section;
     }
 
-    public function process_activity($mod, $sect, $act_orderno, $xmlnode=null, $xmldoc=null, $password='') {
+    public function process_activity($mod, $sect, $actorderno, $xmlnode=null, $xmldoc=null, $password='') {
 
         $params = array(
             'id' => $mod->id,
-            'courseroot' => $this->course_root,
+            'courseroot' => $this->courseroot,
             'section' => $this->current_section,
             'server_id' => $this->server_id,
             'course_id' => $this->course_id,
@@ -116,7 +116,7 @@ class ActivityProcessor {
             $page->process();
 
             if ($xmlnode != null) {
-                $page->get_xml($mod, $act_orderno, $xmlnode, $xmldoc, true);
+                $page->get_xml($mod, $actorderno, $xmlnode, $xmldoc, true);
                 $local_media = $page->getLocalMedia();
                 $media_files = $this->local_media_files;
                 $this->local_media_files = array_merge($media_files, $local_media);
@@ -143,7 +143,7 @@ class ActivityProcessor {
             if ($quiz->get_is_valid()) {
                 $quiz->process();
                 if ($xmlnode != null) {
-                    $quiz->get_xml($mod, $act_orderno, $xmlnode, $xmldoc, true);
+                    $quiz->get_xml($mod, $actorderno, $xmlnode, $xmldoc, true);
                 }
                 return $quiz;
             } else {
@@ -154,14 +154,14 @@ class ActivityProcessor {
             $resource = new MobileActivityResource($params);
             $resource->process();
             if ($xmlnode != null) {
-                $resource->get_xml($mod, $act_orderno, $xmlnode, $xmldoc, true);
+                $resource->get_xml($mod, $actorderno, $xmlnode, $xmldoc, true);
             }
             return $resource;
         } else if ($mod->modname == 'url') {
             $url = new MobileActivityUrl($params);
             $url->process();
             if ($xmlnode != null) {
-                $url->get_xml($mod, $act_orderno, $xmlnode, $xmldoc, true);
+                $url->get_xml($mod, $actorderno, $xmlnode, $xmldoc, true);
             }
             return $url;
         } else if ($mod->modname == 'feedback') {
@@ -171,16 +171,16 @@ class ActivityProcessor {
                 'maxattempts' => 'unlimited',
             );
 
-            $grade_boundaries = array();
+            $gradeboundaries = array();
             foreach (get_grade_boundaries($mod->id, $this->server_id) as $gb) {
-                array_push($grade_boundaries, (object)[
+                array_push($gradeboundaries, (object)[
                     $gb->grade => $gb->message
                 ]);
             }
-            rsort($grade_boundaries);
+            rsort($gradeboundaries);
 
-            if (!empty($grade_boundaries)) {
-                $params['config_array']['grade_boundaries'] = $grade_boundaries;
+            if (!empty($gradeboundaries)) {
+                $params['config_array']['grade_boundaries'] = $gradeboundaries;
             }
 
             $feedback = new MobileActivityFeedback($params);
@@ -189,7 +189,7 @@ class ActivityProcessor {
             if ($feedback->get_is_valid()) {
                 $feedback->process();
                 if ($xmlnode != null) {
-                    $feedback->get_xml($mod, $act_orderno, $xmlnode, $xmldoc, true);
+                    $feedback->get_xml($mod, $actorderno, $xmlnode, $xmldoc, true);
                 }
                 return $feedback;
 

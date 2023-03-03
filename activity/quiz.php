@@ -192,16 +192,16 @@ class MobileActivityQuiz extends MobileActivity {
             if ($q->qtype == 'match') {
                 $q->qtype = 'matching';
                 if ($q->options->correctfeedback != "") {
-                    $feedbackJSON = extractLangs($q->options->correctfeedback, true, !$this->keep_html);
-                    $questionprops["correctfeedback"] = json_decode($feedbackJSON);
+                    $feedbackjson = extractLangs($q->options->correctfeedback, true, !$this->keep_html);
+                    $questionprops["correctfeedback"] = json_decode($feedbackjson);
                 }
                 if ($q->options->partiallycorrectfeedback != "") {
-                    $feedbackJSON = extractLangs($q->options->partiallycorrectfeedback, true, !$this->keep_html);
-                    $questionprops["partiallycorrectfeedback"] = json_decode($feedbackJSON);
+                    $feedbackjson = extractLangs($q->options->partiallycorrectfeedback, true, !$this->keep_html);
+                    $questionprops["partiallycorrectfeedback"] = json_decode($feedbackjson);
                 }
                 if ($q->options->incorrectfeedback != "") {
-                    $feedbackJSON = extractLangs($q->options->incorrectfeedback, true, !$this->keep_html);
-                    $questionprops["incorrectfeedback"] = json_decode($feedbackJSON);
+                    $feedbackjson = extractLangs($q->options->incorrectfeedback, true, !$this->keep_html);
+                    $questionprops["incorrectfeedback"] = json_decode($feedbackjson);
                 }
             }
 
@@ -254,8 +254,8 @@ class MobileActivityQuiz extends MobileActivity {
                     $responseprops = array('id' => rand(1, 1000));
 
                     if (strip_tags($r->feedback) != "") {
-                        $feedbackJSON = extractLangs($r->feedback, true, !$this->keep_html);
-                        $responseprops['feedback'] = json_decode($feedbackJSON);
+                        $feedbackjson = extractLangs($r->feedback, true, !$this->keep_html);
+                        $responseprops['feedback'] = json_decode($feedbackjson);
                     }
                     // If numerical also add a tolerance.
                     if ($q->qtype == 'numerical') {

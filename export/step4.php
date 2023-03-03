@@ -135,17 +135,17 @@ if (!is_dir($dataroot."output")) {
     }
 }
 mkdir($dataroot.OPPIA_OUTPUT_DIR.$USER->id."/temp/", 0777, true);
-$course_root = $dataroot.OPPIA_OUTPUT_DIR.$USER->id."/temp/".strtolower($course->shortname);
-mkdir($course_root, 0777);
-mkdir($course_root."/images", 0777);
-$fh = fopen($course_root."/images/.nomedia", 'w');
+$courseroot = $dataroot.OPPIA_OUTPUT_DIR.$USER->id."/temp/".strtolower($course->shortname);
+mkdir($courseroot, 0777);
+mkdir($courseroot."/images", 0777);
+$fh = fopen($courseroot."/images/.nomedia", 'w');
 fclose($fh);
-mkdir($course_root."/resources", 0777);
-$fh = fopen($course_root."/resources/.nomedia", 'w');
+mkdir($courseroot."/resources", 0777);
+$fh = fopen($courseroot."/resources/.nomedia", 'w');
 fclose($fh);
 
-mkdir($course_root."/style_resources", 0777);
-mkdir($course_root."/js", 0777);
+mkdir($courseroot."/style_resources", 0777);
+mkdir($courseroot."/js", 0777);
 
 $PAGE->set_context($context);
 context_helper::preload_course($id);
@@ -216,7 +216,7 @@ foreach ($sectionmods as $modnumber) {
         echo "<p>".$mod->name."</p>";
         $page = new MobileActivityPage(array(
             'id' => $mod->id,
-            'courseroot' => $course_root,
+            'courseroot' => $courseroot,
             'server_id' => $server,
             'section' => 0,
             'keephtml' => $keephtml,
@@ -236,7 +236,7 @@ foreach ($sectionmods as $modnumber) {
 
         $quiz = new MobileActivityQuiz(array(
             'id' => $mod->id,
-            'courseroot' => $course_root,
+            'courseroot' => $courseroot,
             'section' => 0,
             'server_id' => $server,
             'course_id' => $id,
@@ -263,7 +263,7 @@ foreach ($sectionmods as $modnumber) {
 
         $feedback = new MobileActivityFeedback(array(
             'id' => $mod->id,
-            'courseroot' => $course_root,
+            'courseroot' => $courseroot,
             'section' => 0,
             'server_id' => $server,
             'course_id' => $id,
@@ -296,15 +296,15 @@ $filename = extractImageFile($course->summary,
                             'summary',
                             '0',
                             $context->id,
-                            $course_root, 0);
+                            $courseroot, 0);
 
 if ($filename) {
-    $resized_filename = resizeImage($course_root."/".$filename,
-        $course_root."/images/".$course->id.'_'.$context->id,
+    $resized_filename = resizeImage($courseroot."/".$filename,
+        $courseroot."/images/".$course->id.'_'.$context->id,
                         $CFG->block_oppia_mobile_export_course_icon_width,
                         $CFG->block_oppia_mobile_export_course_icon_height,
                         true);
-    unlink($course_root."/".$filename) || die('Unable to delete the file');
+    unlink($courseroot."/".$filename) || die('Unable to delete the file');
     $temp = $xmldoc->createElement("image");
     $temp->appendChild($xmldoc->createAttribute("filename"))->appendChild($xmldoc->createTextNode("/images/".$resized_filename));
     $meta->appendChild($temp);
@@ -315,7 +315,7 @@ $structure = $xmldoc->createElement("structure");
 echo "<h3>".get_string('export_sections_start', PLUGINNAME)."</h3>";
 
 $processor = new ActivityProcessor(array(
-            'course_root' => $course_root,
+            'courseroot' => $courseroot,
             'server_id' => $server,
             'course_id' => $id,
             'course_shortname' => $course->shortname,
@@ -374,14 +374,14 @@ foreach ($sections as $sect) {
                                     'section',
                                     $sect->id,
                                     $context->id,
-                                    $course_root, 0);
+                                    $courseroot, 0);
 
         if ($filename) {
             $resized_filename = resizeImage(
-                $course_root."/".$filename,
-                $course_root."/images/".$sect->id.'_'.$context->id,
+                $courseroot."/".$filename,
+                $courseroot."/images/".$sect->id.'_'.$context->id,
                 $section_width, $section_height, true);
-            unlink($course_root."/".$filename) || die('Unable to delete the file');
+            unlink($courseroot."/".$filename) || die('Unable to delete the file');
             $temp = $xmldoc->createElement("image");
             $temp->appendChild($xmldoc->createAttribute("filename"))->appendChild($xmldoc->createTextNode("/images/".$resized_filename));
             $section->appendChild($temp);
@@ -476,7 +476,7 @@ if (count($MEDIA) > 0 || count($local_media_files) > 0) {
 }
 $xmldoc->preserveWhiteSpace = false;
 $xmldoc->formatOutput = true;
-$xmldoc->save($course_root.OPPIA_MODULE_XML);
+$xmldoc->save($courseroot.OPPIA_MODULE_XML);
 
 
 if ($sect_orderno <= 1) {
@@ -497,7 +497,7 @@ echo $OUTPUT->render_from_template(
         'stylesheet' => $stylesheet,
         'coursetags' => $tags,
         'course_export_status' => $course_export_status,
-        'course_root' => $course_root,
+        'courseroot' => $courseroot,
         'activity_summaries' => json_encode($activity_summaries),
         'wwwroot' => $CFG->wwwroot));
 

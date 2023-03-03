@@ -33,7 +33,7 @@ $stylesheet = required_param('stylesheet', PARAM_TEXT);
 $tags = required_param('coursetags', PARAM_TEXT);
 $server = required_param('server_id', PARAM_TEXT);
 $course_export_status = required_param('course_export_status', PARAM_TEXT);
-$course_root = required_param('course_root', PARAM_TEXT);
+$courseroot = required_param('courseroot', PARAM_TEXT);
 $is_draft = ($course_export_status == 'draft');
 $defaultlang = get_oppiaconfig($id, 'defaultlang', $CFG->block_oppia_mobile_export_default_lang, $server);
 $activity_summaries = json_decode(required_param('activity_summaries', PARAM_TEXT), true);
@@ -65,7 +65,7 @@ $keephtml = get_oppiaconfig($course->id, 'keep_html', '', $server);
 $videooverlay = get_oppiaconfig($id, 'video_overlay', '', $server);
 
 $processor = new ActivityProcessor(array(
-    'course_root' => $course_root,
+    'courseroot' => $courseroot,
     'server_id' => $server,
     'course_id' => $course->id,
     'course_shortname' => $course->shortname,
@@ -164,7 +164,7 @@ $form_values = array_merge(
         'stylesheet' => $stylesheet,
         'coursetags' => $tags,
         'course_export_status' => $course_export_status,
-        'course_root' => $course_root,
+        'courseroot' => $courseroot,
         'has_modified_sections' => count($config_sections) > 0,
         'sections' => $config_sections,
         'wwwroot' => $CFG->wwwroot,

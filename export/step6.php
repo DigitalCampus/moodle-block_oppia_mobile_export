@@ -51,7 +51,7 @@ $stylesheet = required_param('stylesheet', PARAM_TEXT);
 $tags = required_param('coursetags', PARAM_TEXT);
 $server = required_param('server_id', PARAM_TEXT);
 $course_export_status = required_param('course_export_status', PARAM_TEXT);
-$course_root = required_param('course_root', PARAM_TEXT);
+$courseroot = required_param('courseroot', PARAM_TEXT);
 $is_draft = ($course_export_status == 'draft');
 $course = $DB->get_record('course', array('id' => $id));
 
@@ -89,7 +89,7 @@ echo '<div class="oppia_export_section">';
 
 echo '<p class="step">'. get_string('export_xml_valid_start', PLUGINNAME);
 
-if (!file_exists($course_root.OPPIA_MODULE_XML)) {
+if (!file_exists($courseroot.OPPIA_MODULE_XML)) {
     echo "<p>".get_string('error_xml_notfound', PLUGINNAME)."</p>";
     echo $OUTPUT->footer();
     die();
@@ -98,7 +98,7 @@ if (!file_exists($course_root.OPPIA_MODULE_XML)) {
 
 libxml_use_internal_errors(true);
 $xml = new DOMDocument();
-$xml->load($course_root.OPPIA_MODULE_XML);
+$xml->load($courseroot.OPPIA_MODULE_XML);
 
 // We update the local media URLs from the results of the previous step.
 foreach ($xml->getElementsByTagName('file') as $mediafile) {
@@ -167,22 +167,22 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
 
     $xml->preserveWhiteSpace = false;
     $xml->formatOutput = true;
-    $xml->save($course_root.OPPIA_MODULE_XML);
+    $xml->save($courseroot.OPPIA_MODULE_XML);
 
     echo '<p class="step">'. get_string('export_style_start', PLUGINNAME) . ' - ' . $stylesheet. '</p>';
 
     $styles = getCompiledCSSTheme($pluginroot, $stylesheet);
-    if (!file_put_contents($course_root."/style.css", $styles)) {
+    if (!file_put_contents($courseroot."/style.css", $styles)) {
         echo "<p>".get_string('error_style_copy', PLUGINNAME)."</p>";
     }
 
     echo '<p class="step">'. get_string('export_style_resources', PLUGINNAME) . '</p>';
 
-    $style_resources_dir = $course_root.COURSE_STYLES_RESOURCES_DIR;
+    $style_resources_dir = $courseroot.COURSE_STYLES_RESOURCES_DIR;
     recurse_copy($pluginroot."styles/".COMMON_STYLES_RESOURCES_DIR, $style_resources_dir);
     recurse_copy($pluginroot."styles/".$stylesheet."-style-resources/", $style_resources_dir);
 
-    recurse_copy($pluginroot."js/", $course_root."/js/");
+    recurse_copy($pluginroot."js/", $courseroot."/js/");
 
     echo '<p class="step">'. get_string('export_export_complete', PLUGINNAME) . '</p>';
     $dir2zip = $dataroot.OPPIA_OUTPUT_DIR.$USER->id."/temp";

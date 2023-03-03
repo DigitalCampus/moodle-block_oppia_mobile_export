@@ -92,17 +92,17 @@ function populate_digests_for_course($course, $course_id, $server_id, $digests_t
     deleteDir($pluginroot.OPPIA_OUTPUT_DIR."upgrade");
 
     mkdir($pluginroot.OPPIA_OUTPUT_DIR."upgrade"."/temp/", 0777, true);
-    $course_root = $pluginroot.OPPIA_OUTPUT_DIR."upgrade"."/temp/".strtolower($course->shortname);
-    mkdir($course_root, 0777);
-    mkdir($course_root."/images", 0777);
-    $fh = fopen($course_root."/images/.nomedia", 'w');
+    $courseroot = $pluginroot.OPPIA_OUTPUT_DIR."upgrade"."/temp/".strtolower($course->shortname);
+    mkdir($courseroot, 0777);
+    mkdir($courseroot."/images", 0777);
+    $fh = fopen($courseroot."/images/.nomedia", 'w');
     fclose($fh);
-    mkdir($course_root."/resources", 0777);
-    $fh = fopen($course_root."/resources/.nomedia", 'w');
+    mkdir($courseroot."/resources", 0777);
+    $fh = fopen($courseroot."/resources/.nomedia", 'w');
     fclose($fh);
 
     $processor = new ActivityProcessor(array(
-        'course_root' => $course_root,
+        'courseroot' => $courseroot,
         'server_id' => $server_id,
         'course_id' => $course_id,
         'course_shortname' => $course->shortname,
