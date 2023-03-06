@@ -179,7 +179,7 @@ if (is_array($title) && count($title) > 0) {
 } else {
     $temp = $xmldoc->createElement("title");
     $temp->appendChild($xmldoc->createCDATASection(strip_tags($course->fullname)));
-    $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($DEFAULT_LANG));
+    $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($DEFAULTLANG));
     $meta->appendChild($temp);
 }
 $temp = $xmldoc->createElement("shortname");
@@ -197,7 +197,7 @@ if (is_array($summary) && count($summary) > 0) {
 } else {
     $temp = $xmldoc->createElement("description");
     $temp->appendChild($xmldoc->createCDATASection(trim(strip_tags($course->summary))));
-    $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($DEFAULT_LANG));
+    $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($DEFAULTLANG));
     $meta->appendChild($temp);
 }
 
@@ -353,7 +353,7 @@ foreach ($sections as $sect) {
         } else {
             $temp = $xmldoc->createElement("title");
             $temp->appendChild($xmldoc->createCDATASection(strip_tags($secttitle['title'])));
-            $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($default_lang));
+            $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($DEFAULTLANG));
             $section->appendChild($temp);
         }
 
@@ -448,7 +448,7 @@ foreach ($MOBILE_LANGS as $k => $v) {
     $langs->appendChild($temp);
 }
 if (count($MOBILE_LANGS) == 0) {
-    $temp = $xmldoc->createElement("lang", $DEFAULT_LANG);
+    $temp = $xmldoc->createElement("lang", $DEFAULTLANG);
     $langs->appendChild($temp);
 }
 $meta->appendChild($langs);
