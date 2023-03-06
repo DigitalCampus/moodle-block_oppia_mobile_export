@@ -30,18 +30,18 @@ const SELECT_COURSES_DIGEST = 'name="coursepriority"';
 function populate_digests_published_courses($digests_to_preserve = null, $printlogs=true) {
     global $DB, $pluginroot;
 
-    $courses_count = $DB->count_records_select(OPPIA_CONFIG_TABLE,
+    $coursescount = $DB->count_records_select(OPPIA_CONFIG_TABLE,
                 SELECT_COURSES_DIGEST, null,
                 'COUNT(DISTINCT modid)');
 
-    $courses_result = $DB->get_recordset_select(OPPIA_CONFIG_TABLE,
+    $coursesresult = $DB->get_recordset_select(OPPIA_CONFIG_TABLE,
                 SELECT_COURSES_DIGEST, null, null,
                 'DISTINCT modid');
 
-    if (($courses_count > 0) && ($courses_result->valid())) {
-        echo '<p class="lead">' . $courses_count . " courses to process" . '</p>';
+    if (($coursescount > 0) && ($coursesresult->valid())) {
+        echo '<p class="lead">' . $coursescount . " courses to process" . '</p>';
 
-        foreach ($courses_result as $r) {
+        foreach ($coursesresult as $r) {
             $course_id = $r->modid;
             $course = $DB->get_record('course', array('id' => $course_id), '*', $strictness = IGNORE_MISSING);
 
@@ -52,11 +52,11 @@ function populate_digests_published_courses($digests_to_preserve = null, $printl
             echo '<br>';
             echo '<h3>' . strip_tags($course->fullname) . '</h3>';
 
-            $course_servers = $DB->get_recordset_select(OPPIA_CONFIG_TABLE,
+            $courseservers = $DB->get_recordset_select(OPPIA_CONFIG_TABLE,
                 "modid='$course_id'", null, null,
                 "DISTINCT serverid");
 
-            foreach ($course_servers as $s) {
+            foreach ($courseservers as $s) {
                 $serverid = $s->serverid;
                 echo '<strong>Server ID:' . $serverid . '</strong><br>';
                 populate_digests_for_course($course, $course_id, $serverid, null, true);
@@ -66,7 +66,7 @@ function populate_digests_published_courses($digests_to_preserve = null, $printl
         echo "There were no previously exported courses to process.";
     }
 
-    $courses_result->close();
+    $coursesresult->close();
 
 }
 
@@ -77,7 +77,7 @@ function populate_digests_published_courses($digests_to_preserve = null, $printl
       The array's value is the digest that we want to preserve in the output modules.xml. Might be different from the real digest.
 */
 
-function populate_digests_for_course($course, $course_id, $server_id, $digests_to_preserve = null, $printlogs=true) {
+function populate_digests_for_course($course, $course_id, $server_id, $digeststopreserve = null, $printlogs=true) {
     global $CFG, $DEFAULTLANG, $pluginroot;
     $DEFAULTLANG = get_oppiaconfig($course_id, 'default_lang', $CFG->block_oppia_mobile_export_default_lang, $server_id);
 
@@ -147,8 +147,8 @@ function populate_digests_for_course($course, $course_id, $server_id, $digests_t
                 }
                 $moodleactivitymd5 = $activity->md5;
 
-                if ($digests_to_preserve != null) {
-                    $oppiaserverdigest = $digests_to_preserve[$moodleactivitymd5];
+                if ($digeststopreserve != null) {
+                    $oppiaserverdigest = $digeststopreserve[$moodleactivitymd5];
                 }
 
                 save_activity_digest($course_id, $mod->id, $oppiaserverdigest, $moodleactivitymd5, $server_id, $nquestions);

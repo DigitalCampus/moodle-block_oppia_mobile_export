@@ -128,11 +128,11 @@ $digests_to_preserve = array();
 foreach ($xml->getElementsByTagName('activity') as $activity) {
     $digest = $activity->getAttribute('digest');
     // Get digest from previous step if the 'Preserve ID' option was selected.
-    $preserve_digest = optional_param('digest_'.$digest, $digest, PARAM_TEXT);
-    $digests_to_preserve[$digest] = $preserve_digest;
-    $activity->setAttribute('digest', $preserve_digest);
+    $preservedigest = optional_param('digest_'.$digest, $digest, PARAM_TEXT);
+    $digests_to_preserve[$digest] = $preservedigest;
+    $activity->setAttribute('digest', $preservedigest);
     foreach ($activity->getElementsByTagName('content') as $content) {
-        $content->firstChild->nodeValue = str_replace($digest, $preserve_digest, $content->nodeValue);
+        $content->firstChild->nodeValue = str_replace($digest, $preservedigest, $content->nodeValue);
     }
 
     if (isset($activities[$digest])) {
@@ -178,9 +178,9 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
 
     echo '<p class="step">'. get_string('export_style_resources', PLUGINNAME) . '</p>';
 
-    $style_resources_dir = $courseroot.COURSE_STYLES_RESOURCES_DIR;
-    recurse_copy($pluginroot."styles/".COMMON_STYLES_RESOURCES_DIR, $style_resources_dir);
-    recurse_copy($pluginroot."styles/".$stylesheet."-style-resources/", $style_resources_dir);
+    $styleresourcesdir = $courseroot.COURSE_STYLES_RESOURCES_DIR;
+    recurse_copy($pluginroot."styles/".COMMON_STYLES_RESOURCES_DIR, $styleresourcesdir);
+    recurse_copy($pluginroot."styles/".$stylesheet."-style-resources/", $styleresourcesdir);
 
     recurse_copy($pluginroot."js/", $courseroot."/js/");
 

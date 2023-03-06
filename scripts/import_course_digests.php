@@ -85,17 +85,17 @@ function parse_module_file($filename) {
     foreach ($xml->getElementsByTagName('section') as $section) {
         foreach ($section->childNodes as $node) {
             if ($node->nodeName == "title") {
-                $sect_title = strip_tags($node->nodeValue);
+                $secttitle = strip_tags($node->nodeValue);
                 break;
             }
         }
         $sectorderno = $section->getAttribute('order');
-        echo "\nSection " . $sectorderno . ": " . $sect_title . " \n================== \n";
-        $moodle_sect = $sectorderno + 1; // Internally, Moodle starts in 1 with the Pre-Topics section.
+        echo "\nSection " . $sectorderno . ": " . $secttitle . " \n================== \n";
+        $moodlesect = $sectorderno + 1; // Internally, Moodle starts in 1 with the Pre-Topics section.
 
         foreach ($section->getElementsByTagName('activity') as $activity) {
             $digest = $activity->getAttribute('digest');
-            $modid = get_moodle_activity_modid($course->id, $moodle_sect, $activity);
+            $modid = get_moodle_activity_modid($course->id, $moodlesect, $activity);
 
             if ($modid == false) {
                 continue;
@@ -114,7 +114,7 @@ function parse_module_file($filename) {
 
 
 function get_moodle_activity_modid($courseid, $sectorderno, $activity) {
-    global $DB, $MODULE_TYPES;
+    global $DB, $MODULETYPES;
     $title = $activity->getElementsByTagName('title')->item(0)->nodeValue;
     echo " > " . $title . "\n";
 
@@ -139,22 +139,22 @@ function get_moodle_activity_modid($courseid, $sectorderno, $activity) {
     // We get all the activities that match the title.
     $activities = $DB->get_records_select($type, "name LIKE '%{$title}%' and course=$courseid");
     $modid = false;
-    $num_matches = 0;
+    $nummatches = 0;
 
     foreach ($activities as $act) {
         $actid = $act->id;
         // Check if the page belongs to the same section (in case of posible repeated activity titles like "Introduction").
-        $mod = $DB->get_record('course_modules', array('instance' => $actid, 'module' => $MODULE_TYPES[$type], 'section' => $sectorderno));
+        $mod = $DB->get_record('course_modules', array('instance' => $actid, 'module' => $MODULETYPES[$type], 'section' => $sectorderno));
         if ($mod !== false) {
             $modid = $mod->id;
-            $num_matches++;
+            $nummatches++;
         }
     }
 
-    if ($num_matches == 1) {
+    if ($nummatches == 1) {
         return $modid;
     } else {
-        if ($num_matches > 0) {
+        if ($nummatches > 0) {
             echo "   There is more than one activity in the same section with this title, skipping... \n";
         }
         return false;
@@ -162,9 +162,9 @@ function get_moodle_activity_modid($courseid, $sectorderno, $activity) {
 }
 
 function fetch_module_types() {
-    global $DB, $MODULE_TYPES;
+    global $DB, $MODULETYPES;
 
-    $MODULE_TYPES = array(
+    $MODULETYPES = array(
         'page' => '',
         'resource' => '',
         'quiz' => '',
@@ -172,9 +172,9 @@ function fetch_module_types() {
         'url' => ''
     );
 
-    foreach ($MODULE_TYPES as $type => $value) {
+    foreach ($MODULETYPES as $type => $value) {
         $modtype = $DB->get_record('modules', array('name' => $type));
-        $MODULE_TYPES[$type] = $modtype->id;
+        $MODULETYPES[$type] = $modtype->id;
     }
 }
 
@@ -204,19 +204,19 @@ function get_course_by_shortname($xml) {
 function get_and_validate_server($xml) {
     global $CFG, $DB;
 
-    $server_url = $xml->getElementsByTagName('server')->item(0)->nodeValue;
-    if ($server_url == $CFG->block_oppia_mobile_export_default_server) {
-        echo "Using default server (" . $server_url . ")\n";
+    $serverurl = $xml->getElementsByTagName('server')->item(0)->nodeValue;
+    if ($serverurl == $CFG->block_oppia_mobile_export_default_server) {
+        echo "Using default server (" . $serverurl . ")\n";
         return 'default';
     }
 
-    $server = $DB->get_record(OPPIA_SERVER_TABLE, array('url' => $server_url));
+    $server = $DB->get_record(OPPIA_SERVER_TABLE, array('url' => $serverurl));
     if ($server) {
-        echo "Server (" . $server_url . ") found in available servers\n";
+        echo "Server (" . $serverurl . ") found in available servers\n";
         return $server->id;
     }
 
-    echo "The server (" . $server_url . ") the course was exported to was not found in available servers in this Moodle instance.\n";
+    echo "The server (" . $serverurl . ") the course was exported to was not found in available servers in this Moodle instance.\n";
     return false;
 }
 

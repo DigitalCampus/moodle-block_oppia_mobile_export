@@ -31,21 +31,21 @@ class ApiHelper {
 
     public function fetch_server_info($url) {
         $this->init($url);
-        $server_info = $this->exec('server', array(), 'get', false, false);
-        $this->version = $server_info->version;
-        $this->name = $server_info->name;
-        $this->max_upload = $server_info->max_upload;
+        $serverinfo = $this->exec('server', array(), 'get', false, false);
+        $this->version = $serverinfo->version;
+        $this->name = $serverinfo->name;
+        $this->max_upload = $serverinfo->max_upload;
     }
 
-    public function exec($object, $data_array, $type='post', $api_path=true, $print_error_msg=true) {
-        $json = json_encode($data_array);
+    public function exec($object, $dataarray, $type='post', $apipath=true, $printerrormsg=true) {
+        $json = json_encode($dataarray);
         // Check if the url already has trailing '/' or not.
         if (substr($this->url, -strlen('/')) === '/') {
-            $temp_url = $this->url.($api_path ? "api/v2/" : "").$object."/";
+            $tempurl = $this->url.($apipath ? "api/v2/" : "").$object."/";
         } else {
-            $temp_url = $this->url."/".($api_path ? "api/v2/" : "").$object."/";
+            $tempurl = $this->url."/".($apipath ? "api/v2/" : "").$object."/";
         }
-        curl_setopt($this->curl, CURLOPT_URL, $temp_url );
+        curl_setopt($this->curl, CURLOPT_URL, $tempurl );
         if ($type == 'post') {
             curl_setopt($this->curl, CURLOPT_POSTFIELDS, $json);
             curl_setopt($this->curl, CURLOPT_POST, 1);
@@ -56,7 +56,7 @@ class ApiHelper {
         $data = curl_exec($this->curl);
         $json = json_decode($data);
         $httpstatus = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
-        if ($httpstatus != 200 && $httpstatus != 201 && $print_error_msg) {
+        if ($httpstatus != 200 && $httpstatus != 201 && $printerrormsg) {
             echo '<p style="color:red">'.get_string('error_creating_quiz', PLUGINNAME).' ( status code: ' . $httpstatus . ')</p>';
         }
         return $json;

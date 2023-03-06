@@ -175,22 +175,22 @@ switch ($httpstatus) {
         break;
     default:
 }
-$json_response = json_decode($result, true);
+$jsonresponse = json_decode($result, true);
 
-if (is_null($json_response)) {
+if (is_null($jsonresponse)) {
     echo $result;
 } else {
-    if (array_key_exists('message', $json_response)) {
-        show_and_log_message($serverconnection, $id, $json_response['message'], false, "api_publish_response", false);
+    if (array_key_exists('message', $jsonresponse)) {
+        show_and_log_message($serverconnection, $id, $jsonresponse['message'], false, "api_publish_response", false);
     }
-    if (array_key_exists('messages', $json_response)) {
-        $messages = $json_response['messages'];
+    if (array_key_exists('messages', $jsonresponse)) {
+        $messages = $jsonresponse['messages'];
         foreach ($messages as $msg) {
             show_and_log_message($serverconnection, $id, $msg['message'], $msg['tags'], "api_publish_bad_request", true);
         }
     }
-    if (array_key_exists('errors', $json_response)) {
-        $errors = $json_response['errors'];
+    if (array_key_exists('errors', $jsonresponse)) {
+        $errors = $jsonresponse['errors'];
         foreach ($errors as $err) {
             show_and_log_message($serverconnection, $id, $err, 'warning', "api_publish_response_message", true);
         }
@@ -203,8 +203,8 @@ add_publishing_log($serverconnection->url, $USER->id, $id, "api_publish_end", "A
 echo $OUTPUT->footer();
 
 // Function to show on screen the message and save it in the publishing log.
-function show_and_log_message($serverconnection, $course_id, $message, $tags, $log_action, $show_dialog=false) {
+function show_and_log_message($serverconnection, $course_id, $message, $tags, $logaction, $showdialog=false) {
     global $USER;
-    echo '<div class="' . ($show_dialog ? 'export-results' : '') . ' ' .$tags.'">'.$message.'</div>';
-    add_publishing_log($serverconnection->url, $USER->id, $course_id, $log_action, ($tags ? $tags.':' : '').$message);
+    echo '<div class="' . ($showdialog ? 'export-results' : '') . ' ' .$tags.'">'.$message.'</div>';
+    add_publishing_log($serverconnection->url, $USER->id, $course_id, $logaction, ($tags ? $tags.':' : '').$message);
 }

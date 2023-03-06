@@ -53,7 +53,7 @@ class tomobile_langfilter {
 }
 
 function tomobile_langfilter_callback($langblock) {
-    global $CURRENT_LANG;
+    global $CURRENTLANG;
     $searchtosplit = '/<(?:lang|span)[^>]+lang="([a-zA-Z0-9_-]+)"[^>]*>(.*?)<\/(?:lang|span)>/is';
 
     if (!preg_match_all($searchtosplit, $langblock[0], $rawlanglist)) {
@@ -66,8 +66,8 @@ function tomobile_langfilter_callback($langblock) {
         $langlist[$lang] = $rawlanglist[2][$index];
     }
 
-    if (array_key_exists($CURRENT_LANG, $langlist)) {
-        return $langlist[$CURRENT_LANG];
+    if (array_key_exists($CURRENTLANG, $langlist)) {
+        return $langlist[$CURRENTLANG];
     } else {
         return array_shift($langlist);
     }

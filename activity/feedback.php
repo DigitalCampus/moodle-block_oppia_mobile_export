@@ -61,7 +61,7 @@ class MobileActivityFeedback extends MobileActivity {
             $md5postfix .= $key[0].((string) $value);
         }
         $contents = json_encode($quizjson);
-        $this->md5 = md5( $feedback->intro . removeIDsFromJSON($contents) . $md5postfix);
+        $this->md5 = md5( $feedback->intro . remove_ids_from_json($contents) . $md5postfix);
     }
 
     public function preprocess() {

@@ -217,11 +217,11 @@ for ($qid = 0; $qid < count($quizzes); $qid++) {
         $quiz['passthreshold'][$t] = array ("threshold" => $t * 5, "selected" => $currentthreshold == $t * 5);
     }
 
-    $current_maxattempts = get_oppiaconfig($quiz['id'], 'maxattempts', 'unlimited');
+    $currentmaxattempts = get_oppiaconfig($quiz['id'], 'maxattempts', 'unlimited');
     $quiz['attempts_unlimited'] = 'unlimited';
     $quiz['max_attempts'] = [];
     for ($i = 0; $i < MAX_ATTEMPTS; $i++) {
-        $quiz['max_attempts'][$i] = array ("num" => $i + 1, "selected" => $current_maxattempts == $i + 1);
+        $quiz['max_attempts'][$i] = array ("num" => $i + 1, "selected" => $currentmaxattempts == $i + 1);
     }
 
     $quizzes[$qid] = $quiz;

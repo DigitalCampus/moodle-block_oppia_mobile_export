@@ -89,14 +89,14 @@ function remove_oppiaconfig_if_exists($modid, $name, $servid="default") {
     }
 }
 
-function get_oppiaconfig($modid, $name, $default, $servid="default", $use_non_server_value=true) {
+function get_oppiaconfig($modid, $name, $default, $servid="default", $usenonservervalue=true) {
     global $DB;
     $record = $DB->get_record_select(OPPIA_CONFIG_TABLE,
         "modid=$modid and `name`='$name' and serverid='$servid'");
     if ($record) {
         return $record->value;
     } else {
-        if ($use_non_server_value) {
+        if ($usenonservervalue) {
             // Try if there is a non-server value saved.
             $record = $DB->get_record(OPPIA_CONFIG_TABLE, array('modid' => $modid, 'name' => $name));
             if ($record) {
@@ -151,26 +151,26 @@ function get_section_title($section) {
     );
 }
 
-function extract_langs($content, $asJSON = false, $strip_tags = false, $strip_basic_tags = false) {
-    global $MOBILELANGS, $CURRENT_LANG, $DEFAULTLANG;
-    preg_match_all(REGEX_LANGS, $content, $langs_tmp, PREG_OFFSET_CAPTURE);
-    $tempLangs = array();
-    if (isset($langs_tmp['langs']) && count($langs_tmp['langs']) > 0) {
-        for ($i = 0; $i < count($langs_tmp['langs']); $i++) {
-            $lang = $langs_tmp['langs'][$i][0];
+function extract_langs($content, $asjson = false, $striptags = false, $stripbasictags = false) {
+    global $MOBILELANGS, $CURRENTLANG, $DEFAULTLANG;
+    preg_match_all(REGEX_LANGS, $content, $langstmp, PREG_OFFSET_CAPTURE);
+    $templangs = array();
+    if (isset($langstmp['langs']) && count($langstmp['langs']) > 0) {
+        for ($i = 0; $i < count($langstmp['langs']); $i++) {
+            $lang = $langstmp['langs'][$i][0];
             $lang = str_replace("-", "_", $lang);
-            $tempLangs[$lang] = true;
+            $templangs[$lang] = true;
         }
     } else {
-        if ($strip_tags) {
-            if ($strip_basic_tags) {
+        if ($striptags) {
+            if ($stripbasictags) {
                 $content = trim(strip_tags($content));
             } else {
                 $content = trim(strip_tags($content, BASIC_HTML_TAGS));
             }
         }
 
-        if (!$asJSON) {
+        if (!$asjson) {
             return $content;
         } else {
             $json = new stdClass;
@@ -180,35 +180,35 @@ function extract_langs($content, $asJSON = false, $strip_tags = false, $strip_ba
     }
 
     $filter = new tomobile_langfilter();
-    foreach ($tempLangs as $k => $v) {
-        $CURRENT_LANG = $k;
-        if ($strip_tags) {
-            if ($strip_basic_tags) {
-                $tempLangs[$k] = trim(strip_tags($filter->filter($content)));
+    foreach ($templangs as $k => $v) {
+        $CURRENTLANG = $k;
+        if ($striptags) {
+            if ($stripbasictags) {
+                $templangs[$k] = trim(strip_tags($filter->filter($content)));
             } else {
-                $tempLangs[$k] = trim(strip_tags($filter->filter($content), BASIC_HTML_TAGS));
+                $templangs[$k] = trim(strip_tags($filter->filter($content), BASIC_HTML_TAGS));
             }
         } else {
-            $tempLangs[$k] = trim($filter->filter($content));
+            $templangs[$k] = trim($filter->filter($content));
         }
     }
 
     // Reverse array.
-    $tempLangsRev = array_reverse($tempLangs);
-    foreach ($tempLangsRev as $k => $v) {
+    $templangsrev = array_reverse($templangs);
+    foreach ($templangsrev as $k => $v) {
         $MOBILELANGS[$k] = true;
     }
 
-    if ($asJSON) {
-        return json_encode($tempLangsRev);
+    if ($asjson) {
+        return json_encode($templangsrev);
     } else {
-        return $tempLangsRev;
+        return $templangsrev;
     }
 }
 
-function clean_html_entities($text, $replace_br=false) {
+function clean_html_entities($text, $replacebr=false) {
     $cleantext = trim($text);
-    if ($replace_br) {
+    if ($replacebr) {
         $cleantext = preg_replace(REGEX_BR, "\n", $cleantext);
     }
     return preg_replace(REGEX_HTML_ENTITIES, " ", $cleantext);
@@ -216,19 +216,19 @@ function clean_html_entities($text, $replace_br=false) {
 
 function clean_tag_list($tags) {
     // Split on comma.
-    $tagList = explode(",", $tags);
-    $cleanTags = array();
+    $taglist = explode(",", $tags);
+    $cleantags = array();
 
     // Clean each tag separately.
-    foreach ($tagList as $tag) {
-        $cleanTag = trim($tag);
-        $cleanTag = preg_replace(REGEX_FORBIDDEN_TAG_CHARS, "-", $cleanTag);
-        if (strlen($cleanTag) > 0) {
-            array_push($cleanTags, $cleanTag);
+    foreach ($taglist as $tag) {
+        $cleantag = trim($tag);
+        $cleantag = preg_replace(REGEX_FORBIDDEN_TAG_CHARS, "-", $cleantag);
+        if (strlen($cleantag) > 0) {
+            array_push($cleantags, $cleantag);
         }
     }
     // Combine cleanTags to string and return.
-    return implode(", ", $cleanTags);
+    return implode(", ", $cleantags);
 }
 
 function clean_shortname($shortname) {
@@ -237,10 +237,10 @@ function clean_shortname($shortname) {
     return preg_replace('(\-+)', "-", $shortname); // Clean duplicated hyphens.
 }
 
-function removeIDsFromJSON($jsonString) {
-    $jsonString = preg_replace("(\"courseversion\":\"[0-9]+\",?)", "", $jsonString);
-    $jsonString = preg_replace("(\"moodle_question_id\":\"[0-9]+\",?)", "", $jsonString);
-    return preg_replace("(\"id\":[0-9]+,?)", "", $jsonString);
+function remove_ids_from_json($jsonstring) {
+    $jsonstring = preg_replace("(\"courseversion\":\"[0-9]+\",?)", "", $jsonstring);
+    $jsonstring = preg_replace("(\"moodle_question_id\":\"[0-9]+\",?)", "", $jsonstring);
+    return preg_replace("(\"id\":[0-9]+,?)", "", $jsonstring);
 }
 
 
@@ -321,13 +321,13 @@ function cleanFilename($filename) {
 function copyFile($file, $component, $filearea, $itemid, $contextid, $courseroot, $cmid) {
     global $CFG;
 
-    $is_image = true;
+    $isimage = true;
     if ($file) {
         $filename = $file->get_filename();
         $fullpath = '/'. $contextid .'/'. $component .'/'. $filearea .'/'. $itemid .'/'. $filename;
         $sha1 = sha1($fullpath);
         if (preg_match(REGEX_RESOURCE_EXTENSIONS, $filename) > 0) {
-            $is_image = false;
+            $isimage = false;
             $filedest = "/resources/".$filename;
         } else {
             $filedest = "/images/".$sha1;
@@ -335,7 +335,7 @@ function copyFile($file, $component, $filearea, $itemid, $contextid, $courseroot
         $file->copy_content_to($courseroot.$filedest);
     } else {
         $link = $CFG->wwwroot.'/course/modedit.php?return=0&sr=0&update='.$cmid;
-        $message = 'error_'.($is_image ? 'image' : 'file').'_edit_page';
+        $message = 'error_'.($isimage ? 'image' : 'file').'_edit_page';
         echo '<span class="export-error">'.get_string($message, PLUGINNAME, $link).'</span><br/>';
         return false;
     }
@@ -344,21 +344,21 @@ function copyFile($file, $component, $filearea, $itemid, $contextid, $courseroot
     $tr->originalfilename = $filename;
     $tr->filename = sha1($fullpath);
     if ($CFG->block_oppia_mobile_export_debug) {
-        $message = 'export_'.($is_image ? 'image' : 'file').'_success';
+        $message = 'export_'.($isimage ? 'image' : 'file').'_success';
         echo get_string($message, PLUGINNAME, urldecode($filename))."<br/>";
 
     }
-    return ($is_image ? $filedest : false);
+    return ($isimage ? $filedest : false);
 }
 
 
-function resizeImage($image, $image_new_name, $image_width, $image_height, $transparent=false) {
+function resizeImage($image, $imagenewname, $imagewidth, $imageheight, $transparent=false) {
     global $CFG;
 
     if ($CFG->block_oppia_mobile_export_thumb_crop) {
-        $filename = resizeImageCrop($image, $image_new_name, $image_width, $image_height, $transparent);
+        $filename = resize_image_crop($image, $imagenewname, $imagewidth, $imageheight, $transparent);
     } else {
-        $filename = resizeImageScale($image, $image_new_name, $image_width, $image_height, $transparent);
+        $filename = resize_image_scale($image, $imagenewname, $imagewidth, $imageheight, $transparent);
     }
     // Just return the last part of the filename (name + extn... not the dir path).
     $pieces = explode("/", $filename);
@@ -366,110 +366,110 @@ function resizeImage($image, $image_new_name, $image_width, $image_height, $tran
     return $pieces[count($pieces) - 1];
 }
 
-function resizeImageScale($image, $image_new_name, $image_width, $image_height, $transparent=false) {
+function resize_image_scale($image, $imagenewname, $imagewidth, $imageheight, $transparent=false) {
     global $CFG;
     $size = GetimageSize($image);
-    $orig_w = $size[0];
-    $orig_h = $size[1];
-    $ratio_src = $orig_w / $orig_h;
+    $origw = $size[0];
+    $origh = $size[1];
+    $ratiosrc = $origw / $origh;
 
-    $ratio_target = $image_width / $image_height;
+    $ratiotarget = $imagewidth / $imageheight;
 
-    $image_new = ImageCreateTrueColor($image_width, $image_height);
+    $imagenew = ImageCreateTrueColor($imagewidth, $imageheight);
 
     if (!$transparent) {
-        $bg_colour = imagecolorallocate($image_new,
+        $bgcolour = imagecolorallocate($imagenew,
                         $CFG->block_oppia_mobile_export_thumb_bg_r,
                         $CFG->block_oppia_mobile_export_thumb_bg_g,
                         $CFG->block_oppia_mobile_export_thumb_bg_b);
-        imagefill($image_new, 0, 0, $bg_colour);
+        imagefill($imagenew, 0, 0, $bgcolour);
     } else {
-        imagealphablending( $image_new, false );
-        imagesavealpha($image_new, true);
+        imagealphablending( $imagenew, false );
+        imagesavealpha($imagenew, true);
     }
 
     switch($size['mime']) {
         case 'image/jpeg':
-            $image_src = imagecreatefromjpeg($image);
+            $imagesrc = imagecreatefromjpeg($image);
             break;
         case 'image/png':
-            $image_src = imagecreatefrompng($image);
+            $imagesrc = imagecreatefrompng($image);
             break;
         case 'image/gif':
-            $image_src = imagecreatefromgif($image);
+            $imagesrc = imagecreatefromgif($image);
             break;
     }
 
-    if ($orig_h > $orig_w || $ratio_src < $ratio_target) {
-        $border = floor(($image_width - ($image_height * $orig_w / $orig_h)) / 2);
-        imagecopyresampled($image_new, $image_src, $border, 0, 0, 0, $image_width - ($border * 2), $image_height , $orig_w, $orig_h);
+    if ($origh > $origw || $ratiosrc < $ratiotarget) {
+        $border = floor(($imagewidth - ($imageheight * $origw / $origh)) / 2);
+        imagecopyresampled($imagenew, $imagesrc, $border, 0, 0, 0, $imagewidth - ($border * 2), $imageheight , $origw, $origh);
     } else {
-        $border = floor(($image_height - ($image_width * $orig_h / $orig_w)) / 2);
-        imagecopyresampled($image_new, $image_src, 0, $border, 0, 0, $image_width , $image_height - ($border * 2) , $orig_w, $orig_h);
+        $border = floor(($imageheight - ($imagewidth * $origh / $origw)) / 2);
+        imagecopyresampled($imagenew, $imagesrc, 0, $border, 0, 0, $imagewidth , $imageheight - ($border * 2) , $origw, $origh);
     }
-    $image_new_name = $image_new_name.'.png';
-    imagepng($image_new, $image_new_name, 9);
+    $imagenewname = $imagenewname.'.png';
+    imagepng($imagenew, $imagenewname, 9);
 
-    imagedestroy($image_new);
-    imagedestroy($image_src);
-    return $image_new_name;
+    imagedestroy($imagenew);
+    imagedestroy($imagesrc);
+    return $imagenewname;
 }
 
 function IsFileAnImage($filepath) {
     return (preg_match(REGEX_IMAGE_EXTENSIONS, $filepath) > 0);
 }
 
-function resizeImageCrop($image, $image_new_name, $image_width, $image_height, $transparent=false) {
+function resize_image_crop($image, $imagenewname, $imagewidth, $imageheight, $transparent=false) {
     global $CFG;
     if (!file_exists($image)) {
         return false;
     }
     $size = GetimageSize($image);
-    $orig_w = $size[0];
-    $orig_h = $size[1];
-    $ratio_src = $orig_w / $orig_h;
+    $origw = $size[0];
+    $origh = $size[1];
+    $ratiosrc = $origw / $origh;
 
-    $ratio_target = $image_width / $image_height;
+    $ratiotarget = $imagewidth / $imageheight;
 
-    $image_new = ImageCreateTrueColor($image_width, $image_height);
+    $imagenew = ImageCreateTrueColor($imagewidth, $imageheight);
 
     if (!$transparent) {
-        $bg_colour = imagecolorallocate($image_new,
+        $bgcolour = imagecolorallocate($imagenew,
                 $CFG->block_oppia_mobile_export_thumb_bg_r,
                 $CFG->block_oppia_mobile_export_thumb_bg_g,
                 $CFG->block_oppia_mobile_export_thumb_bg_b);
-        imagefill($image_new, 0, 0, $bg_colour);
+        imagefill($imagenew, 0, 0, $bgcolour);
     } else {
-        imagealphablending( $image_new, false );
-        imagesavealpha($image_new, true);
+        imagealphablending( $imagenew, false );
+        imagesavealpha($imagenew, true);
     }
 
     switch($size['mime']) {
         case 'image/jpeg':
-            $image_src = imagecreatefromjpeg($image);
+            $imagesrc = imagecreatefromjpeg($image);
             break;
         case 'image/png':
-            $image_src = imagecreatefrompng($image);
+            $imagesrc = imagecreatefrompng($image);
             break;
         case 'image/gif':
-            $image_src = imagecreatefromgif($image);
+            $imagesrc = imagecreatefromgif($image);
             break;
     }
 
-    if ($ratio_src > $ratio_target) {
-        $crop = floor(($orig_w - ($orig_h * $image_width / $image_height)) / 2);
-        imagecopyresampled($image_new, $image_src, 0, 0, $crop, 0, $image_width, $image_height, $orig_w - ( 2 * $crop), $orig_h);
+    if ($ratiosrc > $ratiotarget) {
+        $crop = floor(($origw - ($origh * $imagewidth / $imageheight)) / 2);
+        imagecopyresampled($imagenew, $imagesrc, 0, 0, $crop, 0, $imagewidth, $imageheight, $origw - ( 2 * $crop), $origh);
     } else {
-        $crop = floor(($orig_h - ($orig_w * $image_height / $image_width)) / 2);
-        imagecopyresampled($image_new, $image_src, 0, 0,  0, $crop,  $image_width, $image_height, $orig_w, $orig_h - (2 * $crop));
+        $crop = floor(($origh - ($origw * $imageheight / $imagewidth)) / 2);
+        imagecopyresampled($imagenew, $imagesrc, 0, 0,  0, $crop,  $imagewidth, $imageheight, $origw, $origh - (2 * $crop));
     }
 
-    $image_new_name = $image_new_name.'.png';
-    imagepng($image_new, $image_new_name, 9);
+    $imagenewname = $imagenewname.'.png';
+    imagepng($imagenew, $imagenewname, 9);
 
-    imagedestroy($image_new);
-    imagedestroy($image_src);
-    return $image_new_name;
+    imagedestroy($imagenew);
+    imagedestroy($imagesrc);
+    return $imagenewname;
 }
 
 function Zip($source, $destination) {
@@ -557,29 +557,29 @@ function recurse_copy($src, $dst) {
 }
 
 
-function createDOMElemFromTemplate($doc, $template_name, $params) {
+function createDOMElemFromTemplate($doc, $templatename, $params) {
     global $OUTPUT;
 
-    $elemHTML = $OUTPUT->render_from_template($template_name, $params);
+    $elemhtml = $OUTPUT->render_from_template($templatename, $params);
     $dom = new DOMDocument();
-    $dom->loadHTML($elemHTML, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+    $dom->loadHTML($elemhtml, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
     return $doc->importNode($dom->documentElement, true);
 }
 
 
 function getCompiledCSSTheme($pluginroot, $theme) {
-    $styles_root = $pluginroot.STYLES_DIR;
-    $theme_scss = file_get_contents($styles_root.STYLES_THEMES_DIR.$theme.".scss");
-    $scss_path = $styles_root.STYLES_BASE_SCSS;
+    $stylesroot = $pluginroot.STYLES_DIR;
+    $themescss = file_get_contents($stylesroot.STYLES_THEMES_DIR.$theme.".scss");
+    $scsspath = $stylesroot.STYLES_BASE_SCSS;
 
     $compiler = new core_scss();
-    $compiler->prepend_raw_scss($theme_scss);
-    $compiler->set_file($scss_path);
+    $compiler->prepend_raw_scss($themescss);
+    $compiler->set_file($scsspath);
 
-    $extra_filename = $styles_root.STYLES_THEMES_DIR.$theme.STYLES_EXTRA_SUFFIX .'.scss';
-    if (file_exists($extra_filename)) {
-        $extra_scss = file_get_contents($extra_filename);
-        $compiler->append_raw_scss($extra_scss);
+    $extrafilename = $stylesroot.STYLES_THEMES_DIR.$theme.STYLES_EXTRA_SUFFIX .'.scss';
+    if (file_exists($extrafilename)) {
+        $extrascss = file_get_contents($extrafilename);
+        $compiler->append_raw_scss($extrascss);
     }
 
     $css = $compiler->to_css();

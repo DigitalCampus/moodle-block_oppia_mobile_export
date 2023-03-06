@@ -30,34 +30,34 @@ require_once($pluginroot . 'lib.php');
 require_once($CFG->libdir.'/componentlib.class.php');
 
 $dataroot = $CFG->dataroot . "/";
-$temp_media = $dataroot.OPPIA_OUTPUT_DIR.$USER->id."/temp_media/";
-if (!file_exists($temp_media)) {
-    mkdir($temp_media, 0777, true);
+$tempmedia = $dataroot.OPPIA_OUTPUT_DIR.$USER->id."/temp_media/";
+if (!file_exists($tempmedia)) {
+    mkdir($tempmedia, 0777, true);
 }
 
 $server = required_param('server', PARAM_TEXT);
 $digest = required_param('digest', PARAM_TEXT);
-$server_base_url = get_server_url($server);
-$media_info = get_media_info($server_base_url, $digest);
+$serverbaseurl = get_server_url($server);
+$mediainfo = get_media_info($serverbaseurl, $digest);
 
-if ((!$media_info) && ($_SERVER['REQUEST_METHOD'] === 'POST')) {
+if ((!$mediainfo) && ($_SERVER['REQUEST_METHOD'] === 'POST')) {
     $file = required_param('moodlefile', PARAM_TEXT);
     $username = required_param('username', PARAM_TEXT);
     $password = required_param('password', PARAM_TEXT);
-    $media_info = publish_media($server_base_url, $file, $username, $password, $temp_media);
+    $mediainfo = publish_media($serverbaseurl, $file, $username, $password, $tempmedia);
 }
 
 header('Content-Type: application/json');
-if (!$media_info) {
+if (!$mediainfo) {
     echo json_encode(array('error' => 'not_valid_json'));
 } else {
-    echo json_encode($media_info);
+    echo json_encode($mediainfo);
 }
 
 
-function get_media_info($server_base_url, $digest) {
+function get_media_info($serverbaseurl, $digest) {
     $curl = curl_init();
-    curl_setopt($curl, CURLOPT_URL, $server_base_url."api/media/".$digest );
+    curl_setopt($curl, CURLOPT_URL, $serverbaseurl."api/media/".$digest );
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
     $response = curl_exec($curl);
     $httpstatus = curl_getinfo($curl, CURLINFO_HTTP_CODE);
@@ -67,7 +67,7 @@ function get_media_info($server_base_url, $digest) {
 }
 
 
-function publish_media($server_base_url, $moodlefile, $username, $password, $temp_media) {
+function publish_media($serverbaseurl, $moodlefile, $username, $password, $tempmedia) {
 
     list($contextid, $component, $filearea, $itemid, $path, $filename) = explode(";", $moodlefile);
     $file = get_file_storage()->get_file($contextid, $component, $filearea, $itemid, $path, $filename);
@@ -77,7 +77,7 @@ function publish_media($server_base_url, $moodlefile, $username, $password, $tem
         return false;
     }
 
-    $temppath = $temp_media . $filename;
+    $temppath = $tempmedia . $filename;
     $success = $file->copy_content_to($temppath);
     if (!$success) {
         http_response_code(500);
@@ -91,7 +91,7 @@ function publish_media($server_base_url, $moodlefile, $username, $password, $tem
             'media_file' => $curlfile);
 
     $curl = curl_init();
-    curl_setopt($curl, CURLOPT_URL,  $server_base_url."api/media/" );
+    curl_setopt($curl, CURLOPT_URL,  $serverbaseurl."api/media/" );
     curl_setopt($curl, CURLOPT_POST, true);
     curl_setopt($curl, CURLOPT_POSTFIELDS, $post);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -109,7 +109,7 @@ function publish_media($server_base_url, $moodlefile, $username, $password, $tem
          * so we try to fetch the info if it was already published in the server
          */
         $digest = required_param('digest', PARAM_TEXT);
-        return get_media_info($server_base_url, $digest);
+        return get_media_info($serverbaseurl, $digest);
     } else {
         return process_response($httpstatus, $response);
     }
@@ -117,30 +117,30 @@ function publish_media($server_base_url, $moodlefile, $username, $password, $tem
 
 function process_response($httpstatus, $response) {
 
-    $json_response = json_decode($response, true);
+    $jsonresponse = json_decode($response, true);
     http_response_code($httpstatus);
 
-    if (!$httpstatus || $httpstatus == 404 || is_null($json_response)) {
+    if (!$httpstatus || $httpstatus == 404 || is_null($jsonresponse)) {
         if (!$httpstatus || !$response) {
             http_response_code(400);
         }
         return false;
     }
-    return get_mediainfo_from_response($json_response);
+    return get_mediainfo_from_response($jsonresponse);
 }
 
-function get_mediainfo_from_response($json_response) {
-    $media_info = array();
-    if (array_key_exists('download_url', $json_response)) {
-        $media_info['download_url'] = $json_response['download_url'];
+function get_mediainfo_from_response($jsonresponse) {
+    $mediainfo = array();
+    if (array_key_exists('download_url', $jsonresponse)) {
+        $mediainfo['download_url'] = $jsonresponse['download_url'];
     }
-    if (array_key_exists('filesize', $json_response)) {
-        $media_info['filesize'] = $json_response['filesize'];
+    if (array_key_exists('filesize', $jsonresponse)) {
+        $mediainfo['filesize'] = $jsonresponse['filesize'];
     }
-    if (array_key_exists('length', $json_response)) {
-        $media_info['length'] = $json_response['length'];
+    if (array_key_exists('length', $jsonresponse)) {
+        $mediainfo['length'] = $jsonresponse['length'];
     }
-    return $media_info;
+    return $mediainfo;
 }
 
 function get_server_url($server) {

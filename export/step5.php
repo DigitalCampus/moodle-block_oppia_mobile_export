@@ -76,7 +76,7 @@ $processor = new ActivityProcessor(array(
 ));
 
 $configsections = array();
-$unmodified_activities = array();
+$unmodifiedactivities = array();
 $sectorderno = 1;
 foreach ($sections as $sect) {
     flush_buffers();
@@ -136,7 +136,7 @@ foreach ($sections as $sect) {
                         ));
                     } else { // The activity wasn't modified.
                         // Include a parameter preserving the value of the digest that is currently in use in the Oppia Server.
-                        $unmodified_activities['digest_' . $currentdigest] = $lastpublisheddigestentry->oppiaserverdigest;
+                        $unmodifiedactivities['digest_' . $currentdigest] = $lastpublisheddigestentry->oppiaserverdigest;
                     }
                 }
             }
@@ -156,7 +156,7 @@ foreach ($sections as $sect) {
 }
 
 $formvalues = array_merge(
-    $unmodified_activities,
+    $unmodifiedactivities,
     array(
         'id' => $id,
         'server_id' => $server,
