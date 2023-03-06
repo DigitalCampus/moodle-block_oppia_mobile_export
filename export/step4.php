@@ -56,7 +56,7 @@ $priority = (int) get_oppiaconfig($id, 'coursepriority', '0', $server);
 $sequencing = get_oppiaconfig($id, 'coursesequencing', '', $server);
 $keephtml = get_oppiaconfig($id, 'keephtml', '', $server);
 $videooverlay = get_oppiaconfig($id, 'videooverlay', '', $server);
-$default_lang = get_oppiaconfig($id, 'default_lang', $CFG->block_oppia_mobile_export_default_lang, $server);
+$DEFAULTLANG = get_oppiaconfig($id, 'default_lang', $CFG->block_oppia_mobile_export_default_lang, $server);
 $thumbheight = get_oppiaconfig($id, 'thumb_height', $CFG->block_oppia_mobile_export_thumb_height, $server);
 $thumbwidth = get_oppiaconfig($id, 'thumb_width', $CFG->block_oppia_mobile_export_thumb_width, $server);
 $sectionheight = get_oppiaconfig($id, 'section_height', $CFG->block_oppia_mobile_export_section_icon_height, $server);
@@ -179,7 +179,7 @@ if (is_array($title) && count($title) > 0) {
 } else {
     $temp = $xmldoc->createElement("title");
     $temp->appendChild($xmldoc->createCDATASection(strip_tags($course->fullname)));
-    $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($default_lang));
+    $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($DEFAULT_LANG));
     $meta->appendChild($temp);
 }
 $temp = $xmldoc->createElement("shortname");
@@ -197,7 +197,7 @@ if (is_array($summary) && count($summary) > 0) {
 } else {
     $temp = $xmldoc->createElement("description");
     $temp->appendChild($xmldoc->createCDATASection(trim(strip_tags($course->summary))));
-    $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($default_lang));
+    $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($DEFAULT_LANG));
     $meta->appendChild($temp);
 }
 
@@ -448,7 +448,7 @@ foreach ($MOBILE_LANGS as $k => $v) {
     $langs->appendChild($temp);
 }
 if (count($MOBILE_LANGS) == 0) {
-    $temp = $xmldoc->createElement("lang", $default_lang);
+    $temp = $xmldoc->createElement("lang", $DEFAULT_LANG);
     $langs->appendChild($temp);
 }
 $meta->appendChild($langs);
