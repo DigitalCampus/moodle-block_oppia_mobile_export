@@ -36,7 +36,7 @@ $course_export_status = required_param('course_export_status', PARAM_TEXT);
 $courseroot = required_param('courseroot', PARAM_TEXT);
 $isdraft = ($course_export_status == 'draft');
 $DEFAULTLANG = get_oppiaconfig($id, 'default_lang', $CFG->block_oppia_mobile_export_default_lang, $server);
-$activity_summaries = json_decode(required_param('activity_summaries', PARAM_TEXT), true);
+$activitysummaries = json_decode(required_param('activity_summaries', PARAM_TEXT), true);
 
 $course = $DB->get_record('course', array('id' => $id));
 $PAGE->set_url(PLUGINPATH.'export/step5.php', array('id' => $id));
@@ -68,14 +68,14 @@ $processor = new ActivityProcessor(array(
     'courseroot' => $courseroot,
     'server_id' => $server,
     'course_id' => $course->id,
-    'course_shortname' => $course->shortname,
+    'courseshortname' => $course->shortname,
     'versionid' => '0',
     'keephtml' => $keephtml,
     'videooverlay' => $videooverlay,
     'printlogs' => false
 ));
 
-$config_sections = array();
+$configsections = array();
 $unmodified_activities = array();
 $sectorderno = 1;
 foreach ($sections as $sect) {
@@ -87,9 +87,9 @@ foreach ($sections as $sect) {
 
     $secttitle = get_section_title($sect);
 
-    $modified_activities_count = 0;
-    $modified_activities = array();
-    $act_orderno = 1;
+    $modifiedactivitiescount = 0;
+    $modifiedactivities = array();
+    $actorderno = 1;
     $processor->set_current_section($sectorderno);
 
     $sectionmods = explode(",", $sect->sequence);
@@ -101,7 +101,7 @@ foreach ($sections as $sect) {
 
         $mod = $mods[$modnumber];
         if ($mod != null) {
-            $last_published_digest_entry = $DB->get_record(OPPIA_DIGEST_TABLE,
+            $lastpublisheddigestentry = $DB->get_record(OPPIA_DIGEST_TABLE,
                 array(
                     'courseid' => $course->id,
                     'modid' => $mod->id,
@@ -110,52 +110,52 @@ foreach ($sections as $sect) {
                 'moodleactivitymd5, oppiaserverdigest, nquestions',
             );
 
-            if ($last_published_digest_entry) {
-                $activity_summary = $activity_summaries[$mod->id];
-                if ($activity_summary != null) {
-                    $moodle_activity_md5 = $last_published_digest_entry->moodleactivitymd5;
-                    $current_digest = $activity_summary['digest'];
+            if ($lastpublisheddigestentry) {
+                $activitysummary = $activitysummaries[$mod->id];
+                if ($activitysummary != null) {
+                    $moodleactivitymd5 = $lastpublisheddigestentry->moodleactivitymd5;
+                    $currentdigest = $activitysummary['digest'];
 
-                    if (strcmp($moodle_activity_md5, $current_digest) !== 0) { // The activity was modified.
+                    if (strcmp($moodleactivitymd5, $currentdigest) !== 0) { // The activity was modified.
 
                         /* For 'quiz' and 'feedback' activities, don't show option to preserve digest
                          * if the number of questions has changed.
                          */
                         if (($mod->modname == 'quiz' || $mod->modname == 'feedback') &&
-                            $last_published_digest_entry->nquestions != $activity_summary['no_questions']) {
+                            $lastpublisheddigestentry->nquestions != $activitysummary['no_questions']) {
                             continue;
                         }
 
-                        $modified_activities_count++;
-                        array_push($modified_activities, array(
+                        $modifiedactivitiescount++;
+                        array_push($modifiedactivities, array(
                             'name' => format_string($mod->name),
                             'act_id' => $mod->id,
-                            'current_digest' => $current_digest,
-                            'last_published_digest' => $last_published_digest_entry->oppiaserverdigest,
+                            'current_digest' => $currentdigest,
+                            'last_published_digest' => $lastpublisheddigestentry->oppiaserverdigest,
                             'icon' => $mod->get_icon_url()->out(),
                         ));
                     } else { // The activity wasn't modified.
                         // Include a parameter preserving the value of the digest that is currently in use in the Oppia Server.
-                        $unmodified_activities['digest_' . $current_digest] = $last_published_digest_entry->oppiaserverdigest;
+                        $unmodified_activities['digest_' . $currentdigest] = $lastpublisheddigestentry->oppiaserverdigest;
                     }
                 }
             }
         }
     }
 
-    if ($act_orderno > 1) {
+    if ($actorderno > 1) {
         $sectorderno++;
     }
 
-    if ($modified_activities_count > 0) {
-        array_push($config_sections, array(
+    if ($modifiedactivitiescount > 0) {
+        array_push($configsections, array(
             'title' => $secttitle['display_title'],
-            'activities' => $modified_activities,
+            'activities' => $modifiedactivities,
         ));
     }
 }
 
-$form_values = array_merge(
+$formvalues = array_merge(
     $unmodified_activities,
     array(
         'id' => $id,
@@ -165,25 +165,25 @@ $form_values = array_merge(
         'coursetags' => $tags,
         'course_export_status' => $course_export_status,
         'courseroot' => $courseroot,
-        'has_modified_sections' => count($config_sections) > 0,
-        'sections' => $config_sections,
+        'has_modified_sections' => count($configsections) > 0,
+        'sections' => $configsections,
         'wwwroot' => $CFG->wwwroot,
         'resolve' => resolve(),
     )
 );
 
-// The next step expect in the form parameters the media_url and the media_length for every media file.
-foreach ($form_values['mediafiles'] as $media_file) {
-    $digest = $media_file['digest'];
+// The next step expect in the form parameters the mediaurl and the media_length for every media file.
+foreach ($formvalues['mediafiles'] as $mediafile) {
+    $digest = $mediafile['digest'];
 
-    $media_url = optional_param($digest, null, PARAM_TEXT);
-    $media_length = optional_param($digest.'_length', null, PARAM_INT);
+    $mediaurl = optional_param($digest, null, PARAM_TEXT);
+    $medialength = optional_param($digest.'_length', null, PARAM_INT);
 
-    $form_values[$digest] = $media_url;
-    $form_values[$digest.'_length'] = $media_length;
+    $formvalues[$digest] = $mediaurl;
+    $formvalues[$digest.'_length'] = $medialength;
 }
 
-echo $OUTPUT->render_from_template(PLUGINNAME.'/export_step5_form', $form_values);
+echo $OUTPUT->render_from_template(PLUGINNAME.'/export_step5_form', $formvalues);
 
 echo $OUTPUT->footer();
 

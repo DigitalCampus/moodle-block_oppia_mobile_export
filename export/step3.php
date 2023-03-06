@@ -73,8 +73,8 @@ echo $OUTPUT->header();
 
 $PAGE->requires->js(PLUGINPATH.'publish/publish_media.js');
 
-global $MOBILE_LANGS;
-$MOBILE_LANGS = array();
+global $MOBILELANGS;
+$MOBILELANGS = array();
 
 global $MEDIA;
 $MEDIA = array();
@@ -91,7 +91,7 @@ add_publishing_log($server, $USER->id, $id, "export_start", "Export process star
 echo "<h2>".get_string('export_step3_title', PLUGINNAME)."</h2>";
 echo '<div class="oppia_export_section py-3">';
 
-$config_sections = array();
+$configsections = array();
 $sectorderno = 1;
 foreach ($sections as $sect) {
     flush_buffers();
@@ -172,7 +172,7 @@ foreach ($sections as $sect) {
 
             $password = get_oppiaconfig($sect->id, 'password', '', $server, false);
 
-            array_push($config_sections, array(
+            array_push($configsections, array(
                 'sectorderno' => $sectorderno,
                 'sect_id' => $sect->id,
                 'password' => $password,
@@ -203,7 +203,7 @@ echo $OUTPUT->render_from_template(
         'server_id' => $server,
         'stylesheet' => $stylesheet,
         'course_export_status' => $course_export_status,
-        'sections' => $config_sections,
+        'sections' => $configsections,
         'wwwroot' => $CFG->wwwroot));
 
 echo $OUTPUT->footer();

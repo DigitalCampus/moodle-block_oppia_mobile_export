@@ -227,7 +227,7 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
 
     echo '<p class="step">'. get_string('export_export_compressed', PLUGINNAME) . '</p>';
 
-    $form_values = array(
+    $formvalues = array(
         'serverconnection' => $serverconnection->url,
         'wwwroot' => $CFG->wwwroot,
         'server_id' => $server,
@@ -242,7 +242,7 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
         'digests_to_preserve' => json_encode($digests_to_preserve)
     );
 
-    echo $OUTPUT->render_from_template(PLUGINNAME.'/export_step6_form', $form_values);
+    echo $OUTPUT->render_from_template(PLUGINNAME.'/export_step6_form', $formvalues);
 
     add_publishing_log($serverconnection->url, $USER->id, $id,  "export_file_created", strtolower($course->shortname)."-".$versionid.".zip");
     add_publishing_log($serverconnection->url, $USER->id, $id,  "export_end", "Export process completed");

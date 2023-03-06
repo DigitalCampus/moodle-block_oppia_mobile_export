@@ -48,7 +48,7 @@ class ActivityProcessor {
     public $versionid;
     public $keephtml;
     public $videooverlay;
-    public $course_shortname;
+    public $courseshortname;
 
     public $current_section;
     public $localmediafiles;
@@ -104,7 +104,7 @@ class ActivityProcessor {
             'course_id' => $this->course_id,
             'printlogs' => $this->printlogs,
             'courseversion' => $this->versionid,
-            'shortname' => $this->course_shortname,
+            'shortname' => $this->courseshortname,
             'summary' => $sect->summary,
             'keephtml' => $this->keephtml,
             'videooverlay' => $this->videooverlay,

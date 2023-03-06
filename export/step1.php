@@ -94,7 +94,7 @@ $thumbwidth = get_oppiaconfig($id, 'thumb_width', $CFG->block_oppia_mobile_expor
 $sectionheight = get_oppiaconfig($id, 'section_height', $CFG->block_oppia_mobile_export_section_icon_height, $server);
 $sectionwidth = get_oppiaconfig($id, 'section_width', $CFG->block_oppia_mobile_export_section_icon_width, $server);
 
-$base_settings = array(
+$basesettings = array(
     'priorities' => $priorities,
     'tags' => get_oppiaconfig($id, 'coursetags', '', $server),
     'default_lang' => get_oppiaconfig($id, 'default_lang', $CFG->block_oppia_mobile_export_default_lang, $server),
@@ -117,7 +117,7 @@ echo $OUTPUT->render_from_template(
         'server' => $server,
         'course_export_status' => $course_status,
         'wwwroot' => $CFG->wwwroot,
-        'base_settings' => $base_settings
+        'base_settings' => $basesettings
     )
 );
 

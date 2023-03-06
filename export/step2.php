@@ -104,7 +104,7 @@ for ($i = 0; $i < 19; $i++) {
 }
 
 $quizzes = array();
-$feedback_activities = array();
+$feedbackactivities = array();
 $orderno = 1;
 foreach ($sections as $sect) {
     $sectionmods = explode(",", $sect->sequence);
@@ -152,19 +152,19 @@ foreach ($sections as $sect) {
                 ));
                 $feedback->preprocess();
                 if ($feedback->get_is_valid() && $feedback->get_no_rated_questions() > 0) {
-                    $grade_0_message = '';
-                    $grade_100_message = '';
-                    $grade_boundaries = array();
+                    $grade0message = '';
+                    $grade100message = '';
+                    $gradeboundaries = array();
                     $gb = get_grade_boundaries($mod->id, $server);
                     usort($gb, 'sort_grade_boundaries_descending');
                     foreach ($gb as $gradeboundary) {
                         switch($gradeboundary->grade) {
-                            case 0:   $grade_0_message = $gradeboundary->message; break;
-                            case 100: $grade_100_message = $gradeboundary->message; break;
+                            case 0:   $grade0message = $gradeboundary->message; break;
+                            case 100: $grade100message = $gradeboundary->message; break;
                             default: {
                                 $selectedindex = array_search(array('grade' => $gradeboundary->grade), $grades);
                                 $grades[$selectedindex]['selected'] = true;
-                                array_push($grade_boundaries, array(
+                                array_push($gradeboundaries, array(
                                     'feedback_id' => $mod->id,
                                     'id' => $gradeboundary->id,
                                     'grade' => $gradeboundary->grade,
@@ -177,15 +177,15 @@ foreach ($sections as $sect) {
                         }
                     }
 
-                    array_push($feedback_activities, array(
+                    array_push($feedbackactivities, array(
                         'section' => $secttitle['display_title'],
                         'name' => format_string($mod->name),
                         'noquestions' => $feedback->get_no_questions(),
                         'id' => $mod->id,
                         'grades' => json_encode($grades),
-                        'gradeBoundaries' => $grade_boundaries,
-                        'grade_100_message' => $grade_100_message,
-                        'grade_0_message' => $grade_0_message,
+                        'gradeBoundaries' => $gradeboundaries,
+                        'grade_100_message' => $grade100message,
+                        'grade_0_message' => $grade0message,
                     ));
                 }
             }
@@ -197,12 +197,12 @@ foreach ($sections as $sect) {
 for ($qid = 0; $qid < count($quizzes); $qid++) {
     $quiz = $quizzes[$qid];
 
-    $current_random = get_oppiaconfig($quiz['id'], 'randomselect', 0);
-    $quiz['random_all'] = $current_random == 0;
+    $currentrandom = get_oppiaconfig($quiz['id'], 'randomselect', 0);
+    $quiz['random_all'] = $currentrandom == 0;
     $quiz['randomselect'] = [];
     if ($quiz['noquestions'] > 1 ) {
         for ($i = 0; $i < $quiz['noquestions']; $i++) {
-            $quiz['randomselect'][$i] = array ("idx" => $i + 1, "selected" => $current_random == $i + 1);
+            $quiz['randomselect'][$i] = array ("idx" => $i + 1, "selected" => $currentrandom == $i + 1);
         }
     }
 
@@ -211,10 +211,10 @@ for ($qid = 0; $qid < count($quizzes); $qid++) {
     $quiz['feedback_always'] = $showfeedback == 1;
     $quiz['feedback_endonly'] = $showfeedback == 2;
 
-    $current_threshold = get_oppiaconfig($quiz['id'], 'passthreshold', 80);
+    $currentthreshold = get_oppiaconfig($quiz['id'], 'passthreshold', 80);
     $quiz['passthreshold'] = [];
     for ($t = 0; $t < 21; $t++) {
-        $quiz['passthreshold'][$t] = array ("threshold" => $t * 5, "selected" => $current_threshold == $t * 5);
+        $quiz['passthreshold'][$t] = array ("threshold" => $t * 5, "selected" => $currentthreshold == $t * 5);
     }
 
     $current_maxattempts = get_oppiaconfig($quiz['id'], 'maxattempts', 'unlimited');
@@ -235,8 +235,8 @@ $formdata = array(
     'wwwroot' => $CFG->wwwroot,
     'display_quizzes_section' => !empty($quizzes),
     'quizzes' => $quizzes,
-    'display_feedback_section' => !empty($feedback_activities),
-    'feedback_activities' => $feedback_activities,
+    'display_feedback_section' => !empty($feedbackactivities),
+    'feedback_activities' => $feedbackactivities,
 );
 
 echo $OUTPUT->render_from_template(PLUGINNAME.'/export_step2_form', $formdata);

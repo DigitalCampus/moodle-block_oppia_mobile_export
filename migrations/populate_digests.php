@@ -105,7 +105,7 @@ function populate_digests_for_course($course, $course_id, $server_id, $digests_t
         'courseroot' => $courseroot,
         'server_id' => $server_id,
         'course_id' => $course_id,
-        'course_shortname' => $course->shortname,
+        'courseshortname' => $course->shortname,
         'versionid' => '0',
         'keephtml' => $keephtml,
         'printlogs' => $printlogs,
@@ -130,7 +130,7 @@ function populate_digests_for_course($course, $course_id, $server_id, $digests_t
         echo "<h4>".get_string('export_renewing_digests_in_section', PLUGINNAME, $sectiontitle)."</h4>";
 
         $sectionmods = explode(",", $sect->sequence);
-        $act_orderno = 1;
+        $actorderno = 1;
         $processor->set_current_section($sectorderno);
 
         foreach ($sectionmods as $modnumber) {
@@ -139,31 +139,31 @@ function populate_digests_for_course($course, $course_id, $server_id, $digests_t
             }
             $mod = $mods[$modnumber];
             echo '<div class="step"><strong>'.$mod->name.'</strong>'.OPPIA_HTML_BR;
-            $activity = $processor->process_activity($mod, $sect, $act_orderno);
+            $activity = $processor->process_activity($mod, $sect, $actorderno);
             if ($activity != null) {
                 $nquestions = null;
                 if (($mod->modname == 'quiz') || ($mod->modname == 'feedback')) {
                     $nquestions = $activity->get_no_questions();
                 }
-                $moodle_activity_md5 = $activity->md5;
+                $moodleactivitymd5 = $activity->md5;
 
                 if ($digests_to_preserve != null) {
-                    $oppia_server_digest = $digests_to_preserve[$moodle_activity_md5];
+                    $oppiaserverdigest = $digests_to_preserve[$moodleactivitymd5];
                 }
 
-                save_activity_digest($course_id, $mod->id, $oppia_server_digest, $moodle_activity_md5, $server_id, $nquestions);
-                $act_orderno++;
+                save_activity_digest($course_id, $mod->id, $oppiaserverdigest, $moodleactivitymd5, $server_id, $nquestions);
+                $actorderno++;
             }
             echo '</div>';
         }
-        if ($act_orderno > 1) {
+        if ($actorderno > 1) {
             $sectorderno++;
         }
     }
     echo '</div>';
 }
 
-function save_activity_digest($courseid, $modid, $oppia_server_digest, $moodle_activity_md5, $serverid, $nquestions=null) {
+function save_activity_digest($courseid, $modid, $oppiaserverdigest, $moodleactivitymd5, $serverid, $nquestions=null) {
     global $DB;
     $date = new DateTime();
     $timestamp = $date->getTimestamp();
@@ -176,27 +176,27 @@ function save_activity_digest($courseid, $modid, $oppia_server_digest, $moodle_a
     );
 
     if ($recordexists) {
-        if ($oppia_server_digest != null) {
-            $recordexists->oppiaserverdigest = $oppia_server_digest;
+        if ($oppiaserverdigest != null) {
+            $recordexists->oppiaserverdigest = $oppiaserverdigest;
         }
-        $recordexists->moodleactivitymd5 = $moodle_activity_md5;
+        $recordexists->moodleactivitymd5 = $moodleactivitymd5;
         $recordexists->updated = $timestamp;
         $recordexists->nquestions = $nquestions;
 
         $DB->update_record(OPPIA_DIGEST_TABLE, $recordexists);
     } else {
-        $oppia_server_digest = $moodle_activity_md5;
+        $oppiaserverdigest = $moodleactivitymd5;
         $DB->insert_record(OPPIA_DIGEST_TABLE,
             array(
                 'courseid' => $courseid,
                 'modid' => $modid,
-                'oppiaserverdigest' => $oppia_server_digest,
-                'moodleactivitymd5' => $moodle_activity_md5,
+                'oppiaserverdigest' => $oppiaserverdigest,
+                'moodleactivitymd5' => $moodleactivitymd5,
                 'updated' => $timestamp,
                 'serverid' => $serverid,
                 'nquestions' => $nquestions)
         );
     }
 
-    echo 'Digest: <span class="alert alert-warning mt-3 py-1">' . ($oppia_server_digest ?? $recordexists->oppiaserverdigest) . '</span>';
+    echo 'Digest: <span class="alert alert-warning mt-3 py-1">' . ($oppiaserverdigest ?? $recordexists->oppiaserverdigest) . '</span>';
 }
