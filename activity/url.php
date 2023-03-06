@@ -38,7 +38,7 @@ class MobileActivityUrl extends MobileActivity {
     }
 
     public function get_xml($mod, $counter, &$node, &$xmldoc, $activity=true) {
-        global $defaultlang;
+        global $DEFAULTLANG;
 
         if (!$activity) {
             return;
@@ -49,7 +49,7 @@ class MobileActivityUrl extends MobileActivity {
         $this->add_lang_xml_nodes($xmldoc, $act, $this->url->intro, "description");
 
         $temp = $xmldoc->createElement("location", $this->url->externalurl);
-        $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($defaultlang));
+        $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($DEFAULTLANG));
         $act->appendChild($temp);
 
         $this->add_thumbnail_xml_node($xmldoc, $act);

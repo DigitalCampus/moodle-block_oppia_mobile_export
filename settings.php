@@ -23,8 +23,8 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configtext(PLUGINNAME.'_default_server', get_string('default_server', PLUGINNAME),
             '', 'https://demo.oppia-mobile.org/', PARAM_TEXT));
 
-    $settings->add(new admin_setting_configtext(PLUGINNAME.'_default_lang', get_string('defaultlang', PLUGINNAME),
-            get_string('defaultlang_info', PLUGINNAME), 'en', PARAM_TEXT));
+    $settings->add(new admin_setting_configtext(PLUGINNAME.'_default_lang', get_string('default_lang', PLUGINNAME),
+            get_string('default_lang_info', PLUGINNAME), 'en', PARAM_TEXT));
 
     $settings->add(new admin_setting_configtext(PLUGINNAME.'_thumb_height', get_string('thumbheight', PLUGINNAME), '', 90, PARAM_INT));
 

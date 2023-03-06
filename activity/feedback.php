@@ -268,7 +268,7 @@ class MobileActivityFeedback extends MobileActivity {
     }
 
     public function get_xml($mod, $counter, &$node, &$xmldoc, $activity=true) {
-        global $defaultlang;
+        global $DEFAULTLANG;
 
         $act = $this->get_activity_node($xmldoc, $mod, $counter);
         $this->add_lang_xml_nodes($xmldoc, $act, $mod->name, "title");
@@ -276,7 +276,7 @@ class MobileActivityFeedback extends MobileActivity {
 
         $temp = $xmldoc->createElement("content");
         $temp->appendChild($xmldoc->createTextNode($this->content));
-        $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($defaultlang));
+        $temp->appendChild($xmldoc->createAttribute("lang"))->appendChild($xmldoc->createTextNode($DEFAULTLANG));
         $act->appendChild($temp);
 
         $node->appendChild($act);

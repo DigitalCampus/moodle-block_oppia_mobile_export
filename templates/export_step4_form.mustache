@@ -1,10 +1,10 @@
 <br>
 
 <div>
-{{# mediafiles.0 }}<h3> {{# str }}media_files_title,block_oppia_mobile_export{{/ str }}</h3>{{/ mediafiles.0 }}
+{{# media_files.0 }}<h3> {{# str }}media_files_title,block_oppia_mobile_export{{/ str }}</h3>{{/ media_files.0 }}
 
 <div class="media_files" data-publish="{{wwwroot}}/blocks/oppia_mobile_export/publish/media.php" data-server="{{server_id}}">
-{{# mediafiles }}
+{{# media_files }}
 	<div class="media_file" data-moodlefile="{{moodlefile}}">
 		<span class="filename">{{filename}}</span> <span class="status loading"></span>
 		<div class="info">
@@ -21,7 +21,7 @@
 		</div>
 	</div>
 	<hr>
-{{/ mediafiles }}
+{{/ media_files }}
 </div>
 
 <form 
