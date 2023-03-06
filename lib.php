@@ -130,12 +130,12 @@ function get_section_title($section) {
 
     $defaultsectiontitle = false;
     $sectiontitle = strip_tags(format_string($section->summary));
-    $title = extractLangs($section->summary);
+    $title = extract_langs($section->summary);
 
     // If the course has no summary, we try to use the section name.
     if ($sectiontitle == "") {
         $sectiontitle = strip_tags(format_string($section->name));
-        $title = extractLangs($section->name);
+        $title = extract_langs($section->name);
     }
     // If the course has neither summary nor name, use the default topic title.
     if ($sectiontitle == "") {
@@ -151,7 +151,7 @@ function get_section_title($section) {
     );
 }
 
-function extractLangs($content, $asJSON = false, $strip_tags = false, $strip_basic_tags = false) {
+function extract_langs($content, $asJSON = false, $strip_tags = false, $strip_basic_tags = false) {
     global $MOBILE_LANGS, $CURRENT_LANG, $DEFAULTLANG;
     preg_match_all(REGEX_LANGS, $content, $langs_tmp, PREG_OFFSET_CAPTURE);
     $tempLangs = array();
@@ -206,7 +206,7 @@ function extractLangs($content, $asJSON = false, $strip_tags = false, $strip_bas
     }
 }
 
-function cleanHTMLEntities($text, $replace_br=false) {
+function clean_html_entities($text, $replace_br=false) {
     $cleantext = trim($text);
     if ($replace_br) {
         $cleantext = preg_replace(REGEX_BR, "\n", $cleantext);
@@ -214,7 +214,7 @@ function cleanHTMLEntities($text, $replace_br=false) {
     return preg_replace(REGEX_HTML_ENTITIES, " ", $cleantext);
 }
 
-function cleanTagList($tags) {
+function clean_tag_list($tags) {
     // Split on comma.
     $tagList = explode(",", $tags);
     $cleanTags = array();
@@ -231,7 +231,7 @@ function cleanTagList($tags) {
     return implode(", ", $cleanTags);
 }
 
-function cleanShortname($shortname) {
+function clean_shortname($shortname) {
     $shortname = trim($shortname);
     $shortname = preg_replace(REGEX_FORBIDDEN_DIR_CHARS, "-", $shortname);
     return preg_replace('(\-+)', "-", $shortname); // Clean duplicated hyphens.

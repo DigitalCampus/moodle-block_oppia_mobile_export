@@ -42,15 +42,15 @@ class MobileActivityPage extends MobileActivity {
         $context = context_module::instance($cm->id);
         $this->generate_md5($page);
 
-        $content = $this->extractAndReplaceLocalMedia($page->content, 'mod_page', 'content',
+        $content = $this->extract_and_replace_local_media($page->content, 'mod_page', 'content',
                                         0, $context->id, $this->courseroot, $cm->id);
-        $content = $this->extractAndReplaceFiles($content, 'mod_page', 'content',
+        $content = $this->extract_and_replace_files($content, 'mod_page', 'content',
                                         0, $context->id, $this->courseroot, $cm->id);
 
         // Get the image from the intro section.
         $this->extract_thumbnail_from_intro($page->intro, $cm->id);
 
-        $langs = extractLangs($content);
+        $langs = extract_langs($content);
         if (is_array($langs) && count($langs) > 0) {
             foreach ($langs as $lang => $text) {
                 // Process individually each language.
@@ -64,7 +64,7 @@ class MobileActivityPage extends MobileActivity {
     private function process_content($context, $modid, $content, $lang) {
         $precontent = $content;
 
-        $content = $this->extractAndReplaceMedia($content);
+        $content = $this->extract_and_replace_media($content);
         // If page has media and no special icon for page, extract the image for first video.
         if ((count($this->pagemedia) > 0 || count($this->pagelocalmedia) > 0) && $this->thumbnailimage == null) {
             if ($this->extract_media_image($precontent, 'mod_page', 'content', $context->id)) {
@@ -86,7 +86,7 @@ class MobileActivityPage extends MobileActivity {
         $webpage .= '</head>';
         $webpage .= '<body>'.$content.'</body></html>';
 
-        $pagefilename = $this->makePageFilename($this->section, $modid, $lang);
+        $pagefilename = $this->make_page_filename($this->section, $modid, $lang);
         $index = $this->courseroot."/".$pagefilename;
         $fh = fopen($index, 'w');
         if ($fh !== false) {
@@ -162,7 +162,7 @@ class MobileActivityPage extends MobileActivity {
         }
     }
 
-    private function extractAndReplaceFiles($content, $component, $filearea, $itemid, $contextid) {
+    private function extract_and_replace_files($content, $component, $filearea, $itemid, $contextid) {
         global $CFG;
 
         preg_match_all(MEDIAFILE_REGEX, $content, $filestmp, PREG_OFFSET_CAPTURE);
@@ -177,7 +177,7 @@ class MobileActivityPage extends MobileActivity {
             $origfilename = $filestmp['filenames'][$i][0];
             $filename = urldecode($origfilename);
             $cleanfilename = cleanFilename($filename);
-            if ( !$this->isLocalMedia($origfilename) ) {
+            if ( !$this->is_local_media($origfilename) ) {
 
                 $filepath = '/';
                 $fs = get_file_storage();
@@ -213,7 +213,7 @@ class MobileActivityPage extends MobileActivity {
         return $content;
     }
 
-    private function extractAndReplaceMedia($content) {
+    private function extract_and_replace_media($content) {
         global $MEDIA;
 
         preg_match_all(EMBED_MEDIA_REGEX, $content, $mediatmp, PREG_OFFSET_CAPTURE);
@@ -241,7 +241,7 @@ class MobileActivityPage extends MobileActivity {
         return str_replace("[[/media]]", "</a>", $content);
     }
 
-    private function extractAndReplaceLocalMedia($content, $component, $filearea, $itemid, $contextid) {
+    private function extract_and_replace_local_media($content, $component, $filearea, $itemid, $contextid) {
         global $CFG;
 
         $contentstoparse = '<div>'.$content.'</div>'; // We add a fake root element to avoid problems with libxml.
@@ -280,7 +280,7 @@ class MobileActivityPage extends MobileActivity {
                     }
                     $filename = $filestmp['filenames'][0][0];
 
-                    if (!$this->isLocalMedia($filename)) {
+                    if (!$this->is_local_media($filename)) {
                         // If it hasn't been added yet, we include it.
                         $fileinfo = getFileInfo(urldecode($filename), $component, $filearea, $itemid, $contextid);
                         array_push($this->pagelocalmedia, $fileinfo);
@@ -316,7 +316,7 @@ class MobileActivityPage extends MobileActivity {
         return $content;
     }
 
-    private function isLocalMedia($filename) {
+    private function is_local_media($filename) {
         $exists = false;
         foreach ($this->pagelocalmedia as $localmedia) {
             if (strpos($localmedia['filename'], $filename) !== false) {
@@ -369,7 +369,7 @@ class MobileActivityPage extends MobileActivity {
         return true;
     }
 
-    private function makePageFilename($sectionno, $name, $lang) {
+    private function make_page_filename($sectionno, $name, $lang) {
         return sprintf('%02d', $sectionno)."_".strtolower(preg_replace("/[^A-Za-z0-9]/i", "_", $name))."_".strtolower($lang).".html";
     }
 

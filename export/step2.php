@@ -59,7 +59,7 @@ $thumbwidth = required_param('thumbwidth', PARAM_INT);
 $sectionheight = required_param('sectionheight', PARAM_INT);
 $sectionwidth = required_param('sectionwidth', PARAM_INT);
 $tags = required_param('coursetags', PARAM_TEXT);
-$tags = cleanTagList($tags);
+$tags = clean_tag_list($tags);
 
 // Save new export configurations for this course and server.
 add_or_update_oppiaconfig($id, 'coursepriority', $priority, $server);

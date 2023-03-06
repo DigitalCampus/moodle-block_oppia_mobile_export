@@ -116,8 +116,8 @@ class MobileActivityFeedback extends MobileActivity {
             $quizprops['maxattempts'] = 1;
         }
 
-        $namejson = extractLangs($cm->name, true);
-        $descjson = extractLangs($feedback->intro, true, !$this->keephtml);
+        $namejson = extract_langs($cm->name, true);
+        $descjson = extract_langs($feedback->intro, true, !$this->keephtml);
 
         $quizjsonquestions = array();
         $quizmaxscore = 0;
@@ -132,7 +132,7 @@ class MobileActivityFeedback extends MobileActivity {
             $responses = array();
             $title = $q->name;
             $required = $q->required == 1;
-            $questiontitle = extractLangs(cleanHTMLEntities($title, true), true, !$this->keephtml);
+            $questiontitle = extract_langs(clean_html_entities($title, true), true, !$this->keephtml);
             $type = null;
             $maxquestionscore = 0;
 
@@ -145,7 +145,7 @@ class MobileActivityFeedback extends MobileActivity {
                 $resps = explode('|', $respstr);
                 $j = 1;
                 foreach ($resps as $resp) {
-                    $resptitle = extractLangs($resp, true, !$this->keephtml, true);
+                    $resptitle = extract_langs($resp, true, !$this->keephtml, true);
                     array_push($responses, array(
                         'order' => $j,
                         'id' => rand(1, 1000),
@@ -161,7 +161,7 @@ class MobileActivityFeedback extends MobileActivity {
             } else if ($q->typ == "label") {
                 // Label.
                 $type = "description";
-                $questiontitle = extractLangs($q->presentation, true, !$this->keephtml);
+                $questiontitle = extract_langs($q->presentation, true, !$this->keephtml);
             } else if ($q->typ == "textarea") {
                 // Long answer.
                 $type = "essay";
@@ -176,7 +176,7 @@ class MobileActivityFeedback extends MobileActivity {
                     $score = is_null($matches[1]) ? "0" : $matches[1];
                     $maxquestionscore = max($maxquestionscore, $score);
                     $resptitle = trim($matches[2]);
-                    $resptitle = extractLangs($resptitle, true, !$this->keephtml, true);
+                    $resptitle = extract_langs($resptitle, true, !$this->keephtml, true);
                     array_push($responses, array(
                         'order' => $j,
                         'id' => rand(1, 1000),
@@ -200,7 +200,7 @@ class MobileActivityFeedback extends MobileActivity {
                 $resps = explode('|', $respstr);
                 $j = 1;
                 foreach ($resps as $resp) {
-                    $resptitle = extractLangs($resp, true, !$this->keephtml, true);
+                    $resptitle = extract_langs($resp, true, !$this->keephtml, true);
                     array_push($responses, array(
                         'order' => $j,
                         'id' => rand(1, 1000),

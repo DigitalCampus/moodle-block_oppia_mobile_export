@@ -65,7 +65,7 @@ $sectionwidth = get_oppiaconfig($id, 'section_width', $CFG->block_oppia_mobile_e
 $localmediafiles = array();
 $course = $DB->get_record('course', array('id' => $id));
 // We clean the shortname of the course (the change doesn't get saved in Moodle).
-$course->shortname = cleanShortname($course->shortname);
+$course->shortname = clean_shortname($course->shortname);
 
 $isdraft = ($course_export_status == 'draft');
 if ($isdraft) {
@@ -168,7 +168,7 @@ $meta->appendChild($xmldoc->createElement("exportversion", $plugin_version));
 
 add_publishing_log($serverconnection->url, $USER->id, $id, "export_start", "Export process starting");
 
-$title = extractLangs($course->fullname);
+$title = extract_langs($course->fullname);
 if (is_array($title) && count($title) > 0) {
     foreach ($title as $l => $t) {
         $temp = $xmldoc->createElement("title");
@@ -186,7 +186,7 @@ $temp = $xmldoc->createElement("shortname");
 $temp->appendChild($xmldoc->createCDATASection(strtolower($course->shortname)));
 $meta->appendChild($temp);
 
-$summary = extractLangs($course->summary);
+$summary = extract_langs($course->summary);
 if (is_array($summary) && count($summary) > 0) {
     foreach ($summary as $l => $s) {
         $temp = $xmldoc->createElement("description");

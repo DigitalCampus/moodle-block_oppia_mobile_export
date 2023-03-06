@@ -121,7 +121,7 @@ abstract class MobileActivity {
     protected function add_lang_xml_nodes($xmldoc, $activitynode, $content, $propertyname) {
         global $DEFAULTLANG;
 
-        $title = extractLangs($content);
+        $title = extract_langs($content);
         if (is_array($title) && count($title) > 0) {
             foreach ($title as $l => $t) {
                 $temp = $xmldoc->createElement($propertyname);

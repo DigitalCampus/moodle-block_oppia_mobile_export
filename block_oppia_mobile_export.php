@@ -66,7 +66,7 @@ class block_oppia_mobile_export extends block_base {
             'sesskey' => sesskey(),
             'wwwplugin' => $CFG->wwwroot.PLUGINPATH,
             'servers' => $servers,
-            'styles' => $this->getStyles($currentstyle),
+            'styles' => $this->get_styles($currentstyle),
             'default_server' => $CFG->block_oppia_mobile_export_default_server,
             'current_style' => $currentstyle,
         );
@@ -84,7 +84,7 @@ class block_oppia_mobile_export extends block_base {
         return $this->content;
     }
 
-    private function getStyles($currentstyle) {
+    private function get_styles($currentstyle) {
 
         $stylesdir = dirname(__FILE__).'/'.STYLES_DIR.STYLES_THEMES_DIR;
         $styles = array();

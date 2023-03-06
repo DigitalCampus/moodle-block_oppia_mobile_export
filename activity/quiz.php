@@ -141,8 +141,8 @@ class MobileActivityQuiz extends MobileActivity {
             }
         }
 
-        $namejson = extractLangs($cm->name, true);
-        $descjson = extractLangs($quiz->intro, true, !$this->keephtml);
+        $namejson = extract_langs($cm->name, true);
+        $descjson = extract_langs($quiz->intro, true, !$this->keephtml);
 
         $quizjsonquestions = array();
         $quizmaxscore = 0;
@@ -192,15 +192,15 @@ class MobileActivityQuiz extends MobileActivity {
             if ($q->qtype == 'match') {
                 $q->qtype = 'matching';
                 if ($q->options->correctfeedback != "") {
-                    $feedbackjson = extractLangs($q->options->correctfeedback, true, !$this->keephtml);
+                    $feedbackjson = extract_langs($q->options->correctfeedback, true, !$this->keephtml);
                     $questionprops["correctfeedback"] = json_decode($feedbackjson);
                 }
                 if ($q->options->partiallycorrectfeedback != "") {
-                    $feedbackjson = extractLangs($q->options->partiallycorrectfeedback, true, !$this->keephtml);
+                    $feedbackjson = extract_langs($q->options->partiallycorrectfeedback, true, !$this->keephtml);
                     $questionprops["partiallycorrectfeedback"] = json_decode($feedbackjson);
                 }
                 if ($q->options->incorrectfeedback != "") {
-                    $feedbackjson = extractLangs($q->options->incorrectfeedback, true, !$this->keephtml);
+                    $feedbackjson = extract_langs($q->options->incorrectfeedback, true, !$this->keephtml);
                     $questionprops["incorrectfeedback"] = json_decode($feedbackjson);
                 }
             }
@@ -220,7 +220,7 @@ class MobileActivityQuiz extends MobileActivity {
                 }
             }
 
-            $questiontitle = extractLangs(cleanHTMLEntities($q->questiontext, true), true, !$this->keephtml);
+            $questiontitle = extract_langs(clean_html_entities($q->questiontext, true), true, !$this->keephtml);
 
             $j = 1;
             // If matching question then concat the options with |.
@@ -233,7 +233,7 @@ class MobileActivityQuiz extends MobileActivity {
                     }
                 }
                 foreach ($q->options->subquestions as $sq) {
-                    $titlejson = extractLangs($sq->questiontext.$this->matchingsperator.$sq->answertext, true, !$this->keephtml, true);
+                    $titlejson = extract_langs($sq->questiontext.$this->matchingsperator.$sq->answertext, true, !$this->keephtml, true);
                     // Add response.
                     $score = ($q->maxmark / $subqs);
 
@@ -254,7 +254,7 @@ class MobileActivityQuiz extends MobileActivity {
                     $responseprops = array('id' => rand(1, 1000));
 
                     if (strip_tags($r->feedback) != "") {
-                        $feedbackjson = extractLangs($r->feedback, true, !$this->keephtml);
+                        $feedbackjson = extract_langs($r->feedback, true, !$this->keephtml);
                         $responseprops['feedback'] = json_decode($feedbackjson);
                     }
                     // If numerical also add a tolerance.
@@ -267,7 +267,7 @@ class MobileActivityQuiz extends MobileActivity {
                         'order' => $j,
                         'id' => rand(1, 1000),
                         'props' => $responseprops,
-                        'title' => json_decode(extractLangs($r->answer, true, !$this->keephtml, true)),
+                        'title' => json_decode(extract_langs($r->answer, true, !$this->keephtml, true)),
                         'score' => sprintf("%.4f", $score)
                     ));
                     $j++;

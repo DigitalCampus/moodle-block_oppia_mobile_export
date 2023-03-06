@@ -19,23 +19,23 @@ use PHPUnit\Framework\TestCase;
 
 class LibTest extends TestCase {
 
-    public function testExtractLangs() {
+    public function test_extract_langs() {
         $content = "";
-        $this->assertSame("", extractLangs($content));
+        $this->assertSame("", extract_langs($content));
 
     }
 
-    public function testCleanShortname() {
+    public function test_clean_shortname() {
         $shortname = "  my course    ";
-        $this->assertSame("my-course", cleanShortname($shortname));
+        $this->assertSame("my-course", clean_shortname($shortname));
 
         $shortname = "My COURSE    ";
-        $this->assertSame("My-COURSE", cleanShortname($shortname));
+        $this->assertSame("My-COURSE", clean_shortname($shortname));
 
         $shortname = "My COURSE ____   ";
-        $this->assertSame("My-COURSE-____", cleanShortname($shortname));
+        $this->assertSame("My-COURSE-____", clean_shortname($shortname));
 
         $shortname = "minun kurssi123  ";
-        $this->assertSame("minun-kurssi123", cleanShortname($shortname));
+        $this->assertSame("minun-kurssi123", clean_shortname($shortname));
     }
 }
