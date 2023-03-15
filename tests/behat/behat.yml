@@ -85,20 +85,20 @@ default:
         - behat_user
         - behat_workshopallocation_manual
   extensions:
-    
-    DVDoug\Behat\CodeCoverage\Extension: 
-      filter: 
-        include: 
-          directories: 
-            'blocks/oppia_mobile_export': ~ 
-      reports: 
-        html: 
-          target: build/coverage-behat 
-        text: 
+
+    DVDoug\Behat\CodeCoverage\Extension:
+      filter:
+        include:
+          directories:
+            'blocks/oppia_mobile_export': ~
+      reports:
+        html:
+          target: '%paths.base%/../../build/coverage-behat/html/'
+        text:
           showColors: true
-        php:
-          target: '%paths.base%/../../build/coverage-behat/coverage.cov'
-    
+        clover:
+          target: '%paths.base%/../../build/coverage-behat/coverage.xml'
+
     Behat\MinkExtension:
       webdriver:
         browser: firefox
@@ -109,9 +109,11 @@ default:
               devtools.console.stdout.content: true
             log:
               level: trace
+            args:
+              - '-headless'
             marionette: false
           marionette: true
-      base_url: 'http://127.0.0.1/moodle'
+      base_url: 'http://localhost:8000'
       goutte: null
 
     Moodle\BehatExtension:
@@ -232,6 +234,9 @@ headlessgeckodriver:
         wd_host: 'http://localhost:4444'
         capabilities:
           extra_capabilities:
+            moz:firefoxOptions:
+              args:
+                - '-headless'
             prefs:
               devtools.console.stdout.content: true
             log:

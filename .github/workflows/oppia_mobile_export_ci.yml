@@ -22,7 +22,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['7.3', '8.0']
+        php: ['8.0']
         moodle-branch: ['MOODLE_400_STABLE']
         database: [mariadb]
 
@@ -69,8 +69,6 @@ jobs:
         env:
           DB: ${{ matrix.database }}
           MOODLE_BRANCH: ${{ matrix.moodle-branch }}
-          WWWROOT: "http://localhost:8000/moodle"
-          BEHATWWWROOT: "http://127.0.0.1:8000/moodle"
 
       # - name: PHPUnit tests
       #   if: ${{ always() }}
@@ -83,22 +81,26 @@ jobs:
           composer require --dev behat/behat
           composer require --dev behat/mink
           composer require --dev behat/mink-extension --with-all-dependencies
-          composer require --dev behat/mink-goutte-driver
-          composer require --dev behat/mink-selenium2-driver
           composer require --dev dvdoug/behat-code-coverage
-          nohup php -S localhost:8000 -t web/ > phpd.log 2>&1 &
-          php --server http://localhost:8000 &
+          nohup php -S localhost:8000 -t moodle/ > phpd.log 2>&1 &
+          geckodriver &
           BEHAT_PATH=`pwd`/moodle/vendor/bin/behat
           BEHAT_CONFIG=`pwd`/moodle/blocks/oppia_mobile_export/tests/behat/behat.yml
-          $BEHAT_PATH --init
-          $BEHAT_PATH --config $BEHAT_CONFIG --tags=ci
+          $BEHAT_PATH --config $BEHAT_CONFIG --tags=@block_oppia_mobile_export --profile=headlessgeckodriver
 
-      - name: Upload artifact
+      - name: Upload Clover coverage artifact
         if: ${{ always() }}
         uses: actions/upload-artifact@v3
         with:
-          name: behat_log
-          path: behat.log
+          name: sonarcloud_coverage
+          path: moodle/blocks/oppia_mobile_export/build/coverage-behat/coverage.xml
+
+      - name: Upload HTML coverage artifact
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: behat_coverage_html
+          path: moodle/blocks/oppia_mobile_export/build/coverage-behat/html/
 
       - name: Check upgrade savepoints
         if: ${{ always() }}
