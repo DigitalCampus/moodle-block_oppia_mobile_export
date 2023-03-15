@@ -98,21 +98,6 @@ default:
           showColors: true
         php:
           target: '%paths.base%/../../build/coverage-behat/coverage.cov'
-    
-    Behat\MinkExtension:
-      webdriver:
-        browser: firefox
-        wd_host: 'http://localhost:4444'
-        capabilities:
-          extra_capabilities:
-            prefs:
-              devtools.console.stdout.content: true
-            log:
-              level: trace
-            marionette: false
-          marionette: true
-      base_url: 'http://127.0.0.1/moodle'
-      goutte: null
 
     Moodle\BehatExtension:
       moodledirroot: '%paths.base%/../../../..'
@@ -202,41 +187,3 @@ default:
         behat_theme_classic_behat_grading: '%paths.base%/../../../../theme/classic/tests/behat/behat_theme_classic_behat_grading.php'
         behat_theme_classic_behat_navigation: '%paths.base%/../../../../theme/classic/tests/behat/behat_theme_classic_behat_navigation.php'
         behat_theme_classic_behat_repository_upload: '%paths.base%/../../../../theme/classic/tests/behat/behat_theme_classic_behat_repository_upload.php'
-geckodriver:
-  suites:
-    default:
-      filters:
-        tags: ~@app
-  extensions:
-    Behat\MinkExtension:
-      webdriver:
-        browser: firefox
-        wd_host: 'http://localhost:4444'
-        capabilities:
-          extra_capabilities:
-            prefs:
-              devtools.console.stdout.content: true
-            log:
-              level: trace
-            marionette: false
-          marionette: true
-headlessgeckodriver:
-  suites:
-    default:
-      filters:
-        tags: ~@app
-  extensions:
-    Behat\MinkExtension:
-      webdriver:
-        browser: firefox
-        wd_host: 'http://localhost:4444'
-        capabilities:
-          extra_capabilities:
-            prefs:
-              devtools.console.stdout.content: true
-            log:
-              level: trace
-            args:
-              - '-headless'
-            marionette: false
-          marionette: true
