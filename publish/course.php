@@ -133,7 +133,7 @@ $post = array(
         'username' => $username,
         'password' => $password,
         'tags' => $tags,
-        'isdraft' => $isdraft,
+        'is_draft' => $isdraft,
         'course_file' => $curlfile);
 
 $curl = curl_init();
