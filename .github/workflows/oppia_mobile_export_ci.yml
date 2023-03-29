@@ -22,7 +22,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['7.3', '8.0']
+        php: ['8.0']
         moodle-branch: ['MOODLE_400_STABLE']
         database: [mariadb]
 
@@ -51,8 +51,9 @@ jobs:
           php-version: ${{ matrix.php }}
           extensions: ${{ matrix.extensions }}
           ini-values: max_input_vars=5000
+          tools: behat
           # none to use phpdbg fallback. Specify pcov (Moodle 3.10 and up) or xdebug to use them instead.
-          coverage: none
+          coverage: xdebug
 
       - name: Initialise moodle-plugin-ci
         run: |
@@ -76,17 +77,30 @@ jobs:
       - name: Behat features
         if: ${{ always() }}
         run: |
-          (
-            set -o pipefail
-            moodle-plugin-ci behat ./plugin 2>&1 | tee behat.log
-          )  
+          composer require --dev moodlehq/behat-extension
+          composer require --dev behat/behat
+          composer require --dev behat/mink
+          composer require --dev behat/mink-extension --with-all-dependencies
+          composer require --dev dvdoug/behat-code-coverage
+          nohup php -S localhost:8000 -t moodle/ > phpd.log 2>&1 &
+          geckodriver &
+          BEHAT_PATH=`pwd`/moodle/vendor/bin/behat
+          BEHAT_CONFIG=`pwd`/moodle/blocks/oppia_mobile_export/tests/behat/behat.yml
+          $BEHAT_PATH --config $BEHAT_CONFIG --tags=@block_oppia_mobile_export --profile=headlessgeckodriver
 
-      - name: Upload artifact
+      - name: Upload Clover coverage artifact
         if: ${{ always() }}
         uses: actions/upload-artifact@v3
         with:
-          name: behat_log
-          path: behat.log
+          name: sonarcloud_coverage
+          path: moodle/blocks/oppia_mobile_export/build/coverage-behat/coverage.xml
+
+      - name: Upload HTML coverage artifact
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: behat_coverage_html
+          path: moodle/blocks/oppia_mobile_export/build/coverage-behat/html/
 
       - name: Check upgrade savepoints
         if: ${{ always() }}
