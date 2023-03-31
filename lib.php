@@ -684,8 +684,8 @@ function get_grade_boundaries($modid, $servid="default") {
         return $records;
     } else {
         // Try if there is a non-server value saved.
-        $records = $DB->get_records(OPPIA_GRADE_BOUNDARY_TABLE,
-            array('modid' => $modid));
+        $records = $DB->get_records_select(OPPIA_GRADE_BOUNDARY_TABLE,
+            "modid=$modid and serverid=''");
         if ($records) {
             return $records;
         } else {
