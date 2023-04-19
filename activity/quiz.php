@@ -335,46 +335,6 @@ class MobileActivityQuiz extends MobileActivity {
         return str_replace("[[/media]]", "", $content);
     }
 
-    private function export_question_images() {
-        global $USER;
-        $cm = get_coursemodule_from_id('quiz', $this->id);
-
-        $quizobj = quiz::create($cm->instance, $USER->id);
-        try {
-            $quizobj->preload_questions();
-            $quizobj->load_questions();
-            $qs = $quizobj->get_questions();
-            foreach ($qs as $q) {
-                extractImageFile($q->questiontext,
-                                        'question',
-                                        'questiontext',
-                                        $q->id,
-                                        $q->contextid,
-                                        $this->courseroot,
-                                        $cm->id);
-            }
-        } catch (moodle_exception $me) {
-            return;
-        }
-    }
-
-    private function export_question_media() {
-        global $USER;
-        $cm = get_coursemodule_from_id('quiz', $this->id);
-
-        $quizobj = quiz::create($cm->instance, $USER->id);
-        try {
-            $quizobj->preload_questions();
-            $quizobj->load_questions();
-            $qs = $quizobj->get_questions();
-            foreach ($qs as $q) {
-                $this->extract_media($q->id, $q->questiontext);
-            }
-        } catch (moodle_exception $me) {
-            return;
-        }
-    }
-
     public function get_xml($mod, $counter, &$node, &$xmldoc, $activity=true) {
         global $DEFAULTLANG;
 
