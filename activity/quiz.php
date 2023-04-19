@@ -108,7 +108,7 @@ class MobileActivityQuiz extends MobileActivity {
     }
 
     public function has_password() {
-        global $DB, $USER;
+        global $DB;
 
         $cm = get_coursemodule_from_id('quiz', $this->id);
         $quiz = $DB->get_record('quiz', array('id' => $cm->instance), '*', MUST_EXIST);

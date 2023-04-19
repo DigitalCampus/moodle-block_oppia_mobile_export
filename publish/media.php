@@ -144,7 +144,7 @@ function get_mediainfo_from_response($jsonresponse) {
 }
 
 function get_server_url($server) {
-    global $DB, $OUTPUT, $USER;
+    global $DB, $OUTPUT, $USER, $CFG;
 
     $serverconnection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid' => $USER->id, 'id' => $server));
     if (!$serverconnection && $server != "default") {
