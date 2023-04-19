@@ -74,7 +74,7 @@ class MobileActivityResource extends MobileActivity {
 
         $filename = $this->filter_filename($file->get_filename());
         $resourcefile = $this->courseroot."/resources/".$filename;
-        $success = $file->copy_content_to($resourcefile);
+        $file->copy_content_to($resourcefile);
 
         $finfo = new finfo(FILEINFO_MIME);
         $type = $finfo->file($resourcefile);

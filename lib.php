@@ -254,7 +254,6 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
     }
 
     $lastimg = false;
-    $toreplace = array();
     for ($i = 0; $i < count($filestmp['filenames']); $i++) {
 
         $filename = trim($filestmp['filenames'][$i][0]);
