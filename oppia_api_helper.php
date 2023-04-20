@@ -31,13 +31,13 @@ class ApiHelper {
 
     public function fetch_server_info($url) {
         $this->init($url);
-        $serverinfo = $this->exec('server', array(), 'get', false, false);
+        $serverinfo = $this->exec('server', array(), false, false, 'get');
         $this->version = $serverinfo->version;
         $this->name = $serverinfo->name;
         $this->max_upload = $serverinfo->max_upload;
     }
 
-    public function exec($object, $dataarray, $type='post', $apipath, $printerrormsg) {
+    public function exec($object, $dataarray, $apipath, $printerrormsg, $type='post') {
         $json = json_encode($dataarray);
         // Check if the url already has trailing '/' or not.
         if (substr($this->url, -strlen('/')) === '/') {
