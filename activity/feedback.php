@@ -267,7 +267,7 @@ class MobileActivityFeedback extends MobileActivity {
         $this->content = json_encode($quizjson);
     }
 
-    public function get_xml($mod, $counter, &$node, &$xmldoc, $activity=true) {
+    public function get_xml($mod, $counter, &$node, &$xmldoc, $activity) {
         global $DEFAULTLANG;
 
         $act = $this->get_activity_node($xmldoc, $mod, $counter);

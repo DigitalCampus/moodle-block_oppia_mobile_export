@@ -53,7 +53,7 @@ abstract class MobileActivity {
     }
 
     abstract public function process();
-    abstract public function get_xml($mod, $counter, &$node, &$xmldoc, $activity=true);
+    abstract public function get_xml($mod, $counter, &$node, &$xmldoc, $activity);
 
     public function extract_thumbnail_from_intro($content, $moduleid) {
         $this->extract_thumbnail($content, $moduleid, 'intro');
@@ -71,11 +71,11 @@ abstract class MobileActivity {
                                         0, $context->id, $this->courseroot, $moduleid);
 
         if ($thumbnail) {
-            $this->save_resized_thumbnail($thumbnail, $moduleid);
+            $this->save_resized_thumbnail($thumbnail, $moduleid, false);
         }
     }
 
-    public function save_resized_thumbnail($thumbnail, $moduleid, $keeporiginal=false) {
+    public function save_resized_thumbnail($thumbnail, $moduleid, $keeporiginal) {
         global $CFG;
 
         $thumbheight = get_oppiaconfig($this->courseid, 'thumb_height', $CFG->block_oppia_mobile_export_thumb_height, $this->serverid);

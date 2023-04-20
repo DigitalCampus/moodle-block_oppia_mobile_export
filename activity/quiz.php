@@ -335,7 +335,7 @@ class MobileActivityQuiz extends MobileActivity {
         return str_replace("[[/media]]", "", $content);
     }
 
-    public function get_xml($mod, $counter, &$node, &$xmldoc, $activity=true) {
+    public function get_xml($mod, $counter, &$node, &$xmldoc, $activity) {
         global $DEFAULTLANG;
 
         $act = $this->get_activity_node($xmldoc, $mod, $counter);

@@ -77,7 +77,7 @@ function populate_digests_published_courses() {
       The array's value is the digest that we want to preserve in the output modules.xml. Might be different from the real digest.
 */
 
-function populate_digests_for_course($course, $course_id, $server_id, $digeststopreserve = null, $printlogs=true) {
+function populate_digests_for_course($course, $course_id, $server_id, $digeststopreserve, $printlogs) {
     global $CFG, $DEFAULTLANG, $pluginroot;
     $DEFAULTLANG = get_oppiaconfig($course_id, 'default_lang', $CFG->block_oppia_mobile_export_default_lang, $server_id);
 

@@ -37,7 +37,7 @@ class MobileActivityUrl extends MobileActivity {
         $this->extract_thumbnail_from_intro($this->url->intro, $cm->id);
     }
 
-    public function get_xml($mod, $counter, &$node, &$xmldoc, $activity=true) {
+    public function get_xml($mod, $counter, &$node, &$xmldoc, $activity) {
         global $DEFAULTLANG;
 
         if (!$activity) {

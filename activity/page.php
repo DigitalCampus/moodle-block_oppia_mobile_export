@@ -68,7 +68,7 @@ class MobileActivityPage extends MobileActivity {
         // If page has media and no special icon for page, extract the image for first video.
         if ((count($this->pagemedia) > 0 || count($this->pagelocalmedia) > 0) && $this->thumbnailimage == null) {
             if ($this->extract_media_image($precontent, 'mod_page', 'content', $context->id)) {
-                $this->save_resized_thumbnail($this->thumbnailimage, $modid);
+                $this->save_resized_thumbnail($this->thumbnailimage, $modid, false);
             }
         } else if ($this->thumbnailimage == null) {
             // If it does not have an image, we try to extract it from the contents.
@@ -105,7 +105,7 @@ class MobileActivityPage extends MobileActivity {
         return $this->pagelocalmedia;
     }
 
-    public function get_xml($mod, $counter, &$node, &$xmldoc, $activity=true) {
+    public function get_xml($mod, $counter, &$node, &$xmldoc, $activity) {
         if ($activity) {
             $struct = $this->get_activity_node($xmldoc, $mod, $counter);
             $node->appendChild($struct);

@@ -47,7 +47,7 @@ class MobileActivityResource extends MobileActivity {
         }
     }
 
-    public function get_xml($mod, $counter, &$node, &$xmldoc, $activity=true) {
+    public function get_xml($mod, $counter, &$node, &$xmldoc, $activity) {
         global $DEFAULTLANG;
 
         if (!$activity) {
