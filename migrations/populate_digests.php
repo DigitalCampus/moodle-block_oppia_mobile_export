@@ -27,8 +27,8 @@ require_once($pluginroot . 'activity/processor.php');
 const SELECT_COURSES_DIGEST = 'name="coursepriority"';
 
 
-function populate_digests_published_courses($digests_to_preserve = null, $printlogs=true) {
-    global $DB, $pluginroot;
+function populate_digests_published_courses() {
+    global $DB;
 
     $coursescount = $DB->count_records_select(OPPIA_CONFIG_TABLE,
                 SELECT_COURSES_DIGEST, null,

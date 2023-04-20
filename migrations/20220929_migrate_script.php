@@ -25,7 +25,7 @@ $CFG->block_oppia_mobile_export_debug = false;
 $starttime = microtime(true);
 
 echo 'Starting populate digest function';
-populate_digests_published_courses(null, false);
+populate_digests_published_courses();
 
 $timediff = microtime(true) - $starttime;
 echo 'Completed in ' . $timediff . ' seconds.';

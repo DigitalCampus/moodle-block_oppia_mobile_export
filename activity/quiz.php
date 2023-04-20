@@ -121,7 +121,7 @@ class MobileActivityQuiz extends MobileActivity {
     }
 
     public function process() {
-        global $DB, $USER;
+        global $DB, $USER, $MEDIA;
 
         $cm = get_coursemodule_from_id('quiz', $this->id);
         $quiz = $DB->get_record('quiz', array('id' => $cm->instance), '*', MUST_EXIST);
@@ -316,8 +316,8 @@ class MobileActivityQuiz extends MobileActivity {
         if (!isset($mediatmp['mediaobject']) || count($mediatmp['mediaobject']) == 0) {
             return $content;
         }
-
-        for ($i = 0; $i < count($mediatmp['mediaobject']); $i++) {
+        $count = count($mediatmp['mediaobject']);
+        for ($i = 0; $i < $count; $i++) {
             $mediajson = json_decode($mediatmp['mediaobject'][$i][0]);
             $toreplace = $mediatmp[0][$i][0];
 

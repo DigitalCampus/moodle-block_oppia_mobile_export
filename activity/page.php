@@ -171,8 +171,9 @@ class MobileActivityPage extends MobileActivity {
             return $content;
         }
         $toreplace = array();
-
-        for ($i = 0; $i < count($filestmp['filenames']); $i++) {
+        $count = count($filestmp['filenames']);
+        
+        for ($i = 0; $i < $count; $i++) {
 
             $origfilename = $filestmp['filenames'][$i][0];
             $filename = urldecode($origfilename);
@@ -221,8 +222,8 @@ class MobileActivityPage extends MobileActivity {
         if (!isset($mediatmp['mediaobject']) || count($mediatmp['mediaobject']) == 0) {
             return $content;
         }
-
-        for ($i = 0; $i < count($mediatmp['mediaobject']); $i++) {
+        $count = count($mediatmp['mediaobject']);
+        for ($i = 0; $i < $count; $i++) {
             $mediajson = json_decode($mediatmp['mediaobject'][$i][0]);
             $toreplace = $mediatmp[0][$i][0];
 
