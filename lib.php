@@ -351,7 +351,7 @@ function copyFile($file, $component, $filearea, $itemid, $contextid, $courseroot
 }
 
 
-function resizeImage($image, $imagenewname, $imagewidth, $imageheight, $transparent=false) {
+function resizeImage($image, $imagenewname, $imagewidth, $imageheight, $transparent) {
     global $CFG;
 
     if ($CFG->block_oppia_mobile_export_thumb_crop) {
@@ -365,7 +365,7 @@ function resizeImage($image, $imagenewname, $imagewidth, $imageheight, $transpar
     return $pieces[count($pieces) - 1];
 }
 
-function resize_image_scale($image, $imagenewname, $imagewidth, $imageheight, $transparent=false) {
+function resize_image_scale($image, $imagenewname, $imagewidth, $imageheight, $transparent) {
     global $CFG;
     $size = GetimageSize($image);
     $origw = $size[0];
@@ -418,7 +418,7 @@ function IsFileAnImage($filepath) {
     return (preg_match(REGEX_IMAGE_EXTENSIONS, $filepath) > 0);
 }
 
-function resize_image_crop($image, $imagenewname, $imagewidth, $imageheight, $transparent=false) {
+function resize_image_crop($image, $imagenewname, $imagewidth, $imageheight, $transparent) {
     global $CFG;
     if (!file_exists($image)) {
         return false;

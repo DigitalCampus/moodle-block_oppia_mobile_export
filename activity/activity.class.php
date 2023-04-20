@@ -84,7 +84,7 @@ abstract class MobileActivity {
         $this->thumbnailimage = $thumbnail;
         $imageresized = resizeImage($this->courseroot . "/". $this->thumbnailimage,
                                     $this->courseroot."/images/".$moduleid,
-                                    $thumbwidth, $thumbheight);
+                                    $thumbwidth, $thumbheight, false);
 
         if ($imageresized) {
             $this->thumbnailimage = "/images/" . $imageresized;
