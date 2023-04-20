@@ -141,8 +141,8 @@ class MobileActivityQuiz extends MobileActivity {
             }
         }
 
-        $namejson = extract_langs($cm->name, true);
-        $descjson = extract_langs($quiz->intro, true, !$this->keephtml);
+        $namejson = extract_langs($cm->name, true, false, false);
+        $descjson = extract_langs($quiz->intro, true, !$this->keephtml, false);
 
         $quizjsonquestions = array();
         $quizmaxscore = 0;
@@ -192,15 +192,15 @@ class MobileActivityQuiz extends MobileActivity {
             if ($q->qtype == 'match') {
                 $q->qtype = 'matching';
                 if ($q->options->correctfeedback != "") {
-                    $feedbackjson = extract_langs($q->options->correctfeedback, true, !$this->keephtml);
+                    $feedbackjson = extract_langs($q->options->correctfeedback, true, !$this->keephtml, false);
                     $questionprops["correctfeedback"] = json_decode($feedbackjson);
                 }
                 if ($q->options->partiallycorrectfeedback != "") {
-                    $feedbackjson = extract_langs($q->options->partiallycorrectfeedback, true, !$this->keephtml);
+                    $feedbackjson = extract_langs($q->options->partiallycorrectfeedback, true, !$this->keephtml, false);
                     $questionprops["partiallycorrectfeedback"] = json_decode($feedbackjson);
                 }
                 if ($q->options->incorrectfeedback != "") {
-                    $feedbackjson = extract_langs($q->options->incorrectfeedback, true, !$this->keephtml);
+                    $feedbackjson = extract_langs($q->options->incorrectfeedback, true, !$this->keephtml, false);
                     $questionprops["incorrectfeedback"] = json_decode($feedbackjson);
                 }
             }
@@ -254,7 +254,7 @@ class MobileActivityQuiz extends MobileActivity {
                     $responseprops = array('id' => rand(1, 1000));
 
                     if (strip_tags($r->feedback) != "") {
-                        $feedbackjson = extract_langs($r->feedback, true, !$this->keephtml);
+                        $feedbackjson = extract_langs($r->feedback, true, !$this->keephtml, false);
                         $responseprops['feedback'] = json_decode($feedbackjson);
                     }
                     // If numerical also add a tolerance.

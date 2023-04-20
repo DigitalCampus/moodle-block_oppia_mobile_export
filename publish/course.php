@@ -203,7 +203,7 @@ add_publishing_log($serverconnection->url, $USER->id, $id, "api_publish_end", "A
 echo $OUTPUT->footer();
 
 // Function to show on screen the message and save it in the publishing log.
-function show_and_log_message($serverconnection, $course_id, $message, $tags, $logaction, $showdialog=false) {
+function show_and_log_message($serverconnection, $course_id, $message, $tags, $logaction, $showdialog) {
     global $USER;
     echo '<div class="' . ($showdialog ? 'export-results' : '') . ' ' .$tags.'">'.$message.'</div>';
     add_publishing_log($serverconnection->url, $USER->id, $course_id, $logaction, ($tags ? $tags.':' : '').$message);

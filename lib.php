@@ -130,12 +130,12 @@ function get_section_title($section) {
 
     $defaultsectiontitle = false;
     $sectiontitle = strip_tags(format_string($section->summary));
-    $title = extract_langs($section->summary);
+    $title = extract_langs($section->summary, false, false, false);
 
     // If the course has no summary, we try to use the section name.
     if ($sectiontitle == "") {
         $sectiontitle = strip_tags(format_string($section->name));
-        $title = extract_langs($section->name);
+        $title = extract_langs($section->name, false, false, false);
     }
     // If the course has neither summary nor name, use the default topic title.
     if ($sectiontitle == "") {
@@ -151,7 +151,7 @@ function get_section_title($section) {
     );
 }
 
-function extract_langs($content, $asjson = false, $striptags = false, $stripbasictags = false) {
+function extract_langs($content, $asjson, $striptags, $stripbasictags) {
     global $MOBILELANGS, $CURRENTLANG, $DEFAULTLANG;
     preg_match_all(REGEX_LANGS, $content, $langstmp, PREG_OFFSET_CAPTURE);
     $templangs = array();

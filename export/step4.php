@@ -168,7 +168,7 @@ $meta->appendChild($xmldoc->createElement("exportversion", $pluginversion));
 
 add_publishing_log($serverconnection->url, $USER->id, $id, "export_start", "Export process starting");
 
-$title = extract_langs($course->fullname);
+$title = extract_langs($course->fullname, false, false, false);
 if (is_array($title) && count($title) > 0) {
     foreach ($title as $l => $t) {
         $temp = $xmldoc->createElement("title");
@@ -186,7 +186,7 @@ $temp = $xmldoc->createElement("shortname");
 $temp->appendChild($xmldoc->createCDATASection(strtolower($course->shortname)));
 $meta->appendChild($temp);
 
-$summary = extract_langs($course->summary);
+$summary = extract_langs($course->summary, false, false, false);
 if (is_array($summary) && count($summary) > 0) {
     foreach ($summary as $l => $s) {
         $temp = $xmldoc->createElement("description");

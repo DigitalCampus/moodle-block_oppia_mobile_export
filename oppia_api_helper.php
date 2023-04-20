@@ -37,7 +37,7 @@ class ApiHelper {
         $this->max_upload = $serverinfo->max_upload;
     }
 
-    public function exec($object, $dataarray, $type='post', $apipath=true, $printerrormsg=true) {
+    public function exec($object, $dataarray, $type='post', $apipath, $printerrormsg) {
         $json = json_encode($dataarray);
         // Check if the url already has trailing '/' or not.
         if (substr($this->url, -strlen('/')) === '/') {

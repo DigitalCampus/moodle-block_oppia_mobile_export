@@ -116,8 +116,8 @@ class MobileActivityFeedback extends MobileActivity {
             $quizprops['maxattempts'] = 1;
         }
 
-        $namejson = extract_langs($cm->name, true);
-        $descjson = extract_langs($feedback->intro, true, !$this->keephtml);
+        $namejson = extract_langs($cm->name, true, false, false);
+        $descjson = extract_langs($feedback->intro, true, !$this->keephtml, false);
 
         $quizjsonquestions = array();
         $quizmaxscore = 0;
@@ -132,7 +132,7 @@ class MobileActivityFeedback extends MobileActivity {
             $responses = array();
             $title = $q->name;
             $required = $q->required == 1;
-            $questiontitle = extract_langs(clean_html_entities($title, true), true, !$this->keephtml);
+            $questiontitle = extract_langs(clean_html_entities($title, true), true, !$this->keephtml, false);
             $type = null;
             $maxquestionscore = 0;
 
@@ -161,7 +161,7 @@ class MobileActivityFeedback extends MobileActivity {
             } else if ($q->typ == "label") {
                 // Label.
                 $type = "description";
-                $questiontitle = extract_langs($q->presentation, true, !$this->keephtml);
+                $questiontitle = extract_langs($q->presentation, true, !$this->keephtml, false);
             } else if ($q->typ == "textarea") {
                 // Long answer.
                 $type = "essay";

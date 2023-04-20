@@ -50,7 +50,7 @@ class MobileActivityPage extends MobileActivity {
         // Get the image from the intro section.
         $this->extract_thumbnail_from_intro($page->intro, $cm->id);
 
-        $langs = extract_langs($content);
+        $langs = extract_langs($content, false, false, false);
         if (is_array($langs) && count($langs) > 0) {
             foreach ($langs as $lang => $text) {
                 // Process individually each language.
