@@ -220,7 +220,7 @@ class MobileActivityQuiz extends MobileActivity {
                 }
             }
 
-            $questiontitle = extract_langs(clean_html_entities($q->questiontext, true), true, !$this->keephtml);
+            $questiontitle = extract_langs(clean_html_entities($q->questiontext, true), true, !$this->keephtml, false);
 
             $j = 1;
             // If matching question then concat the options with |.
