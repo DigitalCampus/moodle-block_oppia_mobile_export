@@ -197,7 +197,7 @@ foreach ($sections as $sect) {
 for ($qid = 0; $qid < count($quizzes); $qid++) {
     $quiz = $quizzes[$qid];
 
-    $currentrandom = get_oppiaconfig($quiz['id'], 'randomselect', 0);
+    $currentrandom = get_oppiaconfig($quiz['id'], 'randomselect', 0, true);
     $quiz['random_all'] = $currentrandom == 0;
     $quiz['randomselect'] = [];
     if ($quiz['noquestions'] > 1 ) {
@@ -206,18 +206,18 @@ for ($qid = 0; $qid < count($quizzes); $qid++) {
         }
     }
 
-    $showfeedback = get_oppiaconfig($quiz['id'], 'showfeedback', 2);
+    $showfeedback = get_oppiaconfig($quiz['id'], 'showfeedback', 2, true);
     $quiz['feedback_never'] = $showfeedback == 0;
     $quiz['feedback_always'] = $showfeedback == 1;
     $quiz['feedback_endonly'] = $showfeedback == 2;
 
-    $currentthreshold = get_oppiaconfig($quiz['id'], 'passthreshold', 80);
+    $currentthreshold = get_oppiaconfig($quiz['id'], 'passthreshold', 80, true);
     $quiz['passthreshold'] = [];
     for ($t = 0; $t < 21; $t++) {
         $quiz['passthreshold'][$t] = array ("threshold" => $t * 5, "selected" => $currentthreshold == $t * 5);
     }
 
-    $currentmaxattempts = get_oppiaconfig($quiz['id'], 'maxattempts', 'unlimited');
+    $currentmaxattempts = get_oppiaconfig($quiz['id'], 'maxattempts', 'unlimited', true);
     $quiz['attempts_unlimited'] = 'unlimited';
     $quiz['max_attempts'] = [];
     for ($i = 0; $i < MAX_ATTEMPTS; $i++) {

@@ -35,7 +35,7 @@ $server = required_param('server_id', PARAM_TEXT);
 $course_export_status = required_param('course_export_status', PARAM_TEXT);
 $courseroot = required_param('courseroot', PARAM_TEXT);
 $isdraft = ($course_export_status == 'draft');
-$DEFAULTLANG = get_oppiaconfig($id, 'default_lang', $CFG->block_oppia_mobile_export_default_lang, $server);
+$DEFAULTLANG = get_oppiaconfig($id, 'default_lang', $CFG->block_oppia_mobile_export_default_lang, true, $server);
 $activitysummaries = json_decode(required_param('activity_summaries', PARAM_TEXT), true);
 
 $course = $DB->get_record('course', array('id' => $id));
@@ -61,8 +61,8 @@ echo "<h2>".get_string('export_step5_title', PLUGINNAME)."</h2>";
 $modinfo = get_fast_modinfo($course);
 $sections = $modinfo->get_section_info_all();
 $mods = $modinfo->get_cms();
-$keephtml = get_oppiaconfig($course->id, 'keephtml', '', $server);
-$videooverlay = get_oppiaconfig($id, 'videooverlay', '', $server);
+$keephtml = get_oppiaconfig($course->id, 'keephtml', '', true, $server);
+$videooverlay = get_oppiaconfig($id, 'videooverlay', '', true, $server);
 
 $processor = new ActivityProcessor(array(
     'courseroot' => $courseroot,

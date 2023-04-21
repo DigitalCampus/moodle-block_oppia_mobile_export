@@ -125,10 +125,10 @@ class ActivityProcessor {
 
         } else if ($mod->modname == 'quiz') {
 
-            $randomselect = get_oppiaconfig($mod->id, 'randomselect', 0, $this->server_id);
-            $passthreshold = get_oppiaconfig($mod->id, 'passthreshold', 0, $this->server_id);
-            $showfeedback = get_oppiaconfig($mod->id, 'showfeedback', 1, $this->server_id);
-            $maxattempts = get_oppiaconfig($mod->id, 'maxattempts', 'unlimited', $this->server_id);
+            $randomselect = get_oppiaconfig($mod->id, 'randomselect', 0, true, $this->server_id);
+            $passthreshold = get_oppiaconfig($mod->id, 'passthreshold', 0, true, $this->server_id);
+            $showfeedback = get_oppiaconfig($mod->id, 'showfeedback', 1, true, $this->server_id);
+            $maxattempts = get_oppiaconfig($mod->id, 'maxattempts', 'unlimited', true, $this->server_id);
 
             $params['config_array'] = array(
                 'randomselect' => $randomselect,

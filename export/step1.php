@@ -80,24 +80,24 @@ if (!$serverconnection && $server != "default") {
     die();
 }
 
-$priority = (int) get_oppiaconfig($id, 'coursepriority', '0', $server);
+$priority = (int) get_oppiaconfig($id, 'coursepriority', '0', true, $server);
 $priorities = [];
 for ($i = 0; $i <= PRIORITY_LEVELS; $i++) {
     $priorities[$i] = array ("idx" => $i, "selected" => $i == $priority );
 }
 
-$sequencing = get_oppiaconfig($id, 'coursesequencing', '', $server);
-$keephtml = get_oppiaconfig($id, 'keephtml', '', $server);
-$videooverlay = get_oppiaconfig($id, 'videooverlay', '', $server);
-$thumbheight = get_oppiaconfig($id, 'thumb_height', $CFG->block_oppia_mobile_export_thumb_height, $server);
-$thumbwidth = get_oppiaconfig($id, 'thumb_width', $CFG->block_oppia_mobile_export_thumb_width, $server);
-$sectionheight = get_oppiaconfig($id, 'section_height', $CFG->block_oppia_mobile_export_section_icon_height, $server);
-$sectionwidth = get_oppiaconfig($id, 'section_width', $CFG->block_oppia_mobile_export_section_icon_width, $server);
+$sequencing = get_oppiaconfig($id, 'coursesequencing', '', true, $server);
+$keephtml = get_oppiaconfig($id, 'keephtml', '', true, $server);
+$videooverlay = get_oppiaconfig($id, 'videooverlay', '', true, $server);
+$thumbheight = get_oppiaconfig($id, 'thumb_height', $CFG->block_oppia_mobile_export_thumb_height, true, $server);
+$thumbwidth = get_oppiaconfig($id, 'thumb_width', $CFG->block_oppia_mobile_export_thumb_width, true, $server);
+$sectionheight = get_oppiaconfig($id, 'section_height', $CFG->block_oppia_mobile_export_section_icon_height, true, $server);
+$sectionwidth = get_oppiaconfig($id, 'section_width', $CFG->block_oppia_mobile_export_section_icon_width, true, $server);
 
 $basesettings = array(
     'priorities' => $priorities,
-    'tags' => get_oppiaconfig($id, 'coursetags', '', $server),
-    'default_lang' => get_oppiaconfig($id, 'default_lang', $CFG->block_oppia_mobile_export_default_lang, $server),
+    'tags' => get_oppiaconfig($id, 'coursetags', '', true, $server),
+    'default_lang' => get_oppiaconfig($id, 'default_lang', $CFG->block_oppia_mobile_export_default_lang, true, $server),
     'keephtml' => $keephtml,
     'videooverlay' => $videooverlay,
     'thumbheight' => $thumbheight,

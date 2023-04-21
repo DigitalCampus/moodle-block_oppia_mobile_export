@@ -51,16 +51,16 @@ $stylesheet = required_param('stylesheet', PARAM_TEXT);
 $server = required_param('server_id', PARAM_TEXT);
 $course_export_status = required_param('course_export_status', PARAM_TEXT);
 
-$tags = get_oppiaconfig($id, 'coursetags', '', $server);
-$priority = (int) get_oppiaconfig($id, 'coursepriority', '0', $server);
-$sequencing = get_oppiaconfig($id, 'coursesequencing', '', $server);
-$keephtml = get_oppiaconfig($id, 'keephtml', '', $server);
-$videooverlay = get_oppiaconfig($id, 'videooverlay', '', $server);
-$DEFAULTLANG = get_oppiaconfig($id, 'default_lang', $CFG->block_oppia_mobile_export_default_lang, $server);
-$thumbheight = get_oppiaconfig($id, 'thumb_height', $CFG->block_oppia_mobile_export_thumb_height, $server);
-$thumbwidth = get_oppiaconfig($id, 'thumb_width', $CFG->block_oppia_mobile_export_thumb_width, $server);
-$sectionheight = get_oppiaconfig($id, 'section_height', $CFG->block_oppia_mobile_export_section_icon_height, $server);
-$sectionwidth = get_oppiaconfig($id, 'section_width', $CFG->block_oppia_mobile_export_section_icon_width, $server);
+$tags = get_oppiaconfig($id, 'coursetags', '', true, $server);
+$priority = (int) get_oppiaconfig($id, 'coursepriority', '0', true, $server);
+$sequencing = get_oppiaconfig($id, 'coursesequencing', '', true, $server);
+$keephtml = get_oppiaconfig($id, 'keephtml', '', true, $server);
+$videooverlay = get_oppiaconfig($id, 'videooverlay', '', true, $server);
+$DEFAULTLANG = get_oppiaconfig($id, 'default_lang', $CFG->block_oppia_mobile_export_default_lang, true, $server);
+$thumbheight = get_oppiaconfig($id, 'thumb_height', $CFG->block_oppia_mobile_export_thumb_height, true, $server);
+$thumbwidth = get_oppiaconfig($id, 'thumb_width', $CFG->block_oppia_mobile_export_thumb_width, true, $server);
+$sectionheight = get_oppiaconfig($id, 'section_height', $CFG->block_oppia_mobile_export_section_icon_height, true, $server);
+$sectionwidth = get_oppiaconfig($id, 'section_width', $CFG->block_oppia_mobile_export_section_icon_width, true, $server);
 
 $localmediafiles = array();
 $course = $DB->get_record('course', array('id' => $id));
@@ -229,10 +229,10 @@ foreach ($sectionmods as $modnumber) {
     if ($mod->modname == 'quiz' && $mod->visible == 1) {
         echo "<p>".$mod->name."</p>";
 
-        $randomselect = get_oppiaconfig($id, 'randomselect', 0, $server);
-        $passthreshold = get_oppiaconfig($id, 'passthreshold', 0, $server);
-        $showfeedback = get_oppiaconfig($id, 'showfeedback', 2, $server);
-        $maxattempts = get_oppiaconfig($id, 'maxattempts', 'unlimited', $server);
+        $randomselect = get_oppiaconfig($id, 'randomselect', 0, true, $server);
+        $passthreshold = get_oppiaconfig($id, 'passthreshold', 0, true, $server);
+        $showfeedback = get_oppiaconfig($id, 'showfeedback', 2, true, $server);
+        $maxattempts = get_oppiaconfig($id, 'maxattempts', 'unlimited', true, $server);
 
         $quiz = new MobileActivityQuiz(array(
             'id' => $mod->id,

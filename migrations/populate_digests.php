@@ -79,13 +79,13 @@ function populate_digests_published_courses() {
 
 function populate_digests_for_course($course, $course_id, $server_id, $digeststopreserve, $printlogs) {
     global $CFG, $DEFAULTLANG, $pluginroot;
-    $DEFAULTLANG = get_oppiaconfig($course_id, 'default_lang', $CFG->block_oppia_mobile_export_default_lang, $server_id);
+    $DEFAULTLANG = get_oppiaconfig($course_id, 'default_lang', $CFG->block_oppia_mobile_export_default_lang, true, $server_id);
 
     $modinfo = course_modinfo::instance($course_id);
     $sections = $modinfo->get_section_info_all();
     $mods = $modinfo->get_cms();
 
-    $keephtml = get_oppiaconfig($course_id, 'keephtml', '', $server_id);
+    $keephtml = get_oppiaconfig($course_id, 'keephtml', '', true, $server_id);
     $course->shortname = clean_shortname($course->shortname);
 
     delete_dir($pluginroot.OPPIA_OUTPUT_DIR."upgrade"."/temp");

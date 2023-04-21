@@ -59,7 +59,7 @@ class block_oppia_mobile_export extends block_base {
             array_push($servers, $s);
         }
 
-        $currentstyle = get_oppiaconfig($COURSE->id, 'stylesheet', STYLESHEET_DEFAULT);
+        $currentstyle = get_oppiaconfig($COURSE->id, 'stylesheet', STYLESHEET_DEFAULT, true);
 
         $settings = array(
             'id' => $COURSE->id,

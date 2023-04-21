@@ -89,7 +89,7 @@ function remove_oppiaconfig_if_exists($modid, $name, $servid="default") {
     }
 }
 
-function get_oppiaconfig($modid, $name, $default, $servid="default", $usenonservervalue=true) {
+function get_oppiaconfig($modid, $name, $default, $usenonservervalue, $servid="default") {
     global $DB;
     $record = $DB->get_record_select(OPPIA_CONFIG_TABLE,
         "modid=$modid and `name`='$name' and serverid='$servid'");
