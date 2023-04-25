@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+require_once($CFG->dirroot.'/config.php');
 require_once(dirname(__FILE__) . '/constants.php');
 
 class ApiHelper {
@@ -21,7 +22,7 @@ class ApiHelper {
     private $curl;
     public $version;
     public $name;
-    public $max_upload;
+    public $maxupload;
 
     public function init($url) {
         $this->url = $url;
@@ -34,7 +35,7 @@ class ApiHelper {
         $serverinfo = $this->exec('server', array(), false, false, 'get');
         $this->version = $serverinfo->version;
         $this->name = $serverinfo->name;
-        $this->max_upload = $serverinfo->max_upload;
+        $this->maxupload = $serverinfo->max_upload;
     }
 
     public function exec($object, $dataarray, $apipath, $printerrormsg, $type='post') {
