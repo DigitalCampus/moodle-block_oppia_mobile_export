@@ -171,7 +171,7 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
 
     echo '<p class="step">'. get_string('export_style_start', PLUGINNAME) . ' - ' . $stylesheet. '</p>';
 
-    $styles = getCompiledCSSTheme($pluginroot, $stylesheet);
+    $styles = get_compiled_css_theme($pluginroot, $stylesheet);
     if (!file_put_contents($courseroot."/style.css", $styles)) {
         echo "<p>".get_string('error_style_copy', PLUGINNAME)."</p>";
     }
@@ -190,7 +190,7 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
     $zipname = strtolower($course->shortname).'-'.$versionid.'.zip';
     $ziprelativepath = OPPIA_OUTPUT_DIR.$USER->id."/".$zipname;
     $outputpath = $dataroot.$ziprelativepath;
-    Zip($dir2zip, $outputpath);
+    zip_oppia_course($dir2zip, $outputpath);
 
     add_or_update_oppiaconfig($id, 'stylesheet', $stylesheet, null);
 

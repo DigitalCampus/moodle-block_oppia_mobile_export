@@ -306,7 +306,7 @@ class MobileActivityPage extends MobileActivity {
                 }
             }
 
-            $embed = createDOMElemFromTemplate($html, PLUGINNAME.'/video_embed', $videoparams);
+            $embed = create_dom_element_from_template($html, PLUGINNAME.'/video_embed', $videoparams);
             $video->parentNode->replaceChild($embed, $video);
         }
 

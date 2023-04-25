@@ -471,7 +471,7 @@ function resize_image_crop($image, $imagenewname, $imagewidth, $imageheight, $tr
     return $imagenewname;
 }
 
-function Zip($source, $destination) {
+function zip_oppia_course($source, $destination) {
     if (!extension_loaded('zip') || !file_exists($source)) {
         echo '<span class="export-error">Unable to load Zip extension (is it correctly installed and configured in the Moodle server?)</span><br/>';
         return false;
@@ -556,7 +556,7 @@ function recurse_copy($src, $dst) {
 }
 
 
-function createDOMElemFromTemplate($doc, $templatename, $params) {
+function create_dom_element_from_template($doc, $templatename, $params) {
     global $OUTPUT;
 
     $elemhtml = $OUTPUT->render_from_template($templatename, $params);
@@ -566,7 +566,7 @@ function createDOMElemFromTemplate($doc, $templatename, $params) {
 }
 
 
-function getCompiledCSSTheme($pluginroot, $theme) {
+function get_compiled_css_theme($pluginroot, $theme) {
     $stylesroot = $pluginroot.STYLES_DIR;
     $themescss = file_get_contents($stylesroot.STYLES_THEMES_DIR.$theme.".scss");
     $scsspath = $stylesroot.STYLES_BASE_SCSS;
@@ -632,7 +632,7 @@ function block_oppia_mobile_export_pluginfile($course, $cm, $context, $filearea,
     send_stored_file($file, 86400, 0, $forcedownload, $options);
 }
 
-function cleanUpExportedFiles($context, $userid) {
+function clean_up_exported_files($context, $userid) {
     $fs = get_file_storage();
     $files = $fs->get_area_files(
         $context->id,

@@ -40,7 +40,7 @@ echo $OUTPUT->header();
 
 echo "<p>".get_string('cleanup_start', PLUGINNAME)."</p>";
 delete_dir($CFG->dataroot."/".OPPIA_OUTPUT_DIR.$USER->id);
-cleanUpExportedFiles($context, $USER->id);
+clean_up_exported_files($context, $USER->id);
 echo "<p>".get_string('cleanup_end', PLUGINNAME)."</p>";
 
 echo $OUTPUT->footer();
