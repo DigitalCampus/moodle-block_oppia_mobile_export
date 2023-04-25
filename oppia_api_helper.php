@@ -50,7 +50,10 @@ class ApiHelper {
         if ($type == 'post') {
             curl_setopt($this->curl, CURLOPT_POSTFIELDS, $json);
             curl_setopt($this->curl, CURLOPT_POST, 1);
-            curl_setopt($this->curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Content-Length: ' . strlen($json) ));
+            curl_setopt($this->curl,
+                CURLOPT_HTTPHEADER,
+                array('Content-Type: application/json',
+                    'Content-Length: ' . strlen($json) ));
         } else {
             curl_setopt($this->curl, CURLOPT_HTTPGET, 1 );
         }

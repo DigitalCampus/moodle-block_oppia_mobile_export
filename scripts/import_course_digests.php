@@ -114,7 +114,7 @@ function parse_module_file($filename) {
 
 
 function get_moodle_activity_modid($courseid, $sectorderno, $activity) {
-    global $DB, $MODULETYPES;
+    global $DB, $moduletypes;
     $title = $activity->getElementsByTagName('title')->item(0)->nodeValue;
     echo " > " . $title . "\n";
 
@@ -144,7 +144,7 @@ function get_moodle_activity_modid($courseid, $sectorderno, $activity) {
     foreach ($activities as $act) {
         $actid = $act->id;
         // Check if the page belongs to the same section (in case of posible repeated activity titles like "Introduction").
-        $mod = $DB->get_record('course_modules', array('instance' => $actid, 'module' => $MODULETYPES[$type], 'section' => $sectorderno));
+        $mod = $DB->get_record('course_modules', array('instance' => $actid, 'module' => $moduletypes[$type], 'section' => $sectorderno));
         if ($mod !== false) {
             $modid = $mod->id;
             $nummatches++;
@@ -162,9 +162,9 @@ function get_moodle_activity_modid($courseid, $sectorderno, $activity) {
 }
 
 function fetch_module_types() {
-    global $DB, $MODULETYPES;
+    global $DB, $moduletypes;
 
-    $MODULETYPES = array(
+    $moduletypes = array(
         'page' => '',
         'resource' => '',
         'quiz' => '',
@@ -172,9 +172,9 @@ function fetch_module_types() {
         'url' => ''
     );
 
-    foreach ($MODULETYPES as $type => $value) {
+    foreach ($moduletypes as $type => $value) {
         $modtype = $DB->get_record('modules', array('name' => $type));
-        $MODULETYPES[$type] = $modtype->id;
+        $moduletypes[$type] = $modtype->id;
     }
 }
 
