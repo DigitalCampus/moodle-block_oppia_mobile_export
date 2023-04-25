@@ -50,7 +50,7 @@ class ActivityProcessor {
     public $videooverlay;
     public $courseshortname;
 
-    public $current_section;
+    public $currentsection;
     public $localmediafiles;
 
     public $printlogs = true;
@@ -91,7 +91,7 @@ class ActivityProcessor {
     }
 
     public function set_current_section($section) {
-        $this->current_section = $section;
+        $this->currentsection = $section;
     }
 
     public function process_activity($mod, $sect, $actorderno, $xmlnode=null, $xmldoc=null, $password='') {
@@ -99,7 +99,7 @@ class ActivityProcessor {
         $params = array(
             'id' => $mod->id,
             'courseroot' => $this->courseroot,
-            'section' => $this->current_section,
+            'section' => $this->currentsection,
             'serverid' => $this->serverid,
             'courseid' => $this->courseid,
             'printlogs' => $this->printlogs,

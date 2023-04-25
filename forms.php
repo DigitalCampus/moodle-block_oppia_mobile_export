@@ -35,7 +35,7 @@ class OppiaServerForm extends moodleform {
     }
 
     // Custom validation should be added here.
-    function validation($data, $files) {
+    public function validation($data, $files) {
         $errors = array();
         if (trim($data['server_ref']) == "") {
             $errors['server_ref'] = get_string('server_form_name_error_none', PLUGINNAME);
