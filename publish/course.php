@@ -46,7 +46,7 @@ $server = required_param('server_id', PARAM_TEXT);
 $username = required_param('username', PARAM_TEXT);
 $password = required_param('password', PARAM_TEXT);
 $course_status = required_param('course_export_status', PARAM_TEXT);
-$digests_to_preserve = required_param('digests_to_preserve', PARAM_TEXT);
+$digeststopreserve = required_param('digeststopreserve', PARAM_TEXT);
 
 $course = $DB->get_record('course', array('id' => $id));
 
@@ -170,7 +170,7 @@ switch ($httpstatus) {
     case "201":
         $msgtext = get_string('publish_message_201', PLUGINNAME);
         show_and_log_message($serverconnection, $id, $msgtext, false, "api_publish_success", false);
-        populate_digests_for_course($course, $course->id, $server, json_decode($digests_to_preserve, true), false);
+        populate_digests_for_course($course, $course->id, $server, json_decode($digeststopreserve, true), false);
         delete_dir($dataroot.OPPIA_OUTPUT_DIR.$USER->id."/temp");
         break;
     default:

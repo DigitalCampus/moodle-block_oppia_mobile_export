@@ -72,7 +72,7 @@ function populate_digests_published_courses() {
 
 
 /*
-    'digests_to_preserve' is an array containing the value of the digest that we have to preserve.
+    'digeststopreserve' is an array containing the value of the digest that we have to preserve.
       The array's key is the real digest of the moodle activity.
       The array's value is the digest that we want to preserve in the output modules.xml. Might be different from the real digest.
 */

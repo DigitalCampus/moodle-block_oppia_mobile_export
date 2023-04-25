@@ -123,13 +123,13 @@ foreach ($xml->getElementsByTagName('file') as $mediafile) {
 
 $activities = array();
 $duplicated = array();
-$digests_to_preserve = array();
+$digeststopreserve = array();
 // Check that we don't have duplicated digests in the course.
 foreach ($xml->getElementsByTagName('activity') as $activity) {
     $digest = $activity->getAttribute('digest');
     // Get digest from previous step if the 'Preserve ID' option was selected.
     $preservedigest = optional_param('digest_'.$digest, $digest, PARAM_TEXT);
-    $digests_to_preserve[$digest] = $preservedigest;
+    $digeststopreserve[$digest] = $preservedigest;
     $activity->setAttribute('digest', $preservedigest);
     foreach ($activity->getElementsByTagName('content') as $content) {
         $content->firstChild->nodeValue = str_replace($digest, $preservedigest, $content->nodeValue);
@@ -239,7 +239,7 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
         'course_export_status' => $course_export_status,
         'export_url' => $url,
         'course_name' => strip_tags($course->fullname),
-        'digests_to_preserve' => json_encode($digests_to_preserve)
+        'digeststopreserve' => json_encode($digeststopreserve)
     );
 
     echo $OUTPUT->render_from_template(PLUGINNAME.'/export_step6_form', $formvalues);
