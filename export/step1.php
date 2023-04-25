@@ -48,7 +48,7 @@ const MAX_ATTEMPTS = 10;
 $id = required_param('id', PARAM_INT);
 $stylesheet = required_param('course_stylesheet', PARAM_TEXT);
 $server = required_param('server', PARAM_TEXT);
-$course_status = required_param('course_status', PARAM_TEXT);
+$coursestatus = required_param('course_status', PARAM_TEXT);
 $course = $DB->get_record_select('course', "id=$id");
 
 $PAGE->set_url(PLUGINPATH.'export/step1.php', array('id' => $id));
@@ -115,7 +115,7 @@ echo $OUTPUT->render_from_template(
         'id' => $id,
         'stylesheet' => $stylesheet,
         'server' => $server,
-        'courseexportstatus' => $course_status,
+        'courseexportstatus' => $coursestatus,
         'wwwroot' => $CFG->wwwroot,
         'base_settings' => $basesettings
     )

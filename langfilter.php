@@ -39,7 +39,7 @@
  *   <span lang="XX" class="multilang">one lang</span><span lang="YY" class="multilang">another language</span>.
  */
 class tomobile_langfilter {
-    function filter($text) {
+    public function filter($text) {
 
         if (empty($text) || is_numeric($text)) {
             return $text;

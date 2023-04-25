@@ -15,11 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 define('CLI_SCRIPT', true);
-error_reporting(E_ALL);
-ini_set("display_errors", 1);
 
 require_once(dirname(__FILE__) . '/../../../config.php');
 require_once(dirname(__FILE__) . '/../constants.php');
+
+defined('MOODLE_INTERNAL') || die();
+
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
 
 global $CFG, $schema;
 
@@ -144,7 +147,10 @@ function get_moodle_activity_modid($courseid, $sectorderno, $activity) {
     foreach ($activities as $act) {
         $actid = $act->id;
         // Check if the page belongs to the same section (in case of posible repeated activity titles like "Introduction").
-        $mod = $DB->get_record('course_modules', array('instance' => $actid, 'module' => $moduletypes[$type], 'section' => $sectorderno));
+        $mod = $DB->get_record('course_modules',
+            array('instance' => $actid,
+                'module' => $moduletypes[$type],
+                'section' => $sectorderno));
         if ($mod !== false) {
             $modid = $mod->id;
             $nummatches++;

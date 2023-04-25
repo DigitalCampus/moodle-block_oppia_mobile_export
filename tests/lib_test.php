@@ -14,10 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace block_oppia_mobile_export;
+
 require_once(dirname(__FILE__) . '/../lib.php');
 use PHPUnit\Framework\TestCase;
 
-class LibTest extends TestCase {
+class lib_test extends TestCase {
 
     public function test_extract_langs() {
         $content = "";

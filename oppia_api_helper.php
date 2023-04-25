@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-require_once($CFG->dirroot.'/config.php');
 require_once(dirname(__FILE__) . '/constants.php');
 
 class ApiHelper {

@@ -21,6 +21,7 @@
  * @package block_oppia_mobile_export
  */
 
+defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot.'/config.php');
 require_once(dirname(__FILE__) . '/constants.php');
 $pluginroot = $CFG->dirroot . PLUGINPATH;
