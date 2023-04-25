@@ -16,11 +16,10 @@
 
 define('CLI_SCRIPT', true);
 
-global $CFG;
 require_once($CFG->dirroot.'/config.php');
 require_once(dirname(__FILE__) . '/../constants.php');
 require_once(dirname(__FILE__) . '/../migrations/populate_digests.php');
-
+global $CFG;
 
 $CFG->block_oppia_mobile_export_debug = false;
 

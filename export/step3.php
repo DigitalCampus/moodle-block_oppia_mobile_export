@@ -56,7 +56,7 @@ $PAGE->set_url(PLUGINPATH.'export/step3.php', array('id' => $id));
 context_helper::preload_course($id);
 $context = context_course::instance($course->id);
 if (!$context) {
-    print_error('nocontext');
+    throw new moodle_exception('nocontext');
 }
 
 require_login($course);
@@ -73,7 +73,7 @@ echo $OUTPUT->header();
 
 $PAGE->requires->js(PLUGINPATH.'publish/publish_media.js');
 
-$GLOBALS['mobilelangs'] = array();
+$globals['mobilelangs'] = array();
 
 global $MEDIA;
 $MEDIA = array();

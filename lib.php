@@ -196,7 +196,7 @@ function extract_langs($content, $asjson, $striptags, $stripbasictags) {
     // Reverse array.
     $templangsrev = array_reverse($templangs);
     foreach ($templangsrev as $k => $v) {
-        $GLOBALS['mobilelangs'][$k] = true;
+        $globals['mobilelangs'][$k] = true;
     }
 
     if ($asjson) {

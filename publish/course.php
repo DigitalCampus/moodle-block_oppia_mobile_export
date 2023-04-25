@@ -54,7 +54,7 @@ $PAGE->set_url(PLUGINPATH.'publish/course.php', array('id' => $id));
 context_helper::preload_course($id);
 $context = context_course::instance($course->id);
 if (!$context) {
-    print_error('nocontext');
+    throw new moodle_exception('nocontext');
 }
 
 require_login($course);

@@ -76,7 +76,7 @@ $PAGE->set_url(PLUGINPATH.'export/step4.php', array('id' => $id));
 context_helper::preload_course($id);
 $context = context_course::instance($course->id);
 if (!$context) {
-    print_error('nocontext');
+    throw new moodle_exception('nocontext');
 }
 
 require_login($course);
@@ -93,7 +93,7 @@ echo $OUTPUT->header();
 
 $PAGE->requires->js(PLUGINPATH.'publish/publish_media.js');
 
-$GLOBALS['mobilelangs'] = array();
+$globals['mobilelangs'] = array();
 
 global $MEDIA;
 $MEDIA = array();
@@ -442,11 +442,11 @@ $root->appendChild($structure);
 
 // Add in the langs available here.
 $langs = $xmldoc->createElement("langs");
-foreach ($GLOBALS['mobilelangs'] as $k => $v) {
+foreach ($globals['mobilelangs'] as $k => $v) {
     $temp = $xmldoc->createElement("lang", $k);
     $langs->appendChild($temp);
 }
-if (count($GLOBALS['mobilelangs']) == 0) {
+if (count($globals['mobilelangs']) == 0) {
     $temp = $xmldoc->createElement("lang", $DEFAULTLANG);
     $langs->appendChild($temp);
 }
