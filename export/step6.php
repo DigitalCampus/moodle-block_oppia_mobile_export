@@ -50,9 +50,9 @@ $id = required_param('id', PARAM_INT);
 $stylesheet = required_param('stylesheet', PARAM_TEXT);
 $tags = required_param('coursetags', PARAM_TEXT);
 $server = required_param('server_id', PARAM_TEXT);
-$course_export_status = required_param('course_export_status', PARAM_TEXT);
+$courseexportstatus = required_param('courseexportstatus', PARAM_TEXT);
 $courseroot = required_param('courseroot', PARAM_TEXT);
-$isdraft = ($course_export_status == 'draft');
+$isdraft = ($courseexportstatus == 'draft');
 $course = $DB->get_record('course', array('id' => $id));
 
 $PAGE->set_url(PLUGINPATH.'export/step6.php', array('id' => $id));
@@ -236,7 +236,7 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
         'file' => $zipname,
         'isdraft' => $isdraft,
         'tags' => $tags,
-        'course_export_status' => $course_export_status,
+        'courseexportstatus' => $courseexportstatus,
         'export_url' => $url,
         'course_name' => strip_tags($course->fullname),
         'digeststopreserve' => json_encode($digeststopreserve)

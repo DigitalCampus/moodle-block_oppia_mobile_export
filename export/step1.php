@@ -115,7 +115,7 @@ echo $OUTPUT->render_from_template(
         'id' => $id,
         'stylesheet' => $stylesheet,
         'server' => $server,
-        'course_export_status' => $course_status,
+        'courseexportstatus' => $course_status,
         'wwwroot' => $CFG->wwwroot,
         'base_settings' => $basesettings
     )

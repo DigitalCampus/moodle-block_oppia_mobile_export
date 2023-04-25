@@ -48,7 +48,7 @@ require_once($CFG->libdir.'/componentlib.class.php');
 $id = required_param('id', PARAM_INT);
 $stylesheet = required_param('stylesheet', PARAM_TEXT);
 $server = required_param('server', PARAM_TEXT);
-$course_export_status = required_param('course_export_status', PARAM_TEXT);
+$courseexportstatus = required_param('courseexportstatus', PARAM_TEXT);
 
 $course = $DB->get_record('course', array('id' => $id));
 
@@ -202,7 +202,7 @@ echo $OUTPUT->render_from_template(
         'id' => $id,
         'server_id' => $server,
         'stylesheet' => $stylesheet,
-        'course_export_status' => $course_export_status,
+        'courseexportstatus' => $courseexportstatus,
         'sections' => $configsections,
         'wwwroot' => $CFG->wwwroot));
 

@@ -49,7 +49,7 @@ require_once($CFG->libdir.'/componentlib.class.php');
 $id = required_param('id', PARAM_INT);
 $stylesheet = required_param('stylesheet', PARAM_TEXT);
 $server = required_param('server_id', PARAM_TEXT);
-$course_export_status = required_param('course_export_status', PARAM_TEXT);
+$courseexportstatus = required_param('courseexportstatus', PARAM_TEXT);
 
 $tags = get_oppiaconfig($id, 'coursetags', '', true, $server);
 $priority = (int) get_oppiaconfig($id, 'coursepriority', '0', true, $server);
@@ -67,7 +67,7 @@ $course = $DB->get_record('course', array('id' => $id));
 // We clean the shortname of the course (the change doesn't get saved in Moodle).
 $course->shortname = clean_shortname($course->shortname);
 
-$isdraft = ($course_export_status == 'draft');
+$isdraft = ($courseexportstatus == 'draft');
 if ($isdraft) {
     $course->shortname = $course->shortname."-draft";
 }
@@ -496,7 +496,7 @@ echo $OUTPUT->render_from_template(
         'server_id' => $server,
         'stylesheet' => $stylesheet,
         'coursetags' => $tags,
-        'course_export_status' => $course_export_status,
+        'courseexportstatus' => $courseexportstatus,
         'courseroot' => $courseroot,
         'activity_summaries' => json_encode($activitysummaries),
         'wwwroot' => $CFG->wwwroot));
