@@ -42,7 +42,7 @@ class block_oppia_mobile_export extends block_base {
     }
 
     function get_content() {
-        global $CFG, $COURSE, $OUTPUT;
+        global $CFG, $COURSE, $OUTPUT, $pluginroot;
 
         if ($this->content !== null || !isset($COURSE->id) || $COURSE->id == 1) {
             return $this->content;
