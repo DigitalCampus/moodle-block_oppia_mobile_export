@@ -28,8 +28,6 @@ $pluginroot = $CFG->dirroot . PLUGINPATH;
 require_once($pluginroot . 'lib.php');
 require_once($pluginroot . 'version.php');
 
-require_login();
-
 class block_oppia_mobile_export extends block_base {
 
     public function init() {
