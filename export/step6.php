@@ -49,7 +49,7 @@ require_once($CFG->libdir.'/componentlib.class.php');
 $id = required_param('id', PARAM_INT);
 $stylesheet = required_param('stylesheet', PARAM_TEXT);
 $tags = required_param('coursetags', PARAM_TEXT);
-$server = required_param('server_id', PARAM_TEXT);
+$server = required_param('serverid', PARAM_TEXT);
 $courseexportstatus = required_param('courseexportstatus', PARAM_TEXT);
 $courseroot = required_param('courseroot', PARAM_TEXT);
 $isdraft = ($courseexportstatus == 'draft');
@@ -230,7 +230,7 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
     $formvalues = array(
         'serverconnection' => $serverconnection->url,
         'wwwroot' => $CFG->wwwroot,
-        'server_id' => $server,
+        'serverid' => $server,
         'sesskey' => sesskey(),
         'courseid' => $COURSE->id,
         'file' => $zipname,

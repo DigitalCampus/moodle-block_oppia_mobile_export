@@ -48,7 +48,7 @@ require_once($CFG->libdir.'/componentlib.class.php');
 // We get all the params from the previous step form.
 $id = required_param('id', PARAM_INT);
 $stylesheet = required_param('stylesheet', PARAM_TEXT);
-$server = required_param('server_id', PARAM_TEXT);
+$server = required_param('serverid', PARAM_TEXT);
 $courseexportstatus = required_param('courseexportstatus', PARAM_TEXT);
 
 $tags = get_oppiaconfig($id, 'coursetags', '', true, $server);
@@ -217,7 +217,7 @@ foreach ($sectionmods as $modnumber) {
         $page = new MobileActivityPage(array(
             'id' => $mod->id,
             'courseroot' => $courseroot,
-            'server_id' => $server,
+            'serverid' => $server,
             'section' => 0,
             'keephtml' => $keephtml,
             'videooverlay' => $videooverlay,
@@ -238,7 +238,7 @@ foreach ($sectionmods as $modnumber) {
             'id' => $mod->id,
             'courseroot' => $courseroot,
             'section' => 0,
-            'server_id' => $server,
+            'serverid' => $server,
             'courseid' => $id,
             'shortname' => $course->shortname,
             'summary' => 'Pre-test',
@@ -265,7 +265,7 @@ foreach ($sectionmods as $modnumber) {
             'id' => $mod->id,
             'courseroot' => $courseroot,
             'section' => 0,
-            'server_id' => $server,
+            'serverid' => $server,
             'courseid' => $id,
             'shortname' => $course->shortname,
             'courseversion' => $versionid,
@@ -316,7 +316,7 @@ echo "<h3>".get_string('export_sections_start', PLUGINNAME)."</h3>";
 
 $processor = new ActivityProcessor(array(
             'courseroot' => $courseroot,
-            'server_id' => $server,
+            'serverid' => $server,
             'courseid' => $id,
             'courseshortname' => $course->shortname,
             'versionid' => $versionid,
@@ -493,7 +493,7 @@ echo $OUTPUT->render_from_template(
         'serverconnection' => $serverconnection->url,
         'media_files' => $localmediafiles,
         'media_files_str' => json_encode($localmediafiles),
-        'server_id' => $server,
+        'serverid' => $server,
         'stylesheet' => $stylesheet,
         'coursetags' => $tags,
         'courseexportstatus' => $courseexportstatus,

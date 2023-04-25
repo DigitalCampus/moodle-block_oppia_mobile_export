@@ -77,15 +77,15 @@ function populate_digests_published_courses() {
       The array's value is the digest that we want to preserve in the output modules.xml. Might be different from the real digest.
 */
 
-function populate_digests_for_course($course, $courseid, $server_id, $digeststopreserve, $printlogs) {
+function populate_digests_for_course($course, $courseid, $serverid, $digeststopreserve, $printlogs) {
     global $CFG, $DEFAULTLANG, $pluginroot;
-    $DEFAULTLANG = get_oppiaconfig($courseid, 'default_lang', $CFG->block_oppia_mobile_export_default_lang, true, $server_id);
+    $DEFAULTLANG = get_oppiaconfig($courseid, 'default_lang', $CFG->block_oppia_mobile_export_default_lang, true, $serverid);
 
     $modinfo = course_modinfo::instance($courseid);
     $sections = $modinfo->get_section_info_all();
     $mods = $modinfo->get_cms();
 
-    $keephtml = get_oppiaconfig($courseid, 'keephtml', '', true, $server_id);
+    $keephtml = get_oppiaconfig($courseid, 'keephtml', '', true, $serverid);
     $course->shortname = clean_shortname($course->shortname);
 
     delete_dir($pluginroot.OPPIA_OUTPUT_DIR."upgrade"."/temp");
@@ -103,7 +103,7 @@ function populate_digests_for_course($course, $courseid, $server_id, $digeststop
 
     $processor = new ActivityProcessor(array(
         'courseroot' => $courseroot,
-        'server_id' => $server_id,
+        'serverid' => $serverid,
         'courseid' => $courseid,
         'courseshortname' => $course->shortname,
         'versionid' => '0',
@@ -151,7 +151,7 @@ function populate_digests_for_course($course, $courseid, $server_id, $digeststop
                     $oppiaserverdigest = $digeststopreserve[$moodleactivitymd5];
                 }
 
-                save_activity_digest($courseid, $mod->id, $oppiaserverdigest, $moodleactivitymd5, $server_id, $nquestions);
+                save_activity_digest($courseid, $mod->id, $oppiaserverdigest, $moodleactivitymd5, $serverid, $nquestions);
                 $actorderno++;
             }
             echo '</div>';

@@ -31,7 +31,7 @@ $id = required_param('id', PARAM_INT);
 $mediafiles = required_param('mediafiles', PARAM_TEXT);
 $stylesheet = required_param('stylesheet', PARAM_TEXT);
 $tags = required_param('coursetags', PARAM_TEXT);
-$server = required_param('server_id', PARAM_TEXT);
+$server = required_param('serverid', PARAM_TEXT);
 $courseexportstatus = required_param('courseexportstatus', PARAM_TEXT);
 $courseroot = required_param('courseroot', PARAM_TEXT);
 $isdraft = ($courseexportstatus == 'draft');
@@ -66,7 +66,7 @@ $videooverlay = get_oppiaconfig($id, 'videooverlay', '', true, $server);
 
 $processor = new ActivityProcessor(array(
     'courseroot' => $courseroot,
-    'server_id' => $server,
+    'serverid' => $server,
     'courseid' => $course->id,
     'courseshortname' => $course->shortname,
     'versionid' => '0',
@@ -159,7 +159,7 @@ $formvalues = array_merge(
     $unmodifiedactivities,
     array(
         'id' => $id,
-        'server_id' => $server,
+        'serverid' => $server,
         'mediafiles' => json_decode($mediafiles, true),
         'stylesheet' => $stylesheet,
         'coursetags' => $tags,

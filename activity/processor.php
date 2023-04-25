@@ -44,7 +44,7 @@ class ActivityProcessor {
 
     public $courseroot;
     public $courseid;
-    public $server_id;
+    public $serverid;
     public $versionid;
     public $keephtml;
     public $videooverlay;
@@ -62,8 +62,8 @@ class ActivityProcessor {
         if (isset($params['courseroot'])) {
             $this->courseroot = $params['courseroot'];
         }
-        if (isset($params['server_id'])) {
-            $this->server_id = $params['server_id'];
+        if (isset($params['serverid'])) {
+            $this->serverid = $params['serverid'];
         }
         if (isset($params['courseid'])) {
             $this->courseid = $params['courseid'];
@@ -100,7 +100,7 @@ class ActivityProcessor {
             'id' => $mod->id,
             'courseroot' => $this->courseroot,
             'section' => $this->current_section,
-            'server_id' => $this->server_id,
+            'serverid' => $this->serverid,
             'courseid' => $this->courseid,
             'printlogs' => $this->printlogs,
             'courseversion' => $this->versionid,
@@ -125,10 +125,10 @@ class ActivityProcessor {
 
         } else if ($mod->modname == 'quiz') {
 
-            $randomselect = get_oppiaconfig($mod->id, 'randomselect', 0, true, $this->server_id);
-            $passthreshold = get_oppiaconfig($mod->id, 'passthreshold', 0, true, $this->server_id);
-            $showfeedback = get_oppiaconfig($mod->id, 'showfeedback', 1, true, $this->server_id);
-            $maxattempts = get_oppiaconfig($mod->id, 'maxattempts', 'unlimited', true, $this->server_id);
+            $randomselect = get_oppiaconfig($mod->id, 'randomselect', 0, true, $this->serverid);
+            $passthreshold = get_oppiaconfig($mod->id, 'passthreshold', 0, true, $this->serverid);
+            $showfeedback = get_oppiaconfig($mod->id, 'showfeedback', 1, true, $this->serverid);
+            $maxattempts = get_oppiaconfig($mod->id, 'maxattempts', 'unlimited', true, $this->serverid);
 
             $params['config_array'] = array(
                 'randomselect' => $randomselect,
@@ -172,7 +172,7 @@ class ActivityProcessor {
             );
 
             $gradeboundaries = array();
-            foreach (get_grade_boundaries($mod->id, $this->server_id) as $gb) {
+            foreach (get_grade_boundaries($mod->id, $this->serverid) as $gb) {
                 array_push($gradeboundaries, (object)[
                     $gb->grade => $gb->message
                 ]);

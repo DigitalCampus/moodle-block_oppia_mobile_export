@@ -122,7 +122,7 @@ foreach ($sections as $sect) {
                 $quiz = new MobileActivityQuiz(array(
                     'id' => $mod->id,
                     'section' => $orderno,
-                    'server_id' => $server,
+                    'serverid' => $server,
                     'courseid' => $id,
                     'shortname' => $course->shortname,
                     'summary' => $sect->summary,
@@ -144,7 +144,7 @@ foreach ($sections as $sect) {
                 $feedback = new MobileActivityFeedback(array(
                     'id' => $mod->id,
                     'section' => $orderno,
-                    'server_id' => $server,
+                    'serverid' => $server,
                     'courseid' => $id,
                     'shortname' => $course->shortname,
                     'summary' => $sect->summary,

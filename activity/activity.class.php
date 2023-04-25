@@ -35,8 +35,8 @@ abstract class MobileActivity {
         if (isset($params['courseroot'])) {
             $this->courseroot = $params['courseroot'];
         }
-        if (isset($params['server_id'])) {
-            $this->serverid = $params['server_id'];
+        if (isset($params['serverid'])) {
+            $this->serverid = $params['serverid'];
         }
         if (isset($params['courseid'])) {
             $this->courseid = $params['courseid'];

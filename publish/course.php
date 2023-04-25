@@ -42,7 +42,7 @@ require_once(dirname(__FILE__) . '/../migrations/populate_digests.php');
 $id = required_param('id', PARAM_INT);
 $file = required_param('file', PARAM_TEXT);
 $tags = required_param('tags', PARAM_TEXT);
-$server = required_param('server_id', PARAM_TEXT);
+$server = required_param('serverid', PARAM_TEXT);
 $username = required_param('username', PARAM_TEXT);
 $password = required_param('password', PARAM_TEXT);
 $course_status = required_param('courseexportstatus', PARAM_TEXT);

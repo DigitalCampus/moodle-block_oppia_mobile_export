@@ -200,7 +200,7 @@ echo $OUTPUT->render_from_template(
     PLUGINNAME.'/export_step3_form',
     array(
         'id' => $id,
-        'server_id' => $server,
+        'serverid' => $server,
         'stylesheet' => $stylesheet,
         'courseexportstatus' => $courseexportstatus,
         'sections' => $configsections,
