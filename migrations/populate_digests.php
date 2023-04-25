@@ -42,8 +42,8 @@ function populate_digests_published_courses() {
         echo '<p class="lead">' . $coursescount . " courses to process" . '</p>';
 
         foreach ($coursesresult as $r) {
-            $course_id = $r->modid;
-            $course = $DB->get_record('course', array('id' => $course_id), '*', $strictness = IGNORE_MISSING);
+            $courseid = $r->modid;
+            $course = $DB->get_record('course', array('id' => $courseid), '*', $strictness = IGNORE_MISSING);
 
             if ($course == false) {
                 // The course was deleted but there are still some rows in the course_info table.
@@ -53,13 +53,13 @@ function populate_digests_published_courses() {
             echo '<h3>' . strip_tags($course->fullname) . '</h3>';
 
             $courseservers = $DB->get_recordset_select(OPPIA_CONFIG_TABLE,
-                "modid='$course_id'", null, null,
+                "modid='$courseid'", null, null,
                 "DISTINCT serverid");
 
             foreach ($courseservers as $s) {
                 $serverid = $s->serverid;
                 echo '<strong>Server ID:' . $serverid . '</strong><br>';
-                populate_digests_for_course($course, $course_id, $serverid, null, true);
+                populate_digests_for_course($course, $courseid, $serverid, null, true);
             }
         }
     } else {
@@ -77,15 +77,15 @@ function populate_digests_published_courses() {
       The array's value is the digest that we want to preserve in the output modules.xml. Might be different from the real digest.
 */
 
-function populate_digests_for_course($course, $course_id, $server_id, $digeststopreserve, $printlogs) {
+function populate_digests_for_course($course, $courseid, $server_id, $digeststopreserve, $printlogs) {
     global $CFG, $DEFAULTLANG, $pluginroot;
-    $DEFAULTLANG = get_oppiaconfig($course_id, 'default_lang', $CFG->block_oppia_mobile_export_default_lang, true, $server_id);
+    $DEFAULTLANG = get_oppiaconfig($courseid, 'default_lang', $CFG->block_oppia_mobile_export_default_lang, true, $server_id);
 
-    $modinfo = course_modinfo::instance($course_id);
+    $modinfo = course_modinfo::instance($courseid);
     $sections = $modinfo->get_section_info_all();
     $mods = $modinfo->get_cms();
 
-    $keephtml = get_oppiaconfig($course_id, 'keephtml', '', true, $server_id);
+    $keephtml = get_oppiaconfig($courseid, 'keephtml', '', true, $server_id);
     $course->shortname = clean_shortname($course->shortname);
 
     delete_dir($pluginroot.OPPIA_OUTPUT_DIR."upgrade"."/temp");
@@ -104,7 +104,7 @@ function populate_digests_for_course($course, $course_id, $server_id, $digeststo
     $processor = new ActivityProcessor(array(
         'courseroot' => $courseroot,
         'server_id' => $server_id,
-        'course_id' => $course_id,
+        'courseid' => $courseid,
         'courseshortname' => $course->shortname,
         'versionid' => '0',
         'keephtml' => $keephtml,
@@ -151,7 +151,7 @@ function populate_digests_for_course($course, $course_id, $server_id, $digeststo
                     $oppiaserverdigest = $digeststopreserve[$moodleactivitymd5];
                 }
 
-                save_activity_digest($course_id, $mod->id, $oppiaserverdigest, $moodleactivitymd5, $server_id, $nquestions);
+                save_activity_digest($courseid, $mod->id, $oppiaserverdigest, $moodleactivitymd5, $server_id, $nquestions);
                 $actorderno++;
             }
             echo '</div>';

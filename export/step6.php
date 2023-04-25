@@ -232,7 +232,7 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
         'wwwroot' => $CFG->wwwroot,
         'server_id' => $server,
         'sesskey' => sesskey(),
-        'course_id' => $COURSE->id,
+        'courseid' => $COURSE->id,
         'file' => $zipname,
         'isdraft' => $isdraft,
         'tags' => $tags,

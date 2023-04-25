@@ -43,7 +43,7 @@ require_once($CFG->libdir.'/componentlib.class.php');
 class ActivityProcessor {
 
     public $courseroot;
-    public $course_id;
+    public $courseid;
     public $server_id;
     public $versionid;
     public $keephtml;
@@ -65,8 +65,8 @@ class ActivityProcessor {
         if (isset($params['server_id'])) {
             $this->server_id = $params['server_id'];
         }
-        if (isset($params['course_id'])) {
-            $this->course_id = $params['course_id'];
+        if (isset($params['courseid'])) {
+            $this->courseid = $params['courseid'];
         }
         if (isset($params['section'])) {
             $this->section = $params['section'];
@@ -101,7 +101,7 @@ class ActivityProcessor {
             'courseroot' => $this->courseroot,
             'section' => $this->current_section,
             'server_id' => $this->server_id,
-            'course_id' => $this->course_id,
+            'courseid' => $this->courseid,
             'printlogs' => $this->printlogs,
             'courseversion' => $this->versionid,
             'shortname' => $this->courseshortname,

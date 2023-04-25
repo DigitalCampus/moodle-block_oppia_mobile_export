@@ -123,7 +123,7 @@ foreach ($sections as $sect) {
                     'id' => $mod->id,
                     'section' => $orderno,
                     'server_id' => $server,
-                    'course_id' => $id,
+                    'courseid' => $id,
                     'shortname' => $course->shortname,
                     'summary' => $sect->summary,
                     'versionid' => 0
@@ -145,7 +145,7 @@ foreach ($sections as $sect) {
                     'id' => $mod->id,
                     'section' => $orderno,
                     'server_id' => $server,
-                    'course_id' => $id,
+                    'courseid' => $id,
                     'shortname' => $course->shortname,
                     'summary' => $sect->summary,
                     'versionid' => 0

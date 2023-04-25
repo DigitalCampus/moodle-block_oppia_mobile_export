@@ -3,7 +3,7 @@
 	style="padding:20px; margin:20px 0;"
 	action="{{wwwroot}}/blocks/oppia_mobile_export/publish/course.php" method="POST">
 
-	<input type="hidden" name="id" value="{{course_id}}">
+	<input type="hidden" name="id" value="{{courseid}}">
 	<input type="hidden" name="sesskey" value="{{sesskey}}">
 	<input type="hidden" name="server_id" value="{{server_id}}">
 	<input type="hidden" name="file" value="{{file}}">
@@ -44,7 +44,7 @@
 		{{# str }} export_download, block_oppia_mobile_export{{/ str }}
 	</a>
 
-	<a class="btn btn-danger" href="{{wwwroot}}/blocks/oppia_mobile_export/cleanup.php?id={{course_id}}">
+	<a class="btn btn-danger" href="{{wwwroot}}/blocks/oppia_mobile_export/cleanup.php?id={{courseid}}">
 		{{# str }}export_cleanup, block_oppia_mobile_export{{/ str }}
 	</a>
 </div>
