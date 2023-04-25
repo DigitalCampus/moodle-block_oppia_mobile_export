@@ -32,19 +32,19 @@ require_login();
 
 class block_oppia_mobile_export extends block_base {
 
-    function init() {
+    public function init() {
         $this->title = get_string('pluginname', PLUGINNAME);
     }
 
-    function instance_allow_config() {
+    public function instance_allow_config() {
         return false;
     }
 
-    function has_config() {
+    public function has_config() {
         return true;
     }
 
-    function get_content() {
+    public function get_content() {
         global $CFG, $COURSE, $OUTPUT, $pluginroot;
 
         if ($this->content !== null || !isset($COURSE->id) || $COURSE->id == 1) {
