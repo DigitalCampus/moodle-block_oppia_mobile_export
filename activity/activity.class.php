@@ -67,7 +67,7 @@ abstract class MobileActivity {
 
         $context = context_module::instance($moduleid);
         // Get the image from the intro section.
-        $thumbnail = extractImageFile($content, $this->componentname, $filearea,
+        $thumbnail = extract_image_file($content, $this->componentname, $filearea,
                                         0, $context->id, $this->courseroot, $moduleid);
 
         if ($thumbnail) {
@@ -82,7 +82,7 @@ abstract class MobileActivity {
         $thumbwidth = get_oppiaconfig($this->courseid, 'thumb_width', $CFG->block_oppia_mobile_export_thumb_width, true, $this->serverid);
 
         $this->thumbnailimage = $thumbnail;
-        $imageresized = resizeImage($this->courseroot . "/". $this->thumbnailimage,
+        $imageresized = resize_image($this->courseroot . "/". $this->thumbnailimage,
                                     $this->courseroot."/images/".$moduleid,
                                     $thumbwidth, $thumbheight, false);
 

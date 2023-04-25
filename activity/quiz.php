@@ -206,7 +206,7 @@ class MobileActivityQuiz extends MobileActivity {
             }
 
             // Find if the question text has any images in it.
-            $questionimage = extractImageFile($q->questiontext, 'question', 'questiontext',
+            $questionimage = extract_image_file($q->questiontext, 'question', 'questiontext',
                                     $q->id, $q->contextid, $this->courseroot, $cm->id);
             if ($questionimage) {
                 $questionprops["image"] = $questionimage;

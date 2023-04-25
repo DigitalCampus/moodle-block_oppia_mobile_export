@@ -291,7 +291,7 @@ foreach ($sectionmods as $modnumber) {
 /*-----------------------------*/
 
 // Get module image (from course summary).
-$filename = extractImageFile($course->summary,
+$filename = extract_image_file($course->summary,
                             'course',
                             'summary',
                             '0',
@@ -299,7 +299,7 @@ $filename = extractImageFile($course->summary,
                             $courseroot, 0);
 
 if ($filename) {
-    $resizedfilename = resizeImage($courseroot."/".$filename,
+    $resizedfilename = resize_image($courseroot."/".$filename,
         $courseroot."/images/".$course->id.'_'.$context->id,
                         $CFG->block_oppia_mobile_export_course_icon_width,
                         $CFG->block_oppia_mobile_export_course_icon_height,
@@ -369,7 +369,7 @@ foreach ($sections as $sect) {
         }
 
         // Get section image (from summary).
-        $filename = extractImageFile($sect->summary,
+        $filename = extract_image_file($sect->summary,
                                     'course',
                                     'section',
                                     $sect->id,
@@ -377,7 +377,7 @@ foreach ($sections as $sect) {
                                     $courseroot, 0);
 
         if ($filename) {
-            $resizedfilename = resizeImage(
+            $resizedfilename = resize_image(
                 $courseroot."/".$filename,
                 $courseroot."/images/".$sect->id.'_'.$context->id,
                 $sectionwidth, $sectionheight, true);

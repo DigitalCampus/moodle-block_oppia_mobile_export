@@ -159,8 +159,14 @@ foreach ($sections as $sect) {
                     usort($gb, 'sort_grade_boundaries_descending');
                     foreach ($gb as $gradeboundary) {
                         switch($gradeboundary->grade) {
-                            case 0:   $grade0message = $gradeboundary->message; break;
-                            case 100: $grade100message = $gradeboundary->message; break;
+                            case 0: {
+                                $grade0message = $gradeboundary->message;
+                                break;
+                            }
+                            case 100: {
+                                $grade100message = $gradeboundary->message;
+                                break;
+                            }
                             default: {
                                 $selectedindex = array_search(array('grade' => $gradeboundary->grade), $grades);
                                 $grades[$selectedindex]['selected'] = true;

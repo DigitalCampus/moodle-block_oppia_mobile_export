@@ -245,7 +245,7 @@ function remove_ids_from_json($jsonstring) {
 }
 
 
-function extractImageFile($content, $component, $filearea, $itemid, $contextid, $courseroot, $cmid) {
+function extract_image_file($content, $component, $filearea, $itemid, $contextid, $courseroot, $cmid) {
     global $CFG;
     // Find if any images/links exist.
     preg_match_all(MEDIAFILE_REGEX, $content, $filestmp, PREG_OFFSET_CAPTURE);
@@ -259,7 +259,7 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
 
         $filename = trim($filestmp['filenames'][$i][0]);
 
-        if (!IsFileAnImage($courseroot . "/" . $filename)) {
+        if (!is_file_an_image($courseroot . "/" . $filename)) {
             // If the file is not an image, we pass on it.
             continue;
         }
@@ -276,7 +276,7 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
                 'filename' => $filename);
         $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
                 $fileinfo['itemid'], $fileinfo['filepath'], urldecode($fileinfo['filename']));
-        $result = copyFile($file, $component, $filearea, $itemid, $contextid, $courseroot, $cmid);
+        $result = copy_file($file, $component, $filearea, $itemid, $contextid, $courseroot, $cmid);
 
         if ($result) {
             $lastimg = $result;
@@ -285,7 +285,7 @@ function extractImageFile($content, $component, $filearea, $itemid, $contextid, 
     return $lastimg;
 }
 
-function getFileInfo($filename, $component, $filearea, $itemid, $contextid) {
+function get_file_info($filename, $component, $filearea, $itemid, $contextid) {
 
     $fs = get_file_storage();
     $path = '/';
@@ -304,7 +304,7 @@ function getFileInfo($filename, $component, $filearea, $itemid, $contextid) {
 }
 
 // Returns the filename without special or non-ASCII characters, replacing them with underscores.
-function cleanFilename($filename) {
+function filename_to_ascii($filename) {
     $clean = preg_replace(
         '([^\x1F-\x7F]|'.    // Non-ASCII characters.
         '[[:space:]]|' .    // Spaces.
@@ -318,7 +318,7 @@ function cleanFilename($filename) {
     return $clean;
 }
 
-function copyFile($file, $component, $filearea, $itemid, $contextid, $courseroot, $cmid) {
+function copy_file($file, $component, $filearea, $itemid, $contextid, $courseroot, $cmid) {
     global $CFG;
 
     $isimage = true;
@@ -352,7 +352,7 @@ function copyFile($file, $component, $filearea, $itemid, $contextid, $courseroot
 }
 
 
-function resizeImage($image, $imagenewname, $imagewidth, $imageheight, $transparent) {
+function resize_image($image, $imagenewname, $imagewidth, $imageheight, $transparent) {
     global $CFG;
 
     if ($CFG->block_oppia_mobile_export_thumb_crop) {
@@ -415,7 +415,7 @@ function resize_image_scale($image, $imagenewname, $imagewidth, $imageheight, $t
     return $imagenewname;
 }
 
-function IsFileAnImage($filepath) {
+function is_file_an_image($filepath) {
     return (preg_match(REGEX_IMAGE_EXTENSIONS, $filepath) > 0);
 }
 

@@ -172,12 +172,12 @@ class MobileActivityPage extends MobileActivity {
         }
         $toreplace = array();
         $count = count($filestmp['filenames']);
-        
+
         for ($i = 0; $i < $count; $i++) {
 
             $origfilename = $filestmp['filenames'][$i][0];
             $filename = urldecode($origfilename);
-            $cleanfilename = cleanFilename($filename);
+            $cleanfilename = filename_to_ascii($filename);
             if ( !$this->is_local_media($origfilename) ) {
 
                 $filepath = '/';
@@ -283,7 +283,7 @@ class MobileActivityPage extends MobileActivity {
 
                     if (!$this->is_local_media($filename)) {
                         // If it hasn't been added yet, we include it.
-                        $fileinfo = getFileInfo(urldecode($filename), $component, $filearea, $itemid, $contextid);
+                        $fileinfo = get_file_info(urldecode($filename), $component, $filearea, $itemid, $contextid);
                         array_push($this->pagelocalmedia, $fileinfo);
                     }
 
