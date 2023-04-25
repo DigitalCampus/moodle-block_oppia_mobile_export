@@ -367,14 +367,14 @@ function resize_image($image, $imagenewname, $imagewidth, $imageheight, $transpa
 
 function resize_image_scale($image, $imagenewname, $imagewidth, $imageheight, $transparent) {
     global $CFG;
-    $size = GetimageSize($image);
+    $size = getimagesize($image);
     $origw = $size[0];
     $origh = $size[1];
     $ratiosrc = $origw / $origh;
 
     $ratiotarget = $imagewidth / $imageheight;
 
-    $imagenew = ImageCreateTrueColor($imagewidth, $imageheight);
+    $imagenew = imagecreatetruecolor($imagewidth, $imageheight);
 
     if (!$transparent) {
         $bgcolour = imagecolorallocate($imagenew,
@@ -423,14 +423,14 @@ function resize_image_crop($image, $imagenewname, $imagewidth, $imageheight, $tr
     if (!file_exists($image)) {
         return false;
     }
-    $size = GetimageSize($image);
+    $size = getimagesize($image);
     $origw = $size[0];
     $origh = $size[1];
     $ratiosrc = $origw / $origh;
 
     $ratiotarget = $imagewidth / $imageheight;
 
-    $imagenew = ImageCreateTrueColor($imagewidth, $imageheight);
+    $imagenew = imagecreatetruecolor($imagewidth, $imageheight);
 
     if (!$transparent) {
         $bgcolour = imagecolorallocate($imagenew,
