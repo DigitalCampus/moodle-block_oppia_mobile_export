@@ -17,6 +17,8 @@
 require_once($CFG->dirroot.'/config.php');
 require_once("$CFG->libdir/formslib.php");
 
+require_login();
+
 class OppiaServerForm extends moodleform {
 
     // Add elements to form.

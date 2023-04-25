@@ -78,8 +78,16 @@ abstract class MobileActivity {
     public function save_resized_thumbnail($thumbnail, $moduleid, $keeporiginal) {
         global $CFG;
 
-        $thumbheight = get_oppiaconfig($this->courseid, 'thumb_height', $CFG->block_oppia_mobile_export_thumb_height, true, $this->serverid);
-        $thumbwidth = get_oppiaconfig($this->courseid, 'thumb_width', $CFG->block_oppia_mobile_export_thumb_width, true, $this->serverid);
+        $thumbheight = get_oppiaconfig($this->courseid,
+            'thumb_height',
+            $CFG->block_oppia_mobile_export_thumb_height,
+            true,
+            $this->serverid);
+        $thumbwidth = get_oppiaconfig($this->courseid,
+            'thumb_width',
+            $CFG->block_oppia_mobile_export_thumb_width,
+            true,
+            $this->serverid);
 
         $this->thumbnailimage = $thumbnail;
         $imageresized = resize_image($this->courseroot . "/". $this->thumbnailimage,

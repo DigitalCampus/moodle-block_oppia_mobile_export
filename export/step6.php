@@ -244,7 +244,11 @@ if (!$xml->schemaValidate($pluginroot.'oppia-schema.xsd')) {
 
     echo $OUTPUT->render_from_template(PLUGINNAME.'/export_step6_form', $formvalues);
 
-    add_publishing_log($serverconnection->url, $USER->id, $id,  "export_file_created", strtolower($course->shortname)."-".$versionid.".zip");
+    add_publishing_log($serverconnection->url,
+        $USER->id,
+        $id,
+        "export_file_created",
+        strtolower($course->shortname)."-".$versionid.".zip");
     add_publishing_log($serverconnection->url, $USER->id, $id,  "export_end", "Export process completed");
 }
 

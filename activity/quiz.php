@@ -233,7 +233,10 @@ class MobileActivityQuiz extends MobileActivity {
                     }
                 }
                 foreach ($q->options->subquestions as $sq) {
-                    $titlejson = extract_langs($sq->questiontext.$this->matchingsperator.$sq->answertext, true, !$this->keephtml, true);
+                    $titlejson = extract_langs($sq->questiontext.$this->matchingsperator.$sq->answertext,
+                        true,
+                        !$this->keephtml,
+                        true);
                     // Add response.
                     $score = ($q->maxmark / $subqs);
 
