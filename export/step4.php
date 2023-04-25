@@ -93,8 +93,7 @@ echo $OUTPUT->header();
 
 $PAGE->requires->js(PLUGINPATH.'publish/publish_media.js');
 
-global $MOBILELANGS;
-$MOBILELANGS = array();
+$GLOBALS['mobilelangs'] = array();
 
 global $MEDIA;
 $MEDIA = array();
@@ -443,11 +442,11 @@ $root->appendChild($structure);
 
 // Add in the langs available here.
 $langs = $xmldoc->createElement("langs");
-foreach ($MOBILELANGS as $k => $v) {
+foreach ($GLOBALS['mobilelangs'] as $k => $v) {
     $temp = $xmldoc->createElement("lang", $k);
     $langs->appendChild($temp);
 }
-if (count($MOBILELANGS) == 0) {
+if (count($GLOBALS['mobilelangs']) == 0) {
     $temp = $xmldoc->createElement("lang", $DEFAULTLANG);
     $langs->appendChild($temp);
 }
