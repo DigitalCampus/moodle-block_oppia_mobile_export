@@ -21,13 +21,15 @@ use PHPUnit\Framework\TestCase;
 
 class lib_test extends TestCase {
 
-    public function test_extract_langs() {
+    public function test_extract_langs()
+    {
         $content = "";
-        $this->assertSame("", extract_langs($content));
+        $this->assertSame("", extract_langs($content, false, false, false));
 
     }
 
-    public function test_clean_shortname() {
+    public function test_clean_shortname()
+    {
         $shortname = "  my course    ";
         $this->assertSame("my-course", clean_shortname($shortname));
 
