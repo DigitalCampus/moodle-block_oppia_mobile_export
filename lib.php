@@ -17,6 +17,7 @@
 require_once($CFG->dirroot.'/config.php');
 require_once(dirname(__FILE__) . '/constants.php');
 
+// @TODO move const to constants.php
 const REGEX_FORBIDDEN_DIR_CHARS = '([\\/?%*:|"<>\. ]+)'; // Catches any sequence of forbidden UNIX dir chars.
 const REGEX_FORBIDDEN_TAG_CHARS = '([^a-zA-z0-9\_]+)'; // Catches any character not allowed inside an XML tag.
 const REGEX_HTML_ENTITIES = '(&nbsp;|&amp;|&quot;)'; // Catches HTML entities after urlencoding text contents.

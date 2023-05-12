@@ -14,6 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * ActivityProcessor class file
+ *
+ *
+ *
+ * @package    block_oppia_mobile_export
+ * @copyright  2023 Digital Campus
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+
 require_once($CFG->dirroot.'/config.php');
 require_once(dirname(__FILE__) . '/../constants.php');
 

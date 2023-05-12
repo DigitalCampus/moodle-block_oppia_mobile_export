@@ -42,8 +42,12 @@ require_once($pluginroot . 'activity/url.php');
 
 require_once($CFG->libdir.'/componentlib.class.php');
 
+/** @TODO Move const to constants.php */
 const PRIORITY_LEVELS = 10;
+
+/** @deprecated  will be removed when OPPIA-1449 implemented */
 const MAX_ATTEMPTS = 10;
+
 // We get all the params from the previous step form.
 $id = required_param('id', PARAM_INT);
 $stylesheet = required_param('stylesheet', PARAM_TEXT);

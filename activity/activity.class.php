@@ -14,18 +14,51 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Abstract MobileActivity class file
+ *
+ *
+ *
+ * @package    block_oppia_mobile_export
+ * @copyright  2023 Digital Campus
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+
+
 abstract class MobileActivity {
 
+    /** @var stdClass The db record of the resource */
     public $courseroot;
+
+    /** @var int database id of the activity. */
     public $id;
+
+    /** @var int course id that the activity is in. */
     public $courseid;
+
+    /** @var int course id that the activity is in. */
     public $serverid;
+
+    /** @var int number of the section/topic the activity is in. */
     public $section;
+
+    /** @var str generated md5 of the activity. */
     public $md5;
+
+    /** @var str password needed to access the activity. */
     public $password;
-    protected $noquestions = 0; // Total no of valid questions.
+
+    /** @var int Total no of valid questions. */
+    protected $noquestions = 0;
+
+    /** @var str relative HTML path to the generated thumbnail image */
     public $thumbnailimage = null;
+
+    /** @var str Moodle component name of the activity. */
     public $componentname;
+
+    /** @var bool whether to output to logs to the user */
     public $printlogs = true;
 
     public function __construct($params=array()) {

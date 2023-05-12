@@ -14,6 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * MobileActivityQuiz class file
+ *
+ *
+ *
+ * @package    block_oppia_mobile_export
+ * @copyright  2023 Digital Campus
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+
 class MobileActivityQuiz extends MobileActivity {
 
     private $supportedtypes = array('multichoice', 'match', 'truefalse', 'description', 'shortanswer', 'numerical');
