@@ -261,12 +261,26 @@ class MobileActivityPage extends MobileActivity {
             return null;
         }
 
-        $videos = $html->getElementsByTagName('video');
-        $videoslength = $videos->length;
+		$videos = $this->extract_and_replace_video_tags($html, $component, $filearea, $itemid, $contextid);
+		$resources = $this->extract_and_replace_resource_links($html, $component, $filearea, $itemid, $contextid);
 
-        if ($videoslength <= 0) {
-            return $content;
-        }
+		if ($videos > 0 || $resources > 0){
+			$content = $html->saveHTML($html->documentElement);	
+		}
+
+		return $content;
+        
+	}
+
+	private function extract_and_replace_video_tags($html, $component, $filearea, $itemid, $contextid){
+		global $CFG;
+
+		$videos = $html->getElementsByTagName('video');
+		$videoslength = $videos->length;
+        
+		if ($videoslength <= 0){
+			return 0;
+		}
 
         for ($i = 0; $i < $videoslength; $i++) {
             $video = $videos->item(0); // We always get the first one, as the previous one would be replaced by now.
@@ -294,30 +308,91 @@ class MobileActivityPage extends MobileActivity {
                         echo get_string('video_included', PLUGINNAME).'<code>'. $filename .'</code>'.OPPIA_HTML_BR;
                     }
                 }
-            }
-
-            if (!$video->hasAttribute('poster')) {
+			}
+			if (!$video->hasAttribute('poster')) {
                 if ($this->printlogs) {
                     echo OPPIA_HTML_SPAN_ERROR_START.get_string('missing_video_poster',
                         PLUGINNAME).OPPIA_HTML_SPAN_END.OPPIA_HTML_BR;
                 }
-            } else {
-                $videoparams['poster'] = $video->getAttribute('poster');
-                if ($this->videooverlay) {
-                    $videoparams['video_class'] = 'video-overlay';
-                }
             }
+			else{
+				$videoparams['poster'] = $video->getAttribute('poster');
+				if ($this->videooverlay){
+					$videoparams['video_class'] = 'video-overlay';
+				}
+			}
 
-            $embed = create_dom_element_from_template($html, PLUGINNAME.'/video_embed', $videoparams);
-            $video->parentNode->replaceChild($embed, $video);
+			$embed = create_dom_element_from_template($html, PLUGINNAME.'/video_embed', $videoparams);
+			$video->parentNode->replaceChild($embed, $video);
         }
 
-        if (count($this->pagelocalmedia) > 0) {
-            $content = $html->saveHTML($html->documentElement);
-        }
+        return count($this->pagelocalmedia);
+	}
 
-        return $content;
-    }
+	private function extract_and_replace_resource_links($html, $component, $filearea, $itemid, $contextid){
+		global $CFG;
+
+		$links = $html->getElementsByTagName('a');
+		$linkslength = $links->length;
+		$resourcesfound = 0;
+
+		if ($linkslength <= 0){
+			return 0;
+		}
+
+		foreach ($links as $link) {
+			$href = $link->getAttribute('href');
+			preg_match_all(MEDIAFILE_REGEX, $href, $files_tmp, PREG_OFFSET_CAPTURE);
+		
+			if(!isset($files_tmp['filenames']) || count($files_tmp['filenames']) == 0){
+				continue;
+			}
+			$filename = $files_tmp['filenames'][0][0];
+
+			if (is_file_a_resource($filename)){
+				$filename = urldecode($filename);
+				$cleanfilename = filename_to_ascii($filename);
+					
+				$filepath = '/';
+				$fs = get_file_storage();
+				$file = $fs->get_file($contextid, $component, $filearea, $itemid, $filepath, $filename);
+				
+				if ($file) {
+					$resourcefile = $this->courseroot."/resources/".$cleanfilename;
+					$file->copy_content_to($resourcefile);
+				} else {
+					if($CFG->block_oppia_mobile_export_debug and $this->printlogs){
+					    echo OPPIA_HTML_SPAN_ERROR_START.get_string('error_file_not_found', PLUGINNAME, $filename).OPPIA_HTML_SPAN_END.OPPIA_HTML_BR;
+						return null;
+					}
+				}
+
+				if($CFG->block_oppia_mobile_export_debug and $this->printlogs){
+				    echo get_string('export_file_success', PLUGINNAME, $filename).OPPIA_HTML_BR;
+				}
+
+				$link->setAttribute('href', 'resources/'.$cleanfilename);
+				$resourcesfound++;
+			}
+		
+		}
+		return $resourcesfound;
+	}
+
+
+	private function isLocalMedia($filename){
+		$exists = false;
+		foreach ($this->page_local_media as $local_media){
+			if (strpos($local_media['filename'], $filename) !== false){
+				$exists = true;
+			}
+			if (strpos($local_media['filename'], urldecode($filename)) !== false){
+				$exists = true;
+			}
+		}
+		return $exists;
+	}
+	
 
     private function is_local_media($filename) {
         $exists = false;
