@@ -372,9 +372,13 @@ class MobileActivityPage extends MobileActivity {
 				}
 
 				$link->setAttribute('href', 'resources/'.$cleanfilename);
+
+				$version_compat = array('version_name'=>'v7.4.5', 'version_code'=>110);
+				$warningmsg = create_dom_element_from_template($html, PLUGINNAME.'/compat_warning', $version_compat);
+				$link->parentNode->insertBefore($warningmsg, $link->nextSibling);
+
 				$resourcesfound++;
 			}
-		
 		}
 		return $resourcesfound;
 	}

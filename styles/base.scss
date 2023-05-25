@@ -272,3 +272,14 @@ img {
   border-left: 36px solid #fff;
   z-index:300;
 }
+.compat-warning{
+	max-width:90%;
+	margin: 1em auto;
+	background-color:#fcf8e3;
+	color:#8a6d3b;
+	border-radius:2px;
+	border:1px solid #fbeed5;
+	padding:9px;
+	line-height:100%;
+	font-size:0.9em;
+}
