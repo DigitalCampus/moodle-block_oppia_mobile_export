@@ -403,12 +403,12 @@ foreach ($sections as $sect) {
             echo '<div class="step"><strong>' . format_string($mod->name) . '</strong>'.OPPIA_HTML_BR;
             $password = optional_param('mod_'.$mod->id.'_password', '', PARAM_TEXT);
             $activity = $processor->process_activity($mod, $sect, $actorderno, $activities, $xmldoc, $password);
-            $activitysummaries[$activity->id] = array(
-                'digest' => $activity->md5,
-                'no_questions' => $activity->get_no_questions(),
-            );
             if ($activity != null) {
                 $actorderno++;
+                $activitysummaries[$activity->id] = array(
+                    'digest' => $activity->md5,
+                    'no_questions' => $activity->get_no_questions(),
+                );
                 if ($activity->has_password()) {
                     echo '<span class="export-results info">'. get_string('activity_password_added', PLUGINNAME) .'</span>'.OPPIA_HTML_BR;
                     if ($password !== '') {
