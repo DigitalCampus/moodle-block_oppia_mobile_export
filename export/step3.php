@@ -122,7 +122,7 @@ foreach ($sections as $sect) {
             } else if ($mod->modname == 'feedback') {
                 $activitycount++;
 
-                $password = get_oppiaconfig($mod->id, 'password', '', $server, false);
+                $password = get_oppiaconfig($mod->id, 'password', '', false, $server);
 
                 array_push($activities, array(
                     'modid' => $mod->id,
@@ -169,7 +169,7 @@ foreach ($sections as $sect) {
 
         if ($activitycount > 0) {
 
-            $password = get_oppiaconfig($sect->id, 'password', '', $server, false);
+            $password = get_oppiaconfig($sect->id, 'password', '', false, $server);
 
             array_push($configsections, array(
                 'sectorderno' => $sectorderno,

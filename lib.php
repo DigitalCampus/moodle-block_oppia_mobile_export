@@ -22,6 +22,7 @@ const REGEX_FORBIDDEN_TAG_CHARS = '([^a-zA-z0-9\_]+)'; // Catches any character 
 const REGEX_HTML_ENTITIES = '(&nbsp;|&amp;|&quot;)'; // Catches HTML entities after urlencoding text contents.
 const REGEX_RESOURCE_EXTENSIONS = '/\.(mp3|mp4|avi)/'; // Catches media resource supported extensions.
 const REGEX_IMAGE_EXTENSIONS = '/\.(png|jpg|jpeg|gif)/'; // Catches image supported extensions.
+const REGEX_EXTERNAL_EXTENSIONS = '/\.(pdf|PDF)/'; //Catches external resources supported extensions.
 const BASIC_HTML_TAGS = '<strong><b><i><em>'; // Basic HTML tags allowed for the strip_tags() method.
 const REGEX_LANGS = '((lang=[\'|\"](?P<langs>[\w\-]*)[\'|\"]))'; // Extracts the lang attribute.
 const REGEX_BR = '(<br[[:space:]]*/?>)'; // Catches <br> tags in all its possible ways.
@@ -414,6 +415,9 @@ function resize_image_scale($image, $imagenewname, $imagewidth, $imageheight, $t
     return $imagenewname;
 }
 
+function is_file_a_resource($filepath){ 
+    return (preg_match(REGEX_EXTERNAL_EXTENSIONS, $filepath) > 0); 
+}
 function is_file_an_image($filepath) {
     return (preg_match(REGEX_IMAGE_EXTENSIONS, $filepath) > 0);
 }
