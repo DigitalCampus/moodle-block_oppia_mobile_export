@@ -490,7 +490,7 @@ echo $OUTPUT->render_from_template(
     array(
         'id' => $id,
         'serverconnection' => $serverconnection->url,
-        'media_files' => $localmediafiles,
+        'mediafiles' => $localmediafiles,
         'media_files_str' => json_encode($localmediafiles),
         'serverid' => $server,
         'stylesheet' => $stylesheet,
