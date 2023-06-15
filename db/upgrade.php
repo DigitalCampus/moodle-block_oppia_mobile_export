@@ -227,6 +227,20 @@ function xmldb_block_oppia_mobile_export_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2023022801, 'block', 'oppia_mobile_export');
     }
 
+    if ($oldversion < 2023063000) {
+        $table = new xmldb_table(OPPIA_SERVER_TABLE);
+        $field = new xmldb_field('moodleuserid');
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+
+        // Don't forget to run v1.4.5_migrations.php
+
+        // Blocks savepoint reached.
+        upgrade_plugin_savepoint(true, 2023063000, 'block', 'oppia_mobile_export');
+
+    }
+
     return true;
 
 }

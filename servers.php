@@ -38,13 +38,16 @@ if ($serverform->is_cancelled()) {
     $record = new stdClass();
     $record->servername = $fromform->server_ref;
     $record->url = trim($fromform->server_url);
-    $record->moodleuserid = $USER->id;
-    $DB->insert_record('block_oppia_mobile_server', $record, false);
+    if (!$DB->record_exists('block_oppia_mobile_server', array('url' => $record->url))) {
+        $DB->insert_record('block_oppia_mobile_server', $record, false);
+    } else {
+        echo "<div class='export-error'>".get_string('server_duplicated', PLUGINNAME)."</div>";
+    }
 }
 
 $delete = optional_param('delete', 0, PARAM_INT);
 if ($delete != 0) {
-    $DB->delete_records('block_oppia_mobile_server', array('id' => $delete, 'moodleuserid' => $USER->id));
+    $DB->delete_records('block_oppia_mobile_server', array('id' => $delete));
 }
 
 
