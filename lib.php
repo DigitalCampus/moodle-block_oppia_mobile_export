@@ -110,7 +110,7 @@ function get_oppiaconfig($modid, $name, $default, $usenonservervalue, $servid="d
 
 function get_oppiaservers() {
     global $DB, $USER;
-    return $DB->get_records(OPPIA_SERVER_TABLE, array('moodleuserid' => $USER->id));
+    return $DB->get_records(OPPIA_SERVER_TABLE);
 }
 
 function add_publishing_log($server, $userid, $courseid, $action, $data) {

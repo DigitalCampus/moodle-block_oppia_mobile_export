@@ -100,7 +100,7 @@ $MEDIA = array();
 
 echo "<h2>".get_string('export_step4_title', PLUGINNAME)."</h2>";
 
-$serverconnection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid' => $USER->id, 'id' => $server));
+$serverconnection = $DB->get_record(OPPIA_SERVER_TABLE, array('id' => $server));
 if (!$serverconnection && $server != "default") {
     echo "<p>".get_string('server_not_owner', PLUGINNAME)."</p>";
     echo $OUTPUT->footer();

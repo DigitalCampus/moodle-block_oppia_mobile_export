@@ -70,7 +70,7 @@ $modinfo = get_fast_modinfo($course);
 $sections = $modinfo->get_section_info_all();
 $mods = $modinfo->get_cms();
 
-$serverconnection = $DB->get_record(OPPIA_SERVER_TABLE, array('moodleuserid' => $USER->id, 'id' => $server));
+$serverconnection = $DB->get_record(OPPIA_SERVER_TABLE, array('id' => $server));
 
 add_or_update_oppiaconfig($id, 'is_draft', $isdraft);
 add_publishing_log($serverconnection->url, $USER->id, $id, "api_publish_start", "API publish process started");

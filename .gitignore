@@ -7,3 +7,4 @@ output/
 /tools/
 tests/behat/CodeCoverage
 tests/behat/report
+/migrations/logs/*

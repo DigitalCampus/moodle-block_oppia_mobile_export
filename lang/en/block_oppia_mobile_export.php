@@ -69,6 +69,7 @@ $string['servers_block_add'] = 'Add/delete server connection';
 $string['servers_block_select_connection'] = 'Select connection:';
 $string['server_not_owner'] = 'The selected OppiaMobile server connection does not belong to your account.';
 $string['server_delete'] = 'delete';
+$string['server_duplicated'] = 'There is already a server with the provided URL.';
 
 $string['server_form_name'] = 'Server Name (your reference)';
 $string['server_form_name_error_none'] = 'Please enter a reference name for your server.';
