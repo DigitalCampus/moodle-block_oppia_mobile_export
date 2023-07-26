@@ -298,7 +298,7 @@ $filename = extract_image_file($course->summary,
                             $courseroot, 0);
 
 if ($filename) {
-    $resizedfilename = resize_image($courseroot."/".$filename,
+    $resizedfilename = resize_oppia_image($courseroot."/".$filename,
         $courseroot."/images/".$course->id.'_'.$context->id,
                         $CFG->block_oppia_mobile_export_course_icon_width,
                         $CFG->block_oppia_mobile_export_course_icon_height,
@@ -376,7 +376,7 @@ foreach ($sections as $sect) {
                                     $courseroot, 0);
 
         if ($filename) {
-            $resizedfilename = resize_image(
+            $resizedfilename = resize_oppia_image(
                 $courseroot."/".$filename,
                 $courseroot."/images/".$sect->id.'_'.$context->id,
                 $sectionwidth, $sectionheight, true);

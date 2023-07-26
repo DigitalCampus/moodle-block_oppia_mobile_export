@@ -90,9 +90,9 @@ abstract class MobileActivity {
             $this->serverid);
 
         $this->thumbnailimage = $thumbnail;
-        $imageresized = resize_image($this->courseroot . "/". $this->thumbnailimage,
-                                    $this->courseroot."/images/".$moduleid,
-                                    $thumbwidth, $thumbheight, false);
+        $imageresized = resize_oppia_image($this->courseroot . "/". $this->thumbnailimage,
+                                           $this->courseroot."/images/".$moduleid,
+                                           $thumbwidth, $thumbheight, false);
 
         if ($imageresized) {
             $this->thumbnailimage = "/images/" . $imageresized;

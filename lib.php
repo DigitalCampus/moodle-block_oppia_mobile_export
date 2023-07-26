@@ -352,13 +352,13 @@ function copy_file($file, $component, $filearea, $itemid, $contextid, $courseroo
 }
 
 
-function resize_image($image, $imagenewname, $imagewidth, $imageheight, $transparent) {
+function resize_oppia_image($image, $imagenewname, $imagewidth, $imageheight, $transparent) {
     global $CFG;
 
     if ($CFG->block_oppia_mobile_export_thumb_crop) {
-        $filename = resize_image_crop($image, $imagenewname, $imagewidth, $imageheight, $transparent);
+        $filename = resize_oppia_image_crop($image, $imagenewname, $imagewidth, $imageheight, $transparent);
     } else {
-        $filename = resize_image_scale($image, $imagenewname, $imagewidth, $imageheight, $transparent);
+        $filename = resize_oppia_image_scale($image, $imagenewname, $imagewidth, $imageheight, $transparent);
     }
     // Just return the last part of the filename (name + extn... not the dir path).
     $pieces = explode("/", $filename);
@@ -366,7 +366,7 @@ function resize_image($image, $imagenewname, $imagewidth, $imageheight, $transpa
     return $pieces[count($pieces) - 1];
 }
 
-function resize_image_scale($image, $imagenewname, $imagewidth, $imageheight, $transparent) {
+function resize_oppia_oppia_image_scale($image, $imagenewname, $imagewidth, $imageheight, $transparent) {
     global $CFG;
     $size = getimagesize($image);
     $origw = $size[0];
@@ -422,7 +422,7 @@ function is_file_an_image($filepath) {
     return (preg_match(REGEX_IMAGE_EXTENSIONS, $filepath) > 0);
 }
 
-function resize_image_crop($image, $imagenewname, $imagewidth, $imageheight, $transparent) {
+function resize_oppia_image_crop($image, $imagenewname, $imagewidth, $imageheight, $transparent) {
     global $CFG;
     if (!file_exists($image)) {
         return false;
