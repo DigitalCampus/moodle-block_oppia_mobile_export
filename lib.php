@@ -330,7 +330,7 @@ function copy_file($file, $component, $filearea, $itemid, $contextid, $courseroo
             $isimage = false;
             $filedest = "/resources/".$filename;
         } else {
-            $filedest = "/images/".$sha1;
+            $filedest = "/images/".$sha1.".".pathinfo($fullpath)['extension'];
         }
         $file->copy_content_to($courseroot.$filedest);
     } else {
@@ -342,7 +342,7 @@ function copy_file($file, $component, $filearea, $itemid, $contextid, $courseroo
 
     $tr = new StdClass;
     $tr->originalfilename = $filename;
-    $tr->filename = sha1($fullpath);
+    $tr->filename = sha1($fullpath).".".pathinfo($filename)['extension'];
     if ($CFG->block_oppia_mobile_export_debug) {
         $message = 'export_'.($isimage ? 'image' : 'file').'_success';
         echo get_string($message, PLUGINNAME, urldecode($filename))."<br/>";
