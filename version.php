@@ -17,7 +17,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin = new StdClass;
-$plugin->version = 2023100500;
+$plugin->version = 2023121300;
 $plugin->requires = 2022041900;
 $plugin->component = 'block_oppia_mobile_export';
 $plugin->release = "v1.4.7";
