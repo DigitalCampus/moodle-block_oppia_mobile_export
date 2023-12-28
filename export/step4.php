@@ -121,6 +121,7 @@ if ($apihelper->version == null || $apihelper->version == '') {
     echo $OUTPUT->render_from_template(
         PLUGINNAME.'/server_info', array('server_info' => $apihelper)
     );
+    add_publishing_log($serverconnection->url, $USER->id, $id, "server_connected", $apihelper->version);
 }
 
 // Make course dir etc for output.
