@@ -94,12 +94,35 @@ $configsections = array();
 $sectorderno = 1;
 foreach ($sections as $sect) {
     flush_buffers();
-    // We avoid the topic0 as is not a section as the rest.
+    
+    $sectionmods = explode(",", $sect->sequence);
+    // Process topic0 for quizzes
     if ($sect->section == 0) {
+        foreach ($sectionmods as $modnumber) {
+            $mod = $mods[$modnumber];
+            if ($mod->visible != 1) {
+                continue;
+            }
+            if ($mod->modname == 'quiz') {
+                // For the quizzes, we save the configuration entered.
+                $random = optional_param('quiz_'.$mod->id.'_randomselect', 0, PARAM_INT);
+                $showfeedback = optional_param('quiz_'.$mod->id.'_showfeedback', 1, PARAM_INT);
+                $passthreshold = optional_param('quiz_'.$mod->id.'_passthreshold', 0, PARAM_INT);
+                $maxattempts = optional_param('quiz_'.$mod->id.'_maxattempts', 'unlimited', PARAM_INT);
+                
+                if ($maxattempts == 0) {
+                    $maxattempts = 'unlimited';
+                }
+                add_or_update_oppiaconfig($mod->id, 'randomselect', $random);
+                add_or_update_oppiaconfig($mod->id, 'showfeedback', $showfeedback);
+                add_or_update_oppiaconfig($mod->id, 'passthreshold', $passthreshold);
+                add_or_update_oppiaconfig($mod->id, 'maxattempts', $maxattempts);
+            }
+        }
         continue;
     }
 
-    $sectionmods = explode(",", $sect->sequence);
+    
     $secttitle = get_section_title($sect);
 
     if (count($sectionmods) > 0) {
