@@ -155,7 +155,8 @@ class MobileActivityQuiz extends MobileActivity {
             $questionprops = array(
                 "moodle_question_id" => $q->questionbankentryid,
                 "moodle_question_latest_version_id" => $q->id,
-                "maxscore" => $questionmaxscore);
+                "maxscore" => $questionmaxscore
+            );
 
             // Skip any essay questions.
             if ($q->qtype == 'essay') {
@@ -181,6 +182,7 @@ class MobileActivityQuiz extends MobileActivity {
                     $q->qtype = 'multiselect';
                 }
                 $questionprops['shuffleanswers'] = $q->options->shuffleanswers;
+                $questionprops['show_standard_instructions'] = $q->options->showstandardinstruction;
             }
             if ($q->qtype == 'truefalse') {
                 $q->qtype = 'multichoice';
