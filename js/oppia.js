@@ -32,10 +32,12 @@ $( document ).ready(function() {
 		
 	});
 
+
+    // Slider functionality
     let currentSlide = 0;
-    const totalSlides = document.querySelectorAll('.slide').length;
-    const sliderContainer = document.getElementById('slider-container');
-    const slideWidth = document.querySelector('.slide').clientWidth;
+    const totalSlides = document.querySelectorAll('slide').length;
+    const sliderContainer = document.querySelector('slide').parentNode;
+    const slideWidth = document.querySelector('slide').clientWidth;
 
     function changeSlide(direction) {
         currentSlide = Math.max(0, Math.min(currentSlide + direction, totalSlides - 1));
@@ -76,19 +78,18 @@ $( document ).ready(function() {
     sliderContainer.addEventListener('touchend', handleTouchEnd);
 
     if(sliderContainer) {
-        let section = document.querySelector("intro-section, content-section");
 
         const prevBtn = document.createElement('div');
         prevBtn.id = 'prevBtn';
         prevBtn.innerHTML = '&#10094;';
-        prevBtn.onclick = () => changeSlide(-1);
-        section.appendChild(prevBtn);
+        prevBtn.addEventListener('touchstart', function () { changeSlide(-1); });
+        sliderContainer.appendChild(prevBtn);
 
         const nextBtn = document.createElement('div');
         nextBtn.id = 'nextBtn';
         nextBtn.innerHTML = '&#10095;';
-        nextBtn.onclick = () => changeSlide(1);
-        section.appendChild(nextBtn);
+        nextBtn.addEventListener('touchstart', function () { changeSlide(1); });
+        sliderContainer.appendChild(nextBtn);
 
         function updateButtonVisibility() {
             prevBtn.style.visibility = currentSlide === 0 ? 'hidden' : 'visible';
