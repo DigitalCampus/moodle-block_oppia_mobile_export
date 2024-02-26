@@ -32,70 +32,105 @@ $( document ).ready(function() {
 		
 	});
 
-
     // Slider functionality
-    let currentSlide = 0;
     const totalSlides = document.querySelectorAll('slide').length;
-    const sliderContainer = document.querySelector('slide').parentNode;
-    const slideWidth = document.querySelector('slide').clientWidth;
 
-    function changeSlide(direction) {
-        currentSlide = Math.max(0, Math.min(currentSlide + direction, totalSlides - 1));
-        updateSlider();
+    if (totalSlides > 0) {
+        let currentSlide = 0;
+        const sliderContainer = document.querySelector('slide').parentNode;
+        const slideWidth = document.querySelector('slide').clientWidth;
+
+        function changeSlide(direction) {
+            currentSlide = Math.max(0, Math.min(currentSlide + direction, totalSlides - 1));
+            updateSlider();
+        }
+
+        function updateSlider() {
+            sliderContainer.scroll({left: currentSlide * slideWidth, behavior: 'smooth'});
+            updateButtonVisibility();
+
+            console.log('currentSlide:', currentSlide);
+            console.log('slideWidth:', slideWidth);
+            console.log('Transform:', sliderContainer.style.transform);
+            console.log('Slider Container Height:', sliderContainer.clientHeight);
+        }
+
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        sliderContainer.addEventListener('touchstart', (e) => {
+            if (currentSlide !== totalSlides - 1) {
+                e.preventDefault();
+            }
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        function handleTouchEnd(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            if (touchEndX < touchStartX) {
+                changeSlide(1); // Swipe left
+            }
+            if (touchEndX > touchStartX) {
+                changeSlide(-1); // Swipe right
+            }
+        }
+
+        sliderContainer.addEventListener('touchcancel', handleTouchEnd);
+        sliderContainer.addEventListener('touchend', handleTouchEnd);
+
+        if (sliderContainer) {
+
+            const prevBtn = document.createElement('div');
+            prevBtn.id = 'prevBtn';
+            prevBtn.innerHTML = '&#10094;';
+            prevBtn.addEventListener('touchstart', function () {
+                changeSlide(-1);
+            });
+            sliderContainer.appendChild(prevBtn);
+
+            const nextBtn = document.createElement('div');
+            nextBtn.id = 'nextBtn';
+            nextBtn.innerHTML = '&#10095;';
+            nextBtn.addEventListener('touchstart', function () {
+                changeSlide(1);
+            });
+            sliderContainer.appendChild(nextBtn);
+
+            function updateButtonVisibility() {
+                prevBtn.style.visibility = currentSlide === 0 ? 'hidden' : 'visible';
+                nextBtn.style.visibility = currentSlide === totalSlides - 1 ? 'hidden' : 'visible';
+            }
+
+            updateButtonVisibility();
+        }
     }
 
-    function updateSlider() {
-        sliderContainer.scroll({left: currentSlide * slideWidth, behavior: 'smooth'});
-        updateButtonVisibility();
+    // Cards functionality
+    const cards = document.querySelectorAll('card');
+    if (cards.length > 0) {
+        let currentCard = 0;
+        cards[0].classList.add('active');
+        cards[1].classList.add('next');
 
-		console.log('currentSlide:', currentSlide);
-		console.log('slideWidth:', slideWidth);
-		console.log('Transform:', sliderContainer.style.transform);
-		console.log('Slider Container Height:', sliderContainer.clientHeight);
-    }
+        $('card').on('click', function () {
+            $('card').css({'pointer-events': 'none'});
 
-    let touchStartX = 0;
-    let touchEndX = 0;
+            $('card.active').addClass('animate-leave');
 
-    sliderContainer.addEventListener('touchstart', (e) => {
-        if (currentSlide !== totalSlides -1) {
-            e.preventDefault();
-        }
-        touchStartX = e.changedTouches[0].screenX;
-    });
+            setTimeout(function () {
+                $('card.animate-leave').addClass('animate-back').removeClass('animate-leave');
+                $('card').parent().prepend($('.animate-back'));
+                cards[currentCard].classList.remove('active');
+                $('card.next').addClass('active').removeClass('next');
+                currentCard = (currentCard + 1) % cards.length;
 
-    function handleTouchEnd(e) {
-        touchEndX = e.changedTouches[0].screenX;
-        if (touchEndX < touchStartX) {
-            changeSlide(1); // Swipe left
-        }
-        if (touchEndX > touchStartX) {
-            changeSlide(-1); // Swipe right
-        }
-    }
-
-    sliderContainer.addEventListener('touchcancel', handleTouchEnd);
-    sliderContainer.addEventListener('touchend', handleTouchEnd);
-
-    if(sliderContainer) {
-
-        const prevBtn = document.createElement('div');
-        prevBtn.id = 'prevBtn';
-        prevBtn.innerHTML = '&#10094;';
-        prevBtn.addEventListener('touchstart', function () { changeSlide(-1); });
-        sliderContainer.appendChild(prevBtn);
-
-        const nextBtn = document.createElement('div');
-        nextBtn.id = 'nextBtn';
-        nextBtn.innerHTML = '&#10095;';
-        nextBtn.addEventListener('touchstart', function () { changeSlide(1); });
-        sliderContainer.appendChild(nextBtn);
-
-        function updateButtonVisibility() {
-            prevBtn.style.visibility = currentSlide === 0 ? 'hidden' : 'visible';
-            nextBtn.style.visibility = currentSlide === totalSlides - 1 ? 'hidden' : 'visible';
-        }
-
-        updateButtonVisibility();
+                const nextCard = cards[(currentCard + 1) % cards.length];
+                nextCard.classList.add('next');
+            }, 300);
+            setTimeout(function () {
+                $('card.animate-back').removeClass('animate-back');
+                $('card').css({'pointer-events': 'auto'});
+            }, 700);
+        });
     }
 });
