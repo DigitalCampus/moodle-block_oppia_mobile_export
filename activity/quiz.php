@@ -121,7 +121,7 @@ class MobileActivityQuiz extends MobileActivity {
     }
 
     public function process() {
-        global $DB, $USER, $MEDIA;
+        global $DB, $USER, $MEDIA, $DEFAULTLANG;
 
         $cm = get_coursemodule_from_id('quiz', $this->id);
         $quiz = $DB->get_record('quiz', array('id' => $cm->instance), '*', MUST_EXIST);
@@ -279,6 +279,19 @@ class MobileActivityQuiz extends MobileActivity {
                 }
             }
 
+            // save question as an html file
+            $question_title_langs = extract_langs(clean_html_entities($q->questiontext, true), false, false, false);
+            $temp_question_langs = array();
+            if (is_array($question_title_langs) && count($question_title_langs) > 0) {
+                foreach ($question_title_langs as $lang => $text) {
+                    // Process individually each language.
+                    $temp_question_langs[$lang] = $this->generate_as_html($q->contextid, 'question', $cm->id, $text, $lang,  $q->id, null);
+                }
+            } else {
+                $temp_question_langs[$DEFAULTLANG] = $this->generate_as_html($q->contextid, 'question', $cm->id, $q->questiontext, $DEFAULTLANG,  $q->id, null);
+            }
+            $questionprops["html"] = json_encode($temp_question_langs);
+
             $questionjson = array(
                 "id" => rand(1, 1000),
                 "type" => $q->qtype,
@@ -356,6 +369,109 @@ class MobileActivityQuiz extends MobileActivity {
         $node->appendChild($act);
     }
 
+    private function generate_as_html($contextid, $type, $modid, $content, $lang, $question_id, $response_id){
+        
+        if($type == "question"){
+            $html_filename = $this->make_question_html_filename($this->section, $question_id, $lang);
+            $content = $this->extract_and_replace_image_files($content, 'question', 'questiontext', $question_id, $contextid);
+        } else if ($type == "response"){
+            $html_filename = $this->make_response_html_filename($this->section, $question_id, $response_id, $lang);
+        } else if ($type == "feedback"){
+            $html_filename = $this->make_feedback_html_filename($this->section, $question_id, $response_id, $lang);
+        }
+        
+        
+        $webpage = '<!DOCTYPE html>';
+        $webpage .= '<html><head>';
+        $webpage .= '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
+        $webpage .= '<link href="style.css" rel="stylesheet" type="text/css"/>';
+        $webpage .= '<script src="js/jquery-3.6.0.min.js"></script>';
+        $webpage .= '<script src="js/oppia.js"></script>';
+        $webpage .= '</head>';
+        $webpage .= '<body>'.$content.'</body></html>';
+        
+        $index = $this->courseroot."/".$html_filename;
+        $fh = fopen($index, 'w');
+        if ($fh !== false) {
+            fwrite($fh, $webpage);
+            fclose($fh);
+        }
+        return $html_filename;
+    }
+    
+    private function extract_and_replace_image_files($content, $component, $filearea, $itemid, $contextid) {
+        global $CFG;
+        
+        
+        preg_match_all(MEDIAFILE_REGEX, $content, $filestmp, PREG_OFFSET_CAPTURE);
+        
+        if (!isset($filestmp['filenames']) || count($filestmp['filenames']) == 0) {
+            return $content;
+        }
+        $toreplace = array();
+        $count = count($filestmp['filenames']);
+        
+        for ($i = 0; $i < $count; $i++) {
+            
+            $origfilename = $filestmp['filenames'][$i][0];
+            $filename = urldecode($origfilename);
+            $cleanfilename = filename_to_ascii($filename);
+
+                
+            $filepath = '/';
+            $fs = get_file_storage();
+            echo "contextid: $contextid".OPPIA_HTML_BR;
+            echo "component: $component".OPPIA_HTML_BR;
+            echo "filearea: $filearea".OPPIA_HTML_BR;
+            echo "itemid: $itemid".OPPIA_HTML_BR;
+            echo "filepath: $filepath".OPPIA_HTML_BR;
+            echo "filename: $filename".OPPIA_HTML_BR;
+            
+            $file = $fs->get_file($contextid, $component, $filearea, $itemid, $filepath, $filename);
+            
+            if ($file) {
+                $imgfile = $this->courseroot."/images/".$cleanfilename;
+                $file->copy_content_to($imgfile);
+            } else {
+                if ($CFG->block_oppia_mobile_export_debug && $this->printlogs) {
+                    echo OPPIA_HTML_SPAN_ERROR_START.get_string('error_file_not_found', PLUGINNAME,
+                        $filename).OPPIA_HTML_SPAN_END.OPPIA_HTML_BR;
+                        return null;
+                }
+            }
+            
+            if ($CFG->block_oppia_mobile_export_debug && $this->printlogs) {
+                echo get_string('export_file_success', PLUGINNAME, $filename).OPPIA_HTML_BR;
+            }
+            
+            
+            $filenamereplace = new StdClass;
+            $filenamereplace->filename = $filename;
+            $filenamereplace->origfilename = $origfilename;
+            $filenamereplace->cleanfilename = $cleanfilename;
+            array_push($toreplace, $filenamereplace);
+        }
+        
+        foreach ($toreplace as $tr) {
+            $content = str_replace(MEDIAFILE_PREFIX.'/'.$tr->origfilename, 'images/'.$tr->cleanfilename, $content);
+            $content = str_replace(MEDIAFILE_PREFIX.'/'.urlencode($tr->filename), 'images/'.$tr->cleanfilename, $content);
+        }
+        
+        return $content;
+    }
+    
+    private function make_question_html_filename($sectionno, $question_id, $lang) {
+        return sprintf('%02d_%02d', $sectionno, $question_id)."_question_".strtolower($lang).".html";
+    }
+    
+    private function make_response_html_filename($sectionno, $question_id, $response_id, $lang) {
+        return sprintf('%02d_%02d_%02d', $sectionno, $question_id, $response_id)."_response_".strtolower($lang).".html";
+    }
+    
+    private function make_feedback_html_filename($sectionno, $question_id, $response_id, $lang) {
+        return sprintf('%02d_%02d_%02d', $sectionno, $question_id, $response_id)."_feedback_".strtolower($lang).".html";
+    }
+    
     public function get_is_valid() {
         return $this->isvalid;
     }
