@@ -163,9 +163,35 @@ content-section {
   }
 
   #prevBtn, #nextBtn {
-    color: orange;
+    color: $orange;
   }
 
+}
+
+info-section {
+  @extend .container;
+  align-items: unset !important;
+  background-color: #FDFAF7;
+
+  content,
+  slide {
+    @extend .content;
+    background-image: url('style_resources/shapes/square-blue.svg'), url('style_resources/shapes/square-green-border.svg');
+    background-position: top -5vh right -15vw, bottom -25vh left -40vw;
+    background-size: 100px 100px, 300px 300px;
+    background-repeat: no-repeat;
+    padding: 5% !important;
+
+    &:nth-of-type(even) {
+      background-image: url('style_resources/shapes/square-blue.svg'), url('style_resources/shapes/square-green-border.svg');
+      background-position: top -5vh right 85vw, bottom -25vh left 60vw;
+    }
+  }
+
+  #prevBtn, #nextBtn {
+    top: 40vh;
+    color: $pink;
+  }
 }
 
 what-we-learned-section {
@@ -263,6 +289,18 @@ noor {
         }
       }
     }
+  }
+
+  p,
+  span {
+    font-size: 1.3em;
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.2em;
+
+    &[color="blue"] { color: $blue; font-weight: bold; }
+    &[color="pink"] { color: $pink; font-weight: bold; }
+    &[color="green"] { color: $green; font-weight: bold; }
+    &[color="orange"] { color: $orange; font-weight: bold; }
   }
 }
 
