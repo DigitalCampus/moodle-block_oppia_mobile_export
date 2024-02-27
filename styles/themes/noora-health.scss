@@ -6,15 +6,22 @@ $table-header-bg-color: $primary-color;
 
 @font-face {
   font-family: 'Poppins';
-  src: url('style_resources/Poppins-Regular.ttf');
+  src: url('style_resources/fonts/Poppins-Regular.ttf');
   font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'Poppins Medium';
-  src: url('style_resources/Poppins-Medium.ttf');
+  src: url('style_resources/fonts/Poppins-Medium.ttf');
   font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Poppins Light';
+  src: url('style_resources/fonts/Poppins-Light.ttf');
+  font-weight: 100;
   font-style: normal;
 }
 
@@ -25,10 +32,77 @@ body {
 }
 
 intro-section {
+  @extend .container;
+  flex-direction: column;
+  justify-content: center;
+  background-image: url('style_resources/logos/noora_logo_color.png');
+  background-size: 100px;
+  background-position: top 10vh center;
+  background-repeat: no-repeat;
 
-  .slide {
+  img {
+    height: 40vh;
+    width: 100vw;
+    max-width: 100vw;
+    margin: 10%
+  }
+
+  content {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    padding: 0 20%;
+
+    .title {
+      font-size: 1.5em;
+      font-weight: bolder;
+      font-family: 'Poppins Medium', sans-serif;
+    }
+
+    module-title {
+      @extend .title;
+      color: #DD3E77;
+    }
+
+    lesson-title {
+      @extend .title;
+      color: #04966e;
+      padding-top: 10%;
+    }
+
+    module-description,
+    lesson-description {
+      font-family: 'Poppins Light', sans-serif;
+      line-height: 1.2em;
+    }
+  }
+}
+
+video-section {
+  @extend .container;
+  background-image: url('style_resources/shapes/square-orange.svg'), url('style_resources/shapes/square-blue-border.svg'),
+                    url('style_resources/shapes/square-orange.svg'), url('style_resources/shapes/square-blue-border.svg');
+  background-position: top 15vh right -15vw, top -25vh right -40vw,
+                        bottom 15vh left -15vw, bottom -25vh left -40vw;
+  background-size: 100px 100px, 300px 300px, 100px 100px, 300px 300px;
+  background-repeat: no-repeat;
+
+  video-content {
+    flex: 0 0 100vw;
+    box-sizing: border-box;
+    border: 15px solid #04966e;
+    border-radius: 20px;
+  }
+}
+
+noor-section {
+  @extend .container;
+  align-items: unset !important;
+
+  slide {
+    @extend .content;
     background-color: #37B7E6;
-    background-image: url('style_resources/square-green.svg'), url('style_resources/square-pink.svg');
+    background-image: url('style_resources/shapes/square-green.svg'), url('style_resources/shapes/square-pink.svg');
     background-position: top -35vh left -40vw, bottom -30vh right -40vw;
     background-size: 300px 300px;
     background-repeat: no-repeat;
@@ -41,7 +115,7 @@ intro-section {
     }
 
     &:nth-of-type(even) {
-      background-image: url('style_resources/square-green.svg'), url('style_resources/square-pink.svg');
+      background-image: url('style_resources/shapes/square-green.svg'), url('style_resources/shapes/square-pink.svg');
       background-position: top -35vh left 60vw, bottom -30vh right 60vw;
     }
   }
@@ -54,7 +128,7 @@ intro-section {
 content-section {
 
   .slide {
-    background-image: url('style_resources/square-green-border.svg'), url('style_resources/square-orange.svg');
+    background-image: url('style_resources/shapes/square-green-border.svg'), url('style_resources/shapes/square-orange.svg');
     background-position: top -35vh left -40vw, bottom -30vh right -40vw;
     background-size: 300px 300px;
     background-repeat: no-repeat;
@@ -66,7 +140,7 @@ content-section {
     }
 
     &:nth-of-type(even) {
-      background-image: url('style_resources/square-green-border.svg'), url('style_resources/square-orange.svg');
+      background-image: url('style_resources/shapes/square-green-border.svg'), url('style_resources/shapes/square-orange.svg');
       background-position: top -35vh left 60vw, bottom -30vh right 60vw;
     }
   }
@@ -77,20 +151,31 @@ content-section {
 
 }
 
+what-we-learned-section {
+  // TODO:
+}
+
+next-lesson-section {
+  // TODO:
+}
+
 noor {
-  width: 50vw;
-  height: 50vw;
+  width: 100vw;
+  height: 50%;
   background-size: cover;
   background-repeat: no-repeat;
-  background-image: url('style_resources/noor-1.png');
+  background-image: url('style_resources/noor/noor_1.png');
 
-  &[icon="1"] {
-    background-image: url('style_resources/noor-1.png');
-  }
-
-  &[icon="2"] {
-    background-image: url('style_resources/noor-2.png');
-  }
+  &[icon="1"] { background-image: url('style_resources/noor/noor_1.png'); }
+  &[icon="2"] { background-image: url('style_resources/noor/noor_2.png'); }
+  &[icon="3"] { background-image: url('style_resources/noor/noor_3.png'); }
+  &[icon="4"] { background-image: url('style_resources/noor/noor_4.png'); }
+  &[icon="5"] { background-image: url('style_resources/noor/noor_5.png'); }
+  &[icon="6"] { background-image: url('style_resources/noor/noor_6.png'); }
+  &[icon="7"] { background-image: url('style_resources/noor/noor_7.png'); }
+  &[icon="8"] { background-image: url('style_resources/noor/noor_8.png'); }
+  &[icon="9"] { background-image: url('style_resources/noor/noor_9.png'); }
+  &[icon="10"] { background-image: url('style_resources/noor/noor_10.png'); }
 }
 
 .question-box {
@@ -102,6 +187,28 @@ noor {
   font-family: Poppins, sans-serif;
   line-height: 1.2em;
   border-radius: 100px;
+}
+
+.container {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+  height: 100vh;
+  touch-action: pan-x;
+  overflow-x: scroll;
+  align-items: center;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 100vw;
+  box-sizing: border-box;
+  justify-content: center;
+  align-items: center;
+  padding: 45px;
+  text-align: center;
+  max-height: 100vh;
+  max-width: 100vw;
 }
 
 #slider-container {
