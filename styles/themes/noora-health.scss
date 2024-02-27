@@ -97,6 +97,12 @@ video-section {
     box-sizing: border-box;
     border: 15px solid $green;
     border-radius: 20px;
+
+    img {
+      margin: 0;
+      width: 100%;
+      max-width: 100%;
+    }
   }
 }
 
@@ -191,6 +197,19 @@ info-section {
   #prevBtn, #nextBtn {
     top: 40vh;
     color: $pink;
+  }
+
+  &[type="feedback"] {
+
+    content {
+      @extend .content;
+      background-image: url('style_resources/shapes/square-blue-border.svg'), url('style_resources/shapes/square-blue-border.svg');
+      background-position: top -40vh left -40vw, bottom -40vh right -40vw;
+      background-size: 300px 300px;
+      background-repeat: no-repeat;
+      padding: 5% !important;
+    }
+
   }
 }
 
@@ -465,5 +484,30 @@ card {
       transform: translateY(0) rotate(-5deg);
     }
   }
+}
+
+noora-button {
+  border-radius: 25px;
+  background-color: $green;
+  font-family: 'Poppins', sans-serif;
+  line-height: 1.2em;
+  color: white;
+  padding: 5%;
+
+  &[color="pink"] { background-color: $pink; }
+  &[color="orange"] { background-color: $orange; }
+  &[color="blue"] { background-color: $blue; }
+  &[color="green"] { background-color: $green; }
+
+  &[type="modal"] {
+
+    modal {
+      @extend card;
+      margin: 5%;
+    }
+
+
+  }
+
 }
 

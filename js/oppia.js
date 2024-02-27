@@ -161,4 +161,18 @@ $( document ).ready(function() {
             }, 700);
         });
     }
+
+    // Buttons functionality
+    $('noora-button').on('click', function () {
+        const clickedButton = $(this);
+        const color = clickedButton.attr('color');
+        if (color === 'green'){
+            clickedButton.attr('color', "orange");
+        } else {
+            clickedButton.attr('color', "green");
+        }
+
+        if (clickedButton.attr('type') === 'modal') { }
+
+    });
 });
