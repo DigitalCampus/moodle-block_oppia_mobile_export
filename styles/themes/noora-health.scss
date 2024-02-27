@@ -190,7 +190,19 @@ what-we-learned-section {
 }
 
 next-lesson-section {
-  // TODO:
+  @extend .container;
+  flex-direction: column;
+  background-color: $blue;
+  background-image: url('style_resources/icons/next_lesson_icon.png');
+  background-position: top 25vh center;
+  background-repeat: no-repeat;
+  background-size: 50vw;
+  color: white;
+  font-size: 1.3em;
+  font-family: 'Poppins', sans-serif;
+  line-height: 1.2em;
+  text-align: center;
+  padding: 50vh 10%;
 }
 
 noor {
