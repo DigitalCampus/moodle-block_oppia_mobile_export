@@ -1,6 +1,11 @@
-$primary-color: #DD3E77;
+$pink: #DD3E77;
+$orange: #FAA31A;
+$blue: #37B7E6;
+$green: #04966E;
+
+$primary-color: $pink;
 $primary-color-dark: #a81e4f;
-$secondary-color: #37B7E6;
+$secondary-color: $blue;
 $table-border-color: #111;
 $table-header-bg-color: $primary-color;
 
@@ -44,7 +49,7 @@ intro-section {
     height: 40vh;
     width: 100vw;
     max-width: 100vw;
-    margin: 10%
+    margin: 10% 0;
   }
 
   content {
@@ -61,12 +66,12 @@ intro-section {
 
     module-title {
       @extend .title;
-      color: #DD3E77;
+      color: $pink;
     }
 
     lesson-title {
       @extend .title;
-      color: #04966e;
+      color: $green;
       padding-top: 10%;
     }
 
@@ -90,8 +95,14 @@ video-section {
   video-content {
     flex: 0 0 100vw;
     box-sizing: border-box;
-    border: 15px solid #04966e;
+    border: 15px solid $green;
     border-radius: 20px;
+
+    img {
+      margin: 0;
+      width: 100%;
+      max-width: 100%;
+    }
   }
 }
 
@@ -99,6 +110,7 @@ noor-section {
   @extend .container;
   align-items: unset !important;
 
+  content,
   slide {
     @extend .content;
     background-color: #37B7E6;
@@ -107,17 +119,17 @@ noor-section {
     background-size: 300px 300px;
     background-repeat: no-repeat;
 
-    p {
-      color: white;
-      font-size: 1.3em;
-      font-family: 'Poppins', sans-serif;
-      line-height: 1.2em;
-    }
-
     &:nth-of-type(even) {
       background-image: url('style_resources/shapes/square-green.svg'), url('style_resources/shapes/square-pink.svg');
       background-position: top -35vh left 60vw, bottom -30vh right 60vw;
     }
+  }
+
+  p {
+    color: white;
+    font-size: 1.3em;
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.2em;
   }
 
   #prevBtn, #nextBtn {
@@ -126,37 +138,116 @@ noor-section {
 }
 
 content-section {
+  @extend .container;
+  align-items: unset !important;
+  background-color: $orange;
 
-  .slide {
-    background-image: url('style_resources/shapes/square-green-border.svg'), url('style_resources/shapes/square-orange.svg');
-    background-position: top -35vh left -40vw, bottom -30vh right -40vw;
-    background-size: 300px 300px;
-    background-repeat: no-repeat;
+  &[color="pink"] { background-color: $pink; }
+  &[color="orange"] { background-color: $orange; }
+  &[color="blue"] { background-color: $blue; }
+  &[color="green"] { background-color: $green; }
 
-    p {
-      font-size: 1.3em;
-      font-family: 'Poppins', sans-serif;
-      line-height: 1.2em;
+  content,
+  slide {
+    @extend .content;
+    flex: 0 0 auto !important;
+    padding: 5% !important;
+    max-width: 90vw !important;
+    margin: 5%;
+    border-radius: 20px;
+    background-color: white;
+
+    img {
+      max-width: 100%;
+      object-fit: contain;
     }
 
-    &:nth-of-type(even) {
-      background-image: url('style_resources/shapes/square-green-border.svg'), url('style_resources/shapes/square-orange.svg');
-      background-position: top -35vh left 60vw, bottom -30vh right 60vw;
+    p {
+      font-family: 'Poppins', sans-serif;
+      line-height: 1.2em;
     }
   }
 
   #prevBtn, #nextBtn {
-    color: orange;
+    color: $orange;
   }
 
 }
 
+info-section {
+  @extend .container;
+  align-items: unset !important;
+  background-color: #FDFAF7;
+
+  content,
+  slide {
+    @extend .content;
+    background-image: url('style_resources/shapes/square-blue.svg'), url('style_resources/shapes/square-green-border.svg');
+    background-position: top -5vh right -15vw, bottom -25vh left -40vw;
+    background-size: 100px 100px, 300px 300px;
+    background-repeat: no-repeat;
+    padding: 5% !important;
+
+    &:nth-of-type(even) {
+      background-image: url('style_resources/shapes/square-blue.svg'), url('style_resources/shapes/square-green-border.svg');
+      background-position: top -5vh right 85vw, bottom -25vh left 60vw;
+    }
+  }
+
+  #prevBtn, #nextBtn {
+    top: 40vh;
+    color: $pink;
+  }
+
+  &[type="feedback"] {
+
+    content {
+      @extend .content;
+      background-image: url('style_resources/shapes/square-blue-border.svg'), url('style_resources/shapes/square-blue-border.svg');
+      background-position: top -40vh left -40vw, bottom -40vh right -40vw;
+      background-size: 300px 300px;
+      background-repeat: no-repeat;
+      padding: 5% !important;
+    }
+
+  }
+}
+
 what-we-learned-section {
-  // TODO:
+  @extend .container;
+  background-image: url('style_resources/shapes/double_circle.svg'), url('style_resources/shapes/double_circle.svg'),
+                    url('style_resources/shapes/double_circle.svg'), url('style_resources/shapes/double_circle.svg'),
+                    url('style_resources/shapes/double_circle.svg'), url('style_resources/shapes/double_circle.svg');
+  background-position: top -20% left -60%, top 0 right -80%, top -15% right 20%,
+                        bottom -20% right -50%, bottom -10% left 50%, bottom 10% left -90%;
+  background-size: 200px 200px, 200px 200px, 100px 100px,
+                   200px 200px, 100px 100px, 200px 200px;
+  background-repeat: no-repeat;
+
+  section-title {
+    align-self: start;
+    text-align: center;
+    font-size: 1.3em;
+    font-family: 'Poppins Medium', sans-serif;
+    line-height: 1.2em;
+    padding: 10% 20%;
+  }
 }
 
 next-lesson-section {
-  // TODO:
+  @extend .container;
+  flex-direction: column;
+  background-color: $blue;
+  background-image: url('style_resources/icons/next_lesson_icon.png');
+  background-position: top 25vh center;
+  background-repeat: no-repeat;
+  background-size: 50vw;
+  color: white;
+  font-size: 1.3em;
+  font-family: 'Poppins', sans-serif;
+  line-height: 1.2em;
+  text-align: center;
+  padding: 50vh 10%;
 }
 
 noor {
@@ -179,7 +270,7 @@ noor {
 }
 
 .question-box {
-  background-color: #FAA31A;
+  background-color: $orange;
   text-align: center;
   padding: 50px;
   color: white;
@@ -196,6 +287,39 @@ noor {
   touch-action: pan-x;
   overflow-x: scroll;
   align-items: center;
+
+  &[pagination="true"] {
+    .pagination {
+      display: flex;
+      position: fixed;
+      width: 80%;
+      left: 10%;
+      top: 10%;
+      gap: 2px;
+
+      .pagination-item {
+        width: 100%;
+        height: 5px;
+        border-radius: 15px;
+        background-color: darkgrey;
+
+        &.active {
+          background-color: $green;
+        }
+      }
+    }
+  }
+
+  p,
+  span {
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.2em;
+
+    &[color="blue"] { color: $blue; font-weight: bold; }
+    &[color="pink"] { color: $pink; font-weight: bold; }
+    &[color="green"] { color: $green; font-weight: bold; }
+    &[color="orange"] { color: $orange; font-weight: bold; }
+  }
 }
 
 .content {
@@ -245,3 +369,145 @@ noor {
 
 #prevBtn { left: 5vw; }
 #nextBtn { left: 85vw; }
+
+card {
+  width: 65vw;
+  height: 50vh;
+  position: absolute;
+  top: 20%;
+  left: 12%;
+  right: 12%;
+  display: block;
+  border-radius: 40px;
+  outline-offset: -20px;
+  padding: 15px;
+  transition: transform .5s ease;
+  transform-origin: bottom center;
+  cursor: pointer;
+  background-color: white;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+
+  &[color="pink"] {
+    border: 5px solid $pink;
+    outline: 3px dashed $pink;
+  }
+
+  &[color="blue"] {
+    border: 5px solid $blue;
+    outline: 3px dashed $blue;
+  }
+
+  &[color="orange"] {
+    border: 5px solid $orange;
+    outline: 3px dashed $orange;
+  }
+
+  &[color="green"] {
+    border: 5px solid $green;
+    outline: 3px dashed $green;
+  }
+
+  &[left] { transform: rotate(-5deg); }
+  &[right] { transform: rotate(5deg); }
+
+  &.active {
+    transform: rotate(0);
+    z-index: 1;
+  }
+
+  content,
+  card-content {
+    @extend .content;
+    height: 100%;
+    padding: 0;
+    background-color: #FDFAF7;
+    border-radius: 20px;
+
+    img {
+      height: auto;
+      max-width: 90%;
+      max-height: 50%;
+      object-fit: contain;
+      pointer-events: none;
+    }
+
+    p {
+      text-align: center;
+      margin: 0 5%;
+    }
+
+  };
+
+  &.animate-leave {
+    animation: leave .3s;
+    animation-fill-mode: both;
+    animation-timing-function: ease-in-out;
+  }
+
+  &.right-card.animate-back {
+    animation: backR .3s;
+    animation-fill-mode: both;
+    animation-timing-function: ease-in-out;
+  }
+
+  &.left-card.animate-back {
+    animation: backL .3s;
+    animation-fill-mode: both;
+    animation-timing-function: ease-in-out;
+  }
+
+  @keyframes leave {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(-110%);
+      transform: translateY(-110%) translateX(-20%);
+    }
+  }
+  @keyframes backR {
+    from {
+      transform: translateY(-110%);
+      transform: translateY(-110%) translateX(-20%);
+    }
+    to {
+      transform: translateY(0) rotate(5deg);
+    }
+  }
+  @keyframes backL {
+    from {
+      transform: translateY(-110%);
+      transform: translateY(-110%) translateX(-20%);
+    }
+    to {
+      transform: translateY(0) rotate(-5deg);
+    }
+  }
+}
+
+noora-button {
+  border-radius: 25px;
+  background-color: $green;
+  font-family: 'Poppins', sans-serif;
+  line-height: 1.2em;
+  color: white;
+  padding: 5%;
+
+  &[color="pink"] { background-color: $pink; }
+  &[color="orange"] { background-color: $orange; }
+  &[color="blue"] { background-color: $blue; }
+  &[color="green"] { background-color: $green; }
+
+  &[type="modal"] {
+
+    modal {
+      @extend card;
+      margin: 5%;
+    }
+
+
+  }
+
+}
+
