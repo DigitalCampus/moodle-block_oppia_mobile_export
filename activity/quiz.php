@@ -288,7 +288,7 @@ class MobileActivityQuiz extends MobileActivity {
                             if (is_array($feedback_option_langs) && count($feedback_option_langs) > 0) {
                                 foreach ($feedback_option_langs as $lang => $text) {
                                     // Process individually each language.
-                                    $temp_response_langs[$lang] = $this->generate_as_html($q->contextid, 'feedback', $cm->id, $text, lang,  $q->id, $r->id);
+                                    $temp_feedback_langs[$lang] = $this->generate_as_html($q->contextid, 'feedback', $cm->id, $text, lang,  $q->id, $r->id);
                                 }
                             } else {
                                 $temp_feedback_langs[$DEFAULTLANG] = $this->generate_as_html($q->contextid, 'feedback', $cm->id, $text, $DEFAULTLANG,  $q->id, $r->id);
