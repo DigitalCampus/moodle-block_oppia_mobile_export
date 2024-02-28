@@ -314,6 +314,31 @@ index-section {
   }
 }
 
+chapter-section {
+  @extend .container;
+  background-color: $pink;
+
+
+  content {
+    @extend .content;
+    font-size: 1.3em;
+    color: white;
+    gap: 50px;
+
+      img {
+        height: auto;
+        width: 70%;
+        background-color: white;
+        border-radius: 50%;
+        border: 15px solid $orange;
+        padding: 15%;
+        box-sizing: content-box;
+        overflow: visible;
+        margin: 0;
+      }
+  }
+}
+
 noor {
   width: 100vw;
   height: 50%;
