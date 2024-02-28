@@ -339,6 +339,21 @@ chapter-section {
   }
 }
 
+definition-section {
+  @extend .container;
+  background-color: #FDFAF7;
+  flex-direction: column;
+  padding: 5%;
+
+  img {
+    width: 100%;
+    max-width: 100%;
+    object-fit: cover;
+    margin: 24px 0;
+  }
+
+}
+
 noor {
   width: 100vw;
   height: 50%;
