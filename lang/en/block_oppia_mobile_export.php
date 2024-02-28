@@ -135,7 +135,11 @@ $string['export_priority_label'] = 'Priority';
 $string['export_priority_desc'] = 'This is the relative weight given to a course to help determine the ordering in which it will appear on the mobile (10 = highest priority)';
 
 $string['export_keep_tags_title'] = 'Quiz Question Formatting';
-$string['export_keep_tags_desc'] = 'support use of HTML tags (&lt;em&gt;, &lt;b&gt;, &lt;strong&gt;, etc) in quiz question/response options. <br/><strong>Important</strong>:This is only supported for users with v7.3.2 or higher of the Oppia app';
+$string['export_keep_tags_desc'] = 'support use of HTML tags (&lt;em&gt;, &lt;b&gt;, &lt;strong&gt;, etc) in quiz question/response options.';
+
+$string['export_quizhtmlfiles_title'] = 'Quiz Question, Response and Feedback as HTML files';
+$string['export_quizhtmlfiles_desc'] = 'export quiz question, response and feedback as HTML files. <br/><strong>Important</strong>:This is only supported for users with v7.4.7 or higher of the Oppia app';
+
 
 $string['export_server_error'] = 'Unable to get server info (is it correctly configured and running?)';
 

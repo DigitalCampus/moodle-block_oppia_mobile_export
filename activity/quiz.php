@@ -26,7 +26,7 @@ class MobileActivityQuiz extends MobileActivity {
     private $configarray = array(); // Config (quiz props) array.
     private $quizmedia = array();
     private $keephtml = false; // Should the HTML of questions and answers be stripped out or not.
-
+    private $quizhtmlfiles = false; // Should the quiz questions, responses and feedback be exported as HTML files.
 
     public function __construct($params=array()) {
         parent::__construct($params);
@@ -44,6 +44,9 @@ class MobileActivityQuiz extends MobileActivity {
         }
         if (isset($params['keephtml'])) {
             $this->keephtml = $params['keephtml'];
+        }
+        if (isset($params['quizhtmlfiles'])) {
+            $this->quizhtmlfiles = $params['quizhtmlfiles'];
         }
 
         $this->componentname = 'mod_quiz';
@@ -257,10 +260,42 @@ class MobileActivityQuiz extends MobileActivity {
             if (isset($q->options->answers)) {
                 foreach ($q->options->answers as $r) {
                     $responseprops = array('id' => rand(1, 1000));
-
+                    
+                    if($this->quizhtmlfiles){
+                        // save response as an html file
+                        $response_option_langs = extract_langs($r->answer, false, false, false);
+                        
+                        $temp_response_langs = array();
+                        if (is_array($response_option_langs) && count($response_option_langs) > 0) {
+                            foreach ($response_option_langs as $lang => $text) {
+                                // Process individually each language.
+                                $temp_response_langs[$lang] = $this->generate_as_html($q->contextid, 'response', $cm->id, $text, $lang,  $q->id, $r->id);
+                            }
+                        } else {
+                            $temp_response_langs[$DEFAULTLANG] = $this->generate_as_html($q->contextid, 'response', $cm->id, $text, $DEFAULTLANG,  $q->id, $r->id);
+                        }
+                        $responseprops["responsehtmlfile"] = json_encode($temp_response_langs);
+                    }
+                    
                     if (strip_tags($r->feedback) != "") {
                         $feedbackjson = extract_langs($r->feedback, true, !$this->keephtml, false);
                         $responseprops['feedback'] = json_decode($feedbackjson);
+                        
+                        if($this->quizhtmlfiles){
+                            // save feedback as an html file
+                            $feedback_option_langs = extract_langs($r->feedback, false, false, false);
+                            $temp_feedback_langs = array();
+                            if (is_array($feedback_option_langs) && count($feedback_option_langs) > 0) {
+                                foreach ($feedback_option_langs as $lang => $text) {
+                                    // Process individually each language.
+                                    $temp_response_langs[$lang] = $this->generate_as_html($q->contextid, 'feedback', $cm->id, $text, lang,  $q->id, $r->id);
+                                }
+                            } else {
+                                $temp_feedback_langs[$DEFAULTLANG] = $this->generate_as_html($q->contextid, 'feedback', $cm->id, $text, $DEFAULTLANG,  $q->id, $r->id);
+                            }
+                            $responseprops["feedbackhtmlfile"] = json_encode($temp_feedback_langs);
+                        }
+                        
                     }
                     // If numerical also add a tolerance.
                     if ($q->qtype == 'numerical') {
@@ -279,19 +314,21 @@ class MobileActivityQuiz extends MobileActivity {
                 }
             }
 
-            // save question as an html file
-            $question_title_langs = extract_langs(clean_html_entities($q->questiontext, true), false, false, false);
-            $temp_question_langs = array();
-            if (is_array($question_title_langs) && count($question_title_langs) > 0) {
-                foreach ($question_title_langs as $lang => $text) {
-                    // Process individually each language.
-                    $temp_question_langs[$lang] = $this->generate_as_html($q->contextid, 'question', $cm->id, $text, $lang,  $q->id, null);
+            if($this->quizhtmlfiles){
+                // save question as an html file
+                $question_title_langs = extract_langs($q->questiontext, false, false, false);
+                $temp_question_langs = array();
+                if (is_array($question_title_langs) && count($question_title_langs) > 0) {
+                    foreach ($question_title_langs as $lang => $text) {
+                        // Process individually each language.
+                        $temp_question_langs[$lang] = $this->generate_as_html($q->contextid, 'question', $cm->id, $text, $lang,  $q->id, null);
+                    }
+                } else {
+                    $temp_question_langs[$DEFAULTLANG] = $this->generate_as_html($q->contextid, 'question', $cm->id, $text, $DEFAULTLANG,  $q->id, null);
                 }
-            } else {
-                $temp_question_langs[$DEFAULTLANG] = $this->generate_as_html($q->contextid, 'question', $cm->id, $q->questiontext, $DEFAULTLANG,  $q->id, null);
+                $questionprops["htmlfile"] = json_encode($temp_question_langs);
             }
-            $questionprops["html"] = json_encode($temp_question_langs);
-
+            
             $questionjson = array(
                 "id" => rand(1, 1000),
                 "type" => $q->qtype,
@@ -376,8 +413,10 @@ class MobileActivityQuiz extends MobileActivity {
             $content = $this->extract_and_replace_image_files($content, 'question', 'questiontext', $question_id, $contextid);
         } else if ($type == "response"){
             $html_filename = $this->make_response_html_filename($this->section, $question_id, $response_id, $lang);
+            $content = $this->extract_and_replace_image_files($content, 'question', 'answer', $response_id, $contextid);
         } else if ($type == "feedback"){
             $html_filename = $this->make_feedback_html_filename($this->section, $question_id, $response_id, $lang);
+            $content = $this->extract_and_replace_image_files($content, 'question', 'answerfeedback', $response_id, $contextid);
         }
         
         
@@ -416,17 +455,9 @@ class MobileActivityQuiz extends MobileActivity {
             $origfilename = $filestmp['filenames'][$i][0];
             $filename = urldecode($origfilename);
             $cleanfilename = filename_to_ascii($filename);
-
-                
+  
             $filepath = '/';
-            $fs = get_file_storage();
-            echo "contextid: $contextid".OPPIA_HTML_BR;
-            echo "component: $component".OPPIA_HTML_BR;
-            echo "filearea: $filearea".OPPIA_HTML_BR;
-            echo "itemid: $itemid".OPPIA_HTML_BR;
-            echo "filepath: $filepath".OPPIA_HTML_BR;
-            echo "filename: $filename".OPPIA_HTML_BR;
-            
+            $fs = get_file_storage();            
             $file = $fs->get_file($contextid, $component, $filearea, $itemid, $filepath, $filename);
             
             if ($file) {

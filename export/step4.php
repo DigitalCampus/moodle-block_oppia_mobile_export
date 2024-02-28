@@ -55,6 +55,7 @@ $tags = get_oppiaconfig($id, 'coursetags', '', true, $server);
 $priority = (int) get_oppiaconfig($id, 'coursepriority', '0', true, $server);
 $sequencing = get_oppiaconfig($id, 'coursesequencing', '', true, $server);
 $keephtml = get_oppiaconfig($id, 'keephtml', '', true, $server);
+$quizhtmlfiles = get_oppiaconfig($id, 'quizhtmlfiles', '', true, $server);
 $videooverlay = get_oppiaconfig($id, 'videooverlay', '', true, $server);
 $DEFAULTLANG = get_oppiaconfig($id, 'default_lang', $CFG->block_oppia_mobile_export_default_lang, true, $server);
 $thumbheight = get_oppiaconfig($id, 'thumb_height', $CFG->block_oppia_mobile_export_thumb_height, true, $server);
@@ -244,6 +245,7 @@ foreach ($sectionmods as $modnumber) {
             'summary' => 'Pre-test',
             'courseversion' => $versionid,
             'keephtml' => $keephtml,
+            'quizhtmlfiles' => $quizhtmlfiles,
             'config_array' => array(
                 'randomselect' => $randomselect,
                 'showfeedback' => $showfeedback,
@@ -321,6 +323,7 @@ $processor = new ActivityProcessor(array(
             'courseshortname' => $course->shortname,
             'versionid' => $versionid,
             'keephtml' => $keephtml,
+            'quizhtmlfiles' => $quizhtmlfiles,
             'videooverlay' => $videooverlay,
             'localmediafiles' => $localmediafiles
 ));

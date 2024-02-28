@@ -62,6 +62,7 @@ $modinfo = get_fast_modinfo($course);
 $sections = $modinfo->get_section_info_all();
 $mods = $modinfo->get_cms();
 $keephtml = get_oppiaconfig($course->id, 'keephtml', '', true, $server);
+$quizhtmlfiles = get_oppiaconfig($id, 'quizhtmlfiles', '', true, $server);
 $videooverlay = get_oppiaconfig($id, 'videooverlay', '', true, $server);
 
 $processor = new ActivityProcessor(array(
@@ -71,6 +72,7 @@ $processor = new ActivityProcessor(array(
     'courseshortname' => $course->shortname,
     'versionid' => '0',
     'keephtml' => $keephtml,
+    'quizhtmlfiles' => $quizhtmlfiles,
     'videooverlay' => $videooverlay,
     'printlogs' => false
 ));

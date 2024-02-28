@@ -47,6 +47,7 @@ class ActivityProcessor {
     public $serverid;
     public $versionid;
     public $keephtml;
+    public $quizhtmlfiles;
     public $videooverlay;
     public $courseshortname;
 
@@ -76,6 +77,9 @@ class ActivityProcessor {
         }
         if (isset($params['keephtml'])) {
             $this->keephtml = $params['keephtml'];
+        }
+        if (isset($params['quizhtmlfiles'])) {
+            $this->quizhtmlfiles = $params['quizhtmlfiles'];
         }
         if (isset($params['videooverlay'])) {
             $this->videooverlay = $params['videooverlay'];
@@ -107,6 +111,7 @@ class ActivityProcessor {
             'shortname' => $this->courseshortname,
             'summary' => $sect->summary,
             'keephtml' => $this->keephtml,
+            'quizhtmlfiles' => $this->quizhtmlfiles,
             'videooverlay' => $this->videooverlay,
             'password' => $password,
         );
