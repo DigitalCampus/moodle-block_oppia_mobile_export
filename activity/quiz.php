@@ -314,21 +314,49 @@ class MobileActivityQuiz extends MobileActivity {
                     if (is_array($correctfeedback_option_langs) && count($correctfeedback_option_langs) > 0) {
                         foreach ($correctfeedback_option_langs as $lang => $text) {
                             // Process individually each language.
-                            $temp_correctfeedback_langs[$lang] = $this->generate_as_html($q->contextid, 'feedback', $cm->id, $text, lang,  $q->id, $r->id);
+                            $temp_correctfeedback_langs[$lang] = $this->generate_as_html($q->contextid, 'correctfeedback', $cm->id, $text, $lang,  $q->id, null);
                         }
                     } else {
-                        $temp_correctfeedback_langs[$DEFAULTLANG] = $this->generate_as_html($q->contextid, 'feedback', $cm->id, $text, $DEFAULTLANG,  $q->id, $r->id);
+                        $temp_correctfeedback_langs[$DEFAULTLANG] = $this->generate_as_html($q->contextid, 'correctfeedback', $cm->id, $q->options->correctfeedback, $DEFAULTLANG,  $q->id, null);
                     }
-                    $questionprops["feedbackhtmlfile"] = json_encode($temp_correctfeedback_langs);
+                    $questionprops["correctfeedbackhtmlfile"] = json_encode($temp_correctfeedback_langs);
                 }
             }
             if ($q->options->partiallycorrectfeedback != "") {
                 $feedbackjson = extract_langs($q->options->partiallycorrectfeedback, true, !$this->keephtml, false);
                 $questionprops["partiallycorrectfeedback"] = json_decode($feedbackjson);
+                if($this->quizhtmlfiles){
+                    // save feedback as an html file
+                    $partiallycorrectfeedback_option_langs = extract_langs($q->options->partiallycorrectfeedback, false, false, false);
+                    $temp_partiallycorrectfeedback_langs = array();
+                    if (is_array($partiallycorrectfeedback_option_langs) && count($partiallycorrectfeedback_option_langs) > 0) {
+                        foreach ($partiallycorrectfeedback_option_langs as $lang => $text) {
+                            // Process individually each language.
+                            $temp_partiallycorrectfeedback_langs[$lang] = $this->generate_as_html($q->contextid, 'partiallycorrectfeedback', $cm->id, $text, $lang,  $q->id, null);
+                        }
+                    } else {
+                        $temp_partiallycorrectfeedback_langs[$DEFAULTLANG] = $this->generate_as_html($q->contextid, 'partiallycorrectfeedback', $cm->id, $q->options->partiallycorrectfeedback, $DEFAULTLANG,  $q->id, null);
+                    }
+                    $questionprops["partiallycorrectfeedbackhtmlfile"] = json_encode($temp_partiallycorrectfeedback_langs);
+                }
             }
             if ($q->options->incorrectfeedback != "") {
                 $feedbackjson = extract_langs($q->options->incorrectfeedback, true, !$this->keephtml, false);
                 $questionprops["incorrectfeedback"] = json_decode($feedbackjson);
+                if($this->quizhtmlfiles){
+                    // save feedback as an html file
+                    $incorrectfeedback_option_langs = extract_langs($q->options->incorrectfeedback, false, false, false);
+                    $temp_incorrectfeedback_langs = array();
+                    if (is_array($incorrectfeedback_option_langs) && count($incorrectfeedback_option_langs) > 0) {
+                        foreach ($incorrectfeedback_option_langs as $lang => $text) {
+                            // Process individually each language.
+                            $temp_incorrectfeedback_langs[$lang] = $this->generate_as_html($q->contextid, 'incorrectfeedback', $cm->id, $text, $lang,  $q->id, null);
+                        }
+                    } else {
+                        $temp_incorrectfeedback_langs[$DEFAULTLANG] = $this->generate_as_html($q->contextid, 'incorrectfeedback', $cm->id, $q->options->incorrectfeedback, $DEFAULTLANG,  $q->id, null);
+                    }
+                    $questionprops["incorrectfeedbackhtmlfile"] = json_encode($temp_incorrectfeedback_langs);
+                }
             }
             
             if($this->quizhtmlfiles){
@@ -436,10 +464,13 @@ class MobileActivityQuiz extends MobileActivity {
             $content = $this->extract_and_replace_image_files($content, 'question', 'answerfeedback', $response_id, $contextid);
         } else if ($type == "correctfeedback"){
             $html_filename = $this->make_question_correctfeedback_html_filename($this->section, $question_id, $lang);
-            $content = $this->extract_and_replace_image_files($content, 'question', 'correctfeedback', $response_id, $contextid);
-        } else if ($type == "partiallyincorrectfeedback"){
+            $content = $this->extract_and_replace_image_files($content, 'question', 'correctfeedback', $question_id, $contextid);
+        } else if ($type == "partiallycorrectfeedback"){
             $html_filename = $this->make_question_partiallyincorrectfeedback_html_filename($this->section, $question_id, $lang);
-            $content = $this->extract_and_replace_image_files($content, 'question', 'partiallycorrectfeedback', $response_id, $contextid);
+            $content = $this->extract_and_replace_image_files($content, 'question', 'partiallycorrectfeedback', $question_id, $contextid);
+        } else if ($type == "incorrectfeedback"){
+            $html_filename = $this->make_question_incorrectfeedback_html_filename($this->section, $question_id, $lang);
+            $content = $this->extract_and_replace_image_files($content, 'question', 'incorrectfeedback', $question_id, $contextid);
         }
         
         
@@ -527,11 +558,15 @@ class MobileActivityQuiz extends MobileActivity {
     }
     
     private function make_question_correctfeedback_html_filename($sectionno, $question_id, $lang) {
-        return sprintf('%02d_%02d', $sectionno, $question_id)."_question_correctfeedback".strtolower($lang).".html";
+        return sprintf('%02d_%02d', $sectionno, $question_id)."_question_correctfeedback_".strtolower($lang).".html";
     }
     
     private function make_question_partiallyincorrectfeedback_html_filename($sectionno, $question_id, $lang) {
-        return sprintf('%02d_%02d', $sectionno, $question_id)."_question_partiallyincorrectfeedback".strtolower($lang).".html";
+        return sprintf('%02d_%02d', $sectionno, $question_id)."_question_partiallyincorrectfeedback_".strtolower($lang).".html";
+    }
+    
+    private function make_question_incorrectfeedback_html_filename($sectionno, $question_id, $lang) {
+        return sprintf('%02d_%02d', $sectionno, $question_id)."_question_incorrectfeedback_".strtolower($lang).".html";
     }
     
     public function get_is_valid() {
