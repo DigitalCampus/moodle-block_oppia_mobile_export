@@ -212,7 +212,8 @@ info-section {
 
   &[type="feedback"] {
 
-    content {
+    content,
+    slide {
       @extend .content;
       background-image: url('style_resources/shapes/square-blue-border.svg'), url('style_resources/shapes/square-blue-border.svg');
       background-position: top -40vh left -40vw, bottom -40vh right -40vw;
@@ -222,6 +223,56 @@ info-section {
     }
 
   }
+  &[type="gallery"] {
+    content,
+    slide {
+      background-image: url('style_resources/shapes/square-green-border.svg'), url('style_resources/shapes/square-orange.svg');
+      background-position: top -30vh right -45vw, bottom -5vh left -5vw;
+      background-size: 300px, 100px;
+      &:nth-of-type(even) {
+        background-image: url('style_resources/shapes/square-green-border.svg'), url('style_resources/shapes/square-orange.svg');
+        background-position: top -30vh left -45vw, bottom -5vh right -5vw;
+      }
+
+      img {
+        object-fit: cover;
+        border-radius: 50%;
+        width: 50vw;
+        height: 50vw;
+        margin: 10% 0;
+      }
+    }
+  }
+  &[type="1"] {
+    content,
+    slide {
+      background-image: url('style_resources/shapes/square-blue.svg'), url('style_resources/shapes/square-green-border.svg');
+      &:nth-of-type(even) {
+        background-image: url('style_resources/shapes/square-blue.svg'), url('style_resources/shapes/square-green-border.svg');
+      }
+    }
+  }
+  &[type="2"] {
+    content,
+    slide {
+      padding: 10% !important;
+      background-image: url('style_resources/shapes/square-pink.svg'), url('style_resources/shapes/square-orange-border.svg');
+      &:nth-of-type(even) {
+        background-image: url('style_resources/shapes/square-pink.svg'), url('style_resources/shapes/square-orange-border.svg');
+      }
+    }
+  }
+  &[type="3"] {
+    content,
+    slide {
+      padding: 10% !important;
+      background-image: url('style_resources/shapes/square-orange.svg'), url('style_resources/shapes/square-blue-border.svg');
+      &:nth-of-type(even) {
+        background-image: url('style_resources/shapes/square-orange.svg'), url('style_resources/shapes/square-blue-border.svg');
+      }
+    }
+  }
+
 }
 
 what-we-learned-section {
