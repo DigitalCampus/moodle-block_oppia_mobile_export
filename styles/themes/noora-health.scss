@@ -180,7 +180,33 @@ content-section {
   }
 
   #prevBtn, #nextBtn {
-    color: $orange;
+    border-radius: 25px;
+    background-color: $green;
+    font-size: 1.2em;
+    font-weight: 900;
+    color: white;
+    text-align: center;
+    padding: 5px 30px;
+    bottom: 5vh;
+    top: unset;
+    content: unset;
+  }
+  #prevBtn {
+    left: 10vw;
+
+    &:after {
+      padding-left: 5px;
+      content: 'PREV';
+    }
+  }
+
+  #nextBtn {
+    right: 10vw;
+
+    &:before {
+      padding-right: 5px;
+      content: 'NEXT';
+    }
   }
 
 }
@@ -523,7 +549,7 @@ noor {
 }
 
 #prevBtn { left: 5vw; }
-#nextBtn { left: 85vw; }
+#nextBtn { right: 5vw; }
 
 card {
   width: 65vw;
