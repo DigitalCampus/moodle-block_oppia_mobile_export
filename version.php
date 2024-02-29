@@ -20,5 +20,5 @@ $plugin = new StdClass;
 $plugin->version = 2024022900;
 $plugin->requires = 2022041900;
 $plugin->component = 'block_oppia_mobile_export';
-$plugin->release = "v1.4.8";
+$plugin->release = "v1.4.9";
 $plugin->cron = 0; // Cron interval in seconds. 0 means no cron.
