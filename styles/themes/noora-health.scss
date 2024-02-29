@@ -431,6 +431,60 @@ definition-section {
 
 }
 
+feedback-result {
+  @extend .container;
+  background-image: url('style_resources/shapes/square-pink-border.svg'), url('style_resources/shapes/square-pink-border.svg');
+  background-position: top -35vh right -35vw, bottom -35vh left -35vw;
+  background-size: 300px 300px;
+  background-repeat: no-repeat;
+
+  feedback-card {
+    width: 100%;
+    height: 90%;
+    margin: 10px;
+    border-radius: 25px;
+    outline-offset: -15px;
+    background-color: white;
+    overflow: hidden;
+    border: 5px solid $green;
+    outline: 3px dashed $green;
+
+    &[color="pink"] {
+      border: 5px solid $pink;
+      outline: 3px dashed $pink;
+    }
+    &[color="blue"] {
+      border: 5px solid $blue;
+      outline: 3px dashed $blue;
+    }
+    &[color="orange"] {
+      border: 5px solid $orange;
+      outline: 3px dashed $orange;
+    }
+    &[color="green"] {
+      border: 5px solid $green;
+      outline: 3px dashed $green;
+    }
+
+
+    content {
+      @extend .content;
+      background-color: #FDFAF7;
+      text-align: left !important;
+
+      answer {
+        width: 100%;
+        color: $pink;
+        background-color: white;
+        text-align: center;
+        border: 1px solid grey;
+        padding: 5%;
+      }
+
+    }
+  }
+}
+
 noor {
   width: 100vw;
   height: 50%;
@@ -492,6 +546,7 @@ noor {
   }
 
   p,
+  h1, h2, h3, h4,
   span {
     font-family: 'Poppins', sans-serif;
     line-height: 1.2em;
