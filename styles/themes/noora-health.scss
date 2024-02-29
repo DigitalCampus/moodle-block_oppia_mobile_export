@@ -485,6 +485,35 @@ feedback-result {
   }
 }
 
+activity-time-section {
+  @extend .container;
+  background-color: #444746;
+  background-image: url('style_resources/shapes/square-pink.svg'), url('style_resources/shapes/square-blue.svg');
+  background-position: top -35vh right -35vw, bottom -35vh left -35vw;
+  background-size: 300px 300px;
+  background-repeat: no-repeat;
+
+  content {
+    @extend .content;
+    color: white;
+
+    img {
+      width: 50%;
+      height: auto;
+      margin-bottom: 25px
+    }
+
+    h1 {
+      color: white !important;
+      font-size: 2em;
+    }
+
+    p {
+      font-size: 1.2em;
+    }
+  }
+}
+
 noor {
   width: 100vw;
   height: 50%;
