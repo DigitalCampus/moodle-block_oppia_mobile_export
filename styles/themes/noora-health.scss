@@ -431,6 +431,7 @@ definition-section {
 
 }
 
+      display: flex;
 feedback-result {
   @extend .container;
   background-image: url('style_resources/shapes/square-pink-border.svg'), url('style_resources/shapes/square-pink-border.svg');
@@ -513,6 +514,83 @@ activity-time-section {
     }
   }
 }
+
+know-more{
+  display: flex;
+  flex-direction: column;
+  width:60vw;
+  margin:auto;
+
+  &.columns{
+    width:85vw;
+  }
+
+  item{
+    @extend noora-button;
+    background-color:white !important;
+    color:$pink !important;
+    border:1px solid $pink;
+    font-weight: bold;
+    display:block;
+    width:auto;
+    margin-bottom:1em;
+
+    &[highlighted]{
+      background:#DD3E77  !important;
+      color:white !important;
+    }
+  }
+
+  modal{
+      @extend card;
+      margin: 5%;
+
+      color:#333;
+      font-size:1.3em;
+      border:3px solid $pink;
+
+      display: flex;
+      align-items: center;
+
+      .close {
+        position: absolute;
+        left: 24px;
+        top: 24px;
+        width: 28px;
+        height: 28px;
+      
+        &:before, &:after {
+          position: absolute;
+          left: 15px;
+          content: ' ';
+          height: 33px;
+          width: 2px;
+          background-color: #DD3E77;
+        }
+        &:before { transform: rotate(45deg); }
+        &:after { transform: rotate(-45deg); }
+
+      }
+
+      &[color="blue"] {
+        border: 5px solid $blue;
+        outline: 3px dashed $blue;
+      
+        .close:before, .close:after { background-color: $blue; }
+      }
+  }
+}
+
+
+.modal-fade{
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    top:0;
+    left:0;
+    background-color: rgba(255,255,255,0.75);
+  }
+
 
 noor {
   width: 100vw;
@@ -867,4 +945,20 @@ input[type="range"]::-webkit-slider-thumb {
 input[type="range"]:active::-webkit-slider-thumb {
   transform: rotate(45deg) scale(1.2);
   background: $pink;
+}
+
+.columns{
+  display: flex;
+  flex-direction:row;
+  img{
+    height: auto;
+    margin-bottom: 1.1em;
+  }
+
+  & > *{
+    align-self: start;  
+    padding:15px;
+    flex-basis: 0;
+    flex-grow: 1;
+  }
 }

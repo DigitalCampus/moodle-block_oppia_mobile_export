@@ -111,7 +111,7 @@ $( document ).ready(function() {
             const prevBtn = document.createElement('div');
             prevBtn.id = 'prevBtn';
             prevBtn.innerHTML = '&#10094;';
-            prevBtn.addEventListener('touchstart', function () {
+            prevBtn.addEventListener('click', function () {
                 changeSlide(-1);
             });
             sliderContainer.appendChild(prevBtn);
@@ -119,7 +119,7 @@ $( document ).ready(function() {
             const nextBtn = document.createElement('div');
             nextBtn.id = 'nextBtn';
             nextBtn.innerHTML = '&#10095;';
-            nextBtn.addEventListener('touchstart', function () {
+            nextBtn.addEventListener('click', function () {
                 changeSlide(1);
             });
             sliderContainer.appendChild(nextBtn);
@@ -162,9 +162,38 @@ $( document ).ready(function() {
         });
     }
 
+    var knowMoreButtons = $('know-more item');
+    if (knowMoreButtons.length){
+        var modalFade = $('<div class="modal-fade"></div>').prependTo($('body')).hide();
+        knowMoreButtons.find('modal').append('<div class="close"></div>').hide();
+
+
+        knowMoreButtons.on('click', function(){
+            var button = $(this);
+            var modal = button.find('modal');
+
+            var nextBtn = button.next().length ? button.next() : knowMoreButtons.first();
+            knowMoreButtons.removeAttr('highlighted');
+            nextBtn.attr('highlighted', true);
+
+            modalFade.fadeIn(300);
+            modal.show().on('click', function(event){
+                event.stopPropagation();
+                modal.hide();
+                modalFade.fadeOut();
+            });
+        });
+    }
+
     // Buttons functionality
     $('noora-button').on('click', function () {
         const clickedButton = $(this);
+
+        if (clickedButton.attr('type') === 'modal') {
+
+            return;
+        }
+
         const color = clickedButton.attr('color');
         if (color === 'green'){
             clickedButton.attr('color', "orange");
@@ -172,7 +201,7 @@ $( document ).ready(function() {
             clickedButton.attr('color', "green");
         }
 
-        if (clickedButton.attr('type') === 'modal') { }
+        
 
     });
 
