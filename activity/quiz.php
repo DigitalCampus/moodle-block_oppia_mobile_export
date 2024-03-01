@@ -261,7 +261,7 @@ class MobileActivityQuiz extends MobileActivity {
                                 $temp_response_langs[$lang] = $this->generate_as_html($q->contextid, 'response', $cm->id, $text, $lang,  $q->id, $r->id);
                             }
                         } else {
-                            $temp_response_langs[$DEFAULTLANG] = $this->generate_as_html($q->contextid, 'response', $cm->id, $text, $DEFAULTLANG,  $q->id, $r->id);
+                            $temp_response_langs[$DEFAULTLANG] = $this->generate_as_html($q->contextid, 'response', $cm->id, $r->answer, $DEFAULTLANG,  $q->id, $r->id);
                         }
                         $responseprops["responsehtmlfile"] = json_encode($temp_response_langs);
                     }
@@ -280,7 +280,7 @@ class MobileActivityQuiz extends MobileActivity {
                                     $temp_feedback_langs[$lang] = $this->generate_as_html($q->contextid, 'feedback', $cm->id, $text, lang,  $q->id, $r->id);
                                 }
                             } else {
-                                $temp_feedback_langs[$DEFAULTLANG] = $this->generate_as_html($q->contextid, 'feedback', $cm->id, $text, $DEFAULTLANG,  $q->id, $r->id);
+                                $temp_feedback_langs[$DEFAULTLANG] = $this->generate_as_html($q->contextid, 'feedback', $cm->id, $r->feedback, $DEFAULTLANG,  $q->id, $r->id);
                             }
                             $responseprops["feedbackhtmlfile"] = json_encode($temp_feedback_langs);
                         }
@@ -369,7 +369,7 @@ class MobileActivityQuiz extends MobileActivity {
                         $temp_question_langs[$lang] = $this->generate_as_html($q->contextid, 'question', $cm->id, $text, $lang,  $q->id, null);
                     }
                 } else {
-                    $temp_question_langs[$DEFAULTLANG] = $this->generate_as_html($q->contextid, 'question', $cm->id, $text, $DEFAULTLANG,  $q->id, null);
+                    $temp_question_langs[$DEFAULTLANG] = $this->generate_as_html($q->contextid, 'question', $cm->id, $q->questiontext, $DEFAULTLANG,  $q->id, null);
                 }
                 $questionprops["htmlfile"] = json_encode($temp_question_langs);
             }
