@@ -250,6 +250,9 @@ info-section {
 
   }
   &[type="gallery"] {
+
+    h2{ color: #444; font-size:160%; margin-bottom:0;}
+
     content,
     slide {
       background-image: url('style_resources/shapes/square-green-border.svg'), url('style_resources/shapes/square-orange.svg');
@@ -546,11 +549,14 @@ know-more{
       margin: 5%;
 
       color:#333;
-      font-size:1.3em;
       border:3px solid $pink;
 
       display: flex;
       align-items: center;
+
+      &.lead{
+        font-size:1.3em;
+      }
 
       .close {
         position: absolute;
@@ -575,7 +581,8 @@ know-more{
       &[color="blue"] {
         border: 5px solid $blue;
         outline: 3px dashed $blue;
-      
+        
+        h1, h2{ color: $blue; }
         .close:before, .close:after { background-color: $blue; }
       }
   }
@@ -636,8 +643,8 @@ noor {
       position: fixed;
       width: 80%;
       left: 10%;
-      top: 10%;
-      gap: 2px;
+      top: 45px;
+      gap: 5px;
 
       .pagination-item {
         width: 100%;
@@ -961,4 +968,8 @@ input[type="range"]:active::-webkit-slider-thumb {
     flex-basis: 0;
     flex-grow: 1;
   }
+}
+
+.lead{
+  font-size:1.3em;
 }
