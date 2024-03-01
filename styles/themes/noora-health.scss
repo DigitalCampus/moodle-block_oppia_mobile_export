@@ -521,16 +521,23 @@ know-more{
   width:60vw;
   margin:auto;
 
+  &.columns{
+    width:85vw;
+  }
+
   item{
     @extend noora-button;
-    background-color:white;
-    color:$pink;
+    background-color:white !important;
+    color:$pink !important;
     border:1px solid $pink;
     font-weight: bold;
+    display:block;
+    width:auto;
+    margin-bottom:1em;
 
     &[highlighted]{
-      background:#DD3E77;
-      color:white;
+      background:#DD3E77  !important;
+      color:white !important;
     }
   }
 
@@ -564,6 +571,13 @@ know-more{
         &:after { transform: rotate(-45deg); }
 
       }
+
+      &[color="blue"] {
+        border: 5px solid $blue;
+        outline: 3px dashed $blue;
+      
+        .close:before, .close:after { background-color: $blue; }
+      }
   }
 }
 
@@ -576,7 +590,7 @@ know-more{
     left:0;
     background-color: rgba(255,255,255,0.75);
   }
-  
+
 
 noor {
   width: 100vw;
@@ -931,4 +945,20 @@ input[type="range"]::-webkit-slider-thumb {
 input[type="range"]:active::-webkit-slider-thumb {
   transform: rotate(45deg) scale(1.2);
   background: $pink;
+}
+
+.columns{
+  display: flex;
+  flex-direction:row;
+  img{
+    height: auto;
+    margin-bottom: 1.1em;
+  }
+
+  & > *{
+    align-self: start;  
+    padding:15px;
+    flex-basis: 0;
+    flex-grow: 1;
+  }
 }
