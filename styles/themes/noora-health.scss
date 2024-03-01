@@ -618,6 +618,7 @@ know-more{
 
       display: flex;
       align-items: center;
+      background:white !important;
 
       &.lead{
         font-size:1.3em;
@@ -922,15 +923,6 @@ noora-button {
   &[color="blue"] { background-color: $blue; }
   &[color="green"] { background-color: $green; }
 
-  &[type="modal"] {
-
-    modal {
-      @extend card;
-      margin: 5%;
-    }
-
-
-  }
 
 }
 
