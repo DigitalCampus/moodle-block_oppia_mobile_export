@@ -111,7 +111,7 @@ $( document ).ready(function() {
             const prevBtn = document.createElement('div');
             prevBtn.id = 'prevBtn';
             prevBtn.innerHTML = '&#10094;';
-            prevBtn.addEventListener('click', function () {
+            prevBtn.addEventListener('touchstart', function () {
                 changeSlide(-1);
             });
             sliderContainer.appendChild(prevBtn);
@@ -119,7 +119,7 @@ $( document ).ready(function() {
             const nextBtn = document.createElement('div');
             nextBtn.id = 'nextBtn';
             nextBtn.innerHTML = '&#10095;';
-            nextBtn.addEventListener('click', function () {
+            nextBtn.addEventListener('touchstart', function () {
                 changeSlide(1);
             });
             sliderContainer.appendChild(nextBtn);
