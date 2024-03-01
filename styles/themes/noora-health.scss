@@ -91,12 +91,20 @@ video-section {
                         bottom 15vh left -15vw, bottom -25vh left -40vw;
   background-size: 100px 100px, 300px 300px, 100px 100px, 300px 300px;
   background-repeat: no-repeat;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  gap: 50px;
+
+  p {
+    margin: 0 50px;
+  }
 
   video-content {
-    flex: 0 0 100vw;
     box-sizing: border-box;
     border: 15px solid $green;
     border-radius: 20px;
+    width: 100%;
 
     img {
       margin: 0;
@@ -434,7 +442,6 @@ definition-section {
 
 }
 
-      display: flex;
 feedback-result {
   @extend .container;
   background-image: url('style_resources/shapes/square-pink-border.svg'), url('style_resources/shapes/square-pink-border.svg');
