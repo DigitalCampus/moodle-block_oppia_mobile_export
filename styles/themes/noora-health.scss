@@ -167,6 +167,16 @@ content-section {
   &[color="blue"] { background-color: $blue; }
   &[color="green"] { background-color: $green; }
 
+  &[color="black"] { 
+    background-color: white; 
+
+    content, slide{ 
+      margin:3%;
+      border: 3px solid #333;
+      max-width: 94vw !important;
+    }
+  }
+
   content,
   slide {
     @extend .content;
@@ -633,7 +643,15 @@ know-more{
 
       }
 
+
       &[color="blue"] {
+        width:auto;
+        left:0;
+        right:0;
+        height:65vh;
+        top:10%;
+        padding:40px;
+
         border: 5px solid $blue;
         outline: 3px dashed $blue;
         
