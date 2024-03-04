@@ -262,9 +262,10 @@ class MobileActivityPage extends MobileActivity {
         }
 
 		$videos = $this->extract_and_replace_video_tags($html, $component, $filearea, $itemid, $contextid);
+        $audios = $this->extract_and_replace_audio_tags($html, $component, $filearea, $itemid, $contextid);
 		$resources = $this->extract_and_replace_resource_links($html, $component, $filearea, $itemid, $contextid);
 
-		if ($videos > 0 || $resources > 0){
+		if ($videos > 0 || $resources > 0 || $audios > 0){
 			$content = $html->saveHTML($html->documentElement);	
 		}
 
@@ -383,6 +384,50 @@ class MobileActivityPage extends MobileActivity {
 		return $resourcesfound;
 	}
 
+    private function extract_and_replace_audio_tags($html, $component, $filearea, $itemid, $contextid) {
+        global $CFG;
+
+        $audios = $html->getElementsByTagName('audio');
+        $audioslength = $audios->length;
+
+        if ($audioslength <= 0){
+            return 0;
+        }
+
+        for ($i = 0; $i < $audioslength; $i++) {
+            $audio = $audios->item(0); // We always get the first one, as the previous one would be replaced by now.
+            $audioparams = array();
+
+            foreach ($audio->childNodes as $source) {
+                if (($source->nodeName == 'source') && ($source->hasAttribute('src'))) {
+                    $source = $source->getAttribute('src');
+                    preg_match_all(MEDIAFILE_REGEX, $source, $filestmp, PREG_OFFSET_CAPTURE);
+
+                    if (!isset($filestmp['filenames']) || count($filestmp['filenames']) == 0) {
+                        continue;
+                    }
+                    $filename = $filestmp['filenames'][0][0];
+
+                    if (!$this->is_local_media($filename)) {
+                        // If it hasn't been added yet, we include it.
+                        $fileinfo = get_file_info(urldecode($filename), $component, $filearea, $itemid, $contextid);
+                        array_push($this->pagelocalmedia, $fileinfo);
+                    }
+
+                    $audioparams['filename'] = $filename;
+
+                    if ($CFG->block_oppia_mobile_export_debug && $this->printlogs) {
+                        echo get_string('audio_included', PLUGINNAME).'<code>'. $filename .'</code>'.OPPIA_HTML_BR;
+                    }
+                }
+            }
+
+            $embed = create_dom_element_from_template($html, PLUGINNAME.'/audio_embed', $audioparams);
+            $audio->parentNode->replaceChild($embed, $audio);
+        }
+
+        return count($this->pagelocalmedia);
+    }
 
 	private function isLocalMedia($filename){
 		$exists = false;
