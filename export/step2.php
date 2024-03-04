@@ -218,6 +218,8 @@ for ($qid = 0; $qid < count($quizzes); $qid++) {
     $quiz['feedback_never'] = $showfeedback == 0;
     $quiz['feedback_always'] = $showfeedback == 1;
     $quiz['feedback_endonly'] = $showfeedback == 2;
+    $quiz['feedback_questiononly'] = $showfeedback == 3;
+
 
     $currentthreshold = get_oppiaconfig($quiz['id'], 'passthreshold', 80, true);
     $quiz['passthreshold'] = [];
