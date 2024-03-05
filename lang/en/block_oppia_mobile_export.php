@@ -223,6 +223,7 @@ $string['continue'] = 'Continue';
 $string['feedback_always'] = 'After question and end of quiz';
 $string['feedback_never'] = 'Never show feedback';
 $string['feedback_endonly'] = 'At end of quiz only';
+$string['feedback_questiononly'] = 'After each question only';
 
 $string['publish_error_password'] = 'No password entered, please go back and enter your password';
 $string['publish_error_tags'] = 'No categories have been entered, please go back and enter at least one category';
