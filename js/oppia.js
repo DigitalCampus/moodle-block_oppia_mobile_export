@@ -196,7 +196,7 @@ $( document ).ready(function() {
 
         const color = clickedButton.attr('color');
         if (color === 'green'){
-            clickedButton.attr('color', "orange");
+            clickedButton.attr('color', "pink");
         } else {
             clickedButton.attr('color', "green");
         }
