@@ -613,7 +613,7 @@ know-more{
     margin-bottom:1em;
 
     &[highlighted]{
-      background:#DD3E77  !important;
+      background:$pink  !important;
       color:white !important;
     }
   }
@@ -646,7 +646,7 @@ know-more{
           content: ' ';
           height: 33px;
           width: 2px;
-          background-color: #DD3E77;
+          background-color: $pink;
         }
         &:before { transform: rotate(45deg); }
         &:after { transform: rotate(-45deg); }
@@ -668,6 +668,91 @@ know-more{
         h1, h2{ color: $blue; }
         .close:before, .close:after { background-color: $blue; }
       }
+  }
+
+  &[color="pink"] {
+    item {
+      color:$pink !important;
+      border:1px solid $pink;
+
+      &[highlighted]{
+        background:$pink !important;
+        color:white !important;
+      }
+    }
+
+    modal {
+      border:3px solid $pink;
+
+      .close {
+        &:before, &:after {
+          background-color: $pink;
+        }
+      }
+    }
+  }
+  &[color="blue"] {
+    item {
+      color:$blue !important;
+      border:1px solid $blue;
+
+      &[highlighted]{
+        background:$blue  !important;
+        color:white !important;
+      }
+    }
+
+    modal {
+      border:3px solid $blue;
+
+      .close {
+        &:before, &:after {
+          background-color: $blue;
+        }
+      }
+    }
+  }
+  &[color="orange"] {
+    item {
+      color:$orange !important;
+      border:1px solid $orange;
+
+      &[highlighted]{
+        background:$orange !important;
+        color:white !important;
+      }
+    }
+
+    modal {
+      border:3px solid $orange;
+
+      .close {
+        &:before, &:after {
+          background-color: $orange;
+        }
+      }
+    }
+  }
+  &[color="green"] {
+    item {
+      color:$green !important;
+      border:1px solid $green;
+
+      &[highlighted]{
+        background:$green !important;
+        color:white !important;
+      }
+    }
+
+    modal {
+      border:3px solid $green;
+
+      .close {
+        &:before, &:after {
+          background-color: $green;
+        }
+      }
+    }
   }
 }
 
