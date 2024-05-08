@@ -73,7 +73,8 @@ echo $OUTPUT->header();
 
 $PAGE->requires->js(PLUGINPATH.'publish/publish_media.js');
 
-$globals['mobilelangs'] = array();
+global $MOBILELANGS;
+$MOBILELANGS = array();
 
 global $MEDIA;
 $MEDIA = array();
