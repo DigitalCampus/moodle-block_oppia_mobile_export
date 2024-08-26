@@ -1034,7 +1034,7 @@ button {
   float: left;
 }
 
-#audio-player-container {
+.audio-player-container {
   --seek-before-width: 0%;
   --buffered-width: 0%;
   position: relative;
@@ -1044,28 +1044,30 @@ button {
   background: white;
   border-radius: 100px;
   box-shadow: 0 0 2px black;
-}
 
-#play-icon {
-  margin: 24px 0 0 24px;
-  background-size: 24px;
-  background-repeat: no-repeat;
+  .play-icon {
+    margin: 24px 0 0 24px;
+    background-size: 24px;
+    background-repeat: no-repeat;
 
-  &.play {
-    background-image: url('style_resources/icons/pause_icon.svg');
+    &.play {
+      background-image: url('style_resources/icons/pause_icon.svg');
+    }
+
+    &.pause {
+      background-image: url('style_resources/icons/play_icon.svg');
+    }
   }
 
-  &.pause {
-    background-image: url('style_resources/icons/play_icon.svg');
+  .time {
+    display: inline-block;
+    text-align: center;
+    margin: 28.5px 5px 18.5px 0;
+    float: left;
   }
+
 }
 
-.time {
-  display: inline-block;
-  text-align: center;
-  margin: 28.5px 5px 18.5px 0;
-  float: left;
-}
 
 input[type="range"] {
   position: relative;

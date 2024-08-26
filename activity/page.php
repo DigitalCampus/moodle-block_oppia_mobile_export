@@ -395,7 +395,7 @@ class MobileActivityPage extends MobileActivity {
         }
 
         for ($i = 0; $i < $audioslength; $i++) {
-            $audio = $audios->item(0); // We always get the first one, as the previous one would be replaced by now.
+            $audio = $audios->item($i); // We always get the first one, as the previous one would be replaced by now.
             $audioparams = array();
 
             foreach ($audio->childNodes as $source) {
