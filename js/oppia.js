@@ -33,10 +33,12 @@ $( document ).ready(function() {
 	});
 
     // Slider functionality
-    const totalSlides = document.querySelectorAll('slide').length;
+    const slides =  document.querySelectorAll('slide');
+    const totalSlides = slides.length;
 
     if (totalSlides > 0) {
         let currentSlide = 0;
+        slides[currentSlide].classList.add('active');
         const slide = document.querySelector('slide');
         const sliderContainer = slide.parentNode;
         const slideStyle = window.getComputedStyle(slide);
@@ -61,8 +63,15 @@ $( document ).ready(function() {
 
         function changeSlide(direction) {
             currentSlide = Math.max(0, Math.min(currentSlide + direction, totalSlides - 1));
-            if (paginationItems.length > 0)
-            {
+
+            slides[currentSlide].classList.add('active');
+            if (direction > 0) {
+                slides[currentSlide - 1].classList.remove('active');
+            } else {
+                slides[currentSlide + 1].classList.remove('active');
+            }
+
+            if (paginationItems.length > 0) {
                 if (direction > 0) {
                     paginationItems[currentSlide].classList.add('active');
                 } else {
@@ -85,21 +94,30 @@ $( document ).ready(function() {
 
         let touchStartX = 0;
         let touchEndX = 0;
+        let touchStartY = 0;
+        let touchEndY = 0;
 
         sliderContainer.addEventListener('touchstart', (e) => {
-            if (currentSlide !== totalSlides - 1) {
-                e.preventDefault();
-            }
             touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
         });
 
         function handleTouchEnd(e) {
             touchEndX = e.changedTouches[0].screenX;
-            if (touchEndX < touchStartX) {
-                changeSlide(1); // Swipe left
-            }
-            if (touchEndX > touchStartX) {
-                changeSlide(-1); // Swipe right
+            touchEndY = e.changedTouches[0].screenY;
+
+            deltaX = touchEndX - touchStartX;
+            deltaY = touchEndY - touchStartY;
+
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                // Horizontal Scroll
+                if (deltaX < 0) {
+                    console.log("swipe left");
+                    changeSlide(1); // Swipe left
+                } else {
+                    console.log("swipe right");
+                    changeSlide(-1); // Swipe right
+                }
             }
         }
 
