@@ -205,43 +205,52 @@ $( document ).ready(function() {
 
     });
 
-    //Audio Embed Functionality
-    const audioPlayerContainer = document.getElementById('audio-player-container');
-    if(audioPlayerContainer !== null) {
-        const playIconContainer = document.getElementById('play-icon');
-        const seekSlider = document.getElementById('seek-slider');
+    $('.audio-player-container').each(function(i, elem){
+        const playerContainer = $(elem);
+        const playIcon = playerContainer.find('.play-icon');
+        const seekSlider = playerContainer.find('.seek-slider')[0];
         let playState = 'play';
 
-        playIconContainer.addEventListener('click', () => {
+        /* Implementation of the functionality of the audio player */
+
+        const audio = playerContainer.find('audio')[0];
+        const duration = playerContainer.find('.duration');
+        let raf = null;
+
+        playIcon.on('click', () => {
             if (playState === 'play') {
-                playIconContainer.classList.remove('pause');
-                playIconContainer.classList.add('play');
+                playIcon.removeClass('pause');
+                playIcon.addClass('play');
                 audio.play();
                 requestAnimationFrame(whilePlaying);
                 playState = 'pause';
             } else {
-                playIconContainer.classList.remove('play');
-                playIconContainer.classList.add('pause');
+                playIcon.removeClass('play');
+                playIcon.addClass('pause');
                 audio.pause();
                 cancelAnimationFrame(raf);
                 playState = 'play';
             }
         });
 
-        const showRangeProgress = (rangeInput) => {
-            if (rangeInput === seekSlider) audioPlayerContainer.style.setProperty('--seek-before-width', rangeInput.value / rangeInput.max * 100 + '%');
-        }
-
-        seekSlider.addEventListener('input', (e) => {
-            showRangeProgress(e.target);
-        });
-
-
-        /* Implementation of the functionality of the audio player */
-
-        const audio = document.querySelector('audio');
-        const durationContainer = document.getElementById('duration');
-        let raf = null;
+        $(seekSlider)
+            .on('input', (e) => {
+                rangeInput = e.target;
+                if (rangeInput === seekSlider[0]){
+                    playerContainer.css('--seek-before-width', rangeInput.value / rangeInput.max * 100 + '%');
+                }
+                duration.text(calculateTime(audio.duration - seekSlider.value));
+                if (!audio.paused) {
+                    cancelAnimationFrame(raf);
+                }
+            })
+            .on('change', () => {
+                audio.currentTime = seekSlider.value;
+                if (!audio.paused) {
+                    requestAnimationFrame(whilePlaying);
+                }
+            });
+        
 
         const calculateTime = (secs) => {
             const minutes = Math.floor(secs / 60);
@@ -251,7 +260,7 @@ $( document ).ready(function() {
         }
 
         const displayDuration = () => {
-            durationContainer.textContent = calculateTime(audio.duration);
+            duration.text(calculateTime(audio.duration));
         }
 
         const setSliderMax = () => {
@@ -260,13 +269,13 @@ $( document ).ready(function() {
 
         const displayBufferedAmount = () => {
             const bufferedAmount = Math.floor(audio.buffered.end(audio.buffered.length - 1));
-            audioPlayerContainer.style.setProperty('--buffered-width', `${(bufferedAmount / seekSlider.max) * 100}%`);
+            playerContainer.css('--buffered-width', `${(bufferedAmount / seekSlider.max) * 100}%`);
         }
 
         const whilePlaying = () => {
             seekSlider.value = Math.floor(audio.currentTime);
-            durationContainer.textContent = calculateTime(audio.duration - seekSlider.value);
-            audioPlayerContainer.style.setProperty('--seek-before-width', `${seekSlider.value / seekSlider.max * 100}%`);
+            duration.text(calculateTime(audio.duration - seekSlider.value));
+            playerContainer.css('--seek-before-width', `${seekSlider.value / seekSlider.max * 100}%`);
             raf = requestAnimationFrame(whilePlaying);
         }
 
@@ -284,27 +293,15 @@ $( document ).ready(function() {
 
         audio.addEventListener('progress', displayBufferedAmount);
 
-        seekSlider.addEventListener('input', () => {
-            durationContainer.textContent = calculateTime(audio.duration - seekSlider.value);
-            if (!audio.paused) {
-                cancelAnimationFrame(raf);
-            }
-        });
+    });
 
-        seekSlider.addEventListener('change', () => {
-            audio.currentTime = seekSlider.value;
-            if (!audio.paused) {
-                requestAnimationFrame(whilePlaying);
-            }
-        });
-    }
 
 });
 
 function changeAudioSource(newSource) {
-    var audioElement = document.querySelector('audio');
-    if (audioElement) {
+    $('audio').each(function(i, audioElement){
         audioElement.src = newSource + audioElement.src.replace('file:///audio/', '');
         audioElement.load();
-    }
+    });
+
 }
