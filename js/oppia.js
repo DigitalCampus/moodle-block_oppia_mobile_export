@@ -223,6 +223,8 @@ $( document ).ready(function() {
 
     });
 
+    var currentPlayIcon = null;
+
     $('.audio-player-container').each(function(i, elem){
         const playerContainer = $(elem);
         const playIcon = playerContainer.find('.play-icon');
@@ -237,17 +239,22 @@ $( document ).ready(function() {
 
         playIcon.on('click', () => {
             if (playState === 'play') {
+                if (currentPlayIcon != null){
+                    currentPlayIcon.click();
+                }
                 playIcon.removeClass('pause');
                 playIcon.addClass('play');
                 audio.play();
                 requestAnimationFrame(whilePlaying);
                 playState = 'pause';
+                currentPlayIcon = playIcon;
             } else {
                 playIcon.removeClass('play');
                 playIcon.addClass('pause');
                 audio.pause();
                 cancelAnimationFrame(raf);
                 playState = 'play';
+                currentPlayIcon = null;
             }
         });
 
