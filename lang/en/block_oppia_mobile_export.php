@@ -252,6 +252,7 @@ $string['settings_avoid_push_quizzes_info'] = 'Avoid pushing quizzes info to the
 
 $string['missing_video_poster'] = 'Warning: Missing "poster" image for media element.';
 $string['video_included'] = 'Video included:';
+$string['audio_included'] = 'Audio included:';
 
 $string['media_files_size'] = 'Size';
 $string['media_files_digest'] = 'Digest';
